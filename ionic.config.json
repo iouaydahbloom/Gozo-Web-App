@@ -1,0 +1,7 @@
+{
+  "name": "GozoWebApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

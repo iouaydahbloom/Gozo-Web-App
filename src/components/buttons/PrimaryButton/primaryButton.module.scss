@@ -4,7 +4,21 @@
     font-size: 20px;
     --padding-top: 16px;
     --padding-bottom: 16px;
+    --padding-start: 25px;
+    --padding-end: 25px;
     letter-spacing: 0ch;
     --border-radius: 5px;
     text-transform: uppercase;
+
+    &.small {
+        font-size: 12px;
+    }
+
+    &.medium {
+        font-size: 14px;
+    }
+
+    &.large {
+        font-size: 20px;
+    }
 }

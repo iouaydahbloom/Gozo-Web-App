@@ -3,9 +3,12 @@ import { UserLoyaltyProgram } from '../../../models/loyaltyProgram';
 import useMemberShip from '../../../hooks/useMembership';
 import useAssets from '../../../hooks/useAssets';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
-import { useIonModal } from '@ionic/react';
+import { IonIcon, useIonModal } from '@ionic/react';
 import LoyaltyProgramsManager from './LoyaltyProgramsManager/LoyaltyProgramsManager';
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
+import PrimaryButtonsGroup from '../../../components/buttons/PrimaryButtonsGroup/PrimaryButtonsGroup';
+import { addOutline } from "ionicons/icons";
+import styles from './loyaltyPrograms.module.scss';
 
 const LoyaltyPrograms = () => {
     const [selectedProgram, setSelectedProgram] = useState<UserLoyaltyProgram>();
@@ -26,11 +29,17 @@ const LoyaltyPrograms = () => {
     }, [])
 
     return (
-        <div>
+        <div className={styles.container}>
             {
                 loyaltyPrograms.length > 0 ?
                     <>
-                        <PrimaryButton onClick={showManager}>+ add</PrimaryButton>
+                        <PrimaryButtonsGroup
+                            buttons={[
+                                { title: 'Add', icon: <IonIcon icon={addOutline} />, onClick: showManager },
+                                { title: 'Swap', icon: <IonIcon icon={''} />, onClick: showManager },
+                                { title: 'Remove', icon: <IonIcon icon={''} />, onClick: showManager }
+                            ]}
+                        />
                         {
                             loyaltyPrograms.map((lp, index) => {
                                 return (
@@ -42,7 +51,11 @@ const LoyaltyPrograms = () => {
                             })
                         }
                     </> :
-                    <PrimaryButton onClick={showManager}>+ add loyalty programs</PrimaryButton>
+                    <div className={styles.noDataContainer}>
+                        <PrimaryTypography customClassName={styles.center}>You have no loyalty programs added here yet</PrimaryTypography>
+                        <br /><br />
+                        <PrimaryButton onClick={showManager} size='m' expand='block'>+ add loyalty programs</PrimaryButton>
+                    </div>
             }
         </div>
     )

@@ -1,29 +1,14 @@
-import { IonButton, IonContent, IonHeader, IonPage, IonText, IonTitle, IonToolbar } from '@ionic/react';
-import { useMoralis } from 'react-moralis';
+import { IonPage } from '@ionic/react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import GozoIcon from '../../components/icons/GozoIcon/GozoIcon';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
+import useAuthentication from '../../hooks/useAuthentication';
 import styles from './landing.module.scss';
 
 const Landing: React.FC = () => {
 
-    const { authenticate, isAuthenticated, user, authError, logout } = useMoralis();
-
-    const login = async () => {
-        if (!isAuthenticated) {
-            await authenticate({
-                provider: "web3Auth",
-                clientId: "BLOjsWUuSYKzeWi8rlyl2EIPWijzTZ781Ffwr_MyNra0Q1zgxQsTzby03r44TxL9evzusGOMnLJEmwfk9M_OfN0",
-            })
-                .then(function (user) {
-                    console.log(user?.get("ethAddress"));
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        }
-    }
+    const { login, isAuthenticated, authError, logout } = useAuthentication();
 
     return (
         <IonPage>
@@ -44,21 +29,9 @@ const Landing: React.FC = () => {
                     customClassName={styles.text}>
                     Make use of your unredeemed loyalty points
                 </PrimaryTypography>
+                {!isAuthenticated ? <PrimaryButton onClick={login}>get started</PrimaryButton> : <PrimaryButton onClick={logout}>logout</PrimaryButton>}
 
-                {
-                    isAuthenticated ?
-                        <>
-                            <IonText>Great you are logged in as {user?.getUsername()}</IonText>
-                            <br />
-                            <IonButton onClick={logout}>Logout</IonButton>
-                        </>
-                        :
-                        <PrimaryButton onClick={login}>get started</PrimaryButton>
-                }
-
-                {authError && <p>{authError.message}</p>}
-
-                {/* <PrimaryButton onClick={login}>get started</PrimaryButton> */}
+                {authError && <PrimaryTypography>{authError.message}</PrimaryTypography>}
             </PrimaryContainer>
         </IonPage>
     )

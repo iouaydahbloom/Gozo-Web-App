@@ -27,6 +27,9 @@ const PrimaryTypography: React.FC<Props> = ({
             case 'l':
                 selectedStyle = styles.large;
                 break;
+            case 'xl':
+                selectedStyle = styles.xl;
+                break;
             case 'xxl':
                 selectedStyle = styles.xxl;
                 break;

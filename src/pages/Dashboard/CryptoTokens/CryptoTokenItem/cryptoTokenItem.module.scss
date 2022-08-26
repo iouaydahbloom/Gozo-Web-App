@@ -1,0 +1,22 @@
+.container {
+    background: #2A2E4E;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    padding: 6px 20px;
+    margin-bottom: 24px;
+
+    .info {
+        flex: 1;
+
+        .id {
+            display: flex;
+            margin-bottom: 5px;
+        }
+    }
+
+    .balance {
+        flex: 1;
+        text-align: right;
+    }
+}

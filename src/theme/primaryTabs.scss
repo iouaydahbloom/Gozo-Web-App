@@ -1,0 +1,34 @@
+@import 'react-tabs/style/react-tabs.css';
+
+.react-tabs {
+    .react-tabs__tab-list {
+        display: flex;
+        text-align: center;
+        border-bottom: none;
+
+        li {
+            flex: 1;
+            margin-bottom: 16px;
+            font-size: 16px;
+            color: var(--ion-color-light);
+            padding-bottom: 15px;
+
+            &.react-tabs__tab--selected {
+                border: none;
+                border-bottom: 2px solid var(--ion-color-primary);
+                background-color: transparent;
+                color: var(--ion-color-primary);
+            }
+
+            &:focus {
+                box-shadow: none;
+                border-bottom: 2px solid var(--ion-color-primary);
+                outline: none;
+
+                &::after {
+                    display: none;
+                }
+            }
+        }
+    }
+}

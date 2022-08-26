@@ -4,23 +4,31 @@ import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import { MoralisProvider } from "react-moralis";
+import { MoralisDappProvider } from './providers/MoralisDappProvider/MoralisDappProvider';
+import CurrencySettingsProvider from './providers/CurrencySettingsProvider/CurrencySettingsProvider';
+require('dotenv').config();
+console.log('process is ', process)
 
 ReactDOM.render(
   <React.StrictMode>
     <MoralisProvider
-      appId="hQwYL4jhKhSNcWfDx0dqAeMlO9vHDiXXxw6Tpi48"
-      serverUrl="https://guzd7kiuk1du.usemoralis.com:2053/server">
-      <App />
-    </MoralisProvider>,
+      appId={process.env.REACT_APP_MORALIS_APPLICATION_ID ?? ''}
+      serverUrl={process.env.REACT_APP_MORALIS_SERVER_URL ?? ''}>
+      <MoralisDappProvider>
+        <CurrencySettingsProvider>
+          <App />
+        </CurrencySettingsProvider>
+      </MoralisDappProvider>
+    </MoralisProvider>
   </React.StrictMode>,
   document.getElementById('root')
-);
+)
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
-//serviceWorkerRegistration.unregister();
-serviceWorkerRegistration.register();
+serviceWorkerRegistration.unregister();
+//serviceWorkerRegistration.register();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

@@ -1,0 +1,25 @@
+.container {
+    padding: 40px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .innerContainer {
+        .badge {
+            width: 182px;
+            height: 63px;
+            background: var(--ion-color-medium);
+            box-shadow: inset 0px 2px 2px 1px #000000;
+            border-radius: 38.5px;
+            margin: auto;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .description {
+            text-align: center;
+        }
+    }
+}

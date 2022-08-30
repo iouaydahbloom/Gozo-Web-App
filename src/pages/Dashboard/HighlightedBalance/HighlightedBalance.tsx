@@ -27,9 +27,9 @@ const HighlightedBalance: React.FC<Props> = ({ mode }) => {
         if (mode == AssetMode.token) {
             setAsset({ balance: defaultAsset ? defaultAsset.balance : 0, description: 'Gozo Tokens' });
         } else {
-            setAsset({ balance: membership ? membership.balance : 0, description: 'Gozo Loyalty Points' });
+            setAsset({ balance: membership ? membership.balance : 0, description: 'Super Points' });
         }
-    }, [mode])
+    }, [mode, membership])
 
     return (
         <div className={styles.container}>

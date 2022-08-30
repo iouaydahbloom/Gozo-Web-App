@@ -1,0 +1,11 @@
+.container {
+    .filterContainer {
+        margin-bottom: 35px;
+    }
+
+    .programsContainer {
+        --background: var(--ion-color-medium);
+        height: 600px;
+        overflow-y: auto;
+    }
+}

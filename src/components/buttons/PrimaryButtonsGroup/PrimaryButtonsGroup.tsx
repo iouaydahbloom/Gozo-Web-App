@@ -1,6 +1,8 @@
 import { IonButtons } from '@ionic/react';
 import React, { ReactNode } from 'react'
+import PrimaryTypography from '../../typography/PrimaryTypography/PrimaryTypography';
 import PrimaryButton from '../PrimaryButton/PrimaryButton';
+import styles from './primaryButtonsGroup.module.scss';
 
 interface Props {
     buttons?: {
@@ -13,14 +15,17 @@ interface Props {
 const PrimaryButtonsGroup: React.FC<Props> = ({ buttons = [] }) => {
     return (
         <IonButtons>
-            {
-                buttons.map((button, index) => (
-                    <>
-                        <PrimaryButton key={`button-${index}`}>{button.icon}</PrimaryButton>
-                        {button.title}
-                    </>
-                ))
-            }
+            {buttons.map((button, index) => (
+                <div className={styles.buttonContainer}>
+                    <PrimaryButton
+                        key={`button-${index}`}
+                        onClick={button.onClick}
+                        customStyles={styles.button}>
+                        {button.icon}
+                    </PrimaryButton>
+                    <PrimaryTypography>{button.title}</PrimaryTypography>
+                </div>
+            ))}
         </IonButtons>
     )
 }

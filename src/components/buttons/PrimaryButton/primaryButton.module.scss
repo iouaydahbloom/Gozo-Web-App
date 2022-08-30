@@ -16,9 +16,21 @@
 
     &.medium {
         font-size: 14px;
+        height: 48px;
     }
 
     &.large {
         font-size: 20px;
+        height: 58px;
+    }
+
+    &.dark {
+        --background: var(--ion-color-dark);
+        --color: var(--ion-color-light);
+    }
+
+    &.success {
+        --background: var(--ion-color-success);
+        --color: var(--ion-color-light);
     }
 }

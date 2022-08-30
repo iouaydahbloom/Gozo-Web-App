@@ -1,0 +1,18 @@
+.input {
+    --background: var(--ion-color-dark);
+    background-color: var(--ion-color-dark);
+    border: 1px solid var(--ion-color-medium-tint);
+    box-shadow: inset 0px 2px 3px var(--ion-color-dark);
+    border-radius: 5px;
+    color: var(--ion-color-light);
+    font-size: 14px;
+
+    input {
+        padding-left: 45px !important;
+        box-shadow: none !important;
+    }
+
+    // ion-icon {
+    //     width: 30px !important;
+    // }
+}

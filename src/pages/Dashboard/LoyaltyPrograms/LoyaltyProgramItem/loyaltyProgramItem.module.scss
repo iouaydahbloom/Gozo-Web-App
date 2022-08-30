@@ -1,0 +1,37 @@
+.container {
+    background: var(--ion-color-light);
+    border-radius: 7px;
+    padding: 6px 12px;
+    margin-bottom: 20px;
+    position: relative;
+
+    .dataContainer {
+        display: flex;
+    }
+
+    .middleRow {
+        margin: 6px 0;
+    }
+
+    .actions {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        width: 20%;
+
+        .spinAction {
+            background: #76F4C3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            border-top-right-radius: 7px;
+            border-bottom-right-radius: 7px;
+
+            .spinIcon {
+                text-align: center;
+            }
+        }
+    }
+}

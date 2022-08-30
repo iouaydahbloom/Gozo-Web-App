@@ -1,7 +1,12 @@
-import { IonInput } from '@ionic/react'
+import { IonIcon, IonToolbar } from '@ionic/react'
+import { chevronDownOutline, chevronForwardOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react'
+import PrimaryButton from '../../../../components/buttons/PrimaryButton/PrimaryButton';
+import PrimaryInput from '../../../../components/inputs/PrimaryInput/PrimaryInput';
+import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
 import { LoyaltyProgram, MyLoyaltyProgram } from '../../../../models/loyaltyProgram'
-import { ValueIdentifier } from '../../../../models/valueIdentifier'
+import { ValueIdentifier } from '../../../../models/valueIdentifier';
+import styles from './loyaltyProgramManageItem.module.scss';
 
 interface Props {
     item: LoyaltyProgram,
@@ -45,36 +50,65 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({
         if (myUpdatedProgram) onMyProgramChange(myUpdatedProgram)
     }, [myUpdatedProgram])
 
+    const LoyaltyProgramPartnership = () => {
+        return (
+            <>
+                {
+                    myUpdatedProgram ?
+                        <div className={styles.connectionContainer}>
+                            <IonToolbar className={styles.connectionActions}>
+                                <div slot='start'>
+                                    <PrimaryTypography color='dark'>{item.loyaltyCurrency.shortName}</PrimaryTypography>
+                                </div>
+                                <div slot='end'>
+                                    <PrimaryButton size='s' type='dark'>Connect</PrimaryButton>
+                                </div>
+                            </IonToolbar>
+                            {
+                                myUpdatedProgram && item.partnershipDetails.executeAction.requiredFields.map((field, index) => {
+                                    return <PrimaryInput
+                                        key={`field-${index}`}
+                                        placeholder={`Enter your ${field.name}`}
+                                        value={myUpdatedProgram.membership[index]?.value}
+                                        onChange={(value) => {
+                                            if (myUpdatedProgram.membership[index]) myUpdatedProgram.membership[index].value = value;
+                                            const newProgram = new MyLoyaltyProgram(
+                                                myUpdatedProgram.companyName,
+                                                myUpdatedProgram.programId,
+                                                myUpdatedProgram.programLogo,
+                                                myUpdatedProgram.caLoyaltyCurrency,
+                                                myUpdatedProgram.caLoyaltyCurrencyName,
+                                                myUpdatedProgram.membership
+                                            )
+                                            setMyUpdatedProgram(newProgram);
+                                        }} />
+                                })
+                            }
+                        </div> :
+                        <PrimaryTypography>No Partnership Programs</PrimaryTypography>
+                }
+            </>
+        )
+    }
+
     return (
-        <div>
-            <div onClick={() => setIsSelected(!isSelected)}>
-                <div>{item.companyName} - {item.loyaltyCurrency?.shortName}</div>
-            </div>
-            {
-                isSelected && myUpdatedProgram &&
-                <div>
-                    {
-                        item.partnershipDetails.executeAction.requiredFields.map((field, index) => {
-                            return <IonInput
-                                key={`field-${index}`}
-                                placeholder={field.name}
-                                value={myUpdatedProgram.membership[index]?.value}
-                                onChange={(event) => {
-                                    if (myUpdatedProgram.membership[index]) myUpdatedProgram.membership[index].value = event.currentTarget.value?.toString() ?? '';
-                                    const newProgram = new MyLoyaltyProgram(
-                                        myUpdatedProgram.companyName,
-                                        myUpdatedProgram.programId,
-                                        myUpdatedProgram.programLogo,
-                                        myUpdatedProgram.caLoyaltyCurrency,
-                                        myUpdatedProgram.caLoyaltyCurrencyName,
-                                        myUpdatedProgram.membership
-                                    )
-                                    setMyUpdatedProgram(newProgram);
-                                }} />
-                        })
-                    }
+        <div className={styles.container}>
+            <div className={styles.togglerContainer}
+                onClick={() => setIsSelected(!isSelected)}>
+                <div className={styles.id}>
+                    <img src={item.logo} className={styles.logo} />
+                    <div className={styles.text}>
+                        <PrimaryTypography isBold>{item.companyName}</PrimaryTypography>
+                        <PrimaryTypography size='s'>1 program</PrimaryTypography>
+                    </div>
                 </div>
-            }
+
+                <div className={styles.toggler}>
+                    <PrimaryTypography>({item.loyaltyCurrency?.shortName})</PrimaryTypography>
+                    <IonIcon icon={isSelected ? chevronDownOutline : chevronForwardOutline} size='small' color='light' />
+                </div>
+            </div>
+            {isSelected && <LoyaltyProgramPartnership />}
         </div>
     )
 }

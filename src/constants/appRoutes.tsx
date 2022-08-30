@@ -1,4 +1,5 @@
 export const AppRoutes = {
     landing: '/landing',
-    dashboard: '/dashboard'
+    dashboard: '/dashboard',
+    onBoarding: '/onboarding'
 }

@@ -7,7 +7,8 @@ interface Props {
     isBlock?: boolean,
     isBold?: boolean,
     size?: 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl',
-    customClassName?: string
+    customClassName?: string,
+    color?: 'light' | 'dark'
 }
 
 const PrimaryTypography: React.FC<Props> = ({
@@ -15,7 +16,8 @@ const PrimaryTypography: React.FC<Props> = ({
     isBlock = true,
     isBold = false,
     size = 's',
-    customClassName = ''
+    customClassName = '',
+    color = 'light'
 }) => {
 
     const styledSize = useMemo(() => {
@@ -43,7 +45,7 @@ const PrimaryTypography: React.FC<Props> = ({
 
     return (
         <IonText
-            color='light'
+            color={color}
             className={`
             ${styles.text} 
             ${isBlock ? styles.block : ''} 

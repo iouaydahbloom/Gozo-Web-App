@@ -26,6 +26,7 @@ import Landing from './pages/Landing/Landing';
 import Dashboard from './pages/Dashboard/Dashboard';
 import { AppRoutes } from './constants/appRoutes';
 import ProtectedRoute from './components/routes/ProtectedRoute/ProtectedRoute';
+import OnBoarding from './pages/OnBoarding/OnBoarding';
 
 setupIonicReact();
 
@@ -39,6 +40,9 @@ const App: React.FC = () => (
         <Route exact path={AppRoutes.landing}>
           <Landing />
         </Route>
+        <ProtectedRoute exact path={AppRoutes.onBoarding}>
+          <OnBoarding />
+        </ProtectedRoute>
         <Route exact path="/">
           <Redirect to={AppRoutes.landing} />
         </Route>

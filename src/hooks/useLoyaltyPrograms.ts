@@ -45,7 +45,6 @@ const useLoyaltyPrograms = () => {
         return run(cloudFunctionName.getMyPrograms,
             null,
             (result: any) => {
-                debugger;
                 const stringifiedResult = JSON.stringify(result);
                 const parsedResult: UserLoyaltyProgramDTO[] = JSON.parse(stringifiedResult);
                 return parsedResult.map(data => UserLoyaltyProgram.getFromDTO(data))

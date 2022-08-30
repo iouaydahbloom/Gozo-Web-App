@@ -2,3 +2,16 @@
     padding: 20px;
     text-align: center;
 }
+
+.termsContainer {
+    display: flex;
+    margin-bottom: 25px;
+
+    .checkboxField {
+        flex: 0.1;
+    }
+
+    .textField {
+        flex: 0.9;
+    }
+}

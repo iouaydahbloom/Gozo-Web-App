@@ -6,10 +6,21 @@ interface Props {
     children: ReactNode,
     onClick?: () => void,
     size?: 's' | 'm' | 'l',
-    expand?: 'block'
+    expand?: 'block',
+    type?: 'primary' | 'dark' | 'success',
+    customStyles?: string,
+    disabled?: boolean
 }
 
-const PrimaryButton: React.FC<Props> = ({ children, onClick, size = 'l', expand }) => {
+const PrimaryButton: React.FC<Props> = ({
+    children,
+    onClick,
+    size = 'l',
+    expand,
+    type = 'primary',
+    customStyles = '',
+    disabled = false
+}) => {
 
     const styledSize = useMemo(() => {
         let selectedStyle;
@@ -33,13 +44,13 @@ const PrimaryButton: React.FC<Props> = ({ children, onClick, size = 'l', expand 
 
     return (
         <IonButton
-            color='primary'
             expand={expand}
-            className={`${styles.button} ${styledSize}`}
-            onClick={onClick}>
+            className={`${styles.button} ${styledSize} ${customStyles} ${type}`}
+            onClick={onClick}
+            disabled={disabled}>
             {children}
         </IonButton>
     )
 }
 
-export default PrimaryButton
+export default PrimaryButton;

@@ -4,16 +4,20 @@ import useServerPagination from '../../../../hooks/useServerPagination'
 import { LoyaltyProgram, MyLoyaltyProgram } from '../../../../models/loyaltyProgram'
 import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms'
 import collectionManipulationHelper from '../../../../utils/collectionManipulationHelper'
-import { IonButton } from '@ionic/react'
+import PrimaryModal from '../../../../components/modals/PrimaryModal/PrimaryModal'
+import PrimarySearch from '../../../../components/inputs/PrimarySearch/PrimarySearch'
+import styles from './loyaltyProgramsManager.module.scss';
+import { IonContent } from '@ionic/react'
 
 const LoyaltyProgramsManager: React.FC = () => {
 
     const [isLoading, setLoading] = useState(false);
     const [myPrograms, setMyPrograms] = useState<MyLoyaltyProgram[]>([]);
     const [selectedProgramIds, setSelectedProgramIds] = useState<string[]>([]);
+    const [searchKey, setSearchKey] = useState<string>('');
     const { fetchAllPrograms, fetchMyLoyaltyPrograms, updatePrograms } = useLoyaltyPrograms();
 
-    const { data: programs, loadMore, hasMore } = useServerPagination<LoyaltyProgram>({
+    const { data: programs } = useServerPagination<LoyaltyProgram>({
         getData: fetchAllPrograms as any
     })
 
@@ -66,7 +70,7 @@ const LoyaltyProgramsManager: React.FC = () => {
             myProgram={getMyProgram(lp.partnerId)}
             onMyProgramChange={handleMyProgramUpdate}
             onSelectionChange={(isSelected) => handleSelectionChange(isSelected, lp.partnerId)} />
-    }, [programs, myPrograms, selectedProgramIds])
+    }, [programs, myPrograms, selectedProgramIds, searchKey])
 
     useEffect(() => {
         setLoading(true)
@@ -84,18 +88,26 @@ const LoyaltyProgramsManager: React.FC = () => {
     }, [])
 
     return (
-        <div>
-            <div>
-                <div>Welcome to loyalty program manager</div>
-                {
-                    !isLoading && programs.map((lp, index) => {
-                        return renderLoyaltyProgramItem(lp, index)
-                    })
-                }
-                {hasMore && <IonButton onClick={loadMore}>Load More</IonButton>}
-                <IonButton onClick={saveMyPrograms}>Save</IonButton>
-            </div>
-        </div>
+        <PrimaryModal
+            title='Partners'
+            renderBody={() => (
+                <div className={styles.container}>
+                    <div className={styles.filterContainer}>
+                        <PrimarySearch
+                            value={searchKey}
+                            onChange={setSearchKey} />
+                    </div>
+                    <div className={styles.programsContainer}>
+                        {!isLoading &&
+                            programs
+                                .filter(prog => !searchKey ||
+                                    prog.companyName.toLowerCase().includes(searchKey?.toLowerCase()) ||
+                                    prog.loyaltyCurrency?.shortName?.toLowerCase().includes(searchKey?.toLowerCase()))
+                                .map((lp, index) => renderLoyaltyProgramItem(lp, index))}
+                    </div>
+                </div>
+            )}
+        />
     )
 }
 

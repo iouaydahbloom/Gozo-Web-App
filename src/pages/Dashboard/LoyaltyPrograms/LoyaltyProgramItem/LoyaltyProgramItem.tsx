@@ -27,7 +27,7 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection }) =>
                     onSelection && onSelection(selected, loyaltyProgram)
                 }} />
                 <div>
-                    <PrimaryTypography color='dark' isBold size='l'>{loyaltyProgram.currency.loyaltyCurrencyName}</PrimaryTypography>
+                    <PrimaryTypography color='dark' isBold size='m'>{loyaltyProgram.currency.loyaltyCurrencyName}</PrimaryTypography>
                     <PrimaryTypography color='dark' customClassName={styles.middleRow}>{membership?.balance} pts</PrimaryTypography>
                     <PrimaryTypography color='dark'>{membership?.state}</PrimaryTypography>
                 </div>

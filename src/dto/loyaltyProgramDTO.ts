@@ -49,7 +49,6 @@ export interface MyLoyaltyProgramDTO {
 
 export interface UserLoyaltyProgramDTO {
     caCurrency: UserLoyaltyProgramCurrencyDTO,
-    caCurrencyId: string,
     caMemberFields: DynamicInputIdentifierDTO[],
     createdAt: string,
     updatedAt: string,

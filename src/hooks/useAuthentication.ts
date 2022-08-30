@@ -14,6 +14,7 @@ const useAuthentication = () => {
                 clientId: process.env.REACT_APP_WEB3AUTH_SECRET ?? ''
             })
                 .then(async (user) => {
+                    debugger
                     console.log(user);
                     if (user) {
                         await activateMember(user.id, user.getUsername() ?? '');

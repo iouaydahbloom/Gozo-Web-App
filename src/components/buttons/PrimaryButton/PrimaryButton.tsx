@@ -42,10 +42,30 @@ const PrimaryButton: React.FC<Props> = ({
         return selectedStyle;
     }, [size])
 
+    const styledColor = useMemo(() => {
+        let selectedColor;
+        switch (type) {
+            case 'primary':
+                selectedColor = styles.small;
+                break;
+            case 'success':
+                selectedColor = styles.success;
+                break;
+            case 'dark':
+                selectedColor = styles.dark;
+                break;
+            default:
+                selectedColor = styles.primary;
+                break;
+        }
+
+        return selectedColor;
+    }, [type])
+
     return (
         <IonButton
             expand={expand}
-            className={`${styles.button} ${styledSize} ${customStyles} ${type}`}
+            className={`${styles.button} ${styledSize} ${customStyles} ${styledColor}`}
             onClick={onClick}
             disabled={disabled}>
             {children}

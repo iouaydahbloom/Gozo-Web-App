@@ -68,7 +68,7 @@ export class UserLoyaltyProgram implements AppModel {
     static getFromDTO(dto: UserLoyaltyProgramDTO): UserLoyaltyProgram {
         return new UserLoyaltyProgram(
             UserLoyaltyProgramCurrency.getFromDTO(dto.caCurrency),
-            dto.caCurrencyId,
+            dto.caCurrency.objectId,
             dto.caMemberFields.map(field => {
                 return DynamicInputIdentifier.getFromDTO(field)
             }),

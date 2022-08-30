@@ -14,19 +14,20 @@ interface Props {
 
 const PrimaryButtonsGroup: React.FC<Props> = ({ buttons = [] }) => {
     return (
-        <IonButtons>
+        <div className={styles.buttonsContainer}>
             {buttons.map((button, index) => (
-                <div className={styles.buttonContainer}>
+                <div key={index}
+                    className={styles.buttonContainer}>
                     <PrimaryButton
-                        key={`button-${index}`}
                         onClick={button.onClick}
-                        customStyles={styles.button}>
+                        customStyles={styles.button}
+                    >
                         {button.icon}
                     </PrimaryButton>
                     <PrimaryTypography>{button.title}</PrimaryTypography>
                 </div>
             ))}
-        </IonButtons>
+        </div>
     )
 }
 

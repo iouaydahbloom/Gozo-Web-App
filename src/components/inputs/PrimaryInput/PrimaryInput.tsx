@@ -14,7 +14,7 @@ const PrimaryInput: React.FC<Props> = ({ placeholder, value, onChange }) => {
             className={styles.input}
             placeholder={placeholder}
             value={value}
-            onChange={(event) => onChange(event.currentTarget.value ? event.currentTarget.value.toString() : '')} />
+            onIonChange={(event) => onChange(event.detail.value ?? '')} />
     )
 }
 

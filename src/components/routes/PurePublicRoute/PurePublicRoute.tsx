@@ -7,15 +7,15 @@ interface Props {
     children: ReactNode
 }
 
-const ProtectedRoute: React.FC<Props & Record<any, any>> = ({ children, ...restOfProps }) => {
+const PurePublicRoute: React.FC<Props & Record<any, any>> = ({ children, ...restOfProps }) => {
 
     const { isAuthenticated } = useMoralis();
 
     return (
-        isAuthenticated ?
+        !isAuthenticated ?
             <Route {...restOfProps}>{children}</Route> :
-            <Redirect to={AppRoutes.landing} />
+            <Redirect to={AppRoutes.dashboard} />
     )
 }
 
-export default ProtectedRoute;
+export default PurePublicRoute;

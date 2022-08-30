@@ -1,6 +1,6 @@
 export interface DynamicInputIdentifierDTO {
-    created_at: number
-    id: number
+    createdAt: number
+    objectId: number
     key: string
     value: string
 }

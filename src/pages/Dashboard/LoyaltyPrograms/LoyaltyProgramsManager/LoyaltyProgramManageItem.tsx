@@ -4,51 +4,70 @@ import { useEffect, useState } from 'react'
 import PrimaryButton from '../../../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../../../components/inputs/PrimaryInput/PrimaryInput';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
-import { LoyaltyProgram, MyLoyaltyProgram } from '../../../../models/loyaltyProgram'
-import { ValueIdentifier } from '../../../../models/valueIdentifier';
+import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms';
+import { DynamicInputIdentifier } from '../../../../models/dynamicInputIdentifier';
+import { LoyaltyProgram, UserLoyaltyProgram, UserLoyaltyProgramCurrency } from '../../../../models/loyaltyProgram'
 import styles from './loyaltyProgramManageItem.module.scss';
 
 interface Props {
     item: LoyaltyProgram,
-    myProgram: MyLoyaltyProgram | null,
-    onSelectionChange: (isSelected: boolean) => void,
-    onMyProgramChange: (myProgram: MyLoyaltyProgram) => void
+    myProgram: UserLoyaltyProgram | null
 }
 
 const LoyaltyProgramManageItem: React.FC<Props> = ({
     item,
-    myProgram,
-    onSelectionChange,
-    onMyProgramChange
+    myProgram
 }) => {
-
     const [isSelected, setIsSelected] = useState(!!myProgram);
-    const [myUpdatedProgram, setMyUpdatedProgram] = useState<MyLoyaltyProgram | null>(myProgram);
+    const [isConnected, setIsConnected] = useState(!!myProgram);
+    const [myUpdatedProgram, setMyUpdatedProgram] = useState<UserLoyaltyProgram | null>(myProgram);
+    const { connectProgram, disconnectProgram, isUpdating } = useLoyaltyPrograms();
 
-    function createMyProgram() {
-        setMyUpdatedProgram(new MyLoyaltyProgram(
-            item.companyName,
-            item.partnerId,
-            item.logo,
+    function initMyProgram() {
+        const userLoyaltyProgram = new UserLoyaltyProgram(
+            new UserLoyaltyProgramCurrency(item.loyaltyCurrency.id,
+                item.loyaltyCurrency.shortName,
+                item.companyName,
+                new Date(),
+                '',
+                item.partnerId,
+                item.logo),
             item.loyaltyCurrency.id,
-            item.loyaltyCurrency.shortName,
             item.partnershipDetails.executeAction.requiredFields.map(field => {
-                return new ValueIdentifier(field.id, '')
-            })
-        ))
+                return new DynamicInputIdentifier(new Date(), 0, field.id, '')
+            }),
+            new Date(),
+            '',
+            ''
+        );
+        setMyUpdatedProgram(userLoyaltyProgram);
+    }
+
+    function handleConnection() {
+        if (isConnected) {
+            disconnectProgram(myUpdatedProgram?.userCurrencyId!)
+                .then(disconnected => {
+                    if (disconnected) {
+                        setIsConnected(false);
+                        initMyProgram();
+                    }
+                })
+        } else {
+            connectProgram(myUpdatedProgram!)
+                .then(result => {
+                    if (result) {
+                        setIsConnected(true);
+                        setMyUpdatedProgram(result);
+                    }
+                })
+        }
     }
 
     useEffect(() => {
-        if (!myProgram) createMyProgram();
+        if (!myProgram) {
+            initMyProgram();
+        }
     }, [])
-
-    useEffect(() => {
-        onSelectionChange(isSelected);
-    }, [isSelected])
-
-    useEffect(() => {
-        if (myUpdatedProgram) onMyProgramChange(myUpdatedProgram)
-    }, [myUpdatedProgram])
 
     const LoyaltyProgramPartnership = () => {
         return (
@@ -58,10 +77,18 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({
                         <div className={styles.connectionContainer}>
                             <IonToolbar className={styles.connectionActions}>
                                 <div slot='start'>
-                                    <PrimaryTypography color='dark'>{item.loyaltyCurrency.shortName}</PrimaryTypography>
+                                    <PrimaryTypography color='dark'>
+                                        {item.loyaltyCurrency.shortName}
+                                    </PrimaryTypography>
                                 </div>
                                 <div slot='end'>
-                                    <PrimaryButton size='s' type='dark'>Connect</PrimaryButton>
+                                    <PrimaryButton
+                                        size='s'
+                                        type={`${isConnected ? 'success' : 'dark'}`}
+                                        onClick={handleConnection}
+                                        disabled={isUpdating}>
+                                        {isConnected ? 'Disconnect' : 'Connect'}
+                                    </PrimaryButton>
                                 </div>
                             </IonToolbar>
                             {
@@ -69,18 +96,12 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({
                                     return <PrimaryInput
                                         key={`field-${index}`}
                                         placeholder={`Enter your ${field.name}`}
-                                        value={myUpdatedProgram.membership[index]?.value}
+                                        value={myUpdatedProgram.memberFields[index]?.value}
                                         onChange={(value) => {
-                                            if (myUpdatedProgram.membership[index]) myUpdatedProgram.membership[index].value = value;
-                                            const newProgram = new MyLoyaltyProgram(
-                                                myUpdatedProgram.companyName,
-                                                myUpdatedProgram.programId,
-                                                myUpdatedProgram.programLogo,
-                                                myUpdatedProgram.caLoyaltyCurrency,
-                                                myUpdatedProgram.caLoyaltyCurrencyName,
-                                                myUpdatedProgram.membership
-                                            )
-                                            setMyUpdatedProgram(newProgram);
+                                            if (myUpdatedProgram.memberFields[index]) {
+                                                myUpdatedProgram.memberFields[index].value = value;
+                                                setMyUpdatedProgram(myUpdatedProgram);
+                                            }
                                         }} />
                                 })
                             }

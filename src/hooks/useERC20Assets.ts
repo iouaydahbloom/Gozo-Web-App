@@ -33,7 +33,6 @@ const useERC20Assets = (chain?: string) => {
   }
 
   const defaultAsset = useMemo(() => {
-    console.log('assets are ', assets)
     const defaultBalancedToken = assets ?
       assets.find(token => token.token_address.toLowerCase() == process.env.REACT_APP_TOKEN_CONTRACT?.toLowerCase()) : null;
     if (defaultBalancedToken) {

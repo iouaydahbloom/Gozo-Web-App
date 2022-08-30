@@ -7,7 +7,6 @@ import { MoralisProvider } from "react-moralis";
 import { MoralisDappProvider } from './providers/MoralisDappProvider/MoralisDappProvider';
 import CurrencySettingsProvider from './providers/CurrencySettingsProvider/CurrencySettingsProvider';
 require('dotenv').config();
-console.log('process is ', process)
 
 ReactDOM.render(
   <React.StrictMode>

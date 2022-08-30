@@ -12,5 +12,8 @@ export const cloudFunctionName = {
     executeP2PExchange: 'execute_p2p_exchange',
     simulateP2TExchange: 'simulate_p2t_exchange',
     executeP2Texchange: 'execute_p2t_exchange',
-    activateLoyaltyMember: 'activate_loyalty_member'
+    activateLoyaltyMember: 'activate_loyalty_member',
+    connectProgram: 'connect_program',
+    disconnectProgram: 'disconnect_program',
+    disconnectPrograms: 'disconnect_programs'
 }

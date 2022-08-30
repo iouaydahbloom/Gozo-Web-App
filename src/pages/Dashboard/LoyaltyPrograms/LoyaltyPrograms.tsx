@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import { UserLoyaltyProgram, UserLoyaltyProgramCurrency } from '../../../models/loyaltyProgram';
-import useMemberShip from '../../../hooks/useMembership';
+import { UserLoyaltyProgram } from '../../../models/loyaltyProgram';
 import useAssets from '../../../hooks/useAssets';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import { IonIcon, useIonModal } from '@ionic/react';
@@ -10,32 +9,46 @@ import PrimaryButtonsGroup from '../../../components/buttons/PrimaryButtonsGroup
 import { addOutline, swapHorizontalOutline, trashOutline } from "ionicons/icons";
 import styles from './loyaltyPrograms.module.scss';
 import LoyaltyProgramItem from './LoyaltyProgramItem/LoyaltyProgramItem';
+import collectionManipulationHelper from '../../../utils/collectionManipulationHelper';
+import useLoyaltyPrograms from '../../../hooks/useLoyaltyPrograms';
+import useToast from '../../../hooks/useToast';
 
 const LoyaltyPrograms = () => {
-    const [selectedProgram, setSelectedProgram] = useState<UserLoyaltyProgram>();
+    const [selectedUserCurrencyIds, setSelectedUserCurrencyIds] = useState<string[]>([]);
     const { getUserLoyaltyPrograms } = useAssets();
     const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
-    const { membership } = useMemberShip(selectedProgram?.currency.loyaltyCurrency);
     const [showManager] = useIonModal(LoyaltyProgramsManager);
+    const { disconnectPrograms } = useLoyaltyPrograms();
+    const { presentSuccess, presentInfo } = useToast();
 
     useEffect(() => {
-        if (membership) alert(`${membership.loyaltyCurrency} Balance: ${membership.balance}`);
-    }, [membership]);
+        getPrograms();
+    }, [])
 
-    useEffect(() => {
+    function getPrograms() {
         getUserLoyaltyPrograms()
             .then(programs => {
                 setLoyaltyPrograms(programs);
             })
-        // setLoyaltyPrograms([
-        //     new UserLoyaltyProgram(new UserLoyaltyProgramCurrency('', '', '', new Date(), 1, '', ''), 0, [], new Date(), 1, 2),
-        //     new UserLoyaltyProgram(new UserLoyaltyProgramCurrency('', '', '', new Date(), 1, '', ''), 0, [], new Date(), 1, 2),
-        //     new UserLoyaltyProgram(new UserLoyaltyProgramCurrency('', '', '', new Date(), 1, '', ''), 0, [], new Date(), 1, 2)
-        // ]);
-    }, [])
+    }
 
     function showUpdate() {
         showManager({ initialBreakpoint: 0.90, breakpoints: [0, 0.25, 0.65, 0.90] })
+    }
+
+    function disconnectSelected() {
+        if (selectedUserCurrencyIds.length == 0) {
+            presentInfo('Select at least one Program');
+            return
+        }
+
+        disconnectPrograms(selectedUserCurrencyIds)
+            .then(disconnected => {
+                if (disconnected) {
+                    presentSuccess('Programs successfuly disconnected');
+                    getPrograms();
+                }
+            })
     }
 
     const NoProgramsContainer = () => {
@@ -61,14 +74,23 @@ const LoyaltyPrograms = () => {
                                 buttons={[
                                     { title: 'Add', icon: <IonIcon icon={addOutline} />, onClick: showUpdate },
                                     { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: () => null },
-                                    { title: 'Remove', icon: <IonIcon icon={trashOutline} />, onClick: () => null }
+                                    { title: 'Remove', icon: <IonIcon icon={trashOutline} />, onClick: disconnectSelected }
                                 ]}
                             />
                         </div>
                         {loyaltyPrograms.map((lp, index) => (
                             <LoyaltyProgramItem
                                 key={index}
-                                loyaltyProgram={lp} />
+                                loyaltyProgram={lp}
+                                onSelection={(selected, program) => {
+                                    if (selected) {
+                                        setSelectedUserCurrencyIds([...selectedUserCurrencyIds, program.userCurrencyId]);
+                                    } else {
+                                        const index = selectedUserCurrencyIds.findIndex(sp => sp == program.userCurrencyId);
+                                        const updated = collectionManipulationHelper.removeAtIndex(selectedUserCurrencyIds, index);
+                                        setSelectedUserCurrencyIds(updated);
+                                    }
+                                }} />
                         ))}
                     </> :
                     <NoProgramsContainer />

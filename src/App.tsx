@@ -21,12 +21,14 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import './theme/main.scss';
+import './theme/toast.scss';
 
 import Landing from './pages/Landing/Landing';
 import Dashboard from './pages/Dashboard/Dashboard';
 import { AppRoutes } from './constants/appRoutes';
 import ProtectedRoute from './components/routes/ProtectedRoute/ProtectedRoute';
 import OnBoarding from './pages/OnBoarding/OnBoarding';
+import PurePublicRoute from './components/routes/PurePublicRoute/PurePublicRoute';
 
 setupIonicReact();
 
@@ -37,9 +39,9 @@ const App: React.FC = () => (
         <ProtectedRoute exact path={AppRoutes.dashboard}>
           <Dashboard />
         </ProtectedRoute>
-        <Route exact path={AppRoutes.landing}>
+        <PurePublicRoute exact path={AppRoutes.landing}>
           <Landing />
-        </Route>
+        </PurePublicRoute>
         <ProtectedRoute exact path={AppRoutes.onBoarding}>
           <OnBoarding />
         </ProtectedRoute>

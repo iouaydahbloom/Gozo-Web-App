@@ -48,20 +48,22 @@ export interface MyLoyaltyProgramDTO {
 }
 
 export interface UserLoyaltyProgramDTO {
-    ca_currency: UserLoyaltyProgramCurrencyDTO,
-    ca_currency_id: number,
-    ca_member_fields: DynamicInputIdentifierDTO[],
-    created_at: number,
-    id: number,
-    user_id: number
+    caCurrency: UserLoyaltyProgramCurrencyDTO,
+    caCurrencyId: string,
+    caMemberFields: DynamicInputIdentifierDTO[],
+    createdAt: string,
+    updatedAt: string,
+    objectId: string,
+    userCurrencyId: string
 }
 
 export interface UserLoyaltyProgramCurrencyDTO {
-    ca_loyalty_currency: string,
-    ca_loyalty_currency_name: string,
-    company_name: string,
-    created_at: number,
-    id: number,
-    program_id: string,
-    program_logo: string
+    caLoyaltyCurrency: string,
+    caLoyaltyCurrencyName: string,
+    companyName: string,
+    createdAt: string,
+    updatedAt: string,
+    objectId: string,
+    programId: string,
+    programLogo: string
 }

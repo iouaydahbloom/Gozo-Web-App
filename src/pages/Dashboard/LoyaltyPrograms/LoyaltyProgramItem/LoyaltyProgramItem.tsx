@@ -1,17 +1,19 @@
-import { IonCheckbox, IonIcon } from '@ionic/react';
-import { banOutline } from 'ionicons/icons';
-import React from 'react';
+import React, { useState } from 'react';
 import PrimaryCheckbox from '../../../../components/inputs/PrimaryCheckbox/PrimaryCheckbox';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
+import useMemberShip from '../../../../hooks/useMembership';
 import { UserLoyaltyProgram } from '../../../../models/loyaltyProgram';
 import styles from './loyaltyProgramItem.module.scss';
 
 interface Props {
     loyaltyProgram: UserLoyaltyProgram,
-    onSelection?: (selected: boolean) => void
+    onSelection?: (selected: boolean, program: UserLoyaltyProgram) => void
 }
 
 const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection }) => {
+
+    const [isSelected, setIsSelected] = useState(false);
+    const { membership } = useMemberShip(loyaltyProgram?.currency.loyaltyCurrency);
 
     function spin() {
         console.log('spinning');
@@ -20,11 +22,14 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection }) =>
     return (
         <div className={styles.container}>
             <div className={styles.dataContainer}>
-                <PrimaryCheckbox onChange={onSelection} />
+                <PrimaryCheckbox value={isSelected} onChange={(selected) => {
+                    setIsSelected(selected);
+                    onSelection && onSelection(selected, loyaltyProgram)
+                }} />
                 <div>
-                    <PrimaryTypography color='dark' isBold size='l'>Middle East</PrimaryTypography>
-                    <PrimaryTypography color='dark' customClassName={styles.middleRow}>3 pts</PrimaryTypography>
-                    <PrimaryTypography color='dark'>Valid until 27 August 2022</PrimaryTypography>
+                    <PrimaryTypography color='dark' isBold size='l'>{loyaltyProgram.currency.loyaltyCurrencyName}</PrimaryTypography>
+                    <PrimaryTypography color='dark' customClassName={styles.middleRow}>{membership?.balance} pts</PrimaryTypography>
+                    <PrimaryTypography color='dark'>{membership?.state}</PrimaryTypography>
                 </div>
             </div>
 

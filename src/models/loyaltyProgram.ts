@@ -1,5 +1,5 @@
 import { DefaultCurrencyDTO } from "../dto/defaultCurrencyDTO";
-import { LoyaltyCurrencyDTO, LoyaltyExecuteActionDTO, LoyaltyMemberLookupActionDTO, LoyaltyPartnershipDetailsDTO, LoyaltyProgramDTO, LoyaltyProgramRequireFieldDTO, MyLoyaltyProgramDTO, UserLoyaltyProgramCurrencyDTO, UserLoyaltyProgramDTO } from "../dto/loyaltyProgramDTO";
+import { LoyaltyCurrencyDTO, LoyaltyExecuteActionDTO, LoyaltyMemberLookupActionDTO, LoyaltyPartnershipDetailsDTO, LoyaltyProgramDTO, LoyaltyProgramRequireFieldDTO, MyLoyaltyProgramDTO, MyLoyaltyProgramsDTO, UserLoyaltyProgramCurrencyDTO, UserLoyaltyProgramDTO } from "../dto/loyaltyProgramDTO";
 import AppModel from "./appModel"
 import { DynamicInputIdentifier } from "./dynamicInputIdentifier";
 import { ValueIdentifier } from "./valueIdentifier";
@@ -29,7 +29,8 @@ export class MyLoyaltyProgram implements AppModel {
         public programLogo: string,
         public caLoyaltyCurrency: string,
         public caLoyaltyCurrencyName: string,
-        public membership: ValueIdentifier[]) { }
+        public membership: ValueIdentifier[],
+        public userCurrencyId: string) { }
 
     static getFromDTO(dto: MyLoyaltyProgramDTO): MyLoyaltyProgram {
         return new MyLoyaltyProgram(dto.company_name,
@@ -39,7 +40,8 @@ export class MyLoyaltyProgram implements AppModel {
             dto.ca_loyalty_currency_name,
             dto.membership_data.map(md => {
                 return ValueIdentifier.getFromDTO(md)
-            })
+            }),
+            ''
         )
     }
 
@@ -57,47 +59,50 @@ export class MyLoyaltyProgram implements AppModel {
 
 export class UserLoyaltyProgram implements AppModel {
     constructor(public currency: UserLoyaltyProgramCurrency,
-        public currencyId: number,
+        public currencyId: string,
         public memberFields: DynamicInputIdentifier[],
         public createdAt: Date,
-        public id: number,
-        public userId: number) { }
+        public id: string,
+        public userCurrencyId: string) { }
 
     static getFromDTO(dto: UserLoyaltyProgramDTO): UserLoyaltyProgram {
         return new UserLoyaltyProgram(
-            UserLoyaltyProgramCurrency.getFromDTO(dto.ca_currency),
-            dto.ca_currency_id,
-            dto.ca_member_fields.map(field => {
+            UserLoyaltyProgramCurrency.getFromDTO(dto.caCurrency),
+            dto.caCurrencyId,
+            dto.caMemberFields.map(field => {
                 return DynamicInputIdentifier.getFromDTO(field)
             }),
-            new Date(dto.created_at),
-            dto.id,
-            dto.user_id
+            new Date(dto.createdAt),
+            dto.objectId,
+            dto.userCurrencyId
         )
     }
 
     static getFromDefaultCurrencyDTO(dto: DefaultCurrencyDTO): UserLoyaltyProgram {
         return new UserLoyaltyProgram(
-            new UserLoyaltyProgramCurrency(dto.currency_id, dto.curency_display_name, '', new Date(), 0, '', ''),
-            0,
+            new UserLoyaltyProgramCurrency(dto.currency_id, dto.curency_display_name, '', new Date(), '', '', ''),
+            '',
             [],
             new Date(),
-            0,
-            0
+            '',
+            ''
         )
     }
 
-    toMyLoyaltyProgram(): MyLoyaltyProgram {
-        return new MyLoyaltyProgram(
-            this.currency.companyName,
-            this.currency.programId,
-            this.currency.programLogo,
-            this.currency.loyaltyCurrency,
-            this.currency.loyaltyCurrencyName,
-            this.memberFields.map(field => {
-                return new ValueIdentifier(field.key, field.value)
+    toMyLoyaltyProgramDTO(): MyLoyaltyProgramDTO {
+        return {
+            ca_loyalty_currency: this.currency.loyaltyCurrency,
+            ca_loyalty_currency_name: this.currency.loyaltyCurrencyName,
+            company_name: this.currency.companyName,
+            program_id: this.currency.programId,
+            program_logo: this.currency.programLogo,
+            membership_data: this.memberFields.map(field => {
+                return {
+                    id: field.key,
+                    value: field.value
+                }
             })
-        )
+        }
     }
 
     toDTO() { }
@@ -108,19 +113,19 @@ export class UserLoyaltyProgramCurrency implements AppModel {
         public loyaltyCurrencyName: string,
         public companyName: string,
         public createdAt: Date,
-        public id: number,
+        public id: string,
         public programId: string,
         public programLogo: string) { }
 
     static getFromDTO(dto: UserLoyaltyProgramCurrencyDTO): UserLoyaltyProgramCurrency {
         return new UserLoyaltyProgramCurrency(
-            dto.ca_loyalty_currency,
-            dto.ca_loyalty_currency_name,
-            dto.company_name,
-            new Date(dto.created_at),
-            dto.id,
-            dto.program_id,
-            dto.program_logo
+            dto.caLoyaltyCurrency,
+            dto.caLoyaltyCurrencyName,
+            dto.companyName,
+            new Date(dto.createdAt),
+            dto.objectId,
+            dto.programId,
+            dto.programLogo
         )
     }
 

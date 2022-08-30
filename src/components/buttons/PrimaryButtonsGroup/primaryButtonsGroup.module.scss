@@ -1,9 +1,12 @@
-.buttonContainer {
-    flex: 1;
-    text-align: center;
+.buttonsContainer {
+    display: flex;
 
-    .button {
-        width: 66px;
-        height: 60px !important;
+    .buttonContainer {
+        flex: 1;
+        text-align: center;
+
+        .button {
+            height: 60px !important;
+        }
     }
 }

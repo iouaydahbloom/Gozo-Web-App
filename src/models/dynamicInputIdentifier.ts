@@ -9,8 +9,8 @@ export class DynamicInputIdentifier implements AppModel {
 
     static getFromDTO(dto: DynamicInputIdentifierDTO): DynamicInputIdentifier {
         return new DynamicInputIdentifier(
-            new Date(dto.created_at),
-            dto.id,
+            new Date(dto.createdAt),
+            dto.objectId,
             dto.key,
             dto.value
         )

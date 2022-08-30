@@ -15,9 +15,10 @@ const useModal = (options: Options) => {
         presentIonicModal({
             cssClass: 'gozo-modal',
             id: options.id,
-            initialBreakpoint: 0.90,
-            breakpoints: [0, 0.25, 0.65, 0.90],
-            onDidDismiss: options.onDismiss
+            //initialBreakpoint: 0.90,
+            // breakpoints: [0.90],
+            onDidDismiss: options.onDismiss,
+            
         })
     }
 

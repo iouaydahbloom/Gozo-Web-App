@@ -5,7 +5,7 @@
 
     .programsContainer {
         --background: var(--ion-color-medium);
-        height: 600px;
+        height: calc(100vh - (30px + 46px + 30px + 60px + 25px));
         overflow-y: auto;
     }
 }

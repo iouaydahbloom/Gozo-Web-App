@@ -39,9 +39,9 @@ const App: React.FC = () => (
         <ProtectedRoute exact path={AppRoutes.dashboard}>
           <Dashboard />
         </ProtectedRoute>
-        <PurePublicRoute exact path={AppRoutes.landing}>
+        <Route exact path={AppRoutes.landing}>
           <Landing />
-        </PurePublicRoute>
+        </Route>
         <ProtectedRoute exact path={AppRoutes.onBoarding}>
           <OnBoarding />
         </ProtectedRoute>

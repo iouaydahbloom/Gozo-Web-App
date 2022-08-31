@@ -37,7 +37,6 @@ const useLoyaltyPrograms = () => {
             (result: any) => {
                 const stringifiedResult = JSON.stringify(result);
                 const parsedResult: UserLoyaltyProgramDTO[] = JSON.parse(stringifiedResult);
-                console.log('parsed result is ', parsedResult)
                 return parsedResult.map(data => UserLoyaltyProgram.getFromDTO(data))
             },
             true)
@@ -54,13 +53,9 @@ const useLoyaltyPrograms = () => {
             (result: any) => {
                 const stringifiedResult = JSON.stringify(result);
                 const parsedResult: UserLoyaltyProgramDTO = JSON.parse(stringifiedResult);
-                console.log('parsed result is ', parsedResult)
                 return UserLoyaltyProgram.getFromDTO(parsedResult);
             },
             true)
-            .then(result => {
-                return result.isSuccess ? result.data : null
-            })
             .finally(() => setIsUpdating(false))
     }
 

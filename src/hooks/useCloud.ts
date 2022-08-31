@@ -2,7 +2,7 @@ import { useMoralis } from "react-moralis";
 
 export class CloudResponse<T> {
     constructor(public message: string,
-        public error: any,
+        public errors: any,
         public data: T,
         public isSuccess: boolean) { }
 }
@@ -14,7 +14,7 @@ interface SuccessResponse<T> {
 
 interface ErrorResponse {
     message: string,
-    error: any
+    errors: any
 }
 
 const useCloud = () => {
@@ -37,10 +37,10 @@ const useCloud = () => {
                 const data = mapper ? mapper(result.data) : result.data as any as T;
                 return new CloudResponse<T>(result.message, null, data, true);
             })
-            .catch(error => {
+            .catch((error: ErrorResponse) => {
                 console.log(`Cloud error for ${functionName} is `, error);
-                return new CloudResponse<T>(error.message, error.cause, {} as any, false)
-            });
+                return new CloudResponse<T>(error.message, error.errors, {} as any, false)
+            })
     }
 
     return {

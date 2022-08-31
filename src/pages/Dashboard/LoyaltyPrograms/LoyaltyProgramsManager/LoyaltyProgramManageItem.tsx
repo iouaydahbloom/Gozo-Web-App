@@ -5,6 +5,7 @@ import PrimaryButton from '../../../../components/buttons/PrimaryButton/PrimaryB
 import PrimaryInput from '../../../../components/inputs/PrimaryInput/PrimaryInput';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
 import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms';
+import useToast from '../../../../hooks/useToast';
 import { DynamicInputIdentifier } from '../../../../models/dynamicInputIdentifier';
 import { LoyaltyProgram, UserLoyaltyProgram, UserLoyaltyProgramCurrency } from '../../../../models/loyaltyProgram'
 import styles from './loyaltyProgramManageItem.module.scss';
@@ -22,6 +23,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({
     const [isConnected, setIsConnected] = useState(!!myProgram);
     const [myUpdatedProgram, setMyUpdatedProgram] = useState<UserLoyaltyProgram | null>(myProgram);
     const { connectProgram, disconnectProgram, isUpdating } = useLoyaltyPrograms();
+    const { presentFailure } = useToast();
 
     function initMyProgram() {
         const userLoyaltyProgram = new UserLoyaltyProgram(
@@ -55,9 +57,11 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({
         } else {
             connectProgram(myUpdatedProgram!)
                 .then(result => {
-                    if (result) {
+                    if (result.isSuccess) {
                         setIsConnected(true);
-                        setMyUpdatedProgram(result);
+                        setMyUpdatedProgram(result.data);
+                    } else if (result.errors) {
+                        presentFailure(result.errors[0].message);
                     }
                 })
         }

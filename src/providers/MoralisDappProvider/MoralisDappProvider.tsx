@@ -11,13 +11,12 @@ const MoralisDappProvider: React.FC = ({ children }) => {
   const Web3Api = useMoralisWeb3Api();
 
   useMemo(
-    () =>
+    () => {
       setWalletAddress(
         //@ts-ignore
         web3?.provider?.selectedAddress || user?.get('ethAddress'),
-      ),
-    [web3, user]
-  )
+      )
+    }, [web3, user])
 
   const getDefaultTokenMetadata = useCallback(() => {
     const options = {

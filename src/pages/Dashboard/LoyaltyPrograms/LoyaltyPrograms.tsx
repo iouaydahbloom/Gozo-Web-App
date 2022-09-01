@@ -14,12 +14,15 @@ import useLoyaltyPrograms from '../../../hooks/useLoyaltyPrograms';
 import useToast from '../../../hooks/useToast';
 import useModal from '../../../hooks/useModal';
 import useConfirmation from '../../../hooks/useConfirmation';
+import Swap from '../../Swap/Swap';
+import { AssetMode } from '../../../constants/assetsMode';
 
 const LoyaltyPrograms = () => {
     const [selectedUserCurrencyIds, setSelectedUserCurrencyIds] = useState<string[]>([]);
     const { getUserLoyaltyPrograms } = useAssets();
     const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
     const { showModal: showManager } = useModal({ component: LoyaltyProgramsManager, id: 'lpModal', onDismiss: getPrograms });
+    const { showModal: showSwap } = useModal({ component: Swap, ComponentProps: { mode: AssetMode.loyaltyPoint }, id: 'swapModal', onDismiss: getPrograms });
     const { disconnectPrograms } = useLoyaltyPrograms();
     const { presentSuccess, presentInfo } = useToast();
     const { confirm } = useConfirmation();
@@ -77,8 +80,8 @@ const LoyaltyPrograms = () => {
                         <div className={styles.actions}>
                             <PrimaryButtonsGroup
                                 buttons={[
-                                    { title: 'Add', icon: <IonIcon icon={addOutline} />, onClick: () => showManager() },
-                                    { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: () => null },
+                                    { title: 'Add', icon: <IonIcon icon={addOutline} />, onClick: showManager },
+                                    { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap },
                                     { title: 'Remove', icon: <IonIcon icon={trashOutline} />, onClick: disconnectSelected }
                                 ]}
                             />

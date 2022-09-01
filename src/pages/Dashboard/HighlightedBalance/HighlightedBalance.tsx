@@ -6,6 +6,7 @@ import { IonBadge } from '@ionic/react';
 import styles from './highlightedBalance.module.scss';
 import { AssetMode } from '../../../constants/assetsMode';
 import useERC20Assets from '../../../hooks/useERC20Assets';
+import { useMoralis } from 'react-moralis';
 
 interface Props {
     mode: AssetMode
@@ -17,6 +18,8 @@ interface Asset {
 }
 
 const HighlightedBalance: React.FC<Props> = ({ mode }) => {
+
+    const { Moralis } = useMoralis();
     const { gozoLoyalty } = useContext(currencySettingsContext);
     const { membership } = useMemberShip(gozoLoyalty?.currency?.loyaltyCurrency);
     const { defaultAsset } = useERC20Assets();
@@ -24,10 +27,17 @@ const HighlightedBalance: React.FC<Props> = ({ mode }) => {
     const [asset, setAsset] = useState<Asset>();
 
     useEffect(() => {
+        console.log('default asset ', defaultAsset);
         if (mode == AssetMode.token) {
-            setAsset({ balance: defaultAsset ? defaultAsset.balance : 0, description: 'Gozo Tokens' });
+            setAsset({
+                balance: defaultAsset ? parseFloat(Moralis.Units.FromWei(defaultAsset.balance, parseInt(defaultAsset.decimals))) : 0,
+                description: 'Gozo Tokens'
+            });
         } else {
-            setAsset({ balance: membership ? membership.balance : 0, description: 'Super Points' });
+            setAsset({
+                balance: membership ? membership.balance : 0,
+                description: 'Super Points'
+            });
         }
     }, [mode, membership])
 

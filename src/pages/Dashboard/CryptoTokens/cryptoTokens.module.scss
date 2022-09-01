@@ -1,0 +1,15 @@
+.container {
+    &.empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .actions {
+        margin-bottom: 40px;
+    }
+
+    .noDataContainer {
+        padding: 20px 0;
+    }
+}

@@ -1,20 +1,16 @@
-import { useMoralis } from "react-moralis";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import useCloud from "./useCloud";
+import useWeb3 from "./useBlockchain";
 
 const useAuthentication = () => {
 
-    const { authenticate, isAuthenticated, isAuthenticating, user, authError, logout } = useMoralis();
+    const { authenticate, isAuthenticated, isAuthenticating, user, authError, logout } = useWeb3();
     const { run } = useCloud();
 
-    const login = async () => {
+    async function login() {
         if (!isAuthenticated) {
-            await authenticate({
-                provider: "web3Auth",
-                clientId: process.env.REACT_APP_WEB3AUTH_SECRET ?? ''
-            })
+            await authenticate()
                 .then(async (user) => {
-                    debugger
                     console.log(user);
                     if (user) {
                         await activateMember(user.id, user.getUsername() ?? '');

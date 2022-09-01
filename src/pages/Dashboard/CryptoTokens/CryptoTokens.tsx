@@ -1,8 +1,15 @@
+import { IonIcon } from "@ionic/react";
+import { swapHorizontalOutline } from "ionicons/icons";
 import { useCallback } from "react";
 import { useMoralis } from "react-moralis";
+import PrimaryButtonsGroup from "../../../components/buttons/PrimaryButtonsGroup/PrimaryButtonsGroup";
+import { AssetMode } from "../../../constants/assetsMode";
 import useERC20Assets from "../../../hooks/useERC20Assets";
+import useModal from "../../../hooks/useModal";
 import { ERC20Asset } from "../../../models/assets/ERC20Asset";
+import Swap from "../../Swap/Swap";
 import CryptoTokenItem from "./CryptoTokenItem/CryptoTokenItem";
+import styles from './cryptoTokens.module.scss';
 
 interface Props {
     chain?: string,
@@ -13,6 +20,7 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
 
     const { assets } = useERC20Assets(chain);
     const { Moralis } = useMoralis();
+    const { showModal: showSwap } = useModal({ component: Swap, ComponentProps: { mode: AssetMode.token }, id: 'swapModal' });
 
     const renderItem = useCallback((item: ERC20Asset, index: number) => {
         return (
@@ -28,13 +36,18 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
     }, [chain])
 
     return (
-        <>
-            {
-                assets && assets.map((asset, index) => {
-                    return renderItem(asset, index)
-                })
-            }
-        </>
+        <div className={styles.container}>
+            <div className={styles.actions}>
+                <PrimaryButtonsGroup
+                    buttons={[
+                        { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
+                    ]}
+                />
+            </div>
+            {assets && assets.map((asset, index) => {
+                return renderItem(asset, index)
+            })}
+        </div>
     )
 }
 

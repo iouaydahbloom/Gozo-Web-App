@@ -1,5 +1,5 @@
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import { IonApp, IonBadge, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
 /* Core CSS required for Ionic components to work properly */
@@ -22,37 +22,14 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import './theme/main.scss';
 import './theme/toast.scss';
-
-import Landing from './pages/Landing/Landing';
-import Dashboard from './pages/Dashboard/Dashboard';
-import { AppRoutes } from './constants/appRoutes';
-import ProtectedRoute from './components/routes/ProtectedRoute/ProtectedRoute';
-import OnBoarding from './pages/OnBoarding/OnBoarding';
-import PurePublicRoute from './components/routes/PurePublicRoute/PurePublicRoute';
-import Home from './pages/Home/home';
+import TabMenu from './components/menus/TabMenu/TabMenu';
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
-      <IonRouterOutlet>
-        <ProtectedRoute exact path={AppRoutes.dashboard}>
-          <Dashboard />
-        </ProtectedRoute>
-        <Route exact path={AppRoutes.landing}>
-          <Landing />
-        </Route>
-        <ProtectedRoute exact path={AppRoutes.onBoarding}>
-          <OnBoarding />
-        </ProtectedRoute>
-        <ProtectedRoute exact path={AppRoutes.home}>
-          <Home />
-        </ProtectedRoute>
-        <Route exact path="/">
-          <Redirect to={AppRoutes.landing} />
-        </Route>
-      </IonRouterOutlet>
+      <TabMenu />
     </IonReactRouter>
   </IonApp>
 )

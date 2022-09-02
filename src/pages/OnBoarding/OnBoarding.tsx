@@ -6,6 +6,7 @@ import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryCo
 import PrimarySlider from '../../components/sliders/PrimarySlider/PrimarySlider';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import { AppRoutes } from '../../constants/appRoutes';
+import useTabMenuHidder from '../../hooks/useTabMenuHidder';
 import styles from './onBoarding.module.scss';
 
 interface SlideProps {
@@ -16,6 +17,7 @@ interface SlideProps {
 
 const OnBoarding: React.FC = () => {
     const { push } = useHistory();
+    useTabMenuHidder();
 
     const OnBoardingSlide = ({ image, title, description }: SlideProps) => {
         return (

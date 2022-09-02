@@ -9,6 +9,7 @@ import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryCo
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import { AppRoutes } from '../../constants/appRoutes';
 import useAuthentication from '../../hooks/useAuthentication';
+import useTabMenuHidder from '../../hooks/useTabMenuHidder';
 import styles from './landing.module.scss';
 
 const Landing: React.FC = () => {
@@ -16,6 +17,7 @@ const Landing: React.FC = () => {
     const { login, isAuthenticated, isAuthenticating, authError, logout } = useAuthentication();
     const { push } = useHistory();
     const [accepted, setAccepted] = useState(true);
+    useTabMenuHidder();
 
     function loginAndRedirect() {
         login().then(() => {

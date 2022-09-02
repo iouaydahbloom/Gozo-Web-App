@@ -2,27 +2,26 @@ import { IonBadge, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, 
 import { calendar, informationCircle, map, personCircle } from 'ionicons/icons';
 import React from 'react';
 import { Redirect, Route } from 'react-router';
+import ProtectedRoute from '../../components/routes/ProtectedRoute/ProtectedRoute';
+import { AppRoutes } from '../../constants/appRoutes';
 import Dashboard from '../Dashboard/Dashboard';
-import Swap from '../Swap/Swap';
 
 const home: React.FC = () => {
     return (
         <IonTabs>
             <IonRouterOutlet>
-                <Route path="/dashboard" component={Dashboard} exact={true} />
-                <Route path="/swap" component={Swap} exact={true} />
-                <Route path="/" render={() => <Redirect to="/dashboard" />} exact={true} />
+                <ProtectedRoute exact path={AppRoutes.dashboard}>
+                    <Dashboard />
+                </ProtectedRoute>
+                <Route exact path="/">
+                    <Redirect to={AppRoutes.dashboard} />
+                </Route>
             </IonRouterOutlet>
             <IonTabBar slot="bottom">
-                <IonTabButton tab="dashboard" href='/dashboard'>
+                <IonTabButton tab="dashboard" href={AppRoutes.dashboard}>
                     <IonIcon icon={calendar} />
                     <IonLabel>Schedule</IonLabel>
                     <IonBadge>6</IonBadge>
-                </IonTabButton>
-
-                <IonTabButton tab="swap" href='/swap'>
-                    <IonIcon icon={personCircle} />
-                    <IonLabel>Speakers</IonLabel>
                 </IonTabButton>
             </IonTabBar>
         </IonTabs>

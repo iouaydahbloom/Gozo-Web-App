@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { UserLoyaltyProgram } from '../../../models/loyaltyProgram';
 import useAssets from '../../../hooks/useAssets';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
@@ -16,13 +16,27 @@ import useModal from '../../../hooks/useModal';
 import useConfirmation from '../../../hooks/useConfirmation';
 import Swap from '../../Swap/Swap';
 import { AssetMode } from '../../../constants/assetsMode';
+import { currencySettingsContext } from '../../../providers/CurrencySettingsProvider/currencySettingsContext';
 
 const LoyaltyPrograms = () => {
+    const { fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [selectedUserCurrencyIds, setSelectedUserCurrencyIds] = useState<string[]>([]);
     const { getUserLoyaltyPrograms } = useAssets();
     const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
-    const { showModal: showManager } = useModal({ component: LoyaltyProgramsManager, id: 'lpModal', onDismiss: getPrograms });
-    const { showModal: showSwap } = useModal({ component: Swap, ComponentProps: { mode: AssetMode.loyaltyPoint }, id: 'swapModal', onDismiss: getPrograms });
+    const { showModal: showManager } = useModal({
+        component: LoyaltyProgramsManager,
+        id: 'lpModal',
+        onDismiss: getPrograms
+    });
+    const { showModal: showSwap } = useModal({
+        component: Swap,
+        ComponentProps: { mode: AssetMode.loyaltyPoint },
+        id: 'swapModal',
+        onDismiss: () => {
+            fetchGozoLoyaltyMembership();
+            getPrograms();
+        }
+    });
     const { disconnectPrograms } = useLoyaltyPrograms();
     const { presentSuccess, presentInfo } = useToast();
     const { confirm } = useConfirmation();

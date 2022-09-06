@@ -6,7 +6,7 @@ import { IonBadge } from '@ionic/react';
 import styles from './highlightedBalance.module.scss';
 import { AssetMode } from '../../../constants/assetsMode';
 import useERC20Assets from '../../../hooks/useERC20Assets';
-import { useMoralis } from 'react-moralis';
+import useBlockchain from '../../../hooks/useBlockchain';
 
 interface Props {
     mode: AssetMode
@@ -19,27 +19,23 @@ interface Asset {
 
 const HighlightedBalance: React.FC<Props> = ({ mode }) => {
 
-    const { Moralis } = useMoralis();
-    const { gozoLoyalty } = useContext(currencySettingsContext);
-    const { membership } = useMemberShip(gozoLoyalty?.currency?.loyaltyCurrency);
-    const { defaultAsset } = useERC20Assets();
-
+    const { helpers } = useBlockchain();
+    const { gozoToken, gozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [asset, setAsset] = useState<Asset>();
 
     useEffect(() => {
-        console.log('default asset ', defaultAsset);
         if (mode == AssetMode.token) {
             setAsset({
-                balance: defaultAsset ? parseFloat(Moralis.Units.FromWei(defaultAsset.balance, parseInt(defaultAsset.decimals))) : 0,
+                balance: gozoToken ? parseFloat(helpers.Units.FromWei(gozoToken.balance, parseInt(gozoToken.decimals))) : 0,
                 description: 'Gozo Tokens'
             });
         } else {
             setAsset({
-                balance: membership ? membership.balance : 0,
+                balance: gozoLoyaltyMembership ? gozoLoyaltyMembership.balance : 0,
                 description: 'Super Points'
             });
         }
-    }, [mode, membership])
+    }, [mode, gozoLoyaltyMembership, gozoToken])
 
     return (
         <div className={styles.container}>

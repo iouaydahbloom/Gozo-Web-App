@@ -12,7 +12,7 @@ const useServerPagination = <T>({ getData }: Props<T>) => {
     const [data, setData] = useState<T[]>([]);
 
     useEffect(() => {
-        getData({ page: 1, page_size: 30 })
+        getData({ page: 1, page_size: 100 })
             .then(result => {
                 setMetadata({
                     count: result.count,

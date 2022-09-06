@@ -5,10 +5,10 @@ import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import useCloud from "./useCloud";
 
 const useMemberShip = (loyaltyCurrency?: string) => {
-    const [membership, setMembership] = useState<LoyaltyMember>();
+    const [membership, setMembership] = useState<LoyaltyMember | null>(null);
     const { run } = useCloud();
 
-    useEffect(() => {
+    function fetchMembership() {
         if (!loyaltyCurrency) return;
 
         run(cloudFunctionName.members,
@@ -18,10 +18,15 @@ const useMemberShip = (loyaltyCurrency?: string) => {
             .then(result => {
                 if (result.isSuccess) setMembership(result.data);
             })
+    }
+
+    useEffect(() => {
+        fetchMembership();
     }, [loyaltyCurrency])
 
     return {
-        membership: membership
+        membership: membership,
+        fetchMembership
     }
 }
 

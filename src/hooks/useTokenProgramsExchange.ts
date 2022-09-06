@@ -56,7 +56,7 @@ const useTokenProgramsExchange = () => {
                 presentSuccess('Exchanged successfuly');
             })
             .catch(error => {
-                console.error(error)
+                presentFailure(`${JSON.stringify(error)}`);
             })
             .finally(() => setExchanging(false))
     }, [tokenQuantity])
@@ -78,7 +78,6 @@ const useTokenProgramsExchange = () => {
         simulateT2PExchange(
             tokenQuantity ?? 0,
             (result) => {
-                console.log('simulation result is ', result);
                 setProgramQuantity(result);
             })
     }, [tokenQuantity])

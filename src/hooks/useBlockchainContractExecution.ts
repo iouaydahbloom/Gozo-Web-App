@@ -12,7 +12,6 @@ const useBlockchainContractExecution = ({ contractAddress, abi, funct, params, i
     const { helpers, ensureWeb3Enabled } = useBlockchain();
 
     const run = async () => {
-        console.log('calling run with params ', params)
         if (!isReadOnly) {
             await ensureWeb3Enabled();
         }

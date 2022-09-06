@@ -64,7 +64,6 @@ const useProgramsExchange = () => {
                 destinationProgram.loyaltyCurrency,
                 originProgram.quantity ?? 0,
                 (result) => {
-                    console.log('simulation result is ', result);
                     setDestinationProgram({ ...destinationProgram, quantity: result })
                 });
         }

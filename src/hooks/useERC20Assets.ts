@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
+import { appConfig } from "../constants/appConfig";
 import { ERC20Asset } from "../models/assets/ERC20Asset";
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
 
@@ -13,18 +14,17 @@ const useERC20Assets = (chain?: string) => {
   useEffect(() => {
     if (isInitialized) {
       fetchERC20Assets()
-        .then((erc20Tokens) => {
-          setAssets(erc20Tokens);
-        })
-        .catch((e) => console.log(e.message));
     }
   }, [isInitialized, chainId, walletAddress]);
 
-  const fetchERC20Assets = async (): Promise<ERC20Asset[]> => {
+  const fetchERC20Assets = async () => {
     return await account
       .getTokenBalances({
         address: walletAddress ?? '',
         chain: chain || chainId as any
+      })
+      .then((erc20Tokens) => {
+        setAssets(erc20Tokens);
       })
       .catch((e) => {
         console.log(e.message);
@@ -34,7 +34,7 @@ const useERC20Assets = (chain?: string) => {
 
   const defaultAsset = useMemo(() => {
     const defaultBalancedToken = assets ?
-      assets.find(token => token.token_address.toLowerCase() == process.env.REACT_APP_TOKEN_CONTRACT?.toLowerCase()) : null;
+      assets.find(token => token.token_address.toLowerCase() == appConfig.tokenContract?.toLowerCase()) : null;
     if (defaultBalancedToken) {
       return defaultBalancedToken;
     }

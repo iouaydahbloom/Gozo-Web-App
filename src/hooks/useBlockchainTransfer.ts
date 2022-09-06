@@ -1,8 +1,8 @@
-import useWeb3 from "./useBlockchain";
 import { useWeb3Transfer } from 'react-moralis';
+import useBlockchain from "./useBlockchain";
 
 const useBlockchainTransfer = (amount: string | number) => {
-    const { helpers, isWeb3Enabled, enableWeb3 } = useWeb3();
+    const { helpers, isWeb3Enabled, enableWeb3 } = useBlockchain();
     const { fetch, error, isFetching } = useWeb3Transfer({
         amount: helpers.Units.Token(amount != '' ? amount : 0, 18),
         receiver: process.env.REACT_APP_ADMIN_WALLET,

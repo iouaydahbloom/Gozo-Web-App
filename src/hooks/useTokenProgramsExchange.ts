@@ -1,9 +1,12 @@
 import _ from "lodash";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { appConfig } from "../constants/appConfig";
+import { contractsAbi } from "../constants/contractsAbis";
 import { ERC20Asset } from "../models/assets/ERC20Asset";
 import { UserLoyaltyProgram } from "../models/loyaltyProgram";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
-import useBlockchainTransfer from "./useBlockchainTransfer";
+import useBlockchain from "./useBlockchain";
+import useBlockchainContractExecution from "./useBlockchainContractExecution";
 import useCloud from "./useCloud";
 import useERC20Assets from "./useERC20Assets";
 import useLoyaltyPrograms from "./useLoyaltyPrograms";
@@ -19,20 +22,44 @@ const useTokenProgramsExchange = () => {
     const { defaultProgram } = useLoyaltyPrograms();
     const { defaultAsset } = useERC20Assets();
     const { presentFailure, presentSuccess } = useToast();
-    const { send, error } = useBlockchainTransfer(tokenQuantity ?? 0);
+    const { helpers } = useBlockchain();
+
+    const tokenQuantityInWei = useMemo(() => {
+        return helpers.Units.Token(tokenQuantity ?? 0, 18);
+    }, [tokenQuantity])
+
+    const { run: approveTransfer } = useBlockchainContractExecution({
+        contractAddress: appConfig.tokenContract,
+        abi: contractsAbi.erc20,
+        funct: 'approve',
+        params: { spender: appConfig.exchangeContract, amount: tokenQuantityInWei },
+        isReadOnly: false
+    });
+
+    const { run: transferTokens } = useBlockchainContractExecution({
+        contractAddress: appConfig.exchangeContract,
+        abi: contractsAbi.exchange,
+        funct: 'transferIn',
+        params: { _amount: tokenQuantityInWei },
+        isReadOnly: false
+    });
 
     const executeT2PExchange = useCallback(async () => {
         setExchanging(true);
-        return send()
-            .then(result => {
-                if (result.status) {
-                    return exchangeToPoints(tokenQuantity ?? 0);
-                }
-                presentFailure(error?.message!);
-                return false;
+        return approveTransfer()
+            .then(async (result: any) => {
+                await result.wait();
+                return transferTokens();
+            })
+            .then(async (result: any) => {
+                await result.wait();
+                presentSuccess('Exchanged successfuly');
+            })
+            .catch(error => {
+                console.error(error)
             })
             .finally(() => setExchanging(false))
-    }, [])
+    }, [tokenQuantity])
 
     const simulateT2PExchange = useCallback(_.debounce((amount: number, onSuccess: (result: number) => void) => {
         run(cloudFunctionName.simulateT2PExchange, { amount: amount }, (result: any) => result as number, true)
@@ -41,18 +68,6 @@ const useTokenProgramsExchange = () => {
                 else presentFailure('Unable to simulate conversion');
             })
     }, 1000), [])
-
-    async function exchangeToPoints(tokensAmount: number) {
-        return run(cloudFunctionName.executeT2Pexchange, { amount: tokensAmount }, () => true, true)
-            .then(result => {
-                if (result.isSuccess) {
-                    presentSuccess('Swapped successfuly');
-                    return true;
-                }
-                presentFailure('Unable to execute exchange');
-                return false;
-            })
-    }
 
     useEffect(() => {
         setOriginOptions(defaultAsset ? [defaultAsset] : []);

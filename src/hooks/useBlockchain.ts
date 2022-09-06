@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useMoralis } from "react-moralis";
 
-const useWeb3 = () => {
+const useBlockchain = () => {
     const {
         isAuthenticated,
         isAuthenticating,
@@ -28,6 +28,12 @@ const useWeb3 = () => {
         return Moralis.enableWeb3(web3Options)
     }
 
+    async function ensureWeb3Enabled() {
+        if (!Moralis.isWeb3Enabled()) {
+            await enable()
+        }
+    }
+
     return {
         isAuthenticated,
         isAuthenticating,
@@ -37,8 +43,9 @@ const useWeb3 = () => {
         user,
         authError,
         logout,
-        helpers: Moralis
+        helpers: Moralis,
+        ensureWeb3Enabled
     }
 }
 
-export default useWeb3;
+export default useBlockchain;

@@ -8,11 +8,10 @@ import useCloud from "./useCloud";
 const useMemberShip = (loyaltyCurrency?: string) => {
     const [membership, setMembership] = useState<LoyaltyMember | null>(null);
     const { run } = useCloud();
-    const { isInitialized } = useBlockchain();
+    const { isInitialized, isAuthenticated } = useBlockchain();
 
     function fetchMembership() {
-        if (!loyaltyCurrency) return;
-
+        if (!loyaltyCurrency || !isAuthenticated) return;
         run(cloudFunctionName.members,
             { ca_loyalty_currency: loyaltyCurrency },
             (result: LoyaltyMemberDTO) => LoyaltyMember.getFromDTO(result),
@@ -23,7 +22,7 @@ const useMemberShip = (loyaltyCurrency?: string) => {
     }
 
     useEffect(() => {
-        if (isInitialized) {
+        if (isInitialized && isAuthenticated) {
             fetchMembership();
         }
     }, [loyaltyCurrency, isInitialized])

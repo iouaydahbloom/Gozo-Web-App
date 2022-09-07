@@ -9,6 +9,7 @@ import Landing from '../../../pages/Landing/Landing';
 import OnBoarding from '../../../pages/OnBoarding/OnBoarding';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
 import ProtectedRoute from '../../routes/ProtectedRoute/ProtectedRoute';
+import PurePublicRoute from '../../routes/PurePublicRoute/PurePublicRoute';
 import styles from './tabMenu.module.scss';
 
 const TabMenu: React.FC = () => {
@@ -27,9 +28,9 @@ const TabMenu: React.FC = () => {
                 <ProtectedRoute exact path={AppRoutes.transactionHistory}>
                     <TransactionHistory />
                 </ProtectedRoute>
-                <Route exact path={AppRoutes.landing}>
+                <PurePublicRoute exact path={AppRoutes.landing}>
                     <Landing />
-                </Route>
+                </PurePublicRoute>
                 <Route exact path="/">
                     <Redirect to={AppRoutes.landing} />
                 </Route>

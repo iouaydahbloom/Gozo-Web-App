@@ -8,17 +8,18 @@ import useBlockchain from "./useBlockchain";
 const useERC20Assets = (chain?: string) => {
 
   const { account } = useMoralisWeb3Api();
-  const { isInitialized } = useBlockchain();
+  const { isInitialized, isAuthenticated } = useBlockchain();
   const { walletAddress, chainId, defaultTokenMetadata } = useMoralisDapp();
   const [assets, setAssets] = useState<ERC20Asset[]>();
 
   useEffect(() => {
-    if (isInitialized) {
+    if (isInitialized && isAuthenticated) {
       fetchERC20Assets()
     }
   }, [isInitialized, chainId, walletAddress]);
 
   const fetchERC20Assets = async () => {
+    if (!isAuthenticated) return []
     return await account
       .getTokenBalances({
         address: walletAddress ?? '',

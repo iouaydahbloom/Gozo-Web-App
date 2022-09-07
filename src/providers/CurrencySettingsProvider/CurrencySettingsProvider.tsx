@@ -10,7 +10,7 @@ const CurrencySettingsProvider: React.FC = ({ children }) => {
         curency_display_name: 'GZL',
         currency_id: 'GZL_LVXMS'
     }));
-    const { membership, fetchMembership } = useMemberShip(gozoLoyalty?.currency?.loyaltyCurrency);
+    const { membership, fetchMembership } = useMemberShip('GZL_LVXMS');
     const { defaultAsset, fetchERC20Assets } = useERC20Assets();
 
     return (

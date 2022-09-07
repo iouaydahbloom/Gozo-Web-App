@@ -3,6 +3,7 @@ import { useMoralis, useMoralisWeb3Api } from 'react-moralis';
 import { chainHex } from '../../helpers/networks';
 import MoralisDappContext from './context';
 import { ERC20Metadata } from '../../models/assets/ERC20Asset';
+import { appConfig } from '../../constants/appConfig';
 
 const MoralisDappProvider: React.FC = ({ children }) => {
   const { web3, user, isInitialized } = useMoralis();
@@ -21,7 +22,7 @@ const MoralisDappProvider: React.FC = ({ children }) => {
   const getDefaultTokenMetadata = useCallback(() => {
     const options = {
       chain: chainHex.Fuji,
-      addresses: process.env.REACT_APP_TOKEN_CONTRACT
+      addresses: appConfig.tokenContract
     };
     Web3Api.token
       .getTokenMetadata(options as any)

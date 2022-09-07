@@ -1,7 +1,5 @@
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonBadge, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
+import { getPlatforms, IonApp, isPlatform, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -23,15 +21,18 @@ import './theme/variables.css';
 import './theme/main.scss';
 import './theme/toast.scss';
 import TabMenu from './components/menus/TabMenu/TabMenu';
-
+import useInAppBrowser from './hooks/useInAppBrowser';
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <TabMenu />
-    </IonReactRouter>
-  </IonApp>
-)
+const App: React.FC = () => {
+  useInAppBrowser();
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <TabMenu />
+      </IonReactRouter>
+    </IonApp>
+  )
+}
 
 export default App;

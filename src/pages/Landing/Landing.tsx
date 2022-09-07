@@ -15,13 +15,13 @@ import styles from './landing.module.scss';
 const Landing: React.FC = () => {
 
     const { login, isAuthenticated, isAuthenticating, authError, logout } = useAuthentication();
-    const { push } = useHistory();
+    const { replace } = useHistory();
     const [accepted, setAccepted] = useState(true);
     useTabMenuHidder();
 
     function loginAndRedirect() {
         login().then(() => {
-            push(AppRoutes.onBoarding);
+            replace(AppRoutes.onBoarding);
         })
     }
 

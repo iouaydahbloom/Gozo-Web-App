@@ -6,13 +6,14 @@ import reportWebVitals from './reportWebVitals';
 import { MoralisProvider } from "react-moralis";
 import { MoralisDappProvider } from './providers/MoralisDappProvider/MoralisDappProvider';
 import CurrencySettingsProvider from './providers/CurrencySettingsProvider/CurrencySettingsProvider';
+import { appConfig } from './constants/appConfig';
 require('dotenv').config();
 
 ReactDOM.render(
   <React.StrictMode>
     <MoralisProvider
-      appId={process.env.REACT_APP_MORALIS_APPLICATION_ID ?? ''}
-      serverUrl={process.env.REACT_APP_MORALIS_SERVER_URL ?? ''}>
+      appId={appConfig.moralisAppId}
+      serverUrl={appConfig.moralisServerUrl}>
       <MoralisDappProvider>
         <CurrencySettingsProvider>
           <App />

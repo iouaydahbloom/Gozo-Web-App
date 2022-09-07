@@ -1,13 +1,14 @@
 import { useWeb3Transfer } from 'react-moralis';
+import { appConfig } from '../constants/appConfig';
 import useBlockchain from "./useBlockchain";
 
 const useBlockchainTransfer = (amount: string | number) => {
     const { helpers, isWeb3Enabled, enableWeb3 } = useBlockchain();
     const { fetch, error, isFetching } = useWeb3Transfer({
         amount: helpers.Units.Token(amount != '' ? amount : 0, 18),
-        receiver: process.env.REACT_APP_ADMIN_WALLET,
+        receiver: appConfig.adminWallet,
         type: "erc20",
-        contractAddress: process.env.REACT_APP_TOKEN_CONTRACT,
+        contractAddress: appConfig.tokenContract
     })
 
     async function send() {

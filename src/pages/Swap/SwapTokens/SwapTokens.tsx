@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import { SelectOption } from '../../../components/inputs/PrimarySelect/PrimarySelect';
 import useTokenProgramsExchange from '../../../hooks/useTokenProgramsExchange';
@@ -8,31 +8,41 @@ import styles from './swapTokens.module.scss';
 
 const SwapTokens: React.FC = () => {
 
-    const { originOptions, destinationOptions, originToken, originTokenQuantity, setOriginTokenQuantity,
-        destinationProgramQuantity, destinationProgram, exchange, exchanging } = useTokenProgramsExchange();
+    const { tokenOptions, programOptions, token, tokenQuantity, setTokenQuantity, program,
+        programQuantity, setProgramQuantity, exchanging, exchange, toggleDirection, direction } = useTokenProgramsExchange();
+
+    const renderTokensField = useCallback((label: string, isDisabled: boolean) => (
+        <SwapField
+            label={label}
+            options={tokenOptions.map((opt) => (
+                new SelectOption(opt.name, opt.token_address)
+            ))}
+            quantity={tokenQuantity}
+            selectedOption={token?.token_address!}
+            onQuantityChange={setTokenQuantity}
+            disabledQuantity={isDisabled}
+        />
+    ), [tokenOptions, tokenQuantity])
+
+    const renderProgramsField = useCallback((label: string, isDisabled: boolean) => (
+        <SwapField
+            label={label}
+            options={programOptions.map((opt) => (
+                new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency)
+            ))}
+            quantity={programQuantity}
+            selectedOption={program?.currency.loyaltyCurrency!}
+            onQuantityChange={setProgramQuantity}
+            disabledQuantity={isDisabled}
+        />
+    ), [programOptions, programQuantity])
 
     return (
         <>
             <div className={styles.swapControl}>
-                <SwapField
-                    label='From'
-                    options={originOptions.map((opt) => (
-                        new SelectOption(opt.name, opt.token_address)
-                    ))}
-                    quantity={originTokenQuantity}
-                    selectedOption={originToken?.token_address!}
-                    onQuantityChange={setOriginTokenQuantity}
-                />
-                <SwapDirection />
-                <SwapField
-                    disabledQuantity
-                    label='To'
-                    options={destinationOptions.map((opt) => (
-                        new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency)
-                    ))}
-                    quantity={destinationProgramQuantity}
-                    selectedOption={destinationProgram?.currency.loyaltyCurrency!}
-                />
+                {direction == 't2p' ? renderTokensField('From', false) : renderProgramsField('From', false)}
+                <SwapDirection doubleDirection onClick={toggleDirection} />
+                {direction == 'p2t' ? renderTokensField('To', true) : renderProgramsField('To', true)}
             </div>
             <PrimaryButton
                 expand='block'

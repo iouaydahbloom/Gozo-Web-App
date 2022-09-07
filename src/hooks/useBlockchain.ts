@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useMoralis } from "react-moralis";
+import { appConfig } from "../constants/appConfig";
 
 const useBlockchain = () => {
     const {
@@ -10,14 +11,16 @@ const useBlockchain = () => {
         user,
         authError,
         logout,
-        Moralis
+        Moralis,
+        isInitialized
     } = useMoralis();
 
     const web3Options: any = useMemo(() => ({
         provider: "web3Auth",
-        clientId: process.env.REACT_APP_WEB3AUTH_SECRET ?? '',
+        clientId: appConfig.web3AuthSecret,
         chainId: 0xa869,
-        rpcTarget: 'https://api.avax-test.network/ext/bc/C/rpc'
+        rpcTarget: 'https://api.avax-test.network/ext/bc/C/rpc',
+        appLogo: 'https://gitlab.com/devsportal/gozo-web-app/-/raw/development/public/assets/icon/favicon.png'
     }), [])
 
     async function login() {
@@ -44,7 +47,8 @@ const useBlockchain = () => {
         authError,
         logout,
         helpers: Moralis,
-        ensureWeb3Enabled
+        ensureWeb3Enabled,
+        isInitialized
     }
 }
 

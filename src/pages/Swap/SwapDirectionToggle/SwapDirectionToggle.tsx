@@ -1,13 +1,18 @@
 import { IonIcon } from "@ionic/react";
-import { arrowDownOutline } from "ionicons/icons";
+import { arrowDownOutline, swapVerticalOutline } from "ionicons/icons";
 import styles from './swapDirectionToggle.module.scss';
 
-const SwapDirection = () => {
+interface Props {
+    doubleDirection?: boolean,
+    onClick?: () => void
+}
+
+const SwapDirection: React.FC<Props> = ({ doubleDirection = false, onClick }) => {
     return (
-        <div className={styles.swipeDirection}>
+        <div className={styles.swipeDirection} onClick={onClick}>
             <IonIcon
                 className={styles.icon}
-                icon={arrowDownOutline}
+                icon={doubleDirection ? swapVerticalOutline : arrowDownOutline}
                 color='light' />
         </div>
     )

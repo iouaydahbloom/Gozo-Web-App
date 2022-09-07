@@ -3,11 +3,12 @@ import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import { appConfig } from "../constants/appConfig";
 import { ERC20Asset } from "../models/assets/ERC20Asset";
 import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
+import useBlockchain from "./useBlockchain";
 
 const useERC20Assets = (chain?: string) => {
 
   const { account } = useMoralisWeb3Api();
-  const { isInitialized } = useMoralis();
+  const { isInitialized } = useBlockchain();
   const { walletAddress, chainId, defaultTokenMetadata } = useMoralisDapp();
   const [assets, setAssets] = useState<ERC20Asset[]>();
 

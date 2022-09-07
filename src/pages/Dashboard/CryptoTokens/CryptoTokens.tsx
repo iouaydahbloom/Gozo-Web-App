@@ -49,16 +49,16 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
 
     return (
         <div className={styles.container}>
+            <div className={styles.actions}>
+                <PrimaryButtonsGroup
+                    buttons={[
+                        { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
+                    ]}
+                />
+            </div>
             {
                 assets && assets.length > 0 ?
                     <>
-                        <div className={styles.actions}>
-                            <PrimaryButtonsGroup
-                                buttons={[
-                                    { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
-                                ]}
-                            />
-                        </div>
                         {assets.map((asset, index) => {
                             return renderItem(asset, index)
                         })}

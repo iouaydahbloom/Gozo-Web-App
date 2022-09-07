@@ -24,7 +24,7 @@ const useProgramsExchange = () => {
     const executeP2PExchange = useCallback(async (from: string, to: string, amount: number) => {
         setExchanging(true);
         return run(cloudFunctionName.executeP2PExchange,
-            { origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount },
+            { origin_loyalty_currency: to, destination_loyalty_currency: from, amount: amount },
             () => true,
             true)
             .then(result => {
@@ -41,7 +41,7 @@ const useProgramsExchange = () => {
     const simulateP2PExchange = useCallback(_.debounce(
         (from: string, to: string, amount: number, onSuccess: (result: number) => void) => {
             run(cloudFunctionName.simulateP2PExchange,
-                { origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount },
+                { origin_loyalty_currency: to, destination_loyalty_currency: from, amount: amount },
                 (result: any) => result[from] as number,
                 true)
                 .then(result => {

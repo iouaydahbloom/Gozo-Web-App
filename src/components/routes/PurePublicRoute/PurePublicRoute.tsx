@@ -14,7 +14,7 @@ const PurePublicRoute: React.FC<Props & Record<any, any>> = ({ children, ...rest
     return (
         !isAuthenticated ?
             <Route {...restOfProps}>{children}</Route> :
-            <Redirect to={AppRoutes.dashboard} />
+            <Redirect to={AppRoutes.onBoarding} />
     )
 }
 

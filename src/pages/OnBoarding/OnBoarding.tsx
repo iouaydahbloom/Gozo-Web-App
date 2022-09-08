@@ -16,7 +16,7 @@ interface SlideProps {
 }
 
 const OnBoarding: React.FC = () => {
-    const { push } = useHistory();
+    const { replace } = useHistory();
     useTabMenuHidder();
 
     const OnBoardingSlide = ({ image, title, description }: SlideProps) => {
@@ -54,7 +54,7 @@ const OnBoarding: React.FC = () => {
                 />
                 <BottomFixedContainer>
                     <PrimaryButton
-                        onClick={() => push(AppRoutes.dashboard)}
+                        onClick={() => replace(AppRoutes.dashboard)}
                         expand='block'>
                         continue
                     </PrimaryButton>

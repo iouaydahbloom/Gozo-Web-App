@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useMoralis } from "react-moralis";
 import { appConfig } from "../constants/appConfig";
 
@@ -23,21 +23,18 @@ const useBlockchain = () => {
         appLogo: 'https://gitlab.com/devsportal/gozo-web-app/-/raw/development/public/assets/icon/favicon.png'
     }), [])
 
-    const getWeb3MagicOptions = useCallback((email: string): any => ({
-        provider: "magicLink",
-        email: email,
-        apiKey: "pk_live_4761E18BF79E0D3E",
-        network: 'avalanche testnet'
-    }), [])
+    // const getWeb3MagicOptions = useCallback((email: string): any => ({
+    //     provider: "magicLink",
+    //     email: email,
+    //     apiKey: "pk_live_4761E18BF79E0D3E",
+    //     network: 'avalanche testnet'
+    // }), [])
 
-    async function login(email: string) {
-        return authenticate(getWeb3MagicOptions(email))
+    async function login() {
+        return authenticate(web3AuthOptions)
     }
 
     async function enable() {
-        debugger;
-        const user = Moralis.User.current();
-        const email = user?.getEmail() ?? ''
         return Moralis.enableWeb3()
     }
 

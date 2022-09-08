@@ -3,7 +3,6 @@ import { useState } from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import GozoIcon from '../../components/icons/GozoIcon/GozoIcon';
 import PrimaryCheckbox from '../../components/inputs/PrimaryCheckbox/PrimaryCheckbox';
-import PrimaryInput from '../../components/inputs/PrimaryInput/PrimaryInput';
 import BottomFixedContainer from '../../components/layout/BottomFixedContainer/BottomFixedContainer';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
@@ -55,20 +54,14 @@ const Landing: React.FC = () => {
                     {
                         !isAuthenticated ?
                             <>
-
-                                <PrimaryInput
-                                    placeholder='Enter your email'
-                                    value={email}
-                                    onChange={setEmail} />
                                 {authError && <PrimaryTypography
                                     color='danger'
                                     customClassName={styles.error}>
                                     {authError.message}
                                 </PrimaryTypography>}
-                                <br />
                                 <TermsAcceptance />
                                 <PrimaryButton
-                                    onClick={() => login(email)}
+                                    onClick={login}
                                     expand='block'
                                     disabled={isAuthenticating || !accepted}>
                                     get started

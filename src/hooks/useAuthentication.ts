@@ -7,9 +7,9 @@ const useAuthentication = () => {
     const { authenticate, isAuthenticated, isAuthenticating, user, authError, logout } = useWeb3();
     const { run } = useCloud();
 
-    async function login(email: string) {
+    async function login() {
         if (!isAuthenticated) {
-            await authenticate(email)
+            await authenticate()
                 .then(async (user) => {
                     console.log(user);
                     if (user) {

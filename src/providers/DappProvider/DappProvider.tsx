@@ -1,23 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useMoralis, useMoralisWeb3Api } from 'react-moralis';
 import { chainHex } from '../../helpers/networks';
-import MoralisDappContext from './context';
+import MoralisDappContext from './dappContext';
 import { ERC20Metadata } from '../../models/assets/ERC20Asset';
 import { appConfig } from '../../constants/appConfig';
+import useAuthentication from '../../hooks/useAuthentication';
+import dapContext from './dappContext';
 
-const MoralisDappProvider: React.FC = ({ children }) => {
-  const { web3, user, isInitialized } = useMoralis();
+const DappProvider: React.FC = ({ children }) => {
+  const { isInitialized } = useMoralis();
+  const { user } = useAuthentication();
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [defaultTokenMetadata, setDefaultTokenMetadata] = useState<ERC20Metadata | null>(null);
   const Web3Api = useMoralisWeb3Api();
-
-  useMemo(
-    () => {
-      setWalletAddress(
-        //@ts-ignore
-        web3?.provider?.selectedAddress || user?.get('ethAddress'),
-      )
-    }, [web3, user])
 
   const getDefaultTokenMetadata = useCallback(() => {
     const options = {
@@ -42,24 +37,28 @@ const MoralisDappProvider: React.FC = ({ children }) => {
     }
   }, [isInitialized])
 
+  useEffect(() => {
+    setWalletAddress(user?.walletAddress ?? null)
+  }, [user?.walletAddress])
+
   return (
-    <MoralisDappContext.Provider
+    <dapContext.Provider
       value={{
         walletAddress,
         chainId: chainHex.Fuji,
         defaultTokenMetadata: defaultTokenMetadata
       }}>
       {children}
-    </MoralisDappContext.Provider>
+    </dapContext.Provider>
   )
 }
 
-function useMoralisDapp() {
+function useDapp() {
   const context = React.useContext(MoralisDappContext);
   if (context === undefined) {
-    throw new Error('useMoralisDapp must be used within a MoralisDappProvider');
+    throw new Error('useDapp must be used within a DappProvider');
   }
   return context;
 }
 
-export { MoralisDappProvider, useMoralisDapp };
+export { DappProvider, useDapp };

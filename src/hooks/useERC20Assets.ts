@@ -1,25 +1,25 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import { appConfig } from "../constants/appConfig";
 import { ERC20Asset } from "../models/assets/ERC20Asset";
-import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
-import useBlockchain from "./useBlockchain";
+import { useDapp } from "../providers/DappProvider/DappProvider";
 
 const useERC20Assets = (chain?: string) => {
 
   const { account } = useMoralisWeb3Api();
-  const { isInitialized, isAuthenticated } = useBlockchain();
-  const { walletAddress, chainId, defaultTokenMetadata } = useMoralisDapp();
+  const { isInitialized } = useMoralis();
+  const { walletAddress, chainId, defaultTokenMetadata } = useDapp();
   const [assets, setAssets] = useState<ERC20Asset[]>();
 
   useEffect(() => {
-    if (isInitialized && isAuthenticated) {
+    if (isInitialized) {
       fetchERC20Assets()
     }
   }, [isInitialized, chainId, walletAddress]);
 
-  const fetchERC20Assets = async () => {
-    if (!isAuthenticated) return []
+  const fetchERC20Assets = useCallback(async () => {
+    if (!walletAddress) return [];
+
     return await account
       .getTokenBalances({
         address: walletAddress ?? '',
@@ -32,7 +32,7 @@ const useERC20Assets = (chain?: string) => {
         console.log(e.message);
         return [];
       })
-  }
+  }, [walletAddress, chainId, chain])
 
   const defaultAsset = useMemo(() => {
     const defaultBalancedToken = assets ?

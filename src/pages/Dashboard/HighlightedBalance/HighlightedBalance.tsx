@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { currencySettingsContext } from '../../../providers/CurrencySettingsProvider/currencySettingsContext';
-import useMemberShip from '../../../hooks/useMembership'
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
 import { IonBadge } from '@ionic/react';
 import styles from './highlightedBalance.module.scss';
 import { AssetMode } from '../../../constants/assetsMode';
-import useERC20Assets from '../../../hooks/useERC20Assets';
-import useBlockchain from '../../../hooks/useBlockchain';
+import { useMoralis } from 'react-moralis';
 
 interface Props {
     mode: AssetMode
@@ -19,14 +17,14 @@ interface Asset {
 
 const HighlightedBalance: React.FC<Props> = ({ mode }) => {
 
-    const { helpers } = useBlockchain();
+    const { Moralis } = useMoralis();
     const { gozoToken, gozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [asset, setAsset] = useState<Asset>();
 
     useEffect(() => {
         if (mode == AssetMode.token) {
             setAsset({
-                balance: gozoToken ? parseFloat(helpers.Units.FromWei(gozoToken.balance, parseInt(gozoToken.decimals))) : 0,
+                balance: gozoToken ? parseFloat(Moralis.Units.FromWei(gozoToken.balance, parseInt(gozoToken.decimals))) : 0,
                 description: 'Gozo Tokens'
             });
         } else {

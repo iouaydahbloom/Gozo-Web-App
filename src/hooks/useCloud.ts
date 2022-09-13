@@ -1,4 +1,6 @@
+import { useCallback, useContext } from "react";
 import { useMoralis } from "react-moralis";
+import { sessionContext } from "../providers/SessionProvider/sessionContext";
 
 export class CloudResponse<T> {
     constructor(public message: string,
@@ -18,18 +20,19 @@ interface ErrorResponse {
 }
 
 const useCloud = () => {
-    const { Moralis, user } = useMoralis();
+    const { Moralis } = useMoralis();
+    const { session } = useContext(sessionContext);
 
-    function resolveParams(params: any, isPrivate: boolean) {
+    const resolveParams = useCallback((params: any, isPrivate: boolean) => {
         let updatedParams = params;
         if (isPrivate) {
-            if (updatedParams) updatedParams.token = user?.getSessionToken();
-            else updatedParams = { token: user?.getSessionToken() };
+            if (updatedParams) updatedParams.token = session?.user?.accessToken;
+            else updatedParams = { token: session?.user?.accessToken };
         }
         return updatedParams;
-    }
+    }, [session?.user.accessToken])
 
-    async function run<T, Y>(functionName: string, params: any, mapper: (args: Y) => T, isPrivate: boolean = false): Promise<CloudResponse<T>> {
+    const run = useCallback(async <T, Y>(functionName: string, params: any, mapper: (args: Y) => T, isPrivate: boolean = false): Promise<CloudResponse<T>> => {
         return Moralis.Cloud
             .run(functionName, resolveParams(params, isPrivate))
             .then((result: SuccessResponse<Y>) => {
@@ -41,7 +44,7 @@ const useCloud = () => {
                 console.log(`Cloud error for ${functionName} is `, error);
                 return new CloudResponse<T>(error.message, error.errors, {} as any, false)
             })
-    }
+    }, [session?.user.accessToken, Moralis.Cloud])
 
     return {
         run: run

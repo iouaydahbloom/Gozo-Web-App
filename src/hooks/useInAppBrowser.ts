@@ -1,6 +1,7 @@
 import { InAppBrowser, InAppBrowserOptions } from "@awesome-cordova-plugins/in-app-browser";
 import { isPlatform } from "@ionic/react";
 import { useEffect } from "react";
+import { Browser } from '@capacitor/browser';
 
 const options: InAppBrowserOptions = {
     location: 'yes',
@@ -33,8 +34,9 @@ const useInAppBrowser = () => {
     useEffect(() => {
         if (isPlatform('mobileweb') || isPlatform('pwa')) return
         //@ts-ignore
-        window.open = (url?: string | URL | undefined, target?: string | undefined, features?: string | undefined) => {
-            InAppBrowser.create(url as any, target, options);
+        window.open = async (url?: string | URL | undefined, target?: string | undefined, features?: string | undefined) => {
+            //@ts-ignore
+            await Browser.open({ url: url })
         }
     }, [])
 }

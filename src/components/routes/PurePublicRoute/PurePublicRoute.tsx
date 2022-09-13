@@ -1,7 +1,7 @@
-import React, { ReactNode } from 'react'
-import { useMoralis } from 'react-moralis';
+import React, { ReactNode } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { AppRoutes } from '../../../constants/appRoutes';
+import useAuthentication from '../../../hooks/useAuthentication';
 
 interface Props {
     children: ReactNode
@@ -9,7 +9,7 @@ interface Props {
 
 const PurePublicRoute: React.FC<Props & Record<any, any>> = ({ children, ...restOfProps }) => {
 
-    const { isAuthenticated } = useMoralis();
+    const { isAuthenticated } = useAuthentication();
 
     return (
         !isAuthenticated ?

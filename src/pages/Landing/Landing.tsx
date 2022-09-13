@@ -12,7 +12,7 @@ import styles from './landing.module.scss';
 
 const Landing: React.FC = () => {
 
-    const { login, isAuthenticated, isAuthenticating, authError, logout } = useAuthentication();
+    const { login, isAuthenticated, isAuthenticating, logout, authError } = useAuthentication();
     const [accepted, setAccepted] = useState(true);
     const [email, setEmail] = useState('');
     useTabMenuHidder();
@@ -57,7 +57,7 @@ const Landing: React.FC = () => {
                                 {authError && <PrimaryTypography
                                     color='danger'
                                     customClassName={styles.error}>
-                                    {authError.message}
+                                    {authError}
                                 </PrimaryTypography>}
                                 <TermsAcceptance />
                                 <PrimaryButton

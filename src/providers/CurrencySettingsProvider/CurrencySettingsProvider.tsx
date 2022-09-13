@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useBlockchain from "../../hooks/useBlockchain";
+import useAuthentication from "../../hooks/useAuthentication";
 import useERC20Assets from "../../hooks/useERC20Assets";
 import useMemberShip from "../../hooks/useMembership";
 import { UserLoyaltyProgram } from "../../models/loyaltyProgram";
@@ -13,7 +13,7 @@ const CurrencySettingsProvider: React.FC = ({ children }) => {
     }));
     const { membership, fetchMembership } = useMemberShip('GZL_LVXMS');
     const { defaultAsset, fetchERC20Assets } = useERC20Assets();
-    const { isAuthenticated } = useBlockchain();
+    const { isAuthenticated } = useAuthentication();
 
     useEffect(() => {
         if (isAuthenticated) {

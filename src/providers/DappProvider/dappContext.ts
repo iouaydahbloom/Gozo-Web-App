@@ -2,10 +2,10 @@ import React from "react";
 import { chainHex } from "../../helpers/networks";
 import { ERC20Metadata } from "../../models/assets/ERC20Asset";
 
-const MoralisDappContext = React.createContext<{
+const dapContext = React.createContext<{
     walletAddress: string | null,
     chainId: string,
     defaultTokenMetadata: ERC20Metadata | null
 }>({ chainId: chainHex.Fuji, defaultTokenMetadata: null, walletAddress: null });
 
-export default MoralisDappContext;
+export default dapContext;

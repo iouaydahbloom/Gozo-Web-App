@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { AppRoutes } from '../../../constants/appRoutes';
-import useBlockchain from '../../../hooks/useBlockchain';
+import useAuthentication from '../../../hooks/useAuthentication';
 
 interface Props {
     children: ReactNode
@@ -9,7 +9,7 @@ interface Props {
 
 const ProtectedRoute: React.FC<Props & Record<any, any>> = ({ children, ...restOfProps }) => {
 
-    const { isAuthenticated } = useBlockchain();
+    const { isAuthenticated } = useAuthentication();
 
     return (
         isAuthenticated ?

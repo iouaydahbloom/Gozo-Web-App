@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import { ERC20Transfer } from "../models/assets/ERC20Transfer";
-import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
+import { useDapp } from "../providers/DappProvider/DappProvider";
 
 const useERC20Transfers = () => {
   const { account } = useMoralisWeb3Api();
-  const { walletAddress, chainId } = useMoralisDapp();
+  const { walletAddress, chainId } = useDapp();
   const { isInitialized } = useMoralis();
   const [eRC20Transfers, setERC20Transfers] = useState<ERC20Transfer[]>();
 

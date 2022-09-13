@@ -1,38 +1,73 @@
+import { useCallback, useContext, useState } from "react";
+import { AuthUserDTO } from "../dto/authUser";
+import { AuthUser } from "../models/authUser";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
+import { sessionContext } from "../providers/SessionProvider/sessionContext";
 import useCloud from "./useCloud";
-import useWeb3 from "./useBlockchain";
+import useMagicAuth from "./useMagicAuth";
 
 const useAuthentication = () => {
 
-    const { authenticate, isAuthenticated, isAuthenticating, user, authError, logout } = useWeb3();
     const { run } = useCloud();
+    const { user: magicUser, connect, disconnect } = useMagicAuth();
+    const { session, setSession, clear } = useContext(sessionContext);
+    const [isAuthenticating, setIsAuthenticating] = useState(false);
+    const [authError, setAuthError] = useState<string>();
 
-    async function login() {
-        if (!isAuthenticated) {
-            await authenticate()
-                .then(async (user) => {
-                    console.log(user);
-                    if (user) {
-                        await activateMember(user.id, user.getUsername() ?? '');
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+    const login = useCallback(async (email: string) => {
+        setIsAuthenticating(true);
+        await initNewSession();
+        try {
+            const connectionResult = await connect(email);
+            if (connectionResult) {
+                const serverAuthResult = await serverAuthenticate(email, connectionResult);
+                if (serverAuthResult.isSuccess) {
+                    const userSession = serverAuthResult.data;
+                    const magicUserMetadata = await magicUser?.getMetadata();
+                    userSession.walletAddress = magicUserMetadata?.publicAddress ?? '';
+
+                    setSession({
+                        user: userSession
+                    })
+                }
+            }
+            setIsAuthenticating(false);
+            setAuthError(connectionResult!);
         }
+        catch (error: any) {
+            logout();
+            setAuthError(error);
+        }
+    }, [])
+
+    const logout = useCallback(() => {
+        clear();
+        return disconnect();
+    }, [])
+
+    async function serverAuthenticate(email: string, externalSession: string) {
+        return run(
+            cloudFunctionName.login,
+            { email: email, externalSession: externalSession },
+            (result: { user: AuthUserDTO }) => AuthUser.getFromDTO(result?.user)
+        )
     }
 
-    async function activateMember(id: string, name: string) {
-        return run(cloudFunctionName.activateLoyaltyMember, { id, name }, (result: any) => true);
+    async function initNewSession() {
+        const isLoggedIn = await magicUser?.isLoggedIn();
+        if (session || isLoggedIn) {
+            await disconnect();
+            clear();
+        }
     }
 
     return {
         login,
-        isAuthenticated,
+        logout,
+        isAuthenticated: !!session?.user,
+        user: session?.user,
         isAuthenticating,
-        user,
-        authError,
-        logout
+        authError
     }
 }
 

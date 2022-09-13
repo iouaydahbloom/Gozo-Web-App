@@ -1,5 +1,6 @@
 export const cloudFunctionName = {
     login: 'login',
+    logout: 'logout',
     register: 'register',
     exchangePointsToTokens: 'exchangePointsToTokens',
     defaultCurrency: 'default_currency',

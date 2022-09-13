@@ -1,12 +1,12 @@
 import _ from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMoralis } from "react-moralis";
 import { appConfig } from "../constants/appConfig";
 import { contractsAbi } from "../constants/contractsAbis";
 import { ERC20Asset } from "../models/assets/ERC20Asset";
 import { UserLoyaltyProgram } from "../models/loyaltyProgram";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
-import { useMoralisDapp } from "../providers/MoralisDappProvider/MoralisDappProvider";
-import useBlockchain from "./useBlockchain";
+import { useDapp } from "../providers/DappProvider/DappProvider";
 import useBlockchainContractExecution from "./useBlockchainContractExecution";
 import useCloud from "./useCloud";
 import useERC20Assets from "./useERC20Assets";
@@ -23,19 +23,19 @@ const useTokenProgramsExchange = () => {
     const { defaultProgram } = useLoyaltyPrograms();
     const { defaultAsset } = useERC20Assets();
     const { presentFailure, presentSuccess } = useToast();
-    const { helpers } = useBlockchain();
-    const { walletAddress } = useMoralisDapp();
+    const { Moralis } = useMoralis();
+    const { walletAddress } = useDapp();
     const [direction, setDirection] = useState<'t2p' | 'p2t'>('t2p');
 
     const tokenQuantityInWei = useMemo(() => {
-        return helpers.Units.Token(tokenQuantity ?? 0, 18);
+        return Moralis.Units.Token(tokenQuantity ?? 0, 18);
     }, [tokenQuantity])
 
     const { run: approveTransfer } = useBlockchainContractExecution({
         contractAddress: appConfig.tokenContract,
         abi: contractsAbi.erc20,
         funct: 'approve',
-        params: { spender: appConfig.exchangeContract, amount: tokenQuantityInWei },
+        params: [appConfig.exchangeContract, tokenQuantityInWei],
         isReadOnly: false
     });
 
@@ -43,20 +43,25 @@ const useTokenProgramsExchange = () => {
         contractAddress: appConfig.exchangeContract,
         abi: contractsAbi.exchange,
         funct: 'transferIn',
-        params: { _amount: tokenQuantityInWei },
+        params: [tokenQuantityInWei],
         isReadOnly: false
     });
 
     const executeT2PExchange = useCallback(async () => {
         setExchanging(true);
         return approveTransfer()
-            .then(async (result: any) => {
-                await result.wait();
-                return transferTokens();
+            .then(async (result) => {
+                if (result.status) {
+                    return transferTokens();
+                }
+                throw ("Can't approve transaction")
             })
             .then(async (result: any) => {
-                await result.wait();
-                presentSuccess('Exchanged successfuly');
+                if (result.status) {
+                    presentSuccess('Exchanged successfuly');
+                    return;
+                }
+                throw ("Unable to transfer tokens")
             })
             .catch(error => {
                 presentFailure(`${JSON.stringify(error)}`);

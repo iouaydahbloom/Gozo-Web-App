@@ -1,27 +1,26 @@
-import useBlockchain from "./useBlockchain";
+import useMagicAuth from "./useMagicAuth";
+import { ethers } from 'ethers';
 
 interface Props {
     contractAddress: string,
     abi: any,
     funct: string,
-    params: any,
+    params: any[],
     isReadOnly?: boolean
 }
 
 const useBlockchainContractExecution = ({ contractAddress, abi, funct, params, isReadOnly = true }: Props) => {
-    const { helpers, ensureWeb3Enabled } = useBlockchain();
+    const { getProviderSigner } = useMagicAuth();
 
-    const run = async () => {
-        if (!isReadOnly) {
-            await ensureWeb3Enabled();
-        }
+    async function run() {
+        debugger
+        const contract = new ethers.Contract(contractAddress, abi, getProviderSigner());
+        // Send transaction to smart contract to update message
+        const tx = await contract[funct](...params);
+        // Wait for transaction to finish
+        const receipt = await tx.wait();
 
-        return helpers.executeFunction({
-            abi: abi,
-            contractAddress: contractAddress,
-            functionName: funct,
-            params: params
-        })
+        return receipt;
     }
 
     return { run }

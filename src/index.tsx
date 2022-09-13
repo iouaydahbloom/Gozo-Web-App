@@ -4,9 +4,11 @@ import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import { MoralisProvider } from "react-moralis";
-import { MoralisDappProvider } from './providers/MoralisDappProvider/MoralisDappProvider';
 import CurrencySettingsProvider from './providers/CurrencySettingsProvider/CurrencySettingsProvider';
 import { appConfig } from './constants/appConfig';
+import MagicAuthProvider from './providers/MagicAuthProvider/MagicAuthProvider';
+import SessionProvider from './providers/SessionProvider/SessionProvider';
+import { DappProvider } from './providers/DappProvider/DappProvider';
 require('dotenv').config();
 
 ReactDOM.render(
@@ -14,11 +16,15 @@ ReactDOM.render(
     <MoralisProvider
       appId={appConfig.moralisAppId}
       serverUrl={appConfig.moralisServerUrl}>
-      <MoralisDappProvider>
-        <CurrencySettingsProvider>
-          <App />
-        </CurrencySettingsProvider>
-      </MoralisDappProvider>
+      <MagicAuthProvider>
+        <SessionProvider>
+          <DappProvider>
+            <CurrencySettingsProvider>
+              <App />
+            </CurrencySettingsProvider>
+          </DappProvider>
+        </SessionProvider>
+      </MagicAuthProvider>
     </MoralisProvider>
   </React.StrictMode>,
   document.getElementById('root')
@@ -27,8 +33,8 @@ ReactDOM.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
-//serviceWorkerRegistration.unregister();
-serviceWorkerRegistration.register();
+serviceWorkerRegistration.unregister();
+//serviceWorkerRegistration.register();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

@@ -5,11 +5,14 @@ import { useHistory } from 'react-router';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import { AppRoutes } from '../../constants/appRoutes';
+import { useDapp } from '../../providers/DappProvider/DappProvider';
 import styles from './account.module.scss';
 import AccountItem from './AccountItem/AccountItem';
 
 const Account: React.FC = () => {
     const { push } = useHistory();
+    const { walletAddress } = useDapp();
+
     return (
         <IonPage>
             <PrimaryContainer>
@@ -21,6 +24,8 @@ const Account: React.FC = () => {
                         text='Profile Details'
                         onClick={() => push(AppRoutes.transactionHistory)}
                     />
+                    <br />
+                    <PrimaryTypography>Address: {walletAddress}</PrimaryTypography>
                 </div>
             </PrimaryContainer>
         </IonPage>

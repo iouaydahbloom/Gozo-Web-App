@@ -17,26 +17,9 @@ const useAuthentication = () => {
     const login = useCallback(async (email: string) => {
         setIsAuthenticating(true);
         await initNewSession();
-        try {
-            const connectionResult = await connect(email);
-            if (connectionResult) {
-                const serverAuthResult = await serverAuthenticate(email, connectionResult);
-                if (serverAuthResult.isSuccess) {
-                    const userSession = serverAuthResult.data;
-                    const magicUserMetadata = await magicUser?.getMetadata();
-                    userSession.walletAddress = magicUserMetadata?.publicAddress ?? '';
-
-                    setSession({
-                        user: userSession
-                    })
-                }
-            }
-            setIsAuthenticating(false);
-            setAuthError(connectionResult!);
-        }
-        catch (error: any) {
-            logout();
-            setAuthError(error);
+        const magicResult = await handleMagicAuth(email);
+        if (magicResult) {
+            await handleServerAuth(email, magicResult);
         }
     }, [])
 
@@ -58,6 +41,30 @@ const useAuthentication = () => {
         if (session || isLoggedIn) {
             await disconnect();
             clear();
+        }
+    }
+
+    async function handleMagicAuth(email: string) {
+        const connectionResult = await connect(email);
+        if (connectionResult) {
+            return connectionResult
+        }
+        setAuthError(connectionResult!);
+        return null;
+    }
+
+    async function handleServerAuth(email: string, magicToken: string) {
+        const serverAuthResult = await serverAuthenticate(email, magicToken);
+        if (serverAuthResult.isSuccess) {
+            const userSession = serverAuthResult.data;
+            const magicUserMetadata = await magicUser?.getMetadata();
+            userSession.walletAddress = magicUserMetadata?.publicAddress ?? '';
+
+            setSession({
+                user: userSession
+            })
+        } else {
+            setAuthError(serverAuthResult.message);
         }
     }
 

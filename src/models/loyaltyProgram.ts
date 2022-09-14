@@ -1,5 +1,5 @@
 import { DefaultCurrencyDTO } from "../dto/defaultCurrencyDTO";
-import { LoyaltyCurrencyDTO, LoyaltyExecuteActionDTO, LoyaltyMemberLookupActionDTO, LoyaltyPartnershipDetailsDTO, LoyaltyProgramDTO, LoyaltyProgramRequireFieldDTO, MyLoyaltyProgramDTO, MyLoyaltyProgramsDTO, UserLoyaltyProgramCurrencyDTO, UserLoyaltyProgramDTO } from "../dto/loyaltyProgramDTO";
+import { ActivePartnershipDetailsDTO, LoyaltyCurrencyDTO, LoyaltyExecuteActionDTO, LoyaltyMemberLookupActionDTO, LoyaltyPartnershipDetailsDTO, LoyaltyProgramDTO, LoyaltyProgramRequireFieldDTO, MyLoyaltyProgramDTO, MyLoyaltyProgramsDTO, UserLoyaltyProgramCurrencyDTO, UserLoyaltyProgramDTO } from "../dto/loyaltyProgramDTO";
 import AppModel from "./appModel"
 import { DynamicInputIdentifier } from "./dynamicInputIdentifier";
 import { ValueIdentifier } from "./valueIdentifier";
@@ -9,14 +9,16 @@ export class LoyaltyProgram implements AppModel {
         public logo: string,
         public loyaltyCurrency: LoyaltyCurrency,
         public partnerId: string,
-        public partnershipDetails: LoyaltyPartnershipDetails) { }
+        public partnershipDetails: LoyaltyPartnershipDetails | null,
+        public activePartnerships: ActivePartnershipDetails | null) { }
 
     static getFromDTO(dto: LoyaltyProgramDTO): LoyaltyProgram {
         return new LoyaltyProgram(dto.company_name,
             dto.logo,
             LoyaltyCurrency.getFromDTO(dto.loyalty_currency),
             dto.partner_id,
-            LoyaltyPartnershipDetails.getFromDTO(dto.partnership_details)
+            dto.partnership_details ? LoyaltyPartnershipDetails.getFromDTO(dto.partnership_details) : null,
+            dto.active_partnerships ? ActivePartnershipDetails.getFromDTO(dto.active_partnerships) : null
         )
     }
 
@@ -80,7 +82,7 @@ export class UserLoyaltyProgram implements AppModel {
 
     static getFromDefaultCurrencyDTO(dto: DefaultCurrencyDTO): UserLoyaltyProgram {
         return new UserLoyaltyProgram(
-            new UserLoyaltyProgramCurrency(dto.currency_id, dto.curency_display_name, '', new Date(), '', '', ''),
+            new UserLoyaltyProgramCurrency(dto.currency_id, dto.curency_display_name, '', new Date(), '', '', '', true, true),
             '',
             [],
             new Date(),
@@ -115,7 +117,9 @@ export class UserLoyaltyProgramCurrency implements AppModel {
         public createdAt: Date,
         public id: string,
         public programId: string,
-        public programLogo: string) { }
+        public programLogo: string,
+        public isExchangeIn: boolean,
+        public isExchangeOut: boolean) { }
 
     static getFromDTO(dto: UserLoyaltyProgramCurrencyDTO): UserLoyaltyProgramCurrency {
         return new UserLoyaltyProgramCurrency(
@@ -125,7 +129,9 @@ export class UserLoyaltyProgramCurrency implements AppModel {
             new Date(dto.createdAt),
             dto.objectId,
             dto.programId,
-            dto.programLogo
+            dto.programLogo,
+            dto.isExchangeIn,
+            dto.isExchangeOut
         )
     }
 
@@ -193,5 +199,25 @@ export class LoyaltyPartnershipDetails implements AppModel {
             LoyaltyMemberLookupAction.getFromDTO(dto.member_lookup_action))
     }
 
+    toDTO() { }
+}
+
+export class ActivePartnershipDetails implements AppModel {
+    constructor(public exchangeIn: boolean,
+        public exchangeOut: boolean,
+        public redemption: boolean,
+        public issuing: boolean,
+        public currencyOwnerForIssuance: boolean,
+        public currencyOwnerForRedemption: boolean) { }
+
+    static getFromDTO(dto: ActivePartnershipDetailsDTO): ActivePartnershipDetails {
+        return new ActivePartnershipDetails(dto.exchange_in,
+            dto.exchange_out,
+            dto.redemption,
+            dto.issuing,
+            dto.currency_owner_for_issuance,
+            dto.currency_owner_for_redemption,
+        )
+    }
     toDTO() { }
 }

@@ -30,11 +30,23 @@ const useLoyaltyPrograms = () => {
             })
     }
 
+    async function getProgram(programId: string, isExchangeIn?: boolean, isExchangeOut?: boolean) {
+        return run(
+            cloudFunctionName.programs,
+            { page: 1, page_size: 10, partner_id: programId, filters: { isExchangeIn: isExchangeIn, isExchangeOut: isExchangeOut } },
+            (result: Pagination<LoyaltyProgramDTO>) => {
+                return result.results.length > 0 ? LoyaltyProgram.getFromDTO(result.results[0]) : null
+            })
+            .then(result => {
+                return result.isSuccess ? result.data : null
+            })
+    }
+
     async function getMyPrograms() {
         setLoadingMyPrograms(true);
         return run(cloudFunctionName.getMyPrograms,
             null,
-            (result: any) => {
+            (result: UserLoyaltyProgramDTO[]) => {
                 const stringifiedResult = JSON.stringify(result);
                 const parsedResult: UserLoyaltyProgramDTO[] = JSON.parse(stringifiedResult);
                 return parsedResult.map(data => UserLoyaltyProgram.getFromDTO(data))
@@ -87,6 +99,7 @@ const useLoyaltyPrograms = () => {
         defaultProgram: gozoLoyalty,
         fetchMyLoyaltyPrograms: getMyPrograms,
         fetchAllPrograms: getAllAvailablePrograms,
+        fetchProgram: getProgram,
         loadingMyLoyaltyPrograms: loadingMyPrograms,
         connectProgram,
         disconnectProgram,

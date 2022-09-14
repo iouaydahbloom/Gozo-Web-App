@@ -1,13 +1,13 @@
 import { IonIcon, IonToolbar } from '@ionic/react'
 import { chevronDownOutline, chevronForwardOutline } from 'ionicons/icons';
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import PrimaryButton from '../../../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../../../components/inputs/PrimaryInput/PrimaryInput';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
 import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms';
 import useToast from '../../../../hooks/useToast';
 import { DynamicInputIdentifier } from '../../../../models/dynamicInputIdentifier';
-import { LoyaltyProgram, UserLoyaltyProgram, UserLoyaltyProgramCurrency } from '../../../../models/loyaltyProgram'
+import { LoyaltyPartnershipDetails, LoyaltyProgram, UserLoyaltyProgram, UserLoyaltyProgramCurrency } from '../../../../models/loyaltyProgram'
 import styles from './loyaltyProgramManageItem.module.scss';
 
 interface Props {
@@ -15,14 +15,12 @@ interface Props {
     myProgram: UserLoyaltyProgram | null
 }
 
-const LoyaltyProgramManageItem: React.FC<Props> = ({
-    item,
-    myProgram
-}) => {
+const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
     const [isSelected, setIsSelected] = useState(!!myProgram);
     const [isConnected, setIsConnected] = useState(!!myProgram);
+    const [partnershipMetadata, setPartnershipMetadata] = useState<LoyaltyPartnershipDetails | null>();
     const [myUpdatedProgram, setMyUpdatedProgram] = useState<UserLoyaltyProgram | null>(myProgram);
-    const { connectProgram, disconnectProgram, isUpdating } = useLoyaltyPrograms();
+    const { connectProgram, disconnectProgram, fetchProgram, isUpdating } = useLoyaltyPrograms();
     const { presentFailure } = useToast();
 
     function initMyProgram() {
@@ -33,11 +31,14 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({
                 new Date(),
                 '',
                 item.partnerId,
-                item.logo),
+                item.logo,
+                item.activePartnerships?.exchangeIn ?? false,
+                item.activePartnerships?.exchangeOut ?? false),
             item.loyaltyCurrency.id,
-            item.partnershipDetails.executeAction.requiredFields.map(field => {
-                return new DynamicInputIdentifier(new Date(), 0, field.id, '')
-            }),
+            partnershipMetadata ?
+                partnershipMetadata.executeAction.requiredFields.map(field => {
+                    return new DynamicInputIdentifier(new Date(), 0, field.id, '')
+                }) : [],
             new Date(),
             '',
             ''
@@ -67,11 +68,27 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({
         }
     }
 
+    const getPartnershipMetadata = useCallback(async () => {
+        return fetchProgram(
+            item.partnerId,
+            item.activePartnerships?.exchangeIn,
+            item.activePartnerships?.exchangeOut
+        ).then(program => {
+            setPartnershipMetadata(program?.partnershipDetails);
+        })
+    }, [item.partnerId])
+
+    useEffect(() => {
+        if (isSelected && !partnershipMetadata) {
+            getPartnershipMetadata()
+        }
+    }, [isSelected])
+
     useEffect(() => {
         if (!myProgram) {
-            initMyProgram();
+            initMyProgram()
         }
-    }, [])
+    }, [partnershipMetadata])
 
     const LoyaltyProgramPartnership = () => {
         return (
@@ -96,7 +113,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({
                                 </div>
                             </IonToolbar>
                             {
-                                myUpdatedProgram && item.partnershipDetails.executeAction.requiredFields.map((field, index) => {
+                                myUpdatedProgram && partnershipMetadata?.executeAction.requiredFields.map((field, index) => {
                                     return <PrimaryInput
                                         key={`field-${index}`}
                                         placeholder={`Enter your ${field.name}`}

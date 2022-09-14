@@ -6,7 +6,8 @@ export interface LoyaltyProgramDTO {
     logo: string,
     loyalty_currency: LoyaltyCurrencyDTO,
     partner_id: string,
-    partnership_details: LoyaltyPartnershipDetailsDTO
+    partnership_details?: LoyaltyPartnershipDetailsDTO,
+    active_partnerships?: ActivePartnershipDetailsDTO
 }
 
 export interface LoyaltyCurrencyDTO {
@@ -32,6 +33,15 @@ export interface LoyaltyPartnershipDetailsDTO {
     batch_process: boolean,
     execute_action: LoyaltyExecuteActionDTO,
     member_lookup_action: LoyaltyMemberLookupActionDTO
+}
+
+export interface ActivePartnershipDetailsDTO {
+    exchange_in: boolean,
+    exchange_out: boolean,
+    redemption: boolean,
+    issuing: boolean,
+    currency_owner_for_issuance: boolean,
+    currency_owner_for_redemption: boolean
 }
 
 export interface MyLoyaltyProgramsDTO {
@@ -64,5 +74,7 @@ export interface UserLoyaltyProgramCurrencyDTO {
     updatedAt: string,
     objectId: string,
     programId: string,
-    programLogo: string
+    programLogo: string,
+    isExchangeIn: boolean,
+    isExchangeOut: boolean
 }

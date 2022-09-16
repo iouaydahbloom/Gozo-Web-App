@@ -1,31 +1,23 @@
-import { useMoralis, useWeb3Transfer } from 'react-moralis';
+import { useMoralis } from 'react-moralis';
 import { appConfig } from '../constants/appConfig';
+import { contractsAbi } from '../constants/contractsAbis';
+import useBlockchainContractExecution from './useBlockchainContractExecution';
 
-const useBlockchainTransfer = (amount: string | number) => {
-    const { Moralis, isWeb3Enabled, enableWeb3 } = useMoralis();
-    const { fetch, error, isFetching } = useWeb3Transfer({
-        amount: Moralis.Units.Token(amount != '' ? amount : 0, 18),
-        receiver: appConfig.adminWallet,
-        type: "erc20",
-        contractAddress: appConfig.tokenContract
-    })
+const useBlockchainTransfer = (receiver: string, amount: string | number) => {
 
-    async function send() {
-        if (!isWeb3Enabled) await enableWeb3();
+    const { Moralis } = useMoralis()
 
-        return fetch()
-            .then(async (result: any) => {
-                return result.wait();
-            })
-            .catch(error => {
-                return error;
-            })
-    }
+    const { run, error, executing } = useBlockchainContractExecution({
+        contractAddress: appConfig.tokenContract,
+        abi: contractsAbi.erc20,
+        funct: 'transfer',
+        params: [receiver, amount != "" ? Moralis.Units.Token(amount) : 0],
+    });
 
     return {
-        send,
-        isSending: isFetching,
-        error
+        transfer: run,
+        error,
+        executing
     }
 }
 

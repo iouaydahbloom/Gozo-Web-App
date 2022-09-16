@@ -35,16 +35,14 @@ const useTokenProgramsExchange = () => {
         contractAddress: appConfig.tokenContract,
         abi: contractsAbi.erc20,
         funct: 'approve',
-        params: [appConfig.exchangeContract, tokenQuantityInWei],
-        isReadOnly: false
+        params: [appConfig.exchangeContract, tokenQuantityInWei]
     });
 
     const { run: transferTokens } = useBlockchainContractExecution({
         contractAddress: appConfig.exchangeContract,
         abi: contractsAbi.exchange,
         funct: 'transferIn',
-        params: [tokenQuantityInWei],
-        isReadOnly: false
+        params: [tokenQuantityInWei]
     });
 
     const executeT2PExchange = useCallback(async () => {

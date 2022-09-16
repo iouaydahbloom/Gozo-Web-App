@@ -9,6 +9,8 @@ import useERC20Assets from "../../../hooks/useERC20Assets";
 import useModal from "../../../hooks/useModal";
 import { ERC20Asset } from "../../../models/assets/ERC20Asset";
 import { currencySettingsContext } from "../../../providers/CurrencySettingsProvider/currencySettingsContext";
+import ReceiveCrypto from "../../ReceiveCrypto/ReceiveCrypto";
+import SendCrypto from "../../SendCrypto/SendCrypto";
 import Swap from "../../Swap/Swap";
 import CryptoTokenItem from "./CryptoTokenItem/CryptoTokenItem";
 import styles from './cryptoTokens.module.scss';
@@ -25,13 +27,30 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
 
     const { Moralis } = useMoralis();
     const { showModal: showSwap } = useModal({
+        title: 'Swap',
         component: Swap,
-        ComponentProps: { mode: AssetMode.token },
+        componentProps: { mode: AssetMode.token },
         id: 'swapModal',
         onDismiss: () => {
             fetchToken();
             fetchERC20Assets();
         }
+    });
+
+    const { showModal: showSendToken } = useModal({
+        title: 'Send Tokens',
+        component: SendCrypto,
+        id: 'sendCryptoModal',
+        onDismiss: () => {
+            fetchToken();
+            fetchERC20Assets();
+        }
+    });
+
+    const { showModal: showReceiveToken } = useModal({
+        title: 'Receive Tokens',
+        component: ReceiveCrypto,
+        id: 'receciveCryptoModal'
     });
 
     const renderItem = useCallback((item: ERC20Asset, index: number) => {
@@ -52,8 +71,8 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
             <div className={styles.actions}>
                 <PrimaryButtonsGroup
                     buttons={[
-                        { title: 'Send', icon: <IonIcon icon={arrowUpOutline} />, onClick: showSwap },
-                        { title: 'Receive', icon: <IonIcon icon={arrowDownOutline} />, onClick: showSwap },
+                        { title: 'Send', icon: <IonIcon icon={arrowUpOutline} />, onClick: showSendToken },
+                        { title: 'Receive', icon: <IonIcon icon={arrowDownOutline} />, onClick: showReceiveToken },
                         { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
                     ]}
                 />

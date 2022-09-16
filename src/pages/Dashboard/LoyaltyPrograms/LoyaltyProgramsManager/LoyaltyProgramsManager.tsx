@@ -42,26 +42,21 @@ const LoyaltyProgramsManager: React.FC = () => {
     }, [])
 
     return (
-        <PrimaryModal
-            title='Partners'
-            renderBody={() => (
-                <div className={styles.container}>
-                    <div className={styles.filterContainer}>
-                        <PrimarySearch
-                            value={searchKey}
-                            onChange={setSearchKey} />
-                    </div>
-                    <div className={styles.programsContainer}>
-                        {!isLoading &&
-                            programs
-                                .filter(prog => !searchKey ||
-                                    prog.companyName.toLowerCase().includes(searchKey?.toLowerCase()) ||
-                                    prog.loyaltyCurrency?.shortName?.toLowerCase().includes(searchKey?.toLowerCase()))
-                                .map((lp, index) => renderLoyaltyProgramItem(lp, index))}
-                    </div>
-                </div>
-            )}
-        />
+        <div className={styles.container}>
+            <div className={styles.filterContainer}>
+                <PrimarySearch
+                    value={searchKey}
+                    onChange={setSearchKey} />
+            </div>
+            <div className={styles.programsContainer}>
+                {!isLoading &&
+                    programs
+                        .filter(prog => !searchKey ||
+                            prog.companyName.toLowerCase().includes(searchKey?.toLowerCase()) ||
+                            prog.loyaltyCurrency?.shortName?.toLowerCase().includes(searchKey?.toLowerCase()))
+                        .map((lp, index) => renderLoyaltyProgramItem(lp, index))}
+            </div>
+        </div>
     )
 }
 

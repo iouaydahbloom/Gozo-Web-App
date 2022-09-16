@@ -25,40 +25,6 @@ export class LoyaltyProgram implements AppModel {
     toDTO() { }
 }
 
-export class MyLoyaltyProgram implements AppModel {
-    constructor(public companyName: string,
-        public programId: string,
-        public programLogo: string,
-        public caLoyaltyCurrency: string,
-        public caLoyaltyCurrencyName: string,
-        public membership: ValueIdentifier[],
-        public userCurrencyId: string) { }
-
-    static getFromDTO(dto: MyLoyaltyProgramDTO): MyLoyaltyProgram {
-        return new MyLoyaltyProgram(dto.company_name,
-            dto.program_id,
-            dto.program_logo,
-            dto.ca_loyalty_currency,
-            dto.ca_loyalty_currency_name,
-            dto.membership_data.map(md => {
-                return ValueIdentifier.getFromDTO(md)
-            }),
-            ''
-        )
-    }
-
-    toDTO(): MyLoyaltyProgramDTO {
-        return {
-            company_name: this.companyName,
-            program_id: this.programId,
-            program_logo: this.programLogo,
-            ca_loyalty_currency: this.caLoyaltyCurrency,
-            ca_loyalty_currency_name: this.caLoyaltyCurrencyName,
-            membership_data: this.membership.map(m => m.toDTO())
-        }
-    }
-}
-
 export class UserLoyaltyProgram implements AppModel {
     constructor(public currency: UserLoyaltyProgramCurrency,
         public currencyId: string,
@@ -98,6 +64,8 @@ export class UserLoyaltyProgram implements AppModel {
             company_name: this.currency.companyName,
             program_id: this.currency.programId,
             program_logo: this.currency.programLogo,
+            exchange_in: this.currency.isExchangeIn,
+            exchange_out: this.currency.isExchangeOut,
             membership_data: this.memberFields.map(field => {
                 return {
                     id: field.key,

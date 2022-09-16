@@ -24,13 +24,15 @@ const LoyaltyPrograms = () => {
     const { getUserLoyaltyPrograms } = useAssets();
     const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
     const { showModal: showManager } = useModal({
+        title: 'Partners',
         component: LoyaltyProgramsManager,
         id: 'lpModal',
         onDismiss: getPrograms
     });
     const { showModal: showSwap } = useModal({
+        title: 'Swap',
         component: Swap,
-        ComponentProps: { mode: AssetMode.loyaltyPoint },
+        componentProps: { mode: AssetMode.loyaltyPoint },
         id: 'swapModal',
         onDismiss: () => {
             fetchGozoLoyaltyMembership();

@@ -21,11 +21,9 @@ import './theme/variables.css';
 import './theme/main.scss';
 import './theme/toast.scss';
 import TabMenu from './components/menus/TabMenu/TabMenu';
-import useInAppBrowser from './hooks/useInAppBrowser';
 setupIonicReact();
 
 const App: React.FC = () => {
-  useInAppBrowser();
   return (
     <IonApp>
       <IonReactRouter>

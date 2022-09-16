@@ -24,8 +24,6 @@ const Account: React.FC = () => {
                         text='Profile Details'
                         onClick={() => push(AppRoutes.transactionHistory)}
                     />
-                    <br />
-                    <PrimaryTypography>Address: {walletAddress}</PrimaryTypography>
                 </div>
             </PrimaryContainer>
         </IonPage>

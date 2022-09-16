@@ -1,0 +1,10 @@
+.receiverContainer {
+    position: relative;
+
+    .scan {
+        position: absolute;
+        top: 9px;
+        z-index: 2;
+        right: 10px;
+    }
+}

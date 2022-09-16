@@ -8,7 +8,7 @@ const MagicAuthProvider: React.FC = ({ children }) => {
             magic: new Magic(appConfig.magicPublicKey, {
                 network: {
                     rpcUrl: appConfig.nodeRPCUrl,
-                    chainId: parseInt(appConfig.chainId)
+                    chainId: parseInt(appConfig.chainId),
                 }
             })
         }}>

@@ -5,7 +5,7 @@ import { Pagination } from "../models/data/pagination";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import { currencySettingsContext } from "../providers/CurrencySettingsProvider/currencySettingsContext";
 import useCloud from "./useCloud";
-import { Filter, ProgramFilter } from "../models/data/filter";
+import { ProgramFilter } from "../models/data/filter";
 
 const useLoyaltyPrograms = () => {
     const [loadingMyPrograms, setLoadingMyPrograms] = useState(false);

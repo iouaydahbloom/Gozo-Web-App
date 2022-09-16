@@ -54,7 +54,9 @@ export interface MyLoyaltyProgramDTO {
     program_logo: string,
     ca_loyalty_currency: string,
     ca_loyalty_currency_name: string,
-    membership_data: ValueIdentifierDTO[]
+    membership_data: ValueIdentifierDTO[],
+    exchange_in: boolean,
+    exchange_out: boolean
 }
 
 export interface UserLoyaltyProgramDTO {

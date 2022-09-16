@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .barcode {
+        border-radius: 6px;
+        border: 2px solid var(--ion-color-dark);
+        height: 305px;
+        margin-left: 2.5px;
+    }
+}

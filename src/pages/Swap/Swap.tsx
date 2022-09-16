@@ -1,5 +1,4 @@
 import React from 'react';
-import PrimaryModal from '../../components/modals/PrimaryModal/PrimaryModal';
 import { AssetMode } from '../../constants/assetsMode';
 import SwapPoints from './SwapPoints/SwapPoints';
 import SwapTokens from './SwapTokens/SwapTokens';
@@ -10,14 +9,9 @@ interface Props {
 
 const Swap: React.FC<Props> = ({ mode }) => {
     return (
-        <PrimaryModal
-            title='Swap'
-            renderBody={() => (
-                <>
-                    {mode == AssetMode.loyaltyPoint ? <SwapPoints /> : <SwapTokens />}
-                </>
-            )}
-        />
+        <>
+            {mode == AssetMode.loyaltyPoint ? <SwapPoints /> : <SwapTokens />}
+        </>
     )
 }
 

@@ -1,15 +1,30 @@
 import { modalController, OverlayEventDetail } from "@ionic/core";
 import { useIonModal } from "@ionic/react";
+import React, { useMemo } from "react";
+import PrimaryModal from "../components/modals/PrimaryModal/PrimaryModal";
 
 interface Options {
-    component: any,
-    ComponentProps?: any,
+    title: string,
+    component: React.FC<any>,
+    componentProps?: any,
     id: string,
     onDismiss?: (event: (CustomEvent<OverlayEventDetail<any>>)) => void
 }
 
 const useModal = (options: Options) => {
-    const [presentIonicModal] = useIonModal(options.component, options.ComponentProps);
+
+    const ModalComponent = useMemo(() => {
+        return (
+            <PrimaryModal
+                title={options.title}
+                renderBody={() => (
+                    <options.component {...options.componentProps} />
+                )}
+            />
+        )
+    }, [options.component, options.componentProps])
+
+    const [presentIonicModal] = useIonModal(ModalComponent);
 
     function showModal() {
         presentIonicModal({
@@ -18,7 +33,7 @@ const useModal = (options: Options) => {
             //initialBreakpoint: 0.90,
             // breakpoints: [0.90],
             onDidDismiss: options.onDismiss,
-            
+
         })
     }
 

@@ -6,6 +6,7 @@ import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms'
 import PrimaryModal from '../../../../components/modals/PrimaryModal/PrimaryModal'
 import PrimarySearch from '../../../../components/inputs/PrimarySearch/PrimarySearch'
 import styles from './loyaltyProgramsManager.module.scss';
+import { ProgramFilter } from '../../../../models/data/filter'
 
 const LoyaltyProgramsManager: React.FC = () => {
 
@@ -14,7 +15,7 @@ const LoyaltyProgramsManager: React.FC = () => {
     const [searchKey, setSearchKey] = useState<string>('');
     const { fetchAllPrograms, fetchMyLoyaltyPrograms } = useLoyaltyPrograms();
 
-    const { data: programs } = useServerPagination<LoyaltyProgram>({
+    const { data: programs } = useServerPagination<LoyaltyProgram, ProgramFilter>({
         getData: fetchAllPrograms as any
     })
 

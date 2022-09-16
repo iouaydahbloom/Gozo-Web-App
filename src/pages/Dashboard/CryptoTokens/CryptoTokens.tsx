@@ -1,5 +1,5 @@
 import { IonIcon } from "@ionic/react";
-import { swapHorizontalOutline } from "ionicons/icons";
+import { arrowDownOutline, arrowUpOutline, swapHorizontalOutline } from "ionicons/icons";
 import { useCallback, useContext } from "react";
 import { useMoralis } from "react-moralis";
 import PrimaryButtonsGroup from "../../../components/buttons/PrimaryButtonsGroup/PrimaryButtonsGroup";
@@ -52,6 +52,8 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
             <div className={styles.actions}>
                 <PrimaryButtonsGroup
                     buttons={[
+                        { title: 'Send', icon: <IonIcon icon={arrowUpOutline} />, onClick: showSwap },
+                        { title: 'Receive', icon: <IonIcon icon={arrowDownOutline} />, onClick: showSwap },
                         { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
                     ]}
                 />

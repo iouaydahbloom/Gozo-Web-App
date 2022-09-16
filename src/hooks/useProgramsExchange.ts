@@ -6,7 +6,7 @@ import useCloud from "./useCloud";
 import useLoyaltyPrograms from "./useLoyaltyPrograms";
 import useToast from "./useToast";
 
-interface ExchangeState {
+export interface ExchangeState {
     loyaltyCurrency: string,
     quantity?: number
 }
@@ -15,11 +15,13 @@ const useProgramsExchange = () => {
     const [originProgram, setOriginProgram] = useState<ExchangeState>({ loyaltyCurrency: '', quantity: 0 });
     const [destinationProgram, setDestinationProgram] = useState<ExchangeState>({ loyaltyCurrency: '', quantity: 0 });
     const [exchanging, setExchanging] = useState(false);
-    const [originOptions, setOriginOptions] = useState<UserLoyaltyProgram[]>([]);
-    const [destinationOptions, setDestinationOptions] = useState<UserLoyaltyProgram[]>([]);
+    const [exchangeInOptions, setExchangeInOptions] = useState<UserLoyaltyProgram[]>([]);
+    const [exchangeOutOptions, setExchangeOutOptions] = useState<UserLoyaltyProgram[]>([]);
+    const [defaultExchangeOptions, setDefaultExchangeOptions] = useState<UserLoyaltyProgram[]>([]);
     const { run } = useCloud();
     const { fetchMyLoyaltyPrograms, defaultProgram } = useLoyaltyPrograms();
     const { presentFailure, presentSuccess } = useToast();
+    const [direction, setDirection] = useState<'p2s' | 's2p'>('p2s');
 
     const executeP2PExchange = useCallback(async (from: string, to: string, amount: number) => {
         setExchanging(true);
@@ -42,7 +44,7 @@ const useProgramsExchange = () => {
         (from: string, to: string, amount: number, onSuccess: (result: number) => void) => {
             run(cloudFunctionName.simulateP2PExchange,
                 { origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount },
-                (result: any) => result[from] as number,
+                (result: any) => result[to] as number,
                 true)
                 .then(result => {
                     if (result.isSuccess) onSuccess(result.data);
@@ -50,11 +52,21 @@ const useProgramsExchange = () => {
                 })
         }, 1000), [])
 
+    function shuffleSelections() {
+        const origin = originProgram;
+        const destination = destinationProgram;
+
+        setOriginProgram({ ...destination })
+        setDestinationProgram({ ...origin })
+    }
+
     useEffect(() => {
-        setDestinationOptions(defaultProgram ? [defaultProgram] : []);
+        setDefaultExchangeOptions(defaultProgram ? [defaultProgram] : []);
+
         fetchMyLoyaltyPrograms()
-            .then(result => {
-                setOriginOptions(result);
+            .then(programs => {
+                setExchangeInOptions(programs.filter(prog => prog.currency.isExchangeIn));
+                setExchangeOutOptions(programs.filter(prog => prog.currency.isExchangeOut));
             })
     }, [])
 
@@ -71,13 +83,19 @@ const useProgramsExchange = () => {
 
     return {
         exchange: () => executeP2PExchange(originProgram.loyaltyCurrency, destinationProgram.loyaltyCurrency, originProgram.quantity ?? 0),
-        originOptions: originOptions,
-        destinationOptions: destinationOptions,
+        exchangeInOptions,
+        exchangeOutOptions,
+        defaultExchangeOptions,
         originProgram: originProgram,
         setOriginProgram: setOriginProgram,
         destinationProgram: destinationProgram,
         setDestinationProgram: setDestinationProgram,
-        exchanging: exchanging
+        exchanging: exchanging,
+        direction: direction,
+        toggleDirection: () => {
+            setDirection(prev => prev == 's2p' ? 'p2s' : 's2p');
+            shuffleSelections();
+        }
     }
 }
 

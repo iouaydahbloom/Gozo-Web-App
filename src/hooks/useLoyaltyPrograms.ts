@@ -5,7 +5,7 @@ import { Pagination } from "../models/data/pagination";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import { currencySettingsContext } from "../providers/CurrencySettingsProvider/currencySettingsContext";
 import useCloud from "./useCloud";
-import { Filter } from "../models/data/filter";
+import { Filter, ProgramFilter } from "../models/data/filter";
 
 const useLoyaltyPrograms = () => {
     const [loadingMyPrograms, setLoadingMyPrograms] = useState(false);
@@ -13,7 +13,7 @@ const useLoyaltyPrograms = () => {
     const { gozoLoyalty } = useContext(currencySettingsContext);
     const { run } = useCloud();
 
-    async function getAllAvailablePrograms(filter: Filter) {
+    async function getAllAvailablePrograms(filter: ProgramFilter) {
         return run(
             cloudFunctionName.programs,
             filter,
@@ -33,7 +33,7 @@ const useLoyaltyPrograms = () => {
     async function getProgram(programId: string, isExchangeIn?: boolean, isExchangeOut?: boolean) {
         return run(
             cloudFunctionName.programs,
-            { page: 1, page_size: 10, partner_id: programId, filters: { isExchangeIn: isExchangeIn, isExchangeOut: isExchangeOut } },
+            { page: 1, page_size: 10, partnerId: programId, isExchangeIn: isExchangeIn, isExchangeOut: isExchangeOut },
             (result: Pagination<LoyaltyProgramDTO>) => {
                 return result.results.length > 0 ? LoyaltyProgram.getFromDTO(result.results[0]) : null
             })

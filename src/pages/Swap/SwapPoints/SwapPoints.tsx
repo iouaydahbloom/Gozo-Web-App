@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import { SelectOption } from '../../../components/inputs/PrimarySelect/PrimarySelect';
 import useProgramsExchange from '../../../hooks/useProgramsExchange';
@@ -8,34 +8,63 @@ import styles from './swapPoints.module.scss';
 
 const SwapPoints: React.FC = () => {
 
-    const { originOptions, destinationOptions, originProgram,
-        setOriginProgram, destinationProgram, setDestinationProgram,
-        exchange, exchanging } = useProgramsExchange();
+    const { exchangeInOptions, exchangeOutOptions, defaultExchangeOptions, originProgram, setOriginProgram,
+        destinationProgram, setDestinationProgram, exchange, exchanging, direction, toggleDirection } = useProgramsExchange();
 
     return (
         <>
             <div className={styles.swapControl}>
-                <SwapField
-                    label='From'
-                    options={originOptions.map((opt) => (
-                        new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency)
-                    ))}
-                    quantity={originProgram.quantity}
-                    selectedOption={originProgram?.loyaltyCurrency}
-                    onQuantityChange={(quantity) => setOriginProgram({ ...originProgram, quantity: quantity })}
-                    onSelectionChange={(value) => setOriginProgram({ ...originProgram, loyaltyCurrency: value })}
-                />
-                <SwapDirection />
-                <SwapField
-                    disabledQuantity
-                    label='To'
-                    options={destinationOptions.map((opt) => (
-                        new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency)
-                    ))}
-                    quantity={destinationProgram.quantity}
-                    selectedOption={destinationProgram?.loyaltyCurrency}
-                    onSelectionChange={(value) => setDestinationProgram({ ...destinationProgram, loyaltyCurrency: value })}
-                />
+                {
+                    direction == 'p2s' ?
+                        <SwapField
+                            label='From'
+                            options={exchangeInOptions.map((opt) => (
+                                new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency)
+                            ))}
+                            quantity={originProgram.quantity}
+                            selectedOption={originProgram?.loyaltyCurrency}
+                            onQuantityChange={(quantity) => setOriginProgram({ ...originProgram, quantity: quantity })}
+                            onSelectionChange={(value) => setOriginProgram({ ...originProgram, loyaltyCurrency: value })}
+                        />
+                        :
+                        <SwapField
+                            label='From'
+                            options={defaultExchangeOptions.map((opt) => (
+                                new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency)
+                            ))}
+                            quantity={originProgram.quantity}
+                            selectedOption={originProgram?.loyaltyCurrency}
+                            onQuantityChange={(quantity) => setOriginProgram({ ...originProgram, quantity: quantity })}
+                            onSelectionChange={(value) => setOriginProgram({ ...originProgram, loyaltyCurrency: value })}
+                        />
+                }
+                <SwapDirection doubleDirection onClick={toggleDirection} />
+                {
+                    direction == 's2p' ?
+                        <SwapField
+                            label='To'
+                            options={exchangeOutOptions.map((opt) => (
+                                new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency)
+                            ))}
+                            quantity={destinationProgram.quantity}
+                            selectedOption={destinationProgram?.loyaltyCurrency}
+                            onQuantityChange={(quantity) => setDestinationProgram({ ...destinationProgram, quantity: quantity })}
+                            onSelectionChange={(value) => setDestinationProgram({ ...destinationProgram, loyaltyCurrency: value })}
+                            disabledQuantity={true}
+                        />
+                        :
+                        <SwapField
+                            label='To'
+                            options={defaultExchangeOptions.map((opt) => (
+                                new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency)
+                            ))}
+                            quantity={destinationProgram.quantity}
+                            selectedOption={destinationProgram?.loyaltyCurrency}
+                            onQuantityChange={(quantity) => setDestinationProgram({ ...destinationProgram, quantity: quantity })}
+                            onSelectionChange={(value) => setDestinationProgram({ ...destinationProgram, loyaltyCurrency: value })}
+                            disabledQuantity={true}
+                        />
+                }
             </div>
             <PrimaryButton
                 expand='block'

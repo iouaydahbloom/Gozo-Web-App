@@ -18,8 +18,16 @@ interface Asset {
 const HighlightedBalance: React.FC<Props> = ({ mode }) => {
 
     const { Moralis } = useMoralis();
-    const { gozoToken, gozoLoyaltyMembership } = useContext(currencySettingsContext);
+    const { gozoToken, gozoLoyaltyMembership, fetchToken, fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [asset, setAsset] = useState<Asset>();
+
+    useEffect(() => {
+        if (mode == AssetMode.token) {
+            fetchToken();
+        } else if (mode == AssetMode.loyaltyPoint) {
+            fetchGozoLoyaltyMembership()
+        }
+    }, [mode])
 
     useEffect(() => {
         if (mode == AssetMode.token) {
@@ -27,13 +35,17 @@ const HighlightedBalance: React.FC<Props> = ({ mode }) => {
                 balance: gozoToken ? parseFloat(Moralis.Units.FromWei(gozoToken.balance, parseInt(gozoToken.decimals))) : 0,
                 description: 'Gozo Tokens'
             });
-        } else {
+        }
+    }, [gozoToken])
+
+    useEffect(() => {
+        if (mode == AssetMode.loyaltyPoint) {
             setAsset({
                 balance: gozoLoyaltyMembership ? gozoLoyaltyMembership.balance : 0,
                 description: 'Super Points'
             });
         }
-    }, [mode, gozoLoyaltyMembership, gozoToken])
+    }, [gozoLoyaltyMembership])
 
     return (
         <div className={styles.container}>

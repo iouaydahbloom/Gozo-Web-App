@@ -19,7 +19,8 @@ const useAuthentication = () => {
         await initNewSession();
         const magicResult = await handleMagicAuth(email);
         if (magicResult) {
-            await handleServerAuth(email, magicResult);
+            const ethAddress = (await magicUser?.getMetadata())?.publicAddress;
+            await handleServerAuth(email, ethAddress!, magicResult);
         }
     }, [])
 
@@ -28,10 +29,10 @@ const useAuthentication = () => {
         return disconnect();
     }, [])
 
-    async function serverAuthenticate(email: string, externalSession: string) {
+    async function serverAuthenticate(email: string, ethAddress: string, externalSession: string) {
         return run(
             cloudFunctionName.login,
-            { email: email, externalSession: externalSession },
+            { email: email, ethAddress: ethAddress, externalSession: externalSession },
             (result: { user: AuthUserDTO }) => AuthUser.getFromDTO(result?.user)
         )
     }
@@ -53,8 +54,8 @@ const useAuthentication = () => {
         return null;
     }
 
-    async function handleServerAuth(email: string, magicToken: string) {
-        const serverAuthResult = await serverAuthenticate(email, magicToken);
+    async function handleServerAuth(email: string, ethAddress: string, magicToken: string) {
+        const serverAuthResult = await serverAuthenticate(email, ethAddress, magicToken);
         if (serverAuthResult.isSuccess) {
             const userSession = serverAuthResult.data;
             const magicUserMetadata = await magicUser?.getMetadata();

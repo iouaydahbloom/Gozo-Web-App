@@ -3,12 +3,13 @@ import React, { ReactNode } from 'react';
 import styles from './primaryContainer.module.css';
 
 interface Props {
-    children: ReactNode
+    children: ReactNode,
+    className?: string
 }
 
-const PrimaryContainer: React.FC<Props> = ({ children }) => {
+const PrimaryContainer: React.FC<Props> = ({ children, className }) => {
     return (
-        <IonContent className={`ion-padding ${styles.container}`} fullscreen>
+        <IonContent className={`ion-padding ${styles.container} ${className}`} fullscreen>
             {children}
         </IonContent>
     )

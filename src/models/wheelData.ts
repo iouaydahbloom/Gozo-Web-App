@@ -9,16 +9,18 @@ interface StyleType {
 export class WheelData implements AppModel {
     constructor(
         public option: string,
+        public id: string,
         public style?: StyleType
         ) { }
 
-    static getFromDTO(dto: WheelDataDTO): WheelData {
-        return new WheelData(dto.option)
+    static getFromDTO(dto: WheelDataDTO[]): WheelData[] {
+        return dto.map(item => (new WheelData(item.name, item.objectId, { backgroundColor: 'green', textColor: 'white' })))
     }
 
     toDTO(): WheelDataDTO {
         return {
-            option: this.option
+            name: this.option,
+            objectId: this.id
         }
     }
 }

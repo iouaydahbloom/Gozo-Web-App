@@ -18,5 +18,6 @@ export const cloudFunctionName = {
     activateLoyaltyMember: 'activate_loyalty_member',
     connectProgram: 'connect_program',
     disconnectProgram: 'disconnect_program',
-    disconnectPrograms: 'disconnect_programs'
+    disconnectPrograms: 'disconnect_programs',
+    groupedPrize: 'grouped_prize'
 }

@@ -1,4 +1,4 @@
 export interface WheelDataDTO {
-    option: string,
-    style?: string
+    name: string,
+    objectId: string,
 }

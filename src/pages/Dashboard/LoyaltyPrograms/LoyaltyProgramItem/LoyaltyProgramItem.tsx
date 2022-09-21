@@ -19,7 +19,7 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection }) =>
     const { membership } = useMemberShip(loyaltyProgram?.currency.loyaltyCurrency);
 
     function spin() {
-        push(AppRoutes.spinner)
+        push(AppRoutes.spinner, loyaltyProgram)
     }
 
     return (

@@ -4,5 +4,6 @@ export const AppRoutes = {
     onBoarding: '/onboarding',
     home: '/home',
     account: '/account',
-    transactionHistory: '/transactionHistory'
+    transactionHistory: '/transactionHistory',
+    authCallback: '/authCallback'
 }

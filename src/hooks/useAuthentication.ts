@@ -19,8 +19,8 @@ const useAuthentication = () => {
         await initNewSession();
         const magicResult = await handleMagicAuth(email);
         if (magicResult) {
-            const ethAddress = (await magicUser?.getMetadata())?.publicAddress;
-            await handleServerAuth(email, ethAddress!, magicResult);
+            const userMetadata = (await magicUser?.getMetadata());
+            await handleServerAuth(userMetadata?.email!, userMetadata?.publicAddress!, magicResult);
         }
     }, [])
 

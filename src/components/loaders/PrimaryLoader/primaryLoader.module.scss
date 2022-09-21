@@ -1,0 +1,12 @@
+.spinner {
+    position: absolute;
+    z-index: 9;
+    top: 40%;
+    left: 40%;
+    text-align: center;
+
+    .icon {
+        width: 42px;
+        height: 42px;
+    }
+}

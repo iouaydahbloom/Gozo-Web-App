@@ -10,7 +10,14 @@ const useMagicAuth = () => {
     function connect(email: string) {
         setIsConnecting(true);
         return magic?.auth
-            .loginWithMagicLink({ email })
+            .loginWithEmailOTP({ email })
+            .finally(() => setIsConnecting(false))
+    }
+
+    function connectWithCredentials(token?: string) {
+        setIsConnecting(true);
+        return magic?.auth
+            .loginWithCredential(token)
             .finally(() => setIsConnecting(false))
     }
 
@@ -25,6 +32,7 @@ const useMagicAuth = () => {
 
     return {
         connect,
+        connectWithCredentials,
         disconnect,
         isConnecting,
         user: magic?.user,

@@ -10,4 +10,5 @@ export const appConfig = {
     chainHex: process?.env.REACT_APP_CHAIN_HEX ?? '',
     nodeRPCUrl: process?.env.REACT_APP_RPC_URL ?? '',
     magicPublicKey: process?.env.REACT_APP_MAGIC_KEY ?? '',
+    authUrl: process?.env.REACT_APP_AUTH_URL ?? ''
 }

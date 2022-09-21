@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package gozo.app.mvp;
 
 import com.getcapacitor.BridgeActivity;
 

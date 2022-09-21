@@ -1,35 +1,26 @@
-import { IonPage } from '@ionic/react';
-import { useState } from 'react';
+import { IonPage, useIonViewWillLeave } from '@ionic/react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import GozoIcon from '../../components/icons/GozoIcon/GozoIcon';
-import PrimaryCheckbox from '../../components/inputs/PrimaryCheckbox/PrimaryCheckbox';
-import PrimaryInput from '../../components/inputs/PrimaryInput/PrimaryInput';
 import BottomFixedContainer from '../../components/layout/BottomFixedContainer/BottomFixedContainer';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
-import useAuthentication from '../../hooks/useAuthentication';
+import useModal from '../../hooks/useModal';
 import useTabMenuHidder from '../../hooks/useTabMenuHidder';
+import Authentication from '../Authentication/Authentication';
 import styles from './landing.module.scss';
 
 const Landing: React.FC = () => {
 
-    const { login, isAuthenticated, isAuthenticating, logout, authError } = useAuthentication();
-    const [accepted, setAccepted] = useState(true);
-    const [email, setEmail] = useState('');
+    const { showModal: showAuthentication, dismissModal } = useModal({
+        component: Authentication,
+        title: 'Login/Register',
+        id: 'authenticationModal'
+    });
     useTabMenuHidder();
 
-    const TermsAcceptance = () => {
-        return (
-            <div className={styles.termsContainer}>
-                <div className={styles.checkboxField}>
-                    <PrimaryCheckbox value={accepted} onChange={setAccepted} />
-                </div>
-                <PrimaryTypography customClassName={styles.textField}>
-                    I’ve read and accepted the <a>Terms of Service</a> and <a>Privacy Policy</a>
-                </PrimaryTypography>
-            </div>
-        )
-    }
+    useIonViewWillLeave(() => {
+        dismissModal()
+    }, [])
 
     return (
         <IonPage>
@@ -52,30 +43,11 @@ const Landing: React.FC = () => {
                 </PrimaryTypography>
 
                 <BottomFixedContainer>
-                    {
-                        !isAuthenticated ?
-                            <>
-                                <PrimaryInput
-                                    placeholder='Enter your email'
-                                    value={email}
-                                    onChange={setEmail} />
-                                {authError && <PrimaryTypography
-                                    color='danger'
-                                    customClassName={styles.error}>
-                                    {authError}
-                                </PrimaryTypography>}
-                                <br />
-                                <TermsAcceptance />
-                                <PrimaryButton
-                                    onClick={() => login(email)}
-                                    expand='block'
-                                    disabled={isAuthenticating || !accepted}>
-                                    get started
-                                </PrimaryButton>
-                            </>
-                            :
-                            <PrimaryButton onClick={logout} expand='block'>logout</PrimaryButton>
-                    }
+                    <PrimaryButton
+                        onClick={showAuthentication}
+                        expand='block'>
+                        get started
+                    </PrimaryButton>
                 </BottomFixedContainer>
             </PrimaryContainer>
         </IonPage>

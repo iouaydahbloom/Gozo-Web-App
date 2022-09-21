@@ -37,7 +37,7 @@ const useModal = (options: Options) => {
         })
     }
 
-    function dismissModal(dismissData: any) {
+    function dismissModal(dismissData?: any) {
         modalController.dismiss(dismissData, undefined, options.id);
     }
 

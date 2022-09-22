@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { appConfig } from "../constants/appConfig";
@@ -46,6 +46,7 @@ const useTokenProgramsExchange = () => {
     });
 
     const executeT2PExchange = useCallback(async () => {
+        if (tokenQuantity && tokenQuantity <= 0) return;
         setExchanging(true);
         return approveTransfer()
             .then(async (result) => {
@@ -67,7 +68,7 @@ const useTokenProgramsExchange = () => {
             .finally(() => setExchanging(false))
     }, [tokenQuantity])
 
-    const simulateT2PExchange = useCallback(_.debounce((amount: number, onSuccess: (result: number) => void) => {
+    const simulateT2PExchange = useCallback(debounce((amount: number, onSuccess: (result: number) => void) => {
         run(cloudFunctionName.simulateT2PExchange, { amount: amount }, (result: any) => result as number, true)
             .then(result => {
                 if (result.isSuccess) onSuccess(result.data);
@@ -76,6 +77,7 @@ const useTokenProgramsExchange = () => {
     }, 1000), [])
 
     const executeP2TExchange = useCallback(async () => {
+        if (programQuantity && programQuantity <= 0) return;
         setExchanging(true);
         run(cloudFunctionName.executeP2Texchange, { recipient: walletAddress, amount: programQuantity }, (result: any) => result as number, true)
             .then(result => {
@@ -85,7 +87,7 @@ const useTokenProgramsExchange = () => {
             .finally(() => setExchanging(false))
     }, [programQuantity])
 
-    const simulateP2TExchange = useCallback(_.debounce((amount: number, onSuccess: (result: number) => void) => {
+    const simulateP2TExchange = useCallback(debounce((amount: number, onSuccess: (result: number) => void) => {
         run(cloudFunctionName.simulateP2TExchange, { amount: amount }, (result: any) => result as number)
             .then(result => {
                 if (result.isSuccess) onSuccess(result.data);

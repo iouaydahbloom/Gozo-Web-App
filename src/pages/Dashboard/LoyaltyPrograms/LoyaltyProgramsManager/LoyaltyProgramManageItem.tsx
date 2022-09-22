@@ -8,6 +8,7 @@ import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms';
 import useToast from '../../../../hooks/useToast';
 import { DynamicInputIdentifier } from '../../../../models/dynamicInputIdentifier';
 import { LoyaltyPartnershipDetails, LoyaltyProgram, UserLoyaltyProgram, UserLoyaltyProgramCurrency } from '../../../../models/loyaltyProgram'
+import { PartnershipType } from '../../../../types/exchangeType';
 import styles from './loyaltyProgramManageItem.module.scss';
 
 interface Props {
@@ -33,7 +34,9 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
                 item.partnerId,
                 item.logo,
                 item.activePartnerships?.exchangeIn ?? false,
-                item.activePartnerships?.exchangeOut ?? false),
+                item.activePartnerships?.exchangeOut ?? false,
+                item.activePartnerships?.currencyOwnerForRedemption ?? false,
+                item.activePartnerships?.issuing ?? false),
             item.loyaltyCurrency.id,
             partnershipMetadata ?
                 partnershipMetadata.executeAction.requiredFields.map(field => {
@@ -69,13 +72,17 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
     }
 
     const getPartnershipMetadata = useCallback(async () => {
-        return fetchProgram(
-            item.partnerId,
-            item.activePartnerships?.exchangeIn,
-            item.activePartnerships?.exchangeOut
-        ).then(program => {
-            setPartnershipMetadata(program?.partnershipDetails);
-        })
+        const partnershipType: PartnershipType =
+            item.activePartnerships?.exchangeIn ? 'in' :
+                item.activePartnerships?.exchangeOut ? 'out' :
+                    item.activePartnerships?.redemption ? 'redemption' :
+                        item.activePartnerships?.issuing ? 'issuing' :
+                            'out';
+
+        return fetchProgram(item.partnerId, partnershipType)
+            .then(program => {
+                setPartnershipMetadata(program?.partnershipDetails);
+            })
     }, [item.partnerId])
 
     useEffect(() => {

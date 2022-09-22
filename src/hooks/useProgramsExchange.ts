@@ -1,4 +1,4 @@
-import _ from "lodash";
+import { debounce } from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import { UserLoyaltyProgram } from "../models/loyaltyProgram";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
@@ -24,6 +24,7 @@ const useProgramsExchange = () => {
     const [direction, setDirection] = useState<'p2s' | 's2p'>('p2s');
 
     const executeP2PExchange = useCallback(async (from: string, to: string, amount: number) => {
+        if (amount <= 0) return;
         setExchanging(true);
         return run(cloudFunctionName.executeP2PExchange,
             { origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount },
@@ -40,7 +41,7 @@ const useProgramsExchange = () => {
             .finally(() => setExchanging(false))
     }, [])
 
-    const simulateP2PExchange = useCallback(_.debounce(
+    const simulateP2PExchange = useCallback(debounce(
         (from: string, to: string, amount: number, onSuccess: (result: number) => void) => {
             run(cloudFunctionName.simulateP2PExchange,
                 { origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount },
@@ -53,11 +54,11 @@ const useProgramsExchange = () => {
         }, 1000), [])
 
     function shuffleSelections() {
-        const origin = originProgram;
-        const destination = destinationProgram;
+        const origin = { ...originProgram };
+        const destination = { ...destinationProgram };
 
-        setOriginProgram({ ...destination })
-        setDestinationProgram({ ...origin })
+        setOriginProgram(destination)
+        setDestinationProgram(origin)
     }
 
     useEffect(() => {
@@ -65,8 +66,8 @@ const useProgramsExchange = () => {
 
         fetchMyLoyaltyPrograms()
             .then(programs => {
-                setExchangeInOptions(programs.filter(prog => prog.currency.isExchangeIn));
-                setExchangeOutOptions(programs.filter(prog => prog.currency.isExchangeOut));
+                setExchangeInOptions(programs.filter(prog => prog.currency.isRedemption));
+                setExchangeOutOptions(programs.filter(prog => prog.currency.isExchangeIn));
             })
     }, [])
 

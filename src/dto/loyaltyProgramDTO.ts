@@ -44,10 +44,6 @@ export interface ActivePartnershipDetailsDTO {
     currency_owner_for_redemption: boolean
 }
 
-export interface MyLoyaltyProgramsDTO {
-    programs: MyLoyaltyProgramDTO[]
-}
-
 export interface MyLoyaltyProgramDTO {
     company_name: string,
     program_id: string,
@@ -56,7 +52,9 @@ export interface MyLoyaltyProgramDTO {
     ca_loyalty_currency_name: string,
     membership_data: ValueIdentifierDTO[],
     exchange_in: boolean,
-    exchange_out: boolean
+    exchange_out: boolean,
+    redemption: boolean,
+    issuing: boolean
 }
 
 export interface UserLoyaltyProgramDTO {
@@ -78,5 +76,7 @@ export interface UserLoyaltyProgramCurrencyDTO {
     programId: string,
     programLogo: string,
     isExchangeIn: boolean,
-    isExchangeOut: boolean
+    isExchangeOut: boolean,
+    isRedemption: boolean,
+    isIssuing: boolean
 }

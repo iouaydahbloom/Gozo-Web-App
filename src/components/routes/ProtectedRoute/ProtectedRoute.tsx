@@ -14,7 +14,7 @@ const ProtectedRoute: React.FC<Props & Record<any, any>> = ({ children, ...restO
     return (
         isAuthenticated ?
             <Route {...restOfProps}>{children}</Route> :
-            <Redirect to={AppRoutes.landing} push/>
+            <Redirect to={AppRoutes.landing} />
     )
 }
 

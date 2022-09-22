@@ -1,8 +1,7 @@
 import { DefaultCurrencyDTO } from "../dto/defaultCurrencyDTO";
-import { ActivePartnershipDetailsDTO, LoyaltyCurrencyDTO, LoyaltyExecuteActionDTO, LoyaltyMemberLookupActionDTO, LoyaltyPartnershipDetailsDTO, LoyaltyProgramDTO, LoyaltyProgramRequireFieldDTO, MyLoyaltyProgramDTO, MyLoyaltyProgramsDTO, UserLoyaltyProgramCurrencyDTO, UserLoyaltyProgramDTO } from "../dto/loyaltyProgramDTO";
+import { ActivePartnershipDetailsDTO, LoyaltyCurrencyDTO, LoyaltyExecuteActionDTO, LoyaltyMemberLookupActionDTO, LoyaltyPartnershipDetailsDTO, LoyaltyProgramDTO, LoyaltyProgramRequireFieldDTO, MyLoyaltyProgramDTO, UserLoyaltyProgramCurrencyDTO, UserLoyaltyProgramDTO } from "../dto/loyaltyProgramDTO";
 import AppModel from "./appModel"
 import { DynamicInputIdentifier } from "./dynamicInputIdentifier";
-import { ValueIdentifier } from "./valueIdentifier";
 
 export class LoyaltyProgram implements AppModel {
     constructor(public companyName: string,
@@ -48,7 +47,7 @@ export class UserLoyaltyProgram implements AppModel {
 
     static getFromDefaultCurrencyDTO(dto: DefaultCurrencyDTO): UserLoyaltyProgram {
         return new UserLoyaltyProgram(
-            new UserLoyaltyProgramCurrency(dto.currency_id, dto.curency_display_name, '', new Date(), '', '', '', true, true),
+            new UserLoyaltyProgramCurrency(dto.currency_id, dto.curency_display_name, '', new Date(), '', '', '', true, true, true, true),
             '',
             [],
             new Date(),
@@ -66,6 +65,8 @@ export class UserLoyaltyProgram implements AppModel {
             program_logo: this.currency.programLogo,
             exchange_in: this.currency.isExchangeIn,
             exchange_out: this.currency.isExchangeOut,
+            redemption: this.currency.isRedemption,
+            issuing: this.currency.isIssuing,
             membership_data: this.memberFields.map(field => {
                 return {
                     id: field.key,
@@ -87,7 +88,9 @@ export class UserLoyaltyProgramCurrency implements AppModel {
         public programId: string,
         public programLogo: string,
         public isExchangeIn: boolean,
-        public isExchangeOut: boolean) { }
+        public isExchangeOut: boolean,
+        public isRedemption: boolean,
+        public isIssuing: boolean) { }
 
     static getFromDTO(dto: UserLoyaltyProgramCurrencyDTO): UserLoyaltyProgramCurrency {
         return new UserLoyaltyProgramCurrency(
@@ -99,7 +102,9 @@ export class UserLoyaltyProgramCurrency implements AppModel {
             dto.programId,
             dto.programLogo,
             dto.isExchangeIn,
-            dto.isExchangeOut
+            dto.isExchangeOut,
+            dto.isRedemption,
+            dto.isIssuing
         )
     }
 

@@ -5,6 +5,18 @@
     font-family: 'Monda', sans-serif;
 }
 
+ion-modal#spinConditionModal, ion-modal#spinSuccessModal {
+    --height: 30%;
+    --border-radius: 11px;
+    --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    padding: 0px 16px
+  }
+  
+  ion-modal#spinConditionModal::part(backdrop) {
+    background: rgba(209, 213, 219);
+    opacity: 1;
+  }
+
 /** hide google social login in web3Auth **/
 // .w3ajs-socials-adapters {
 //     li {

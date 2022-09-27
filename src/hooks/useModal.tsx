@@ -1,6 +1,6 @@
 import { modalController, OverlayEventDetail } from "@ionic/core";
 import { useIonModal } from "@ionic/react";
-import React, { useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import PrimaryModal from "../components/modals/PrimaryModal/PrimaryModal";
 
 interface Options {
@@ -8,19 +8,27 @@ interface Options {
     component: React.FC<any>,
     componentProps?: any,
     id: string,
-    onDismiss?: (event: (CustomEvent<OverlayEventDetail<any>>)) => void
+    onDismiss?: (event: (CustomEvent<OverlayEventDetail<any>>)) => void,
+    comp?: ReactNode
 }
 
 const useModal = (options: Options) => {
 
     const ModalComponent = useMemo(() => {
         return (
-            <PrimaryModal
-                title={options.title}
-                renderBody={() => (
-                    <options.component {...options.componentProps} />
-                )}
-            />
+            <>
+                {
+                    options.comp ?
+                        options.comp
+                        :
+                        <PrimaryModal
+                            title={options.title}
+                            renderBody={() => (
+                                <options.component {...options.componentProps} />
+                            )}
+                        />
+                }
+            </>
         )
     }, [options.component, options.componentProps])
 

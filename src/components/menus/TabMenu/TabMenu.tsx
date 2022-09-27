@@ -9,8 +9,10 @@ import AuthCallback from '../../../pages/Authentication/AuthCallback/AuthCallbac
 import Dashboard from '../../../pages/Dashboard/Dashboard';
 import Landing from '../../../pages/Landing/Landing';
 import OnBoarding from '../../../pages/OnBoarding/OnBoarding';
+import Rewards from '../../../pages/Reward/Reward';
 import Spinner from '../../../pages/Spinner/Spinner';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
+import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
 import ProtectedRoute from '../../routes/ProtectedRoute/ProtectedRoute';
 import PurePublicRoute from '../../routes/PurePublicRoute/PurePublicRoute';
@@ -50,6 +52,9 @@ const TabMenu: React.FC = () => {
                 <ProtectedRoute exact path={AppRoutes.transactionHistory}>
                     <TransactionHistory />
                 </ProtectedRoute>
+                <ProtectedRoute exact path={AppRoutes.reward}>
+                    <Rewards />
+                </ProtectedRoute>
                 <ProtectedRoute exact path={AppRoutes.spinner}>
                     <Spinner />
                 </ProtectedRoute>
@@ -71,6 +76,11 @@ const TabMenu: React.FC = () => {
                 <IonTabButton tab="dashboard" href={AppRoutes.dashboard}>
                     <IonIcon icon={gridOutline} />
                     <IonLabel>Dashboard</IonLabel>
+                </IonTabButton>
+
+                <IonTabButton tab="reward" href={AppRoutes.reward}>
+                    <RewardIcon/>
+                    <IonLabel>Rewards</IonLabel>
                 </IonTabButton>
 
                 <IonTabButton tab="spinner" href={AppRoutes.spinner}>

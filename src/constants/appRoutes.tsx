@@ -5,11 +5,7 @@ export const AppRoutes = {
     home: '/home',
     account: '/account',
     transactionHistory: '/transactionHistory',
-<<<<<<< HEAD
     authCallback: '/authCallback',
-    spinner: '/spinner'
-=======
     spinner: '/spinner',
     reward: '/reward'
->>>>>>> implemented rewards functionality
 }

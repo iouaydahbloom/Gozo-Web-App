@@ -10,7 +10,7 @@ interface Props {
 
 const SpinCondition : React.FC<Props> = ({setSpinWheel, dismiss}) => {
   return (
-    <div className='ion-text-center'>
+    <div className='ion-text-center ion-padding'>
 
     <PrimaryTypography
         size='s'

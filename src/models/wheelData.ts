@@ -8,7 +8,7 @@ interface StyleType {
 
 export class WheelData implements AppModel {
     constructor(
-        public option: string,
+        public text: string,
         public id: string,
         public style?: StyleType
         ) { }
@@ -19,7 +19,7 @@ export class WheelData implements AppModel {
 
     toDTO(): WheelDataDTO {
         return {
-            name: this.option,
+            name: this.text,
             objectId: this.id
         }
     }

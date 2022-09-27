@@ -17,6 +17,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "typeRoots": [
+      "./types", 
+      "./node_modules/@types",
       "src/index.d.ts"
     ],
     "isolatedModules": true,
@@ -25,5 +27,6 @@
   },
   "include": [
     "src"
-  ]
+  ],
+  "exclude": ["node_modules", "types"]
 }

@@ -13,7 +13,7 @@ const SpinSuccess: React.FC<Props> = ({ dismiss, text }) => {
             <PrimaryTypography
                 size='s'
             >
-                You just won $5.00 worth of MEA Miles
+                {text}
             </PrimaryTypography>
 
         </div>

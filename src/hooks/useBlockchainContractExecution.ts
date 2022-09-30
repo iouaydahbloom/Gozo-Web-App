@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { useState } from "react";
 import { GSNConfig, RelayProvider } from '@opengsn/provider';
 import { appConfig } from "../constants/appConfig";
+import { useIonViewDidLeave } from "@ionic/react";
 
 interface Props {
     contractAddress: string,
@@ -16,6 +17,8 @@ const useBlockchainContractExecution = ({ contractAddress, abi, funct, params }:
     const { rpcProvider, getProviderSigner } = useMagicAuth();
     const [error, setError] = useState();
     const [executing, setExecuting] = useState(false);
+    const [eventName, setEventName] = useState('');
+    const contract = new ethers.Contract(contractAddress, abi, getProviderSigner())
 
     async function run(withGSN?: boolean) {
         try {
@@ -56,8 +59,19 @@ const useBlockchainContractExecution = ({ contractAddress, abi, funct, params }:
         return web3Provider.getSigner();
     }
 
+    async function initListener(eventName: string, callBack: (...args: any[]) => void) {
+        setEventName(eventName)
+        contract.on(eventName, callBack);
+    }
+
+    useIonViewDidLeave(() => {
+        //remove all contract listeners
+        contract.removeAllListeners(eventName)
+    },[eventName])
+
     return {
         run,
+        initListener,
         error,
         executing
     }

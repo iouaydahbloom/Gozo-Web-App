@@ -36,6 +36,7 @@ const useMagicAuth = () => {
         disconnect,
         isConnecting,
         user: magic?.user,
+        rpcProvider: magic?.rpcProvider,
         getProviderSigner
     }
 }

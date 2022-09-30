@@ -37,8 +37,11 @@ const useModal = (options: Options) => {
         })
     }
 
-    function dismissModal(dismissData?: any) {
-        modalController.dismiss(dismissData, undefined, options.id);
+    async function dismissModal(dismissData?: any) {
+        const topModal = await modalController.getTop();
+        if (!!topModal) {
+            modalController.dismiss(dismissData, undefined, options.id);
+        }
     }
 
     return {

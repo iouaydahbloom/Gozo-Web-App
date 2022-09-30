@@ -31,30 +31,17 @@ const useTokenProgramsExchange = () => {
         return Moralis.Units.Token(tokenQuantity ?? 0, 18);
     }, [tokenQuantity])
 
-    const { run: approveTransfer } = useBlockchainContractExecution({
+    const { run: transferTokens } = useBlockchainContractExecution({
         contractAddress: appConfig.tokenContract,
         abi: contractsAbi.erc20,
-        funct: 'approve',
-        params: [appConfig.exchangeContract, tokenQuantityInWei]
-    });
-
-    const { run: transferTokens } = useBlockchainContractExecution({
-        contractAddress: appConfig.exchangeContract,
-        abi: contractsAbi.exchange,
-        funct: 'transferIn',
+        funct: 'transferToOwner',
         params: [tokenQuantityInWei]
     });
 
     const executeT2PExchange = useCallback(async () => {
         if (tokenQuantity && tokenQuantity <= 0) return;
         setExchanging(true);
-        return approveTransfer()
-            .then(async (result) => {
-                if (result.status) {
-                    return transferTokens();
-                }
-                throw ("Can't approve transaction")
-            })
+        return transferTokens()
             .then(async (result: any) => {
                 if (result.status) {
                     presentSuccess('Exchanged successfuly');

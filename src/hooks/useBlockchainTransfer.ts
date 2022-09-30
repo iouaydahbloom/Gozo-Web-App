@@ -15,7 +15,7 @@ const useBlockchainTransfer = (receiver: string, amount: string | number) => {
     });
 
     return {
-        transfer: run,
+        transfer: () => run(true),
         error,
         executing
     }

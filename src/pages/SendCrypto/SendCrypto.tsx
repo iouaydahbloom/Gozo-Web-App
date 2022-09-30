@@ -20,9 +20,7 @@ const SendCrypto: React.FC = () => {
     async function handleTransfer() {
         if (receiver && amount) {
             const result = await transfer();
-            if (result.status) {
-                presentSuccess('successfuly transfered');
-            }
+            if (result && result.status) presentSuccess('successfuly transfered');
         } else {
             presentFailure('You are missing some required fields')
         }

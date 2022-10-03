@@ -4,6 +4,9 @@ import { useState } from "react";
 import { GSNConfig, RelayProvider } from '@opengsn/provider';
 import { appConfig } from "../constants/appConfig";
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
+import { signMetaTxRequest } from "../helpers/metaTransactionsSigner";
+import { contractsAbi } from "../constants/contractsAbis";
+import { DefenderRelaySigner, DefenderRelayProvider } from 'defender-relay-client/lib/ethers';
 
 interface Props {
     contractAddress: string,
@@ -74,9 +77,32 @@ const useBlockchainContractExecution = ({ contractAddress, abi, funct, params }:
         contract && contract.removeAllListeners()
     }, [eventNames])
 
+    async function sendRelayedTransaction(fn: string, params: any) {
+        debugger;
+        const credentials = {
+            apiKey: '4N8NAjoLUfGFnJ1p9mqk2uHCt8Dx2jFi',
+            apiSecret: 'QGxcCiRmMW2J2wjHShKhFDQxXHn9ffyyycMbQtRRyrBMepmvwHBHFtHYaYE81iSX'
+        };
+        const relayProvider = new DefenderRelayProvider(credentials);
+        const relaySigner = new DefenderRelaySigner(credentials, relayProvider, { speed: 'fast' });
+
+        const forwarder = new ethers.Contract(contractAddress, contractsAbi.forwarder, relaySigner);
+        const tokenContractInterface = new ethers.utils.Interface(contractsAbi.erc20);
+
+        const { request, signature } = await signMetaTxRequest(rpcProvider, forwarder, {
+            from: getProviderSigner()._address,
+            to: appConfig.tokenContract,
+            data: tokenContractInterface.encodeFunctionData(fn, params)
+        });
+
+        const executeTx = await forwarder.execute(request, signature);
+        const receipt = await executeTx.wait();
+        return receipt;
+    }
+
     return {
         run,
-        addListener,
+        sendRelayedTransaction,
         error,
         executing
     }

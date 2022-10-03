@@ -12,5 +12,7 @@ export const appConfig = {
     nodeRPCUrl: process?.env.REACT_APP_RPC_URL ?? '',
     magicPublicKey: process?.env.REACT_APP_MAGIC_KEY ?? '',
     authUrl: process?.env.REACT_APP_AUTH_URL ?? '',
-    paymasterContract: process?.env.REACT_APP_PAYMASTER_CONTRACT ?? ''
+    paymasterContract: process?.env.REACT_APP_PAYMASTER_CONTRACT ?? '',
+    relayerContract: process?.env.REACT_APP_RELAYER_CONTRACT ?? '',
+    forwarderContract: process?.env.REACT_APP_FORWARDER_CONTRACT ?? '',
 }

@@ -6,7 +6,7 @@ import { appConfig } from "../constants/appConfig";
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { signMetaTxRequest } from "../helpers/metaTransactionsSigner";
 import { contractsAbi } from "../constants/contractsAbis";
-import { DefenderRelaySigner, DefenderRelayProvider } from 'defender-relay-client/lib/ethers';
+import { useDapp } from "../providers/DappProvider/DappProvider";
 
 interface Props {
     contractAddress: string,
@@ -17,6 +17,7 @@ interface Props {
 
 const useBlockchainContractExecution = ({ contractAddress, abi, funct, params }: Props) => {
 
+    const { walletAddress } = useDapp();
     const { rpcProvider, getProviderSigner } = useMagicAuth();
     const [error, setError] = useState();
     const [executing, setExecuting] = useState(false);
@@ -77,27 +78,32 @@ const useBlockchainContractExecution = ({ contractAddress, abi, funct, params }:
         contract && contract.removeAllListeners()
     }, [eventNames])
 
-    async function sendRelayedTransaction(fn: string, params: any) {
+    async function sendRelayedTransaction(fn: string, params: any[]) {
         debugger;
-        const credentials = {
-            apiKey: '4N8NAjoLUfGFnJ1p9mqk2uHCt8Dx2jFi',
-            apiSecret: 'QGxcCiRmMW2J2wjHShKhFDQxXHn9ffyyycMbQtRRyrBMepmvwHBHFtHYaYE81iSX'
-        };
-        const relayProvider = new DefenderRelayProvider(credentials);
-        const relaySigner = new DefenderRelaySigner(credentials, relayProvider, { speed: 'fast' });
+        // const credentials = {
+        //     apiKey: '4N8NAjoLUfGFnJ1p9mqk2uHCt8Dx2jFi',
+        //     apiSecret: 'QGxcCiRmMW2J2wjHShKhFDQxXHn9ffyyycMbQtRRyrBMepmvwHBHFtHYaYE81iSX'
+        // };
+        // const relayProvider = new DefenderRelayProvider(credentials);
+        // const relaySigner = new DefenderRelaySigner(credentials, relayProvider, { speed: 'fast' });
 
-        const forwarder = new ethers.Contract(contractAddress, contractsAbi.forwarder, relaySigner);
+        const forwarder = new ethers.Contract(appConfig.forwarderContract, contractsAbi.forwarder, getProviderSigner());
         const tokenContractInterface = new ethers.utils.Interface(contractsAbi.erc20);
 
         const { request, signature } = await signMetaTxRequest(rpcProvider, forwarder, {
-            from: getProviderSigner()._address,
+            from: walletAddress,
             to: appConfig.tokenContract,
             data: tokenContractInterface.encodeFunctionData(fn, params)
         });
 
-        const executeTx = await forwarder.execute(request, signature);
-        const receipt = await executeTx.wait();
-        return receipt;
+        return fetch('https://api.defender.openzeppelin.com/autotasks/51f58048-5588-4dda-a814-ba1ffb91c009/runs/webhook/8c492c77-a99a-4dcb-8697-97922025bac1/7kfrmg1w2xVBcRW9fYDKG7', {
+            method: 'POST',
+            body: JSON.stringify(request),
+            headers: { 'Content-Type': 'application/json' },
+        }).then(result => {
+            console.log('Fetching result is ', result);
+            return result as any;
+        });
     }
 
     return {

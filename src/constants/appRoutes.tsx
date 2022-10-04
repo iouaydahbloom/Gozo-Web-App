@@ -6,9 +6,6 @@ export const AppRoutes = {
     account: '/account',
     transactionHistory: '/transactionHistory',
     authCallback: '/authCallback',
-    // spinner: '/spinner',
-    spinner: '/spinner/:id',
+    spinner: '/spinner',
     reward: '/reward'
 }
-
-export const getSpinnerRoute = (id: string): string => (`/spinner/${id}`);

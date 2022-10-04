@@ -1,7 +1,7 @@
 import styles from './fortuneWheel.module.scss';
 import { WheelData } from '../../../models/wheelData';
 import { useEffect } from 'react';
-import { Winwheel } from './Winwheel';
+import { Winwheel } from '../WinWheelLibrary/Winwheel';
 import { ellipsisTruncate } from '../../../helpers/managment/string';
 
 interface Props {
@@ -88,9 +88,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     //     // 'responsive': true,
     // }
   });
-  // myWheel.startAnimation()
-  // console.log("myWheel", myWheel)
-  // }, [])
+
 
   function getOptimizeData() {
     let trasformedData: WheelData[] = structuredClone(data)
@@ -130,19 +128,6 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     //     ctx.lineTo(180, 10);               // Complete the path by stroking (draw lines).
     //     ctx.fill();                   // Then fill.
   }
-  //   function drawTriangle()
-  // {
-  //     tx.strokeStyle = '#000000';     // Set line colour.
-  //     tx.fillStyle   = 'aqua';        // Set fill colour.
-  //     tx.lineWidth   = 2;
-  //     tx.beginPath();                 // Begin path.
-  //     tx.moveTo(175, 20);             // Move to initial position.
-  //     tx.lineTo(235, 20);             // Draw lines to make the shape.
-  //     tx.lineTo(205, 80);
-  //     tx.lineTo(176, 20);
-  //     tx.stroke();                    // Complete the path by stroking (draw lines).
-  //     tx.fill();                      // Then fill with colour.
-  // }
 
   // Loads the tick audio sound in to an audio object.
   let audio = new Audio('/assets/audio/tick.mp3');
@@ -168,10 +153,6 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     myWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
     myWheel.draw();                // Call draw to render changes to the wheel.
   }
-
-  // function callbackFinished() {
-  //   console.log("entered finished")
-  // }
 
   // // Create new image object in memory.
   // let loadedImg = new Image();

@@ -1,3 +1,4 @@
+import { BrandDTO } from "./brandDTO"
 import { DynamicInputIdentifierDTO } from "./dynamicInputIdentifierDTO"
 import { ValueIdentifierDTO } from "./valueIdentifierDTO"
 
@@ -7,7 +8,8 @@ export interface LoyaltyProgramDTO {
     loyalty_currency: LoyaltyCurrencyDTO,
     partner_id: string,
     partnership_details?: LoyaltyPartnershipDetailsDTO,
-    active_partnerships?: ActivePartnershipDetailsDTO
+    active_partnerships?: ActivePartnershipDetailsDTO,
+    brand?: BrandDTO
 }
 
 export interface LoyaltyCurrencyDTO {

@@ -1,4 +1,4 @@
-import { PrizeDTO } from "./PrizeDTO copy";
+import { PrizeDTO } from "./PrizeDTO";
 
 export interface RewardDTO {
     objectId: string,

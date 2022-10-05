@@ -1,11 +1,11 @@
 import styles from './fortuneWheel.module.scss';
-import { WheelData } from '../../../models/wheelData';
+import { WheelSegment } from '../../../models/wheelSegment';
 import { useEffect } from 'react';
 import { Winwheel } from '../WinWheelLibrary/Winwheel';
 import { ellipsisTruncate } from '../../../helpers/managment/string';
 
 interface Props {
-  data: WheelData[],
+  data: WheelSegment[],
   spin: boolean,
   selectedPrizeId: string,
   onStopSpinning: () => void,
@@ -91,8 +91,8 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
 
   function getOptimizeData() {
-    let trasformedData: WheelData[] = structuredClone(data)
-    trasformedData = trasformedData.map((item: WheelData) => {
+    let trasformedData: WheelSegment[] = structuredClone(data)
+    trasformedData = trasformedData.map((item: WheelSegment) => {
       item.text = ellipsisTruncate(item.text, 13)
       return item
     })
@@ -107,7 +107,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
   function calculatePrize() {
     // Important thing is to set the stopAngle of the animation before stating the spin.
-    const selectedSegment = myWheel.segments.find((item: WheelData) => item?.id === selectedPrizeId)
+    const selectedSegment = myWheel.segments.find((item: WheelSegment) => item?.id === selectedPrizeId)
     if (myWheel?.animation && selectedSegment) myWheel.animation.stopAngle = randomIntFromInterval(selectedSegment.startAngle, selectedSegment.endAngle);
     // May as well start the spin from here.
     myWheel.startAnimation();

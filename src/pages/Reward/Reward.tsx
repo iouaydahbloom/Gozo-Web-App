@@ -2,28 +2,22 @@ import { IonPage, useIonViewWillEnter } from '@ionic/react'
 import { useState } from 'react';
 import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer'
-import { RewardDTO } from '../../dto/RewardDTO';
-import useCloud from '../../hooks/useCloud';
+import useReward from '../../hooks/useReward';
 import { Reward } from '../../models/reward';
-import { cloudFunctionName } from '../../moralis/cloudFunctionName';
 import RewardListing from './RewardListing/RewardListing'
 
 const Rewards: React.FC = () => {
     const [rewards, setRewards] = useState<Reward[]>([])
-    const { run } = useCloud();
+    const { fetchRewards } = useReward()
 
-    function fetchRewards() {
-        run(cloudFunctionName.reward,
-            null,
-            (result: RewardDTO[]) => Reward.getFromDTO(result),
-            true)
-            .then(result => {
-                if (result.isSuccess) setRewards(result.data)
-            })
+    function getRewards() {
+        fetchRewards().then(rewards => {
+            if (rewards) setRewards(rewards)
+        })
     }
 
     useIonViewWillEnter(() => {
-        fetchRewards()
+        getRewards()
     }, [])
     return (
         <IonPage>

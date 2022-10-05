@@ -6,7 +6,7 @@ import BottomFixedContainer from '../../components/layout/BottomFixedContainer/B
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import useModal from '../../hooks/useModal';
-import { WheelData } from '../../models/wheelData';
+import { WheelSegment } from '../../models/wheelSegment';
 import FortuneWheel from './FortuneWheel/FortuneWheel';
 import SpinCondition from './SpinConditionModal/SpinCondition';
 import styles from './spinner.module.scss';
@@ -19,19 +19,21 @@ import { contractsAbi } from '../../constants/contractsAbis';
 import useSearchParams from '../../hooks/useSearchParams';
 import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
 import usePlayGame from '../../hooks/usePlayGame';
+import usePrize from '../../hooks/usePrize';
 
 
 const Spinner: React.FC = () => {
     const search = useSearchParams();
-    const { getProgram } = useLoyaltyPrograms();
-    const { play, fetchPrizes, isPlaying, setIsPlaying, isLoadingPrizes } = usePlayGame();
-    const [wheelData, setWheelData] = useState<WheelData[]>([]);
+    const { fetchProgram } = useLoyaltyPrograms();
+    const { play, isPlaying, setIsPlaying} = usePlayGame();
+    const { fetchPrizes, isLoadingPrizes } = usePrize();
+    const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
     const [spinWheel, setSpinWheel] = useState(false);
     const [selectedPrizeId, setSelectedPrizeId] = useState<string>('')
     var loyaltyProgramId = search.get('program_id')
     const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram>({} as LoyaltyProgram)
 
-    const { initListener } = useBlockchainContractExecution({
+    const { addListener } = useBlockchainContractExecution({
         contractAddress: appConfig.gozoGameContract,
         abi: contractsAbi.game,
         funct: '',
@@ -72,7 +74,7 @@ const Spinner: React.FC = () => {
 
     function getLoyaltyProgram() {
         if (!loyaltyProgramId) return;
-        getProgram(loyaltyProgramId ?? '')
+        fetchProgram(loyaltyProgramId ?? '')
             .then(program => {
                 if (program) setLoyaltyProgram(program);
             })
@@ -82,11 +84,12 @@ const Spinner: React.FC = () => {
         if (Object.keys(loyaltyProgram).length === 0) return
         fetchPrizes(loyaltyProgram?.loyaltyCurrency?.id)
             .then(prizes => {
-                if (prizes) setWheelData(prizes)
+                if (prizes) setWheelSegments(prizes)
             })
     }
 
     function listenerCallBack(id: string) {
+        console.log("listening to event id =", id)
         // add condition that checks if the event belongs to the desired player_address
         // if(result.player_address === walletAddress) setSelectedPrizeId(id)
         // else console.log("error")
@@ -94,7 +97,7 @@ const Spinner: React.FC = () => {
     }
 
     function getSelectedPrize() {
-        return wheelData.find(item => item.id === selectedPrizeId)
+        return wheelSegments.find(item => item.id === selectedPrizeId)
     }
 
     useEffect(() => {
@@ -106,12 +109,11 @@ const Spinner: React.FC = () => {
     }, [loyaltyProgramId])
 
     useEffect(() => {
-        if (spinWheel && (Object.keys(loyaltyProgram).length !== 0)) play(loyaltyProgram?.loyaltyCurrency?.id)
+        if (spinWheel && (Object.keys(loyaltyProgram).length !== 0)) {
+            addListener('prizeSelected', listenerCallBack)
+            play(loyaltyProgram?.brand?.key ?? '')
+        } 
     }, [spinWheel])
-
-    useEffect(() => {
-        if (isPlaying) initListener('prizeSelected', listenerCallBack)
-    }, [isPlaying])
 
     return (
         <IonPage>
@@ -126,7 +128,7 @@ const Spinner: React.FC = () => {
                 </PrimaryTypography>
 
                 <div className={`${styles.wheelWrapper} ion-padding-vertical`}>
-                    <FortuneWheel spinDuration={0.3} data={wheelData} spin={spinWheel} selectedPrizeId={selectedPrizeId} onStopSpinning={handleStopWheelSpinning} />
+                    <FortuneWheel spinDuration={0.3} data={wheelSegments} spin={spinWheel} selectedPrizeId={selectedPrizeId} onStopSpinning={handleStopWheelSpinning} />
                 </div>
 
                 <PrimaryButton

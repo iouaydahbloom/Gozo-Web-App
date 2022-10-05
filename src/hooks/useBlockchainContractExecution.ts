@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { useState } from "react";
 import { GSNConfig, RelayProvider } from '@opengsn/provider';
 import { appConfig } from "../constants/appConfig";
-import { useIonViewDidLeave } from "@ionic/react";
+import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 
 interface Props {
     contractAddress: string,
@@ -17,8 +17,8 @@ const useBlockchainContractExecution = ({ contractAddress, abi, funct, params }:
     const { rpcProvider, getProviderSigner } = useMagicAuth();
     const [error, setError] = useState();
     const [executing, setExecuting] = useState(false);
-    const [eventName, setEventName] = useState('');
-    const contract = new ethers.Contract(contractAddress, abi, getProviderSigner())
+    const [eventNames, setEventNames] = useState<string[]>([]);
+    const [contract, setContract] = useState<ethers.Contract>()
 
     async function run(withGSN?: boolean) {
         try {
@@ -59,19 +59,24 @@ const useBlockchainContractExecution = ({ contractAddress, abi, funct, params }:
         return web3Provider.getSigner();
     }
 
-    async function initListener(eventName: string, callBack: (...args: any[]) => void) {
-        setEventName(eventName)
-        contract.on(eventName, callBack);
+    async function addListener(eventName: string, callBack: (...args: any[]) => void) {
+        contract && contract.on(eventName, callBack);
+        var eventNamesRef = [...eventNames]
+        eventNamesRef.push(eventName)
+        setEventNames(eventNamesRef)
     }
 
+    useIonViewWillEnter(() => {
+        setContract(new ethers.Contract(contractAddress, abi, getProviderSigner()))
+    })
+
     useIonViewDidLeave(() => {
-        //remove all contract listeners
-        contract.removeAllListeners(eventName)
-    },[eventName])
+        contract && contract.removeAllListeners()
+    }, [eventNames])
 
     return {
         run,
-        initListener,
+        addListener,
         error,
         executing
     }

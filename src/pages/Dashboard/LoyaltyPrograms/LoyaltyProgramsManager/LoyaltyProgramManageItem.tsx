@@ -21,7 +21,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
     const [isConnected, setIsConnected] = useState(!!myProgram);
     const [partnershipMetadata, setPartnershipMetadata] = useState<LoyaltyPartnershipDetails | null>();
     const [myUpdatedProgram, setMyUpdatedProgram] = useState<UserLoyaltyProgram | null>(myProgram);
-    const { connectProgram, disconnectProgram, getFilteredProgram, isUpdating } = useLoyaltyPrograms();
+    const { connectProgram, disconnectProgram, fetchFilteredProgram, isUpdating } = useLoyaltyPrograms();
     const { presentFailure } = useToast();
 
     function initMyProgram() {
@@ -79,7 +79,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
                         item.activePartnerships?.issuing ? 'issuing' :
                             'out';
 
-        return getFilteredProgram(item.partnerId, partnershipType)
+        return fetchFilteredProgram(item.partnerId, partnershipType)
             .then(program => {
                 setPartnershipMetadata(program?.partnershipDetails);
             })

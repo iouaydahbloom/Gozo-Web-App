@@ -46,7 +46,7 @@ const useLoyaltyPrograms = () => {
     async function getProgram(programId: string) {
         return run(
             cloudFunctionName.program,
-            { program_id: programId },
+            { partner_id: programId },
             (result: LoyaltyProgramDTO) => {
                 const stringifiedResult = JSON.stringify(result);
                 const parsedResult: LoyaltyProgramDTO = JSON.parse(stringifiedResult);
@@ -114,8 +114,8 @@ const useLoyaltyPrograms = () => {
         defaultProgram: gozoLoyalty,
         fetchMyLoyaltyPrograms: getMyPrograms,
         fetchAllPrograms: getAllAvailablePrograms,
-        getFilteredProgram: getFilteredProgram,
-        getProgram: getProgram,
+        fetchFilteredProgram: getFilteredProgram,
+        fetchProgram: getProgram,
         loadingMyLoyaltyPrograms: loadingMyPrograms,
         connectProgram,
         disconnectProgram,

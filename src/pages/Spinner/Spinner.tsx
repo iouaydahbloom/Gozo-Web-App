@@ -5,7 +5,6 @@ import SpinIcon from '../../components/icons/SpinIcon/SpinIcon';
 import BottomFixedContainer from '../../components/layout/BottomFixedContainer/BottomFixedContainer';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
-import useModal from '../../hooks/useModal';
 import { WheelSegment } from '../../models/wheelSegment';
 import FortuneWheel from './FortuneWheel/FortuneWheel';
 import SpinCondition from './SpinConditionModal/SpinCondition';
@@ -20,6 +19,7 @@ import useSearchParams from '../../hooks/useSearchParams';
 import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
 import usePlayGame from '../../hooks/usePlayGame';
 import usePrize from '../../hooks/usePrize';
+import useDialog from '../../hooks/useDialog';
 
 
 const Spinner: React.FC = () => {
@@ -40,19 +40,14 @@ const Spinner: React.FC = () => {
         params: []
     });
 
-    const { showModal: showSpinCondition } = useModal({
-        title: '',
-        component: SpinCondition,
-        componentProps: { setSpinWheel, dismiss },
+    const { showModal: showSpinCondition } = useDialog({
         id: 'spinConditionModal',
-        comp: <SpinCondition setSpinWheel={setSpinWheel} dismiss={dismiss} />
+        component: <SpinCondition setSpinWheel={setSpinWheel} dismiss={dismiss} />
     });
 
-    const { showModal: showSuccessModal } = useModal({
-        title: '',
-        component: SpinSuccess,
-        componentProps: { dismiss, text: `You just won ${getSelectedPrize()?.text}` },
+    const { showModal: showSuccessModal } = useDialog({
         id: 'spinSuccessModal',
+        component: <SpinSuccess dismiss={dismiss} text={`You just won ${getSelectedPrize()?.text}`}/>,
         onDismiss: () => {
             setSpinWheel(false)
             setSelectedPrizeId('')

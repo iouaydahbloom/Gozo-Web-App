@@ -4,14 +4,14 @@ import GozoIcon from '../../components/icons/GozoIcon/GozoIcon';
 import BottomFixedContainer from '../../components/layout/BottomFixedContainer/BottomFixedContainer';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
-import useModal from '../../hooks/useModal';
+import usePrimarySheet from '../../hooks/usePrimarySheet';
 import useTabMenuHidder from '../../hooks/useTabMenuHidder';
 import Authentication from '../Authentication/Authentication';
 import styles from './landing.module.scss';
 
 const Landing: React.FC = () => {
 
-    const { showModal: showAuthentication, dismissModal } = useModal({
+    const { showModal: showAuthentication, dismissModal } = usePrimarySheet({
         component: Authentication,
         title: 'Login/Register',
         id: 'authenticationModal'

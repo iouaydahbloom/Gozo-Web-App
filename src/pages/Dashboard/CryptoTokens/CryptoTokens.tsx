@@ -6,7 +6,7 @@ import PrimaryButtonsGroup from "../../../components/buttons/PrimaryButtonsGroup
 import PrimaryTypography from "../../../components/typography/PrimaryTypography/PrimaryTypography";
 import { AssetMode } from "../../../constants/assetsMode";
 import useERC20Assets from "../../../hooks/useERC20Assets";
-import useModal from "../../../hooks/useModal";
+import usePrimarySheet from "../../../hooks/usePrimarySheet";
 import { ERC20Asset } from "../../../models/assets/ERC20Asset";
 import { currencySettingsContext } from "../../../providers/CurrencySettingsProvider/currencySettingsContext";
 import ReceiveCrypto from "../../ReceiveCrypto/ReceiveCrypto";
@@ -26,7 +26,7 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
     const { fetchToken } = useContext(currencySettingsContext);
 
     const { Moralis } = useMoralis();
-    const { showModal: showSwap } = useModal({
+    const { showModal: showSwap } = usePrimarySheet({
         title: 'Swap',
         component: Swap,
         componentProps: { mode: AssetMode.token },
@@ -37,7 +37,7 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
         }
     });
 
-    const { showModal: showSendToken } = useModal({
+    const { showModal: showSendToken } = usePrimarySheet({
         title: 'Send Tokens',
         component: SendCrypto,
         id: 'sendCryptoModal',
@@ -47,7 +47,7 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
         }
     });
 
-    const { showModal: showReceiveToken } = useModal({
+    const { showModal: showReceiveToken } = usePrimarySheet({
         title: 'Receive Tokens',
         component: ReceiveCrypto,
         id: 'receciveCryptoModal'

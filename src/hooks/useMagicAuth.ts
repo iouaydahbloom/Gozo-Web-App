@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { magicAuthContext } from "../providers/MagicAuthProvider/magicAuthContext";
 import { ethers } from 'ethers';
 
@@ -25,10 +25,10 @@ const useMagicAuth = () => {
         return magic?.user.logout()
     }
 
-    const getProviderSigner = useCallback(() => {
+    function getProviderSigner() {
         const provider = new ethers.providers.Web3Provider(magic?.rpcProvider as any);
         return provider.getSigner();
-    }, [])
+    }
 
     return {
         connect,

@@ -11,14 +11,7 @@ interface Options {
 }
 
 const useModal = (options: Options) => {
-
-    const ModalComponent = useMemo(() => {
-        return (
-            options.component
-        )
-    }, [options.component])
-
-    const [presentIonicModal] = useIonModal(ModalComponent);
+    const [presentIonicModal] = useIonModal(options.component);
 
     function showModal() {
         presentIonicModal({

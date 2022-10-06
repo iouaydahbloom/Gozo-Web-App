@@ -14,13 +14,12 @@ const SendCrypto: React.FC = () => {
     const [receiver, setReceiver] = useState('');
     const [amount, setAmount] = useState('');
     const { transfer, error, executing } = useBlockchainTransfer(receiver, amount);
-    const { presentFailure, presentSuccess } = useToast();
+    const { presentFailure } = useToast();
     const { scan } = useBarcodeScanner();
 
     async function handleTransfer() {
         if (receiver && amount) {
-            const result = await transfer();
-            if (result && result.status) presentSuccess('successfuly transfered');
+            await transfer();
         } else {
             presentFailure('You are missing some required fields')
         }
@@ -32,11 +31,10 @@ const SendCrypto: React.FC = () => {
     }
 
     useEffect(() => {
-        if (error) {
-            console.log(error);
+        if (error && !executing) {
             presentFailure(error);
         }
-    }, [error])
+    }, [error, executing])
 
     return (
         <div>

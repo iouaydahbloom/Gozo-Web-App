@@ -31,28 +31,17 @@ const useTokenProgramsExchange = () => {
         return Moralis.Units.Token(tokenQuantity ?? 0, 18);
     }, [tokenQuantity])
 
-    const { run: transferTokens } = useBlockchainContractExecution({
-        contractAddress: appConfig.tokenContract,
-        abi: contractsAbi.erc20,
-        funct: 'transferToOwner',
-        params: [tokenQuantityInWei]
-    });
+    const { execute: transferTokens, executing } = useBlockchainContractExecution();
 
     const executeT2PExchange = useCallback(async () => {
         if (tokenQuantity && tokenQuantity <= 0) return;
-        setExchanging(true);
-        return transferTokens()
-            .then(async (result: any) => {
-                if (result.status) {
-                    presentSuccess('Exchanged successfuly');
-                    return;
-                }
-                throw ("Unable to transfer tokens")
-            })
-            .catch(error => {
-                presentFailure(`${JSON.stringify(error)}`);
-            })
-            .finally(() => setExchanging(false))
+        return transferTokens(
+            appConfig.tokenContract,
+            contractsAbi.erc20,
+            'transferToOwner',
+            [tokenQuantityInWei],
+            () => presentSuccess('Exchanged successfuly')
+        );
     }, [tokenQuantity])
 
     const simulateT2PExchange = useCallback(debounce((amount: number, onSuccess: (result: number) => void) => {
@@ -106,6 +95,10 @@ const useTokenProgramsExchange = () => {
                 })
         }
     }, [programQuantity, direction])
+
+    useEffect(() => {
+        setExchanging(executing);
+    }, [executing])
 
     return {
         exchange: direction == 't2p' ? executeT2PExchange : executeP2TExchange,

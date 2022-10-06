@@ -25,7 +25,7 @@ import useDialog from '../../hooks/useDialog';
 const Spinner: React.FC = () => {
     const search = useSearchParams();
     const { fetchProgram } = useLoyaltyPrograms();
-    const { play, isPlaying, setIsPlaying} = usePlayGame();
+    const { play, isPlaying, setIsPlaying } = usePlayGame();
     const { fetchPrizes, isLoadingPrizes } = usePrize();
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
     const [spinWheel, setSpinWheel] = useState(false);
@@ -33,12 +33,7 @@ const Spinner: React.FC = () => {
     var loyaltyProgramId = search.get('program_id')
     const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram>({} as LoyaltyProgram)
 
-    const { addListener } = useBlockchainContractExecution({
-        contractAddress: appConfig.gozoGameContract,
-        abi: contractsAbi.game,
-        funct: '',
-        params: []
-    });
+    const { addListener } = useBlockchainContractExecution();
 
     const { showModal: showSpinCondition } = useDialog({
         id: 'spinConditionModal',
@@ -47,7 +42,7 @@ const Spinner: React.FC = () => {
 
     const { showModal: showSuccessModal } = useDialog({
         id: 'spinSuccessModal',
-        component: <SpinSuccess dismiss={dismiss} text={`You just won ${getSelectedPrize()?.text}`}/>,
+        component: <SpinSuccess dismiss={dismiss} text={`You just won ${getSelectedPrize()?.text}`} />,
         onDismiss: () => {
             setSpinWheel(false)
             setSelectedPrizeId('')
@@ -105,9 +100,9 @@ const Spinner: React.FC = () => {
 
     useEffect(() => {
         if (spinWheel && (Object.keys(loyaltyProgram).length !== 0)) {
-            addListener('prizeSelected', listenerCallBack)
+            addListener(appConfig.gozoGameContract, contractsAbi.game, 'prizeSelected', listenerCallBack)
             play(loyaltyProgram?.brand?.key ?? '')
-        } 
+        }
     }, [spinWheel])
 
     return (

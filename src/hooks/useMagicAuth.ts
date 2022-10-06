@@ -25,6 +25,10 @@ const useMagicAuth = () => {
         return magic?.user.logout()
     }
 
+    function getProvider() {
+        return new ethers.providers.Web3Provider(magic?.rpcProvider as any);
+    }
+
     function getProviderSigner() {
         const provider = new ethers.providers.Web3Provider(magic?.rpcProvider as any);
         return provider.getSigner();
@@ -37,6 +41,7 @@ const useMagicAuth = () => {
         isConnecting,
         user: magic?.user,
         rpcProvider: magic?.rpcProvider,
+        getProvider,
         getProviderSigner
     }
 }

@@ -1,4 +1,5 @@
 import ethSigUtil from 'eth-sig-util';
+import { utils } from 'ethers';
 
 const EIP712Domain = [
     { name: 'name', type: 'string' },
@@ -48,9 +49,9 @@ async function signTypedData(signer: any, from: any, data: any) {
     return await signer.send(method, [from, argData]);
 }
 
-export async function buildRequest(forwarder: any, input: any) {
+export async function buildRequest(forwarder: any, input: any, gas: any) {
     const nonce = await forwarder.getNonce(input.from).then((nonce: any) => nonce.toString());
-    return { value: 0, gas: 1e6, nonce, ...input };
+    return { value: 0, gas: utils.formatUnits(gas, 'wei'), nonce, ...input };
 }
 
 export async function buildTypedData(forwarder: any, request: any) {
@@ -59,9 +60,8 @@ export async function buildTypedData(forwarder: any, request: any) {
     return { ...typeData, message: request };
 }
 
-export async function signMetaTxRequest(signer: any, forwarder: any, input: any) {
-    debugger;
-    const request = await buildRequest(forwarder, input);
+export async function signMetaTxRequest(signer: any, forwarder: any, gasLimit: any, input: any) {
+    const request = await buildRequest(forwarder, input, gasLimit);
     const toSign = await buildTypedData(forwarder, request);
     const signature = await signTypedData(signer, input.from, toSign);
     return { signature, request };

@@ -15,4 +15,5 @@ export const appConfig = {
     paymasterContract: process?.env.REACT_APP_PAYMASTER_CONTRACT ?? '',
     relayerContract: process?.env.REACT_APP_RELAYER_CONTRACT ?? '',
     forwarderContract: process?.env.REACT_APP_FORWARDER_CONTRACT ?? '',
+    relayAutoTaskUrl: process?.env.REACT_APP_RELAY_AUTO_TASK_WEBHOOK_URL ?? ''
 }

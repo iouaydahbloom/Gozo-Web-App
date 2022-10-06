@@ -6,6 +6,7 @@ export const cloudFunctionName = {
     defaultCurrency: 'default_currency',
     members: 'members',
     programs: 'programs',
+    program: 'program',
     updateMyPrograms: 'update_my_programs',
     getMyPrograms: 'get_my_programs',
     transactionHistory: 'transaction_history',
@@ -18,5 +19,8 @@ export const cloudFunctionName = {
     activateLoyaltyMember: 'activate_loyalty_member',
     connectProgram: 'connect_program',
     disconnectProgram: 'disconnect_program',
-    disconnectPrograms: 'disconnect_programs'
+    disconnectPrograms: 'disconnect_programs',
+    groupedPrize: 'grouped_prize',
+    reward: 'reward',
+    playWithSuperPoints: 'play_with_super_points'
 }

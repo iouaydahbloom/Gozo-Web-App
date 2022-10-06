@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router';
 import PrimaryCheckbox from '../../../../components/inputs/PrimaryCheckbox/PrimaryCheckbox';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
+import { AppRoutes } from '../../../../constants/appRoutes';
 import useMemberShip from '../../../../hooks/useMembership';
 import { UserLoyaltyProgram } from '../../../../models/loyaltyProgram';
 import styles from './loyaltyProgramItem.module.scss';
@@ -11,12 +13,13 @@ interface Props {
 }
 
 const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection }) => {
+    const { push } = useHistory();
 
     const [isSelected, setIsSelected] = useState(false);
     const { membership } = useMemberShip(loyaltyProgram?.currency.loyaltyCurrency);
 
     function spin() {
-        console.log('spinning');
+        push({pathname: AppRoutes.spinner, search: `?program_id=${loyaltyProgram?.currency.programId}`})
     }
 
     return (

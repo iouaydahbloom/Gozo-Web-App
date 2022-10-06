@@ -7,7 +7,7 @@ interface Props {
     onClick?: () => void,
     size?: 's' | 'm' | 'l',
     expand?: 'block',
-    type?: 'primary' | 'dark' | 'success',
+    type?: 'primary' | 'dark' | 'success' | 'link',
     customStyles?: string,
     disabled?: boolean
 }
@@ -54,6 +54,9 @@ const PrimaryButton: React.FC<Props> = ({
             case 'dark':
                 selectedColor = styles.dark;
                 break;
+            case 'link':
+                selectedColor = styles.link;
+                break;
             default:
                 selectedColor = styles.primary;
                 break;
@@ -67,6 +70,7 @@ const PrimaryButton: React.FC<Props> = ({
             expand={expand}
             className={`${styles.button} ${styledSize} ${customStyles} ${styledColor}`}
             onClick={onClick}
+            fill={type === "link" ? "clear" : "default"}
             disabled={disabled}>
             {children}
         </IonButton>

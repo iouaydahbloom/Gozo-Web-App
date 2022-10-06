@@ -12,24 +12,24 @@ import LoyaltyProgramItem from './LoyaltyProgramItem/LoyaltyProgramItem';
 import collectionManipulationHelper from '../../../utils/collectionManipulationHelper';
 import useLoyaltyPrograms from '../../../hooks/useLoyaltyPrograms';
 import useToast from '../../../hooks/useToast';
-import useModal from '../../../hooks/useModal';
 import useConfirmation from '../../../hooks/useConfirmation';
 import Swap from '../../Swap/Swap';
 import { AssetMode } from '../../../constants/assetsMode';
 import { currencySettingsContext } from '../../../providers/CurrencySettingsProvider/currencySettingsContext';
+import usePrimarySheet from '../../../hooks/usePrimarySheet';
 
 const LoyaltyPrograms = () => {
     const { fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [selectedUserCurrencyIds, setSelectedUserCurrencyIds] = useState<string[]>([]);
     const { getUserLoyaltyPrograms } = useAssets();
     const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
-    const { showModal: showManager } = useModal({
+    const { showModal: showManager } = usePrimarySheet({
         title: 'Partners',
         component: LoyaltyProgramsManager,
         id: 'lpModal',
         onDismiss: getPrograms
     });
-    const { showModal: showSwap } = useModal({
+    const { showModal: showSwap } = usePrimarySheet({
         title: 'Swap',
         component: Swap,
         componentProps: { mode: AssetMode.loyaltyPoint },

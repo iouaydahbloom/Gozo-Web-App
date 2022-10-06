@@ -1,0 +1,11 @@
+.myCanvas
+{
+    // background-image: url("assets/image/wheel_back.png");
+    // background-position: center;
+    // background-repeat: none;
+    background-repeat: no-repeat;   /* Ensure that background does not repeat */
+    background-position: center;    /* Ensure image is centred */
+    // width: 400px;
+    //  height: 400px;
+     background-size: contain;
+}

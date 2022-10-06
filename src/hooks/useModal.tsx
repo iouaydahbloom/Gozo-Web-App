@@ -1,39 +1,24 @@
 import { modalController, OverlayEventDetail } from "@ionic/core";
 import { useIonModal } from "@ionic/react";
-import React, { useMemo } from "react";
-import PrimaryModal from "../components/modals/PrimaryModal/PrimaryModal";
+import React, { ReactElement, useMemo } from "react";
 
 interface Options {
-    title: string,
-    component: React.FC<any>,
-    componentProps?: any,
     id: string,
-    onDismiss?: (event: (CustomEvent<OverlayEventDetail<any>>)) => void
+    component: React.FC<any> | ReactElement,
+    onDismiss?: (event: (CustomEvent<OverlayEventDetail<any>>)) => void,
+    initialBreakpoint?: number,
+    className?: string
 }
 
 const useModal = (options: Options) => {
-
-    const ModalComponent = useMemo(() => {
-        return (
-            <PrimaryModal
-                title={options.title}
-                renderBody={() => (
-                    <options.component {...options.componentProps} />
-                )}
-            />
-        )
-    }, [options.component, options.componentProps])
-
-    const [presentIonicModal] = useIonModal(ModalComponent);
+    const [presentIonicModal] = useIonModal(options.component);
 
     function showModal() {
         presentIonicModal({
-            cssClass: 'gozo-modal',
+            cssClass: options.className,
             id: options.id,
-            //initialBreakpoint: 0.90,
-            // breakpoints: [0.90],
             onDidDismiss: options.onDismiss,
-
+            initialBreakpoint: options.initialBreakpoint,
         })
     }
 

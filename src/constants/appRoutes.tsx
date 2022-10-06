@@ -5,5 +5,7 @@ export const AppRoutes = {
     home: '/home',
     account: '/account',
     transactionHistory: '/transactionHistory',
-    authCallback: '/authCallback'
+    authCallback: '/authCallback',
+    spinner: '/spinner',
+    reward: '/reward'
 }

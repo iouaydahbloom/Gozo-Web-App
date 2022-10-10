@@ -71,9 +71,9 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
             <div className={styles.actions}>
                 <PrimaryButtonsGroup
                     buttons={[
-                        { title: 'Send', icon: <IonIcon icon={arrowUpOutline} />, onClick: showSendToken },
-                        { title: 'Receive', icon: <IonIcon icon={arrowDownOutline} />, onClick: showReceiveToken },
-                        { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
+                        { label: 'Send', children: <IonIcon icon={arrowUpOutline} />, onClick: showSendToken },
+                        { label: 'Receive', children: <IonIcon icon={arrowDownOutline} />, onClick: showReceiveToken },
+                        { label: 'Swap', children: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
                     ]}
                 />
             </div>

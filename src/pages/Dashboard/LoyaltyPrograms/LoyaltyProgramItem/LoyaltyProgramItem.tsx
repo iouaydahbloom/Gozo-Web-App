@@ -9,26 +9,30 @@ import styles from './loyaltyProgramItem.module.scss';
 
 interface Props {
     loyaltyProgram: UserLoyaltyProgram,
-    onSelection?: (selected: boolean, program: UserLoyaltyProgram) => void
+    onSelection?: (selected: boolean, program: UserLoyaltyProgram) => void,
+    displayCheckbox?: boolean
 }
 
-const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection }) => {
+const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, displayCheckbox=false }) => {
     const { push } = useHistory();
 
     const [isSelected, setIsSelected] = useState(false);
     const { membership } = useMemberShip(loyaltyProgram?.currency.loyaltyCurrency);
 
     function spin() {
-        push({pathname: AppRoutes.spinner, search: `?program_id=${loyaltyProgram?.currency.programId}`})
+        push({ pathname: AppRoutes.spinner, search: `?program_id=${loyaltyProgram?.currency.programId}` })
     }
 
     return (
         <div className={styles.container}>
             <div className={styles.dataContainer}>
-                <PrimaryCheckbox value={isSelected} onChange={(selected) => {
-                    setIsSelected(selected);
-                    onSelection && onSelection(selected, loyaltyProgram)
-                }} />
+                {displayCheckbox &&
+                    <PrimaryCheckbox value={isSelected} onChange={(selected) => {
+                        setIsSelected(selected);
+                        onSelection && onSelection(selected, loyaltyProgram)
+                    }} />
+                }
+
                 <div>
                     <PrimaryTypography color='dark' isBold size='m'>{loyaltyProgram.currency.loyaltyCurrencyName}</PrimaryTypography>
                     <PrimaryTypography color='dark' customClassName={styles.middleRow}>{membership?.balance} pts</PrimaryTypography>

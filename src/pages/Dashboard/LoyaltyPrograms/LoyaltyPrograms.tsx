@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { UserLoyaltyProgram } from '../../../models/loyaltyProgram';
 import useAssets from '../../../hooks/useAssets';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
-import { IonIcon, useIonModal } from '@ionic/react';
+import { IonIcon } from '@ionic/react';
 import LoyaltyProgramsManager from './LoyaltyProgramsManager/LoyaltyProgramsManager';
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
 import PrimaryButtonsGroup from '../../../components/buttons/PrimaryButtonsGroup/PrimaryButtonsGroup';
@@ -21,6 +21,7 @@ import usePrimarySheet from '../../../hooks/usePrimarySheet';
 const LoyaltyPrograms = () => {
     const { fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [selectedUserCurrencyIds, setSelectedUserCurrencyIds] = useState<string[]>([]);
+    const [onClickRemove, setOnClickRemove] = useState(false)
     const { getUserLoyaltyPrograms } = useAssets();
     const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
     const { showModal: showManager } = usePrimarySheet({
@@ -54,6 +55,10 @@ const LoyaltyPrograms = () => {
             })
     }
 
+    function switchButtons() {
+        setOnClickRemove(prev => !prev)
+    }
+
     function disconnectSelected() {
         if (selectedUserCurrencyIds.length == 0) {
             presentInfo('Select at least one Program');
@@ -68,6 +73,7 @@ const LoyaltyPrograms = () => {
                     .then(disconnected => {
                         if (disconnected) {
                             presentSuccess('Programs successfuly disconnected');
+                            switchButtons()
                             getPrograms();
                         }
                     })
@@ -78,12 +84,12 @@ const LoyaltyPrograms = () => {
     const NoProgramsContainer = () => {
         return (
             <div className={styles.noDataContainer}>
-                <PrimaryTypography customClassName={styles.center}>You have no loyalty programs added here yet</PrimaryTypography>
-                <br /><br />
                 <PrimaryButton onClick={showManager} size='m' expand='block'>
                     <IonIcon icon={addOutline} />
                     add loyalty programs
                 </PrimaryButton>
+                <br />
+                <PrimaryTypography customClassName={styles.center}>You have no loyalty programs added here yet</PrimaryTypography>
             </div>
         )
     }
@@ -94,17 +100,29 @@ const LoyaltyPrograms = () => {
                 loyaltyPrograms.length > 0 ?
                     <>
                         <div className={styles.actions}>
-                            <PrimaryButtonsGroup
-                                buttons={[
-                                    { title: 'Add', icon: <IonIcon icon={addOutline} />, onClick: showManager },
-                                    { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap },
-                                    { title: 'Remove', icon: <IonIcon icon={trashOutline} />, onClick: disconnectSelected }
-                                ]}
-                            />
+                            {onClickRemove ?
+                                <PrimaryButtonsGroup
+                                    className={styles.removeButtons}
+                                    buttons={[
+                                        { children: <PrimaryTypography size='m'>Cancel</PrimaryTypography>, onClick: switchButtons },
+                                        { children: <PrimaryTypography size='m'>Remove</PrimaryTypography>, fill: 'outline', onClick: disconnectSelected }
+                                    ]}
+                                />
+                                :
+                                <PrimaryButtonsGroup
+                                    className={styles.actionButtons}
+                                    buttons={[
+                                        { label: 'Add', children: <IonIcon icon={addOutline} />, onClick: showManager },
+                                        { label: 'Remove', children: <IonIcon icon={trashOutline} />, onClick: switchButtons },
+                                        { label: 'Swap', children: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
+                                    ]}
+                                />
+                            }
                         </div>
                         {loyaltyPrograms.map((lp, index) => (
                             <LoyaltyProgramItem
                                 key={index}
+                                displayCheckbox={onClickRemove}
                                 loyaltyProgram={lp}
                                 onSelection={(selected, program) => {
                                     if (selected) {

@@ -1,11 +1,12 @@
 import { Deeplinks } from '@awesome-cordova-plugins/deeplinks';
-import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
-import { gridOutline, personCircleOutline } from 'ionicons/icons';
+import { IonFab, IonFabButton, IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
+import { gridOutline, personCircleOutline, walletOutline } from 'ionicons/icons';
 import React, { useEffect } from 'react';
 import { Redirect, Route, useHistory } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
 import Account from '../../../pages/Account/Account';
 import AuthCallback from '../../../pages/Authentication/AuthCallback/AuthCallback';
+import Buy from '../../../pages/Buy/Buy';
 import Dashboard from '../../../pages/Dashboard/Dashboard';
 import Landing from '../../../pages/Landing/Landing';
 import OnBoarding from '../../../pages/OnBoarding/OnBoarding';
@@ -38,7 +39,7 @@ const TabMenu: React.FC = () => {
     }, [])
 
     return (
-        <IonTabs>
+        <IonTabs className={styles.tabsBar}>
             <IonRouterOutlet>
                 <ProtectedRoute exact path={AppRoutes.dashboard}>
                     <Dashboard />
@@ -57,6 +58,9 @@ const TabMenu: React.FC = () => {
                 </ProtectedRoute>
                 <ProtectedRoute exact path={AppRoutes.spinner}>
                     <Spinner />
+                </ProtectedRoute>
+                <ProtectedRoute exact path={AppRoutes.buy}>
+                    <Buy />
                 </ProtectedRoute>
                 <PurePublicRoute exact path={AppRoutes.landing}>
                     <Landing />
@@ -79,13 +83,18 @@ const TabMenu: React.FC = () => {
                 </IonTabButton>
 
                 <IonTabButton tab="reward" href={AppRoutes.reward}>
-                    <RewardIcon/>
+                    <RewardIcon />
                     <IonLabel>Rewards</IonLabel>
                 </IonTabButton>
 
-                <IonTabButton tab="spinner" href={AppRoutes.spinner}>
-                    <SpinIcon />
-                    <IonLabel>Spin</IonLabel>
+                <IonTabButton tab="spinner" className={styles.floatingButton} href={AppRoutes.spinner}>
+                    <SpinIcon size='large' />
+                    <IonLabel>Play</IonLabel>
+                </IonTabButton>
+
+                <IonTabButton tab="buy" href={AppRoutes.buy}>
+                    <IonIcon icon={walletOutline} />
+                    <IonLabel>Buy</IonLabel>
                 </IonTabButton>
 
                 <IonTabButton tab="account" href={AppRoutes.account}>
@@ -93,6 +102,7 @@ const TabMenu: React.FC = () => {
                     <IonLabel>Account</IonLabel>
                 </IonTabButton>
             </IonTabBar>
+
         </IonTabs>
     )
 }

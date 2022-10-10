@@ -1,6 +1,44 @@
-.tabBar {
-    --background: var(--ion-color-medium-shade);
-    --border: none;
-    --color: var(--ion-color-light);
-    padding: 20px;
+.tabsBar {
+    background: var(--ion-color-dark);
+
+    .tabBar {
+        --background: var(--ion-color-medium-shade);
+        --border: none;
+        --color: var(--ion-color-light);
+        background: var(--ion-color-dark);
+        height: 95px;
+        max-height: 95px;
+
+        ion-tab-button {
+            --border: none;
+            max-height: 66px;
+            margin-top: 39px;
+        }
+
+        .floatingButton {
+            overflow: visible !important;
+            max-height: 120px !important;
+            height: 120px !important;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            width: 100%;
+            max-width: 62px;
+
+            ion-icon {
+                transform: translate3d(0, 0px, 0);
+                background: var(--ion-color-primary);
+                color: var(--ion-color-light);
+                padding: 15px !important;
+                border-radius: 50% !important;
+                margin-top: -55px !important;
+                border: unset;  
+                box-shadow: 0px 2px 3px #000000;
+            }
+
+            ion-label {
+                position: absolute;
+                bottom: 32px;
+            }
+        }
+    }
 }

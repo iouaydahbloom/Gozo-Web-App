@@ -6,7 +6,7 @@ interface Props {
     children?: ReactNode,
     isBlock?: boolean,
     isBold?: boolean,
-    size?: 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl',
+    size?: 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl',
     customClassName?: string,
     color?: 'light' | 'dark' | 'danger'
 }
@@ -37,6 +37,9 @@ const PrimaryTypography: React.FC<Props> = ({
                 break;
             case 'xxl':
                 selectedStyle = styles.xxl;
+                break;
+            case 'xxxl':
+                selectedStyle = styles.xxxl;
                 break;
             default:
                 selectedStyle = styles.small;

@@ -9,7 +9,8 @@ interface Props {
     expand?: 'block',
     type?: 'primary' | 'dark' | 'success' | 'link',
     customStyles?: string,
-    disabled?: boolean
+    disabled?: boolean,
+    fill?: "clear" | "default" | "outline" | "solid" | undefined
 }
 
 const PrimaryButton: React.FC<Props> = ({
@@ -19,7 +20,8 @@ const PrimaryButton: React.FC<Props> = ({
     expand,
     type = 'primary',
     customStyles = '',
-    disabled = false
+    disabled = false,
+    fill=undefined
 }) => {
 
     const styledSize = useMemo(() => {
@@ -68,9 +70,9 @@ const PrimaryButton: React.FC<Props> = ({
     return (
         <IonButton
             expand={expand}
-            className={`${styles.button} ${styledSize} ${customStyles} ${styledColor}`}
+            className={`${styles.button} ${styledSize} ${customStyles} ${styledColor} ${fill === 'outline' ? styles.outline : ''}`}
             onClick={onClick}
-            fill={type === "link" ? "clear" : "default"}
+            fill={fill}
             disabled={disabled}>
             {children}
         </IonButton>

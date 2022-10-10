@@ -7,6 +7,7 @@ interface Options {
     title: string,
     component: React.FC<any>,
     componentProps?: any,
+    initialBreakpoint?: number,
     id: string,
     onDismiss?: (event: (CustomEvent<OverlayEventDetail<any>>)) => void,
 }
@@ -17,7 +18,7 @@ const usePrimarySheet = (options: Options) => {
         id: options.id,
         className: "primary-sheet",
         onDismiss: options.onDismiss,
-        initialBreakpoint: 0.9,
+        initialBreakpoint: options.initialBreakpoint ? options.initialBreakpoint : 0.9,
         component: <PrimaryModal
             title={options.title}
             renderBody={() => (

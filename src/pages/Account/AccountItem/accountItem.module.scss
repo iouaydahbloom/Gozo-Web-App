@@ -13,7 +13,7 @@
     }
 
     .iconContainer {
-        background: linear-gradient(153.78deg, #5466FF 29.36%, #76F4C3 119.24%);
+        background: linear-gradient(153.78deg, var(--ion-icon-primary) 29.36%, var(--ion-color-quaternary) 119.24%);
         box-shadow: inset 0px 2px 3px var(--ion-color-medium);
         border-radius: 10px 0px 0px 10px;
         flex: 0.2;

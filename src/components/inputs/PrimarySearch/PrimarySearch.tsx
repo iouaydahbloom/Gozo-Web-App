@@ -4,13 +4,15 @@ import styles from './primarySearch.module.scss';
 
 interface Props {
     value?: string,
-    onChange?: (value: string) => void
+    onChange?: (value: string) => void,
+    placeholder?: string
 }
 
-const PrimarySearch: React.FC<Props> = ({ value, onChange }) => {
+const PrimarySearch: React.FC<Props> = ({ value, onChange, placeholder = 'Search' }) => {
     return (
         <IonSearchbar
             className={styles.input}
+            placeholder={placeholder}
             value={value}
             onIonChange={(event) => {
                 onChange && onChange(event.detail.value ?? '')

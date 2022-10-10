@@ -7,5 +7,6 @@ export const AppRoutes = {
     transactionHistory: '/transactionHistory',
     authCallback: '/authCallback',
     spinner: '/spinner',
-    reward: '/reward'
+    reward: '/reward',
+    buy: '/buy'
 }

@@ -42,18 +42,19 @@ const HighlightedBalance: React.FC<Props> = ({ mode }) => {
         if (mode == AssetMode.loyaltyPoint) {
             setAsset({
                 balance: gozoLoyaltyMembership ? gozoLoyaltyMembership.balance : 0,
-                description: 'Super Points'
+                description: 'Gozo Loyalty Points'
             });
         }
     }, [gozoLoyaltyMembership])
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} >
+            <img src='/assets/image/gozo-element.png' className={styles.img}/>
             <div className={styles.innerContainer}>
                 <IonBadge className={styles.badge}>
-                    <PrimaryTypography size='xxl'> {asset ? asset.balance : 0}</PrimaryTypography>
+                    <PrimaryTypography size='xxxl'> {asset ? asset.balance : 0}</PrimaryTypography>
                 </IonBadge>
-                <PrimaryTypography size='xl' customClassName={styles.description}>{asset?.description}</PrimaryTypography>
+                <PrimaryTypography size='l' customClassName={styles.description}>{asset?.description}</PrimaryTypography>
             </div>
         </div>
     )

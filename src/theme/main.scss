@@ -26,6 +26,12 @@
     }
 }
 
+.middle-screen-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 /** hide google social login in web3Auth **/
 // .w3ajs-socials-adapters {

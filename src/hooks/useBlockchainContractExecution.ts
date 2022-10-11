@@ -122,6 +122,7 @@ const useBlockchainContractExecution = () => {
 
     return {
         execute,
+        estimate,
         error,
         executing,
         addListener

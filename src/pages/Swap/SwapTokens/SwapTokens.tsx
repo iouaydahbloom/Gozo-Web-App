@@ -1,6 +1,8 @@
+import { IonSpinner } from '@ionic/react';
 import React, { useCallback } from 'react'
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import { SelectOption } from '../../../components/inputs/PrimarySelect/PrimarySelect';
+import PrimaryLoader from '../../../components/loaders/PrimaryLoader/PrimaryLoader';
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
 import useTokenProgramsExchange from '../../../hooks/useTokenProgramsExchange';
 import SwapDirection from '../SwapDirectionToggle/SwapDirectionToggle';
@@ -11,7 +13,7 @@ const SwapTokens: React.FC = () => {
 
     const { tokenOptions, programOptions, token, tokenQuantity, setTokenQuantity, program,
         programQuantity, setProgramQuantity, exchanging, exchange, toggleDirection, direction,
-        minimumValue } = useTokenProgramsExchange();
+        minimumValue, estimatedGasFee } = useTokenProgramsExchange();
 
     const renderTokensField = useCallback((label: string, isDisabled: boolean) => (
         <SwapField
@@ -48,10 +50,12 @@ const SwapTokens: React.FC = () => {
             </div>
 
             <div className={styles.infoAlert}>
-                <div className={styles.gasFeeContainer}>
-                    <PrimaryTypography customClassName={styles.gasFeeTitle}>Gas Fee</PrimaryTypography>
-                    <PrimaryTypography customClassName={styles.gasFeeValue}>12 GZT</PrimaryTypography>
-                </div>
+                {direction == "t2p" && <div className={styles.gasFeeContainer}>
+                    <PrimaryTypography customClassName={styles.gasFeeTitle} isBold>Gas Fee</PrimaryTypography>
+                    <PrimaryTypography customClassName={styles.gasFeeValue} isBold>
+                        {!estimatedGasFee ? <IonSpinner color='primary' name='crescent' /> : estimatedGasFee} GZT
+                    </PrimaryTypography>
+                </div>}
 
                 <PrimaryTypography isBold>Minimum Value</PrimaryTypography>
                 <br />

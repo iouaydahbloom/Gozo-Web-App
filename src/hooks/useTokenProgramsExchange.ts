@@ -26,13 +26,18 @@ const useTokenProgramsExchange = () => {
     const { Moralis } = useMoralis();
     const { walletAddress } = useDapp();
     const [minimumValue, setMinimumValue] = useState<number>();
+    const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
     const [direction, setDirection] = useState<'t2p' | 'p2t'>('t2p');
 
     const tokenQuantityInWei = useMemo(() => {
         return Moralis.Units.Token(tokenQuantity ?? 0, 18);
     }, [tokenQuantity])
 
-    const { execute: transferTokens, executing } = useBlockchainContractExecution();
+    const { execute: transferTokens, estimate, executing } = useBlockchainContractExecution();
+
+    /**
+     * Token to points exchange logic
+     */
 
     const executeT2PExchange = useCallback(async () => {
         if (tokenQuantity && tokenQuantity <= 0) return;
@@ -64,6 +69,21 @@ const useTokenProgramsExchange = () => {
             })
     }, [])
 
+    const estimateTokenTransferFee = useCallback(async () => {
+        const estimatedGasFee = await estimate(
+            appConfig.tokenContract,
+            contractsAbi.erc20,
+            'transferToOwner',
+            [tokenQuantityInWei]
+        );
+        console.log('estimated gas fee', estimatedGasFee);
+        setEstimatedGasFee(estimatedGasFee);
+    }, [])
+
+    /**
+    * Points to Tokens exchange logic
+    */
+
     const executeP2TExchange = useCallback(async () => {
         if (programQuantity && programQuantity <= 0) return;
         setExchanging(true);
@@ -93,6 +113,10 @@ const useTokenProgramsExchange = () => {
                 if (result.isSuccess) setMinimumValue(result.data);
             })
     }, [])
+
+    /**
+     * Lifecycles events
+     */
 
     useEffect(() => {
         setTokenOptions(defaultAsset ? [defaultAsset] : []);
@@ -124,7 +148,12 @@ const useTokenProgramsExchange = () => {
     }, [executing])
 
     useEffect(() => {
-        direction == 't2p' ? minimumT2PExchange() : minimumP2TExchange();
+        if (direction == 't2p') {
+            minimumT2PExchange();
+            estimateTokenTransferFee();
+        } else {
+            minimumP2TExchange();
+        }
     }, [direction])
 
     return {
@@ -140,6 +169,7 @@ const useTokenProgramsExchange = () => {
         exchanging: exchanging,
         direction: direction,
         minimumValue,
+        estimatedGasFee,
         toggleDirection: () => setDirection(prev => prev == 't2p' ? 'p2t' : 't2p')
     }
 }

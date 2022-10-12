@@ -21,7 +21,7 @@ const PrimaryButton: React.FC<Props> = ({
     type = 'primary',
     customStyles = '',
     disabled = false,
-    fill=undefined
+    fill
 }) => {
 
     const styledSize = useMemo(() => {

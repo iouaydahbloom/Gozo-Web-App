@@ -5,29 +5,26 @@ import PrimaryButton from '../PrimaryButton/PrimaryButton';
 import styles from './primaryButtonsGroup.module.scss';
 
 interface Props {
-    className?: string
     buttons?: {
-        children?: ReactNode,
-        label?: string,
-        fill?: "clear" | "default" | "outline" | "solid" | undefined,
+        icon: ReactNode,
+        title: string,
         onClick: () => void
     }[]
 }
 
-const PrimaryButtonsGroup: React.FC<Props> = ({ className = '', buttons = [] }) => {
+const PrimaryButtonsGroup: React.FC<Props> = ({ buttons = [] }) => {
     return (
-        <div className={`${styles.buttonsContainer} ${className}`}>
+        <div className={styles.buttonsContainer}>
             {buttons.map((button, index) => (
                 <div key={index}
                     className={styles.buttonContainer}>
                     <PrimaryButton
                         onClick={button.onClick}
                         customStyles={styles.button}
-                        fill={button.fill}
                     >
-                        {button.children}
+                        {button.icon}
                     </PrimaryButton>
-                    <PrimaryTypography>{button.label}</PrimaryTypography>
+                    <PrimaryTypography>{button.title}</PrimaryTypography>
                 </div>
             ))}
         </div>

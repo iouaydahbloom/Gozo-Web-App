@@ -1,0 +1,28 @@
+.cryptoTransactionDetails {
+    padding: 22px;
+    background: var(--ion-color-dark-tint);
+    border-radius: 11px;
+
+    .seperator {
+        height: 1px;
+        border-bottom: 2px solid var(--ion-color-medium-tint);
+        margin: 19px 0;
+    }
+
+    .gasFeeContainer {
+        display: flex;
+
+        .gasFeeTitle {
+            flex: 1;
+        }
+
+        .gasFeeValue {
+            flex: 1;
+            text-align: right;
+        }
+    }
+
+    .title {
+        margin-bottom: 8px;
+    }
+}

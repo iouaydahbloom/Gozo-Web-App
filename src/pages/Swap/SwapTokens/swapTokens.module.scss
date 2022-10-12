@@ -1,15 +1,19 @@
-.swapControl {
-    margin-bottom: 40px;
+.swapContainer {
+    position: relative;
 
-    .swapField {
-        padding: 8px 12px;
-        background-color: var(--ion-color-tertiary);
-        border-radius: 11px;
-        display: flex;
-        align-items: center;
+    .swapControl {
+        margin-bottom: 40px;
 
-        .input {
-            text-align: right;
+        .swapField {
+            padding: 8px 12px;
+            background-color: var(--ion-color-tertiary);
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+
+            .input {
+                text-align: right;
+            }
         }
     }
 }

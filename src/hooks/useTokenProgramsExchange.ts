@@ -25,13 +25,19 @@ const useTokenProgramsExchange = () => {
     const { presentFailure, presentSuccess } = useToast();
     const { Moralis } = useMoralis();
     const { walletAddress } = useDapp();
+    const [minimumValue, setMinimumValue] = useState<number>();
+    const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
     const [direction, setDirection] = useState<'t2p' | 'p2t'>('t2p');
 
     const tokenQuantityInWei = useMemo(() => {
         return Moralis.Units.Token(tokenQuantity ?? 0, 18);
     }, [tokenQuantity])
 
-    const { execute: transferTokens, executing } = useBlockchainContractExecution();
+    const { execute: transferTokens, estimate, executing } = useBlockchainContractExecution();
+
+    /**
+     * Token to points exchange logic
+     */
 
     const executeT2PExchange = useCallback(async () => {
         if (tokenQuantity && tokenQuantity <= 0) return;
@@ -45,12 +51,38 @@ const useTokenProgramsExchange = () => {
     }, [tokenQuantity])
 
     const simulateT2PExchange = useCallback(debounce((amount: number, onSuccess: (result: number) => void) => {
+        if (!amount) {
+            onSuccess(0);
+            return;
+        }
         run(cloudFunctionName.simulateT2PExchange, { amount: amount }, (result: any) => result as number, true)
             .then(result => {
                 if (result.isSuccess) onSuccess(result.data);
-                else presentFailure('Unable to simulate conversion');
+                else presentFailure(result.message);
             })
     }, 1000), [])
+
+    const minimumT2PExchange = useCallback(() => {
+        run(cloudFunctionName.minimumT2Pexchange, null, (result: any) => result as number, true)
+            .then(result => {
+                if (result.isSuccess) setMinimumValue(result.data);
+            })
+    }, [])
+
+    const estimateTokenTransferFee = useCallback(async () => {
+        const estimatedGasFee = await estimate(
+            appConfig.tokenContract,
+            contractsAbi.erc20,
+            'transferToOwner',
+            [tokenQuantityInWei]
+        );
+        console.log('estimated gas fee', estimatedGasFee);
+        setEstimatedGasFee(estimatedGasFee);
+    }, [])
+
+    /**
+    * Points to Tokens exchange logic
+    */
 
     const executeP2TExchange = useCallback(async () => {
         if (programQuantity && programQuantity <= 0) return;
@@ -64,12 +96,27 @@ const useTokenProgramsExchange = () => {
     }, [programQuantity])
 
     const simulateP2TExchange = useCallback(debounce((amount: number, onSuccess: (result: number) => void) => {
+        if (!amount) {
+            onSuccess(0);
+            return;
+        }
         run(cloudFunctionName.simulateP2TExchange, { amount: amount }, (result: any) => result as number)
             .then(result => {
                 if (result.isSuccess) onSuccess(result.data);
-                else presentFailure('Unable to simulate conversion');
+                else presentFailure(result.message);
             })
     }, 1000), [])
+
+    const minimumP2TExchange = useCallback(() => {
+        run(cloudFunctionName.minimumP2Texchange, null, (result: any) => result as number, true)
+            .then(result => {
+                if (result.isSuccess) setMinimumValue(result.data);
+            })
+    }, [])
+
+    /**
+     * Lifecycles events
+     */
 
     useEffect(() => {
         setTokenOptions(defaultAsset ? [defaultAsset] : []);
@@ -100,6 +147,15 @@ const useTokenProgramsExchange = () => {
         setExchanging(executing);
     }, [executing])
 
+    useEffect(() => {
+        if (direction == 't2p') {
+            minimumT2PExchange();
+            estimateTokenTransferFee();
+        } else {
+            minimumP2TExchange();
+        }
+    }, [direction])
+
     return {
         exchange: direction == 't2p' ? executeT2PExchange : executeP2TExchange,
         tokenOptions: tokenOptions,
@@ -112,6 +168,8 @@ const useTokenProgramsExchange = () => {
         setProgramQuantity: setProgramQuantity,
         exchanging: exchanging,
         direction: direction,
+        minimumValue,
+        estimatedGasFee,
         toggleDirection: () => setDirection(prev => prev == 't2p' ? 'p2t' : 't2p')
     }
 }

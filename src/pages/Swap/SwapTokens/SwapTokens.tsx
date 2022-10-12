@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import { SelectOption } from '../../../components/inputs/PrimarySelect/PrimarySelect';
+import TransactionDetails from '../../../components/TransactionDetails/TransactionDetails';
 import useTokenProgramsExchange from '../../../hooks/useTokenProgramsExchange';
 import SwapDirection from '../SwapDirectionToggle/SwapDirectionToggle';
 import SwapField from '../SwapField/SwapField';
@@ -9,7 +10,8 @@ import styles from './swapTokens.module.scss';
 const SwapTokens: React.FC = () => {
 
     const { tokenOptions, programOptions, token, tokenQuantity, setTokenQuantity, program,
-        programQuantity, setProgramQuantity, exchanging, exchange, toggleDirection, direction } = useTokenProgramsExchange();
+        programQuantity, setProgramQuantity, exchanging, exchange, toggleDirection, direction,
+        minimumValue, estimatedGasFee } = useTokenProgramsExchange();
 
     const renderTokensField = useCallback((label: string, isDisabled: boolean) => (
         <SwapField
@@ -38,19 +40,29 @@ const SwapTokens: React.FC = () => {
     ), [programOptions, programQuantity])
 
     return (
-        <>
+        <div className={styles.swapContainer}>
             <div className={styles.swapControl}>
                 {direction == 't2p' ? renderTokensField('From', false) : renderProgramsField('From', false)}
                 <SwapDirection doubleDirection onClick={toggleDirection} />
                 {direction == 'p2t' ? renderTokensField('To', true) : renderProgramsField('To', true)}
             </div>
+
+            <TransactionDetails
+                hasMinimumValue={true}
+                minimumValue={minimumValue}
+                showFeeEstimation={direction == "t2p"}
+                estimatedFee={estimatedGasFee}
+                estimatedFeeUnit='GZT'
+            />
+
+            <br />
             <PrimaryButton
                 expand='block'
                 onClick={exchange}
                 disabled={exchanging}>
                 swap
             </PrimaryButton>
-        </>
+        </div>
     )
 }
 

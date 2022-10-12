@@ -3,6 +3,7 @@ import { scanOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react'
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../components/inputs/PrimaryInput/PrimaryInput';
+import TransactionDetails from '../../components/TransactionDetails/TransactionDetails';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import useBarcodeScanner from '../../hooks/useBarcodeScanner';
 import useBlockchainTransfer from '../../hooks/useBlockchainTransfer';
@@ -13,7 +14,7 @@ const SendCrypto: React.FC = () => {
 
     const [receiver, setReceiver] = useState('');
     const [amount, setAmount] = useState('');
-    const { transfer, error, executing } = useBlockchainTransfer(receiver, amount);
+    const { transfer, transferFee, error, executing } = useBlockchainTransfer(receiver, amount);
     const { presentFailure } = useToast();
     const { scan } = useBarcodeScanner();
 
@@ -57,6 +58,16 @@ const SendCrypto: React.FC = () => {
                 placeholder='Enter Amount'
                 value={amount}
                 onChange={setAmount} />
+            <br />
+
+            <TransactionDetails
+                hasMinimumValue={false}
+                showFeeEstimation={true}
+                estimatedFee={transferFee}
+                estimatedFeeUnit='GZT'
+                notification='Transaction might take around 1 minute'
+            />
+
             <br />
             <PrimaryButton
                 expand='block'

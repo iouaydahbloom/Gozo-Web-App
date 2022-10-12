@@ -661,7 +661,7 @@ const tokenContractABI = [
 
 async function estimatePreRelay(request) {
     console.log('--- Estimating Prerelay request transaction fees ---');
-    const gasLimit = (parseInt(request.gas) + 50000).toString();
+    const gasLimit = (parseInt(request.gas)).toString();
     const provider = getDefaultProvider(rpcProviderUrl);
     return Promise.all([
         provider.getGasPrice(),
@@ -691,7 +691,7 @@ async function preRelay(signer, request) {
         const tx = await tokenContract.transferFrom(
             request.from,
             adminWalletAddress,
-            utils.parseUnits('1', 18),
+            utils.parseUnits(tokenToPay.toString(), 18),
             { gasLimit: utils.formatUnits(60000, 'wei') }
         );
         const receipt = await tx.wait();

@@ -1,8 +1,7 @@
-import { IonLabel } from '@ionic/react';
 import React, { ReactNode } from 'react';
-import PrimaryTypography from '../../typography/PrimaryTypography/PrimaryTypography';
 import styles from './primaryModal.module.scss';
 import { modalController } from '@ionic/core'
+import PrimaryModalToolbar from './PrimaryModalToolbar/PrimaryModalToolbar';
 
 interface Props {
     title: string,
@@ -12,12 +11,7 @@ interface Props {
 const PrimaryModal: React.FC<Props> = ({ title, renderBody }) => {
     return (
         <div className={styles.container}>
-            <div className={styles.header}>
-                <PrimaryTypography size='l' customClassName={styles.title}>{title}</PrimaryTypography>
-                <IonLabel className={styles.closeBtn} onClick={modalController.dismiss}>
-                    <PrimaryTypography>Done</PrimaryTypography>
-                </IonLabel>
-            </div>
+            <PrimaryModalToolbar title={title} onClick={modalController.dismiss} />
             <div className={styles.body}>
                 {renderBody()}
             </div>

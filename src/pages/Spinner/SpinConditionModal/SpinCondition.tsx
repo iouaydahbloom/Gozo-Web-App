@@ -21,7 +21,7 @@ const SpinCondition : React.FC<Props> = ({setSpinWheel, dismiss}) => {
     <PrimaryButton onClick={() => { dismiss(); setSpinWheel(true) }} size='m' expand='block'>
         confirm
     </PrimaryButton>
-    <PrimaryButton type='link' onClick={()=> dismiss()} size='m' expand='block'>
+    <PrimaryButton fill='clear' type='link' onClick={()=> dismiss()} size='m' expand='block'>
         cancel
     </PrimaryButton>
         </div>

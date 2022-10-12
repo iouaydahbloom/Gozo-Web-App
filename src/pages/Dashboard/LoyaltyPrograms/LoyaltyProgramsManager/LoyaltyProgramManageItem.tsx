@@ -133,7 +133,8 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
                                         }} />
                                 })
                             }
-                        </div> :
+                        </div> 
+                        :
                         <PrimaryTypography>No Partnership Programs</PrimaryTypography>
                 }
             </>

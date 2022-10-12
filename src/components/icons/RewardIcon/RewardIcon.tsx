@@ -1,8 +1,7 @@
 import { IonIcon } from "@ionic/react"
+import { Icon } from "../icon"
 
-interface Props {
-    color?: string,
-    size?: string
+interface Props extends Icon {
 }
 
 const RewardIcon: React.FC<Props> = ({color, size}) => {

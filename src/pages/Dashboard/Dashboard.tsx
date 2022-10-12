@@ -5,10 +5,11 @@ import HighlightedBalance from './HighlightedBalance/HighlightedBalance';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import LoyaltyPrograms from './LoyaltyPrograms/LoyaltyPrograms';
 import CryptoTokens from './CryptoTokens/CryptoTokens';
-import PrimaryHeader from '../../components/headers/PrimaryHeader/PrimaryHeader';
 import '../../theme/primaryTabs.scss';
 import { useState } from 'react';
 import { AssetMode } from '../../constants/assetsMode';
+import styles from './dashboard.module.scss'
+
 
 const Dashboard: React.FC = () => {
 
@@ -20,13 +21,12 @@ const Dashboard: React.FC = () => {
 
     return (
         <IonPage>
-            <PrimaryHeader />
             <PrimaryContainer>
                 <HighlightedBalance mode={mode} />
                 <Tabs onSelect={onSelect}>
-                    <TabList>
-                        <Tab>Loyalty Programs</Tab>
-                        <Tab>Tokens</Tab>
+                    <TabList className={styles.tabList}>
+                        <Tab className={styles.tab}>Loyalty Programs</Tab>
+                        <Tab className={styles.tab}>Tokens</Tab>
                     </TabList>
 
                     <TabPanel>

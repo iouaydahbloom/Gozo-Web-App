@@ -4,6 +4,7 @@ import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHead
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer'
 import useReward from '../../hooks/useReward';
 import { Reward } from '../../models/reward';
+import ReferralBanner from './ReferralBanner/ReferralBanner';
 import RewardListing from './RewardListing/RewardListing'
 
 const Rewards: React.FC = () => {
@@ -21,8 +22,9 @@ const Rewards: React.FC = () => {
     }, [])
     return (
         <IonPage>
-            <TertiaryHeader title='Rewards' className='ion-text-center'/>
+            <TertiaryHeader title='Rewards' className='ion-text-center' />
             <PrimaryContainer className='ion-text-center'>
+                <ReferralBanner />
                 <RewardListing rewards={rewards} />
             </PrimaryContainer>
         </IonPage>

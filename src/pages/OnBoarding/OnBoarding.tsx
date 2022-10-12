@@ -23,7 +23,7 @@ const OnBoarding: React.FC = () => {
         return (
             <div>
                 <img src={image} />
-                <PrimaryTypography size='l' customClassName={styles.title}>
+                <PrimaryTypography isBold size='xxl' customClassName={styles.title}>
                     {title}
                 </PrimaryTypography>
                 <PrimaryTypography size='m'>

@@ -39,4 +39,8 @@
         --color: var(--ion-color-primary);
         text-decoration: underline;
     }
+
+    &.outline {
+        --background: none !important;
+    }
 }

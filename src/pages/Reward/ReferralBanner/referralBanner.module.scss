@@ -1,17 +1,16 @@
 .container {
-    padding-top: 50px;
-    padding-bottom: 10px;
+    padding-top: 32px;
+    padding-bottom: 32px;
     display: flex;
     align-items: center;
-    justify-content: center;
     background: linear-gradient(106.18deg, var(--ion-color-primary) 27.95%, var(--ion-color-quaternary) 81.41%);
     box-shadow: 0px 4px 2px #000000;
     border-radius: 11px;
     overflow: hidden;
     position: relative;
-    margin: 70px 0 45px 0;
+    margin: 14px 0 30px 0px;
 
-    .img {
+    .startImg {
         position: absolute;
         width: 200px;
         height: 200px;
@@ -20,21 +19,18 @@
     }
 
     .innerContainer {
-        .badge {
-            width: 182px;
-            height: 63px;
-            background: var(--ion-color-medium);
-            box-shadow: inset 0px 2px 2px 1px #000000;
-            border-radius: 38.5px;
-            margin: auto;
-            margin-bottom: 7px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .description {
             text-align: center;
+            padding-left: 20px
         }
+    }
+
+
+    .endImg {
+        position: absolute;
+        width: 100px;
+        height: 70px;
+        right: -10px;
+        bottom: 0px;
     }
 }

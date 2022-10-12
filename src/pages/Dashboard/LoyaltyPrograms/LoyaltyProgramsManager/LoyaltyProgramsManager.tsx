@@ -46,6 +46,7 @@ const LoyaltyProgramsManager: React.FC = () => {
             <div className={styles.filterContainer}>
                 <PrimarySearch
                     value={searchKey}
+                    placeholder="Search Partners"
                     onChange={setSearchKey} />
             </div>
             <div className={styles.programsContainer}>

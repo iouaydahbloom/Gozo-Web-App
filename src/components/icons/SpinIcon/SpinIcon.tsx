@@ -1,9 +1,7 @@
 import { IonIcon } from "@ionic/react"
+import { Icon } from "../icon"
 
-interface Props {
-    color?: string,
-    size?: string,
-    className?: string
+interface Props extends Icon {
 }
 
 const SpinIcon: React.FC<Props> = ({color, size, className}) => {

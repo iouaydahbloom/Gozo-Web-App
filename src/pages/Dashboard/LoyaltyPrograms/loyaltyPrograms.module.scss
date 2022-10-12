@@ -7,26 +7,6 @@
 
     .actions {
         margin-bottom: 40px;
-        .actionButtons {
-            ion-button {
-                height: 60px !important;
-                width: 66px !important;
-                --border-radius: 30px;
-                --padding-start: 0px;
-                --padding-end: 0px;
-
-                ion-icon {
-                    font-size: 20px;
-                }
-            }
-        }
-
-        .removeButtons {
-            ion-button {
-                height: 43px !important;
-            }
-        }
-
     }
 
     .noDataContainer {

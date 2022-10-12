@@ -10,10 +10,10 @@ import styles from './loyaltyProgramItem.module.scss';
 interface Props {
     loyaltyProgram: UserLoyaltyProgram,
     onSelection?: (selected: boolean, program: UserLoyaltyProgram) => void,
-    displayCheckbox?: boolean
+    isSelectable?: boolean
 }
 
-const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, displayCheckbox=false }) => {
+const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSelectable=false }) => {
     const { push } = useHistory();
 
     const [isSelected, setIsSelected] = useState(false);
@@ -26,7 +26,7 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, disp
     return (
         <div className={styles.container}>
             <div className={styles.dataContainer}>
-                {displayCheckbox &&
+                {isSelectable &&
                     <PrimaryCheckbox value={isSelected} onChange={(selected) => {
                         setIsSelected(selected);
                         onSelection && onSelection(selected, loyaltyProgram)

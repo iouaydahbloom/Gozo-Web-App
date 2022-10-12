@@ -17,11 +17,12 @@ import Swap from '../../Swap/Swap';
 import { AssetMode } from '../../../constants/assetsMode';
 import { currencySettingsContext } from '../../../providers/CurrencySettingsProvider/currencySettingsContext';
 import usePrimarySheet from '../../../hooks/usePrimarySheet';
+import SecondaryButtonsGroup from '../../../components/buttons/SecondaryButtonsGroup/SecondaryButtonsGroup';
 
 const LoyaltyPrograms = () => {
     const { fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [selectedUserCurrencyIds, setSelectedUserCurrencyIds] = useState<string[]>([]);
-    const [onClickRemove, setOnClickRemove] = useState(false)
+    const [isRemoving, setIsRemoving] = useState(false)
     const { getUserLoyaltyPrograms } = useAssets();
     const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
     const { showModal: showManager } = usePrimarySheet({
@@ -56,7 +57,7 @@ const LoyaltyPrograms = () => {
     }
 
     function switchButtons() {
-        setOnClickRemove(prev => !prev)
+        setIsRemoving(prev => !prev)
     }
 
     function disconnectSelected() {
@@ -100,21 +101,19 @@ const LoyaltyPrograms = () => {
                 loyaltyPrograms.length > 0 ?
                     <>
                         <div className={styles.actions}>
-                            {onClickRemove ?
-                                <PrimaryButtonsGroup
-                                    className={styles.removeButtons}
+                            {isRemoving ?
+                                <SecondaryButtonsGroup
                                     buttons={[
-                                        { children: <PrimaryTypography size='m'>Cancel</PrimaryTypography>, onClick: switchButtons },
-                                        { children: <PrimaryTypography size='m'>Remove</PrimaryTypography>, fill: 'outline', onClick: disconnectSelected }
+                                        { title: "Cancel", onClick: switchButtons },
+                                        { title: "Remove", fill: 'outline', onClick: disconnectSelected }
                                     ]}
                                 />
                                 :
                                 <PrimaryButtonsGroup
-                                    className={styles.actionButtons}
                                     buttons={[
-                                        { label: 'Add', children: <IonIcon icon={addOutline} />, onClick: showManager },
-                                        { label: 'Remove', children: <IonIcon icon={trashOutline} />, onClick: switchButtons },
-                                        { label: 'Swap', children: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
+                                        { title: 'Add', icon: <IonIcon icon={addOutline} />, onClick: showManager },
+                                        { title: 'Remove', icon: <IonIcon icon={trashOutline} />, onClick: switchButtons },
+                                        { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
                                     ]}
                                 />
                             }
@@ -122,7 +121,7 @@ const LoyaltyPrograms = () => {
                         {loyaltyPrograms.map((lp, index) => (
                             <LoyaltyProgramItem
                                 key={index}
-                                displayCheckbox={onClickRemove}
+                                isSelectable={isRemoving}
                                 loyaltyProgram={lp}
                                 onSelection={(selected, program) => {
                                     if (selected) {

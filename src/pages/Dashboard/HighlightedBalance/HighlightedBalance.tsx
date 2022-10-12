@@ -42,7 +42,7 @@ const HighlightedBalance: React.FC<Props> = ({ mode }) => {
         if (mode == AssetMode.loyaltyPoint) {
             setAsset({
                 balance: gozoLoyaltyMembership ? gozoLoyaltyMembership.balance : 0,
-                description: 'Gozo Loyalty Points'
+                description: 'Super Points'
             });
         }
     }, [gozoLoyaltyMembership])

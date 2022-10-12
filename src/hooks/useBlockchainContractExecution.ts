@@ -81,7 +81,8 @@ const useBlockchainContractExecution = () => {
         abi: any[],
         fn: string,
         params: any[],
-        onSuccess?: () => any
+        onSuccess?: () => any,
+        onError?: (error: any) => any
     ) {
         try {
             setExecuting(true);
@@ -90,15 +91,22 @@ const useBlockchainContractExecution = () => {
                 title: 'Confirmation',
                 message: `Transaction fees are ${fees.toString()} GZ tokens, if you are not holding this amount you can't achieve your transaction`,
                 onConfirmed: async () => {
-                    await approvePayingGasFees(contractAddress, abi, fn, params);
-                    await sendRelayedRequest(
-                        contractAddress,
-                        abi,
-                        fn,
-                        params
-                    );
-                    setExecuting(false);
-                    onSuccess && onSuccess();
+                    try {
+                        await approvePayingGasFees(contractAddress, abi, fn, params);
+                        await sendRelayedRequest(
+                            contractAddress,
+                            abi,
+                            fn,
+                            params
+                        );
+                        onSuccess && onSuccess();
+                    }
+                    catch (error) {
+                        onError && onError(error);
+                    }
+                    finally {
+                        setExecuting(false);
+                    }
                 },
                 onDeclined: () => {
                     setExecuting(false);

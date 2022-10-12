@@ -1,9 +1,7 @@
-import { IonSpinner } from '@ionic/react';
 import React, { useCallback } from 'react'
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import { SelectOption } from '../../../components/inputs/PrimarySelect/PrimarySelect';
-import PrimaryLoader from '../../../components/loaders/PrimaryLoader/PrimaryLoader';
-import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
+import TransactionDetails from '../../../components/TransactionDetails/TransactionDetails';
 import useTokenProgramsExchange from '../../../hooks/useTokenProgramsExchange';
 import SwapDirection from '../SwapDirectionToggle/SwapDirectionToggle';
 import SwapField from '../SwapField/SwapField';
@@ -49,20 +47,13 @@ const SwapTokens: React.FC = () => {
                 {direction == 'p2t' ? renderTokensField('To', true) : renderProgramsField('To', true)}
             </div>
 
-            <div className={styles.infoAlert}>
-                {direction == "t2p" && <div className={styles.gasFeeContainer}>
-                    <PrimaryTypography customClassName={styles.gasFeeTitle} isBold>Gas Fee</PrimaryTypography>
-                    <PrimaryTypography customClassName={styles.gasFeeValue} isBold>
-                        {!estimatedGasFee ? <IonSpinner color='primary' name='crescent' /> : estimatedGasFee} GZT
-                    </PrimaryTypography>
-                </div>}
-
-                <PrimaryTypography isBold>Minimum Value</PrimaryTypography>
-                <br />
-                <PrimaryTypography>
-                    Make sure to that you enter an amount higher than <strong>{minimumValue}</strong>
-                </PrimaryTypography>
-            </div>
+            <TransactionDetails
+                hasMinimumValue={true}
+                minimumValue={minimumValue}
+                showFeeEstimation={direction == "t2p"}
+                estimatedFee={estimatedGasFee}
+                estimatedFeeUnit='GZT'
+            />
 
             <br />
             <PrimaryButton

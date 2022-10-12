@@ -16,26 +16,4 @@
             }
         }
     }
-
-    .infoAlert {
-        padding: 22px;
-        background: var(--ion-color-dark-tint);
-        border-radius: 11px;
-
-        .gasFeeContainer {
-            display: flex;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #606060;
-
-            .gasFeeTitle {
-                flex: 1;
-            }
-
-            .gasFeeValue {
-                flex: 1;
-                text-align: right;
-            }
-        }
-    }
 }

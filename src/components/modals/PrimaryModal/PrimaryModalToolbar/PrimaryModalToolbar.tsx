@@ -1,7 +1,7 @@
 import { IonButton, IonButtons, IonIcon, IonToolbar, IonTitle } from '@ionic/react'
 import { closeOutline } from 'ionicons/icons'
 import { ReactElement } from 'react'
-import styles from './primaryToolbar.module.scss'
+import styles from './primaryModalToolbar.module.scss'
 
 interface Props {
     title: string,
@@ -10,9 +10,9 @@ interface Props {
     color?: string
 }
 
-const PrimaryToolbar: React.FC<Props> = ({ title, icon, onClick, color = 'medium' }) => {
+const PrimaryModalToolbar: React.FC<Props> = ({ title, icon, onClick, color = 'medium' }) => {
     return (
-        <IonToolbar className={styles.primaryToolbar} color={color} mode='ios'>
+        <IonToolbar className={styles.primaryModalToolbar} color={color} mode='ios'>
             <IonTitle className={styles.title}>{title}</IonTitle>
             <IonButtons slot="end" className={styles.toolbarEndSlot}>
                 <IonButton onClick={onClick}>
@@ -27,4 +27,4 @@ const PrimaryToolbar: React.FC<Props> = ({ title, icon, onClick, color = 'medium
     )
 }
 
-export default PrimaryToolbar;
+export default PrimaryModalToolbar;

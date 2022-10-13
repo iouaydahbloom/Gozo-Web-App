@@ -1,4 +1,4 @@
-import { IonButton } from '@ionic/react';
+import { IonButton, IonSpinner } from '@ionic/react';
 import React, { ReactNode, useMemo } from 'react';
 import styles from './primaryButton.module.scss';
 
@@ -10,6 +10,7 @@ interface Props {
     type?: 'primary' | 'dark' | 'success' | 'link',
     customStyles?: string,
     disabled?: boolean,
+    loading?: boolean,
     fill?: "clear" | "default" | "outline" | "solid" | undefined
 }
 
@@ -20,6 +21,7 @@ const PrimaryButton: React.FC<Props> = ({
     expand,
     type = 'primary',
     customStyles = '',
+    loading = false,
     disabled = false,
     fill
 }) => {
@@ -73,8 +75,9 @@ const PrimaryButton: React.FC<Props> = ({
             className={`${styles.button} ${styledSize} ${customStyles} ${styledColor} ${fill === 'outline' ? styles.outline : ''}`}
             onClick={onClick}
             fill={fill}
-            disabled={disabled}>
+            disabled={disabled || loading}>
             {children}
+            {loading && <>&nbsp;&nbsp; <IonSpinner className={styles.spinner}/></>}
         </IonButton>
     )
 }

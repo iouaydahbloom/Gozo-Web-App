@@ -31,8 +31,7 @@ const useBlockchainTransfer = (receiver: string, amount: string | number) => {
             contractsAbi.erc20,
             'transfer',
             [receiver, amount != "" ? Moralis.Units.Token(amount) : 0],
-            () => presentSuccess('Successfuly Transfered'),
-            (error) => presentFailure(error.message)
+            () => presentSuccess('Successfuly Transfered')
         ),
         transferFee,
         error,

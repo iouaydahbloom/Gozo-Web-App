@@ -53,6 +53,7 @@ const SwapTokens: React.FC = () => {
                 showFeeEstimation={direction == "t2p"}
                 estimatedFee={estimatedGasFee}
                 estimatedFeeUnit='GZT'
+                notification={direction == "t2p" ? 'Transaction might take around 1 min' : ''}
             />
 
             <br />

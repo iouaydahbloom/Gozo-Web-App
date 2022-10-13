@@ -1,3 +1,4 @@
+import { IonAvatar, IonItem, IonLabel } from "@ionic/react";
 import PrimaryTypography from "../../../../components/typography/PrimaryTypography/PrimaryTypography";
 import styles from './cryptoTokenItem.module.scss';
 
@@ -11,18 +12,17 @@ interface Props {
 const CryptoTokenItem: React.FC<Props> = ({ name, logo, balance, symbol }) => {
     return (
         <div className={styles.container}>
-            <div className={styles.info}>
-                <div className={styles.id}>
-                    <img src={logo} />
-                    <PrimaryTypography>
-                        {name}
-                    </PrimaryTypography>
-                </div>
-                <PrimaryTypography>{balance} Token</PrimaryTypography>
-            </div>
+            <IonItem lines="none" className={styles.info}>
+                <IonAvatar slot="start">
+                    <img alt="program logo" src={logo} />
+                </IonAvatar>
+                <IonLabel>
+                    <PrimaryTypography color='light' isBold size='m'>{name}</PrimaryTypography>
+                </IonLabel>
+            </IonItem >
 
             <div className={styles.balance}>
-                <PrimaryTypography>{balance} {symbol}</PrimaryTypography>
+                <PrimaryTypography color='light' isBold size='m'>{balance} {symbol}</PrimaryTypography>
             </div>
         </div>
     )

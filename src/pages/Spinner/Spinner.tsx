@@ -1,5 +1,5 @@
 import { IonPage } from '@ionic/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import SpinIcon from '../../components/icons/SpinIcon/SpinIcon';
 import BottomFixedContainer from '../../components/layout/BottomFixedContainer/BottomFixedContainer';
@@ -20,11 +20,15 @@ import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
 import usePlayGame from '../../hooks/usePlayGame';
 import usePrize from '../../hooks/usePrize';
 import useDialog from '../../hooks/useDialog';
+import PrimaryAccordion, { AccordionItemData } from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
+import useServerPagination from '../../hooks/useServerPagination';
+import { ProgramFilter } from '../../models/data/filter';
+import PrimarySelect, { SelectOption } from '../../components/inputs/PrimarySelect/PrimarySelect';
 
 
 const Spinner: React.FC = () => {
     const search = useSearchParams();
-    const { fetchProgram } = useLoyaltyPrograms();
+    const { fetchProgram, fetchAllPrograms } = useLoyaltyPrograms();
     const { play, isPlaying, setIsPlaying } = usePlayGame();
     const { fetchPrizes, isLoadingPrizes } = usePrize();
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
@@ -33,6 +37,10 @@ const Spinner: React.FC = () => {
     var loyaltyProgramId = search.get('program_id')
     const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram>({} as LoyaltyProgram)
 
+    const { data: programs } = useServerPagination<LoyaltyProgram, ProgramFilter>({
+        getData: fetchAllPrograms as any
+    })
+console.log("programs", programs)
     const { addListener } = useBlockchainContractExecution();
 
     const { showModal: showSpinCondition } = useDialog({
@@ -78,7 +86,7 @@ const Spinner: React.FC = () => {
             })
     }
 
-    function listenerCallBack(id: string) {
+    function listenerCallBack(id: any) {
         console.log("listening to event id =", id)
         // add condition that checks if the event belongs to the desired player_address
         // if(result.player_address === walletAddress) setSelectedPrizeId(id)
@@ -89,6 +97,24 @@ const Spinner: React.FC = () => {
     function getSelectedPrize() {
         return wheelSegments.find(item => item.id === selectedPrizeId)
     }
+
+    const programsOpts = useMemo(() => {
+        if (programs.length !== 0) {
+            return programs.map((item) => {
+                return new SelectOption( item.loyaltyCurrency.shortName, item.loyaltyCurrency.id)
+            })
+        }
+        return []
+    }, [programs])
+
+    const prizesOpts = useMemo(() => {
+        if (wheelSegments.length !== 0) {
+            return wheelSegments.map((item) => {
+                return new AccordionItemData(item.id, item.text, item.text)
+            })
+        }
+        return []
+    }, [wheelSegments])
 
     useEffect(() => {
         getPrizes()
@@ -107,31 +133,34 @@ const Spinner: React.FC = () => {
 
     return (
         <IonPage>
-            <PrimaryContainer className='ion-text-center'>
-                <SpinIcon color="primary" size="large" />
-                {/* <IonIcon src={""}/> */}
+            <PrimaryContainer>
+                <div className='flex-row-container'>
+                    <PrimarySelect
+                        required
+                        name="selectProgram"
+                        placeholder="Select Loyalty Program"
+                        type='action-sheet'
+                        // value={}
+                        options={programsOpts}
+                        // onChange={} 
+                        />
+                    <PrimaryButton
+                        customStyles='flex-row-1'
+                        onClick={handleSpinClick}
+                        size='m'
+                        disabled={spinWheel}
+                    >
+                        spin!
+                    </PrimaryButton>
+                </div>
 
-                <PrimaryTypography
-                    size='l'
-                >
-                    Spin with {loyaltyProgram?.companyName ? loyaltyProgram.companyName : 'GOZO'}
-                </PrimaryTypography>
 
                 <div className={`${styles.wheelWrapper} ion-padding-vertical`}>
                     <FortuneWheel spinDuration={0.3} data={wheelSegments} spin={spinWheel} selectedPrizeId={selectedPrizeId} onStopSpinning={handleStopWheelSpinning} />
                 </div>
 
-                <PrimaryButton
-                    onClick={handleSpinClick}
-                    size='m'
-                    expand='block'
-                    disabled={spinWheel}
-                >
-                    spin!
-                </PrimaryButton>
-
                 <BottomFixedContainer>
-
+                    <PrimaryAccordion accordionItemData={prizesOpts} />
                 </BottomFixedContainer>
             </PrimaryContainer>
         </IonPage>

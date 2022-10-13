@@ -1,13 +1,14 @@
 import useMagicAuth from "./useMagicAuth";
-import { ethers } from 'ethers';
+import { BigNumber, Contract, ethers } from 'ethers';
 import { useState } from "react";
 import { appConfig } from "../constants/appConfig";
-import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
+import { useIonViewDidLeave } from "@ionic/react";
 import { signMetaTxRequest } from "../helpers/metaTransactionsSigner";
 import { contractsAbi } from "../constants/contractsAbis";
 import { useDapp } from "../providers/DappProvider/DappProvider";
 import { useMoralis } from "react-moralis";
 import useConfirmation from "./useConfirmation";
+import useToast from "./useToast";
 
 const useBlockchainContractExecution = () => {
 
@@ -18,6 +19,7 @@ const useBlockchainContractExecution = () => {
     const [contracts, setContracts] = useState<ethers.Contract[]>([])
     const { Moralis } = useMoralis();
     const { confirm } = useConfirmation();
+    const { presentInfo } = useToast();
 
     useIonViewDidLeave(() => {
         contracts?.forEach(contract => {
@@ -36,7 +38,8 @@ const useBlockchainContractExecution = () => {
         const forwarder = new ethers.Contract(appConfig.forwarderContract, contractsAbi.forwarder, getProviderSigner());
         const contractInterface = new ethers.utils.Interface(abi);
         const recipientContract = new ethers.Contract(contractAddress, abi, getProviderSigner());
-        const gasLimit = await recipientContract.estimateGas[fn](...params);
+        const gasLimit = await estimateExecutionFee(recipientContract, fn, params);
+
         const { request, signature } = await signMetaTxRequest(rpcProvider, forwarder, gasLimit, {
             from: walletAddress,
             to: contractAddress,
@@ -86,12 +89,14 @@ const useBlockchainContractExecution = () => {
     ) {
         try {
             setExecuting(true);
+            presentInfo('Estimating transaction Fee ...');
             const fees = await estimate(contractAddress, abi, fn, params);
             confirm({
                 title: 'Confirmation',
                 message: `Transaction fees are ${fees.toString()} GZ tokens, if you are not holding this amount you can't achieve your transaction`,
                 onConfirmed: async () => {
                     try {
+                        presentInfo('Executing Transaction ...');
                         await approvePayingGasFees(contractAddress, abi, fn, params);
                         await sendRelayedRequest(
                             contractAddress,
@@ -101,8 +106,9 @@ const useBlockchainContractExecution = () => {
                         );
                         onSuccess && onSuccess();
                     }
-                    catch (error) {
+                    catch (error: any) {
                         onError && onError(error);
+                        setError(error.message);
                     }
                     finally {
                         setExecuting(false);
@@ -126,6 +132,17 @@ const useBlockchainContractExecution = () => {
             setContracts([...contracts, contract]);
         }
         if (contract) contract.on(eventName, callBack);
+    }
+
+    async function estimateExecutionFee(contractAddress: Contract, fn: string, params: any[]) {
+        let gasLimit: BigNumber;
+        try {
+            gasLimit = await contractAddress.estimateGas[fn](...params);
+        } catch (error: any) {
+            throw new Error('Executed amount exceeds balance');
+        }
+
+        return gasLimit;
     }
 
     return {

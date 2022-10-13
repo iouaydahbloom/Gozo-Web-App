@@ -65,7 +65,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
                         setIsConnected(true);
                         setMyUpdatedProgram(result.data);
                     } else if (result.errors) {
-                        presentFailure(result.errors[0].message);
+                        presentFailure(result.errors.detail);
                     }
                 })
         }

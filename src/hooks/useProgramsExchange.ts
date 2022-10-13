@@ -31,12 +31,9 @@ const useProgramsExchange = () => {
             () => true,
             true)
             .then(result => {
-                if (result.isSuccess) {
-                    presentSuccess('Swapped successfuly');
-                    return true;
-                }
-                presentFailure('Unable to execute exchange');
-                return false;
+                result.isSuccess ?
+                    presentSuccess('Swapped successfuly') :
+                    presentFailure(result.errors?.errors[0].message);
             })
             .finally(() => setExchanging(false))
     }, [])
@@ -54,11 +51,8 @@ const useProgramsExchange = () => {
         }, 1000), [])
 
     function shuffleSelections() {
-        const origin = { ...originProgram };
-        const destination = { ...destinationProgram };
-
-        setOriginProgram(destination)
-        setDestinationProgram(origin)
+        setOriginProgram({ loyaltyCurrency: '', quantity: 0 })
+        setDestinationProgram({ loyaltyCurrency: '', quantity: 0 })
     }
 
     useEffect(() => {

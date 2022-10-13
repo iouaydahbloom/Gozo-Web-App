@@ -33,7 +33,7 @@ const useTokenProgramsExchange = () => {
         return Moralis.Units.Token(tokenQuantity ?? 0, 18);
     }, [tokenQuantity])
 
-    const { execute: transferTokens, estimate, executing } = useBlockchainContractExecution();
+    const { execute: transferTokens, estimate, executing, error } = useBlockchainContractExecution();
 
     /**
      * Token to points exchange logic
@@ -76,7 +76,6 @@ const useTokenProgramsExchange = () => {
             'transferToOwner',
             [tokenQuantityInWei]
         );
-        console.log('estimated gas fee', estimatedGasFee);
         setEstimatedGasFee(estimatedGasFee);
     }, [])
 
@@ -90,7 +89,7 @@ const useTokenProgramsExchange = () => {
         run(cloudFunctionName.executeP2Texchange, { recipient: walletAddress, amount: programQuantity }, (result: any) => result as number, true)
             .then(result => {
                 if (result.isSuccess) presentSuccess('Exchanged successfuly');
-                else presentFailure(result.message);
+                else presentFailure(result.errors?.errors[0].message);
             })
             .finally(() => setExchanging(false))
     }, [programQuantity])
@@ -155,6 +154,12 @@ const useTokenProgramsExchange = () => {
             minimumP2TExchange();
         }
     }, [direction])
+
+    useEffect(() => {
+        if (error && !executing) {
+            presentFailure(error);
+        }
+    }, [error, executing])
 
     return {
         exchange: direction == 't2p' ? executeT2PExchange : executeP2TExchange,

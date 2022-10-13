@@ -28,10 +28,12 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSe
         <div className={styles.container}>
             <div className={styles.dataContainer}>
                 {isSelectable &&
+                <div className={styles.selectionContainer}>
                     <PrimaryCheckbox value={isSelected} onChange={(selected) => {
                         setIsSelected(selected);
                         onSelection && onSelection(selected, loyaltyProgram)
                     }} />
+                </div>
                 }
                 <IonItem>
                     <IonAvatar slot="start">

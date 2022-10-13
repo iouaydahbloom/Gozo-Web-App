@@ -67,6 +67,12 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-medium-shade: #272727;
   --ion-color-medium-tint: #606060;
 
+  /** medium-light **/
+  --ion-color-medium-light: #535353;
+
+  /** slighty light **/
+  --ion-color-slightly-light: #dde2fe;
+
   /** light **/
   --ion-color-light: #FFFFFF;
   --ion-color-light-rgb: 244, 245, 248;
@@ -81,6 +87,14 @@ http://ionicframework.com/docs/theming/ */
 
 .ion-color-quaternary {
   --ion-color-base: var(--ion-color-quaternary);
+}
+
+.ion-color-medium-light {
+  --ion-color-base: var(--ion-color-medium-light);
+}
+
+.ion-color-slightly-light {
+  --ion-color-base: var(--ion-color-slightly-light);
 }
 
 /* @media (prefers-color-scheme: dark) {

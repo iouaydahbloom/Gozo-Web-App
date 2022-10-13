@@ -40,9 +40,11 @@ const useCloud = () => {
                 const data = mapper ? mapper(result.data) : result.data as any as T;
                 return new CloudResponse<T>(result.message, null, data, true);
             })
-            .catch((error: ErrorResponse) => {
+            .catch((error) => {
                 console.log(`Cloud error for ${functionName} is `, error);
-                return new CloudResponse<T>(error.message, error.errors, {} as any, false)
+                const message = typeof error.message == 'string' ? error.message : '';
+                const errors = typeof error.message == 'object' ? error.message : null;
+                return new CloudResponse<T>(message, errors, {} as any, false)
             })
     }, [session?.user.accessToken, Moralis.Cloud])
 

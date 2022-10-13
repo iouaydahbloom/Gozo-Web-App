@@ -35,7 +35,7 @@ const useProgramsExchange = () => {
                     presentSuccess('Swapped successfuly');
                     return true;
                 }
-                presentFailure('Unable to execute exchange');
+                presentFailure(result.message);
                 return false;
             })
             .finally(() => setExchanging(false))

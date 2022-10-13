@@ -33,7 +33,7 @@ const useTokenProgramsExchange = () => {
         return Moralis.Units.Token(tokenQuantity ?? 0, 18);
     }, [tokenQuantity])
 
-    const { execute: transferTokens, estimate, executing, error } = useBlockchainContractExecution();
+    const { execute: transferTokens, estimate, executing } = useBlockchainContractExecution();
 
     /**
      * Token to points exchange logic
@@ -46,7 +46,8 @@ const useTokenProgramsExchange = () => {
             contractsAbi.erc20,
             'transferToOwner',
             [tokenQuantityInWei],
-            () => presentSuccess('Exchanged successfuly')
+            () => presentSuccess('Exchanged successfuly'),
+            (error) => presentFailure(error.message)
         );
     }, [tokenQuantity])
 
@@ -154,12 +155,6 @@ const useTokenProgramsExchange = () => {
             minimumP2TExchange();
         }
     }, [direction])
-
-    useEffect(() => {
-        if (error && !executing) {
-            presentFailure(error);
-        }
-    }, [error, executing])
 
     return {
         exchange: direction == 't2p' ? executeT2PExchange : executeP2TExchange,

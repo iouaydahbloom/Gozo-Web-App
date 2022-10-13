@@ -14,7 +14,6 @@ const useBlockchainContractExecution = () => {
 
     const { walletAddress } = useDapp();
     const { rpcProvider, getProviderSigner } = useMagicAuth();
-    const [error, setError] = useState();
     const [executing, setExecuting] = useState(false);
     const [contracts, setContracts] = useState<ethers.Contract[]>([])
     const { Moralis } = useMoralis();
@@ -93,22 +92,17 @@ const useBlockchainContractExecution = () => {
             const fees = await estimate(contractAddress, abi, fn, params);
             confirm({
                 title: 'Confirmation',
-                message: `Transaction fees are ${fees.toString()} GZ tokens, if you are not holding this amount you can't achieve your transaction`,
+                message: `Transaction fees are ${fees.toString()} GZ tokens,
+                 if you are not holding this amount you can't achieve your transaction`,
                 onConfirmed: async () => {
                     try {
                         presentInfo('Executing Transaction ...');
                         await approvePayingGasFees(contractAddress, abi, fn, params);
-                        await sendRelayedRequest(
-                            contractAddress,
-                            abi,
-                            fn,
-                            params
-                        );
+                        await sendRelayedRequest(contractAddress, abi, fn, params);
                         onSuccess && onSuccess();
                     }
                     catch (error: any) {
                         onError && onError(error);
-                        setError(error.message);
                     }
                     finally {
                         setExecuting(false);
@@ -120,7 +114,6 @@ const useBlockchainContractExecution = () => {
             })
         }
         catch (error: any) {
-            setError(error.message);
             setExecuting(false);
         }
     }
@@ -148,7 +141,6 @@ const useBlockchainContractExecution = () => {
     return {
         execute,
         estimate,
-        error,
         executing,
         addListener
     }

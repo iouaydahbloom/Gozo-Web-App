@@ -1,6 +1,6 @@
 import { IonIcon } from '@ionic/react';
 import { scanOutline } from 'ionicons/icons';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../components/inputs/PrimaryInput/PrimaryInput';
 import TransactionDetails from '../../components/TransactionDetails/TransactionDetails';
@@ -14,7 +14,7 @@ const SendCrypto: React.FC = () => {
 
     const [receiver, setReceiver] = useState('');
     const [amount, setAmount] = useState('');
-    const { transfer, transferFee, error, executing } = useBlockchainTransfer(receiver, amount);
+    const { transfer, transferFee, executing } = useBlockchainTransfer(receiver, amount);
     const { presentFailure } = useToast();
     const { scan } = useBarcodeScanner();
 
@@ -30,12 +30,6 @@ const SendCrypto: React.FC = () => {
         const result = await scan();
         setReceiver(result?.text);
     }
-
-    useEffect(() => {
-        if (error && !executing) {
-            presentFailure(error);
-        }
-    }, [error, executing])
 
     return (
         <div>

@@ -9,7 +9,7 @@ import useToast from './useToast';
 const useBlockchainTransfer = (receiver: string, amount: string | number) => {
 
     const { Moralis } = useMoralis();
-    const { execute, estimate, error, executing } = useBlockchainContractExecution();
+    const { execute, estimate, executing } = useBlockchainContractExecution();
     const { presentSuccess, presentFailure } = useToast();
     const [transferFee, setTransferFee] = useState<number>();
     const { walletAddress } = useDapp();
@@ -31,10 +31,10 @@ const useBlockchainTransfer = (receiver: string, amount: string | number) => {
             contractsAbi.erc20,
             'transfer',
             [receiver, amount != "" ? Moralis.Units.Token(amount) : 0],
-            () => presentSuccess('Successfuly Transfered')
+            () => presentSuccess('Successfuly Transfered'),
+            (error) => presentFailure(error.message)
         ),
         transferFee,
-        error,
         executing
     }
 }

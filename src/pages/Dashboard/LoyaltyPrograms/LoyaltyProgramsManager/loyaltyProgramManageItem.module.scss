@@ -1,7 +1,7 @@
 .container {
     background: linear-gradient(266.21deg, #15C69D 12.35%, #1378C7 98.75%);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 5px;
+    border-radius: 3px;
     padding: 16px;
     margin-bottom: 25px;
 
@@ -29,8 +29,8 @@
     }
 
     .connectionContainer {
-        background-color: var(--ion-color-light);
-        border-radius: 7px;
+        background-color: var(--ion-color-slightly-light);
+        border-radius: 5px;
         padding: 14px;
         margin-top: 30px;
 

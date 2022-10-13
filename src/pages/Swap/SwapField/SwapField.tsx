@@ -1,5 +1,5 @@
 import { IonInput } from "@ionic/react";
-import PrimarySelect, { SelectOption } from "../../../components/inputs/PrimarySelect/PrimarySelect";
+import { SelectOption } from "../../../components/inputs/PrimarySelect/PrimarySelect";
 import styles from './swapField.module.scss';
 
 interface Props {
@@ -15,11 +15,11 @@ interface Props {
 const SwapField: React.FC<Props> = ({ label, selectedOption, onSelectionChange, options, quantity, onQuantityChange, disabledQuantity = false }) => {
     return (
         <div className={styles.swapField}>
-            <PrimarySelect
+            {/* <PrimarySelect
                 label={label}
                 value={selectedOption}
                 onChange={onSelectionChange}
-                options={options} />
+                options={options} /> */}
 
             <IonInput
                 color='light'

@@ -33,6 +33,32 @@
   transform: translate(-50%, -50%);
 }
 
+.flex-row-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 12px;
+
+  .flex-row {
+      flex: auto;
+  }
+
+  .flex-row-1 {
+      flex: 1;
+  }
+
+  .flex-row-2 {
+      flex: 2;
+  }
+
+  .flex-row-3 {
+      flex: 3;
+  }
+}
+
 /** hide google social login in web3Auth **/
 // .w3ajs-socials-adapters {
 //     li {

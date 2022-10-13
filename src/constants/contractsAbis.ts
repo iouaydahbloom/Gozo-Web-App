@@ -754,6 +754,25 @@ export const contractsAbi = {
         },
         {
           "indexed": false,
+          "internalType": "uint256",
+          "name": "randomWord",
+          "type": "uint256"
+        }
+      ],
+      "name": "RandomnessSelected",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "reqId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
           "internalType": "address",
           "name": "invokerW",
           "type": "address"
@@ -782,6 +801,12 @@ export const contractsAbi = {
           "internalType": "address",
           "name": "playerAddress",
           "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "gameToken",
+          "type": "string"
         }
       ],
       "name": "prizeSelected",
@@ -838,45 +863,15 @@ export const contractsAbi = {
               "internalType": "uint256",
               "name": "increment",
               "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
             }
           ],
           "internalType": "struct GozoGame.Prize[]",
           "name": "prizes",
-          "type": "tuple[]"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getWonPrizes",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "string",
-              "name": "id",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "playerAddress",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct GozoGame.WonPrize[]",
-          "name": "",
           "type": "tuple[]"
         }
       ],
@@ -965,6 +960,11 @@ export const contractsAbi = {
               "internalType": "uint256",
               "name": "increment",
               "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
             }
           ],
           "internalType": "struct GozoGame.Prize[]",
@@ -975,6 +975,11 @@ export const contractsAbi = {
           "internalType": "uint256",
           "name": "totalPrizes",
           "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "gameToken",
+          "type": "string"
         }
       ],
       "name": "play",
@@ -999,6 +1004,11 @@ export const contractsAbi = {
             {
               "internalType": "uint256",
               "name": "increment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
               "type": "uint256"
             }
           ],
@@ -1044,6 +1054,11 @@ export const contractsAbi = {
           "internalType": "uint256",
           "name": "increment",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -1079,40 +1094,6 @@ export const contractsAbi = {
       "name": "withdraw",
       "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "wonPrizes",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "id",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "playerAddress",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     }
   ],

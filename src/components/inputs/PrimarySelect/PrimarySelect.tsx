@@ -1,71 +1,100 @@
-import { IonIcon, IonSelect, IonSelectOption, IonSpinner } from "@ionic/react";
-import { chevronDownOutline } from "ionicons/icons";
-import { useRef } from "react";
-import { SelectChangeEventDetail } from "@ionic/core";
-import styles from './primarySelect.module.scss';
+import { IonAvatar, IonItem, IonLabel } from '@ionic/react';
+import React from 'react'
+import Select from 'react-select';
+import styles from './primarySelect.module.scss'
 
 export class SelectOption {
-    constructor(public label: string,
-        public value: string) { }
+    constructor(
+        public label: string,
+        public value: string,
+        public icon?: string
+        ) { }
 }
 
 interface Props {
-    id?: string,
     label?: string,
-    placeholder?: string,
-    name?: string,
-    options?: SelectOption[],
-    type?: "action-sheet" | "alert" | "popover"
     value?: string,
-    required?: boolean,
-    disabled?: boolean,
-    onChange?: (event: CustomEvent<SelectChangeEventDetail>) => void
+    icon?: string,
+    onChange?: (value: string) => void,
+    options?: SelectOption[],
+    className?:string
 }
 
-const PrimarySelect: React.FC<Props> =
-    ({ id, name, label, placeholder, type="alert", options = [], value, required = false, onChange, disabled }) => {
+const PrimarySelect: React.FC<Props> = ({ label, value, onChange, options = [], className }) => {
 
-        const selectRef = useRef<HTMLIonSelectElement>(null);
+    const customStyles: any = {
+        menuPortal: (base: React.CSSProperties) => ({ ...base, zIndex: 9999 }),
+        control: (base: React.CSSProperties, state: any) => ({
+            ...base,
+            border: 'none',
+            boxShadow: 'none',
+            background: "transparent",
+            padding: "6px 0",
+            height: '76px',
+        }),
+        placeholder: (defaultStyles: any) => {
+            return {
+                ...defaultStyles,
+                color: 'var(--ion-color-light)',
+            }
+        },
+        menu: (styles: React.CSSProperties, state: any) => {
+            return {
+              ...styles,
+              background: 'var(--ion-color-tertiary)'
+            };
+          },
+        option: (styles: React.CSSProperties, state: any) => {
+            return {
+              ...styles,
+              background: state.isFocused ? 'var(--ion-color-primary)' : 'none'
+            };
+          }
 
-        return (
-            <div className={styles.primarySelectContainer}>
-                {label && <p className={styles.label}>{label}</p>}
-                <div className={styles.primarySelect}>
-                    {options.length == 0 &&
-                        <div className={styles.primarySelectLoading}>
-                            <span>{placeholder}</span>
-                            <IonSpinner name="crescent" />
-                        </div>}
-                    {options.length > 0 && <>
-                        <IonSelect
-                            ref={selectRef}
-                            id={id}
-                            name={name}
-                            className={styles.select}
-                            placeholder={placeholder}
-                            disabled={disabled}
-                            onIonChange={onChange}
-                            interface={type}
-                            value={value}
-                        >
-                            {!required && <IonSelectOption
-                                className={styles.primarySelectReset}
-                                key={0}
-                                value={null}>
-                                {placeholder}
-                            </IonSelectOption>}
-                            {
-                                options && options.map((option, index) => {
-                                    return <IonSelectOption key={index} value={option.value}>{option.label}</IonSelectOption>
-                                })
-                            }
-                        </IonSelect>
-                        <div className={styles.primarySelectIcon} onClick={() => selectRef.current?.open()}>
-                            <IonIcon icon={chevronDownOutline}></IonIcon>
-                        </div>
-                    </>}
-                </div>
-            </div>
-        )
     }
+
+    const formatOptionLabel = ({ value, label, icon } : any) => {
+        return (
+         <IonItem lines='none' className={styles.formatOptionLabel}>
+         {icon &&
+         <IonAvatar>
+             <img
+             src={icon}
+             alt={label}
+           />
+         </IonAvatar> 
+             }
+             <IonLabel className={styles.optionLabel}>
+             {label}
+             </IonLabel>
+         </IonItem>
+       );
+     }
+
+    return (
+        <div>
+            {label && <IonLabel color='light' className={styles.inputLabel}>{label}</IonLabel>}
+            <Select
+                styles={customStyles}
+                value={options.find(opt => opt.value == value)}
+                onChange={(event: any) => onChange && onChange(event.value ?? '')}
+                options={options as any}
+                className={className}
+                theme={(theme) => ({
+                    ...theme,
+                    borderRadius: 0,
+                    colors: {
+                        ...theme.colors,
+                        neutral80: 'white'
+                    }
+                })}
+                formatOptionLabel={formatOptionLabel}
+                components={{ 
+                    IndicatorSeparator:() => null
+                 }}
+            />
+        </div>
+    )
+}
+
 export default PrimarySelect;

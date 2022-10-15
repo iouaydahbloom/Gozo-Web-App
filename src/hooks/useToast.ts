@@ -15,8 +15,8 @@ function useToast(): PresentingOptions {
     const [present, dismiss] = useIonToast();
     const options: ToastOptions = {
         buttons: [{ text: 'Ok', handler: () => dismiss() }],
-        position: 'top',
-        duration: 3000
+        position: 'bottom',
+        duration: 300000
     }
 
     const toaster: PresentingOptions = {

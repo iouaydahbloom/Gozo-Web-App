@@ -135,7 +135,7 @@ console.log("programs", programs)
         <IonPage>
             <PrimaryContainer>
                 <div className='flex-row-container'>
-                    <PrimarySelect
+                    {/* <PrimarySelect
                         required
                         name="selectProgram"
                         placeholder="Select Loyalty Program"
@@ -143,7 +143,7 @@ console.log("programs", programs)
                         // value={}
                         options={programsOpts}
                         // onChange={} 
-                        />
+                        /> */}
                     <PrimaryButton
                         customStyles='flex-row-1'
                         onClick={handleSpinClick}

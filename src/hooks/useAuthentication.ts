@@ -67,6 +67,7 @@ const useAuthentication = () => {
         } else {
             setAuthError(serverAuthResult.message);
         }
+        // setIsAuthenticating(false);
     }
 
     return {

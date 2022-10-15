@@ -4,8 +4,28 @@
     border-radius: 11px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    margin-bottom: 20px;
 
-    .input {
-        text-align: right;
+    .selectContainer {
+        flex:1.5;
+    }
+
+    .inputContainer {
+        display: flex;
+        flex:1;
+        align-self: end;
+        ion-input {
+            text-align: end;
+            height: 76px;
+            --padding-end: 10px;
+        }
+
+        .postInput {
+            display: flex;
+            align-self:center;
+            line-height: 1.6
+        }
     }
 }

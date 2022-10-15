@@ -19,7 +19,7 @@ const SwapPoints: React.FC = () => {
                         <SwapField
                             label='From'
                             options={exchangeInOptions.map((opt) => (
-                                new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency)
+                                new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency, opt.currency.programLogo)
                             ))}
                             quantity={originProgram.quantity}
                             selectedOption={originProgram?.loyaltyCurrency}

@@ -3,10 +3,10 @@ import LoyaltyProgramManageItem from './LoyaltyProgramManageItem'
 import useServerPagination from '../../../../hooks/useServerPagination'
 import { LoyaltyProgram, UserLoyaltyProgram } from '../../../../models/loyaltyProgram'
 import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms'
-import PrimaryModal from '../../../../components/modals/PrimaryModal/PrimaryModal'
 import PrimarySearch from '../../../../components/inputs/PrimarySearch/PrimarySearch'
 import styles from './loyaltyProgramsManager.module.scss';
 import { ProgramFilter } from '../../../../models/data/filter'
+import { IonContent, IonToolbar } from '@ionic/react'
 
 const LoyaltyProgramsManager: React.FC = () => {
 
@@ -42,22 +42,20 @@ const LoyaltyProgramsManager: React.FC = () => {
     }, [])
 
     return (
-        <div className={styles.container}>
+        <>
             <div className={styles.filterContainer}>
                 <PrimarySearch
                     value={searchKey}
                     placeholder="Search Partners"
                     onChange={setSearchKey} />
             </div>
-            <div className={styles.programsContainer}>
-                {!isLoading &&
-                    programs
-                        .filter(prog => !searchKey ||
-                            prog.companyName.toLowerCase().includes(searchKey?.toLowerCase()) ||
-                            prog.loyaltyCurrency?.shortName?.toLowerCase().includes(searchKey?.toLowerCase()))
-                        .map((lp, index) => renderLoyaltyProgramItem(lp, index))}
-            </div>
-        </div>
+            {!isLoading &&
+                programs
+                    .filter(prog => !searchKey ||
+                        prog.companyName.toLowerCase().includes(searchKey?.toLowerCase()) ||
+                        prog.loyaltyCurrency?.shortName?.toLowerCase().includes(searchKey?.toLowerCase()))
+                    .map((lp, index) => renderLoyaltyProgramItem(lp, index))}
+        </>
     )
 }
 

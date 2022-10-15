@@ -19,6 +19,7 @@ const useModal = (options: Options) => {
             id: options.id,
             onDidDismiss: options.onDismiss,
             initialBreakpoint: options.initialBreakpoint,
+            // breakpoints: [0, .25, .5, 1]
         })
     }
 

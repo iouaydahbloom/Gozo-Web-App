@@ -103,37 +103,37 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
                 {
                     myUpdatedProgram ?
                         <div className={styles.connectionContainer}>
-                            <IonToolbar className={styles.connectionActions}>
-                                <div slot='start'>
-                                    <PrimaryTypography color='dark'>
-                                        {item.loyaltyCurrency.shortName}
-                                    </PrimaryTypography>
-                                </div>
-                                <div slot='end'>
-                                    <PrimaryButton
-                                        size='s'
-                                        type={`${isConnected ? 'success' : 'dark'}`}
-                                        onClick={handleConnection}
-                                        disabled={isUpdating}>
-                                        {isConnected ? 'Disconnect' : 'Connect'}
-                                    </PrimaryButton>
-                                </div>
-                            </IonToolbar>
+                            <PrimaryTypography
+                                customClassName={styles.connectionHeader}
+                                color='light'>
+                                {item.loyaltyCurrency.shortName}
+                            </PrimaryTypography>
+
                             {
                                 myUpdatedProgram && partnershipMetadata?.executeAction.requiredFields.map((field, index) => {
-                                    return <PrimaryInput
-                                        key={`field-${index}`}
-                                        placeholder={`Enter your ${field.name}`}
-                                        value={myUpdatedProgram.memberFields[index]?.value}
-                                        onChange={(value) => {
-                                            if (myUpdatedProgram.memberFields[index]) {
-                                                myUpdatedProgram.memberFields[index].value = value;
-                                                setMyUpdatedProgram(myUpdatedProgram);
-                                            }
-                                        }} />
+                                    return <div className={styles.connectionInput}>
+                                        <PrimaryInput
+                                            key={`field-${index}`}
+                                            placeholder={`Enter your ${field.name}`}
+                                            value={myUpdatedProgram.memberFields[index]?.value}
+                                            onChange={(value) => {
+                                                if (myUpdatedProgram.memberFields[index]) {
+                                                    myUpdatedProgram.memberFields[index].value = value;
+                                                    setMyUpdatedProgram(myUpdatedProgram);
+                                                }
+                                            }} />
+                                    </div>
                                 })
                             }
-                        </div> 
+
+                            <PrimaryButton
+                                size='s'
+                                type={`${isConnected ? 'success' : 'dark'}`}
+                                onClick={handleConnection}
+                                disabled={isUpdating}>
+                                {isConnected ? 'Disconnect' : 'Connect'}
+                            </PrimaryButton>
+                        </div>
                         :
                         <PrimaryTypography>No Partnership Programs</PrimaryTypography>
                 }

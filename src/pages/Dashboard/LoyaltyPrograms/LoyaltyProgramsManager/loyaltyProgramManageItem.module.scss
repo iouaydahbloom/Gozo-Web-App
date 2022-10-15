@@ -1,7 +1,7 @@
 .container {
-    background: linear-gradient(266.21deg, #15C69D 12.35%, #1378C7 98.75%);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 3px;
+    background: linear-gradient(95.54deg, var(--ion-color-primary) 37.14%, var(--ion-color-quaternary) 104.54%);
+    border-radius: 5px;
     padding: 16px;
     margin-bottom: 25px;
 
@@ -30,16 +30,25 @@
 
     .connectionContainer {
         background-color: var(--ion-color-slightly-light);
-        border-radius: 5px;
-        padding: 14px;
+        border-radius: 3px;
         margin-top: 30px;
+        text-align: center;
+        padding-bottom: 20px;
 
-        .connectionActions {
-            --background: transparent;
-            --padding-start: 0;
-            --padding-end: 0;
-            padding: 0;
-            margin-bottom: 20px;
+        .connectionHeader {
+            background: var(--ion-color-primary-dark);
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+        }
+
+        .connectionInput {
+            margin: 20px;
+            ion-input {
+                background: var(--ion-color-light);
+                color: var(--ion-color-medium-light);
+                border: none;
+                box-shadow: none;
+            }
         }
     }
 }

@@ -1,21 +1,33 @@
 .containerContent {
-
-}
-
-.termsContainer {
+    height: 100%;
     display: flex;
-    margin-bottom: 25px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 
-    .checkboxField {
-        flex: 0.1;
-    }
-
-    .textField {
-        flex: 0.9;
+    .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 }
 
-.submitButton {
-    --background: linear-gradient(115.93deg, var(--ion-color-primary) 22.75%, var(--ion-color-quaternary) 84.05%);
-    --border-radius: 15px;
+.footer {
+    padding: 20px 20px 40px 20px;
+    .termsContainer {
+        display: flex;
+        margin-bottom: 25px;
+
+        .checkboxField {
+            flex: 0.1;
+        }
+
+        .textField {
+            flex: 0.9;
+        }
+    }
+    .submitButton {
+        --background: linear-gradient(115.93deg, var(--ion-color-primary) 22.75%, var(--ion-color-quaternary) 84.05%);
+        --border-radius: 15px;
+    }
 }

@@ -9,23 +9,26 @@ import { appConfig } from './constants/appConfig';
 import MagicAuthProvider from './providers/MagicAuthProvider/MagicAuthProvider';
 import SessionProvider from './providers/SessionProvider/SessionProvider';
 import { DappProvider } from './providers/DappProvider/DappProvider';
+import HideScreenProviderContext from './providers/HideScreenProvider/HideScreenProvider.context';
 require('dotenv').config();
 
 ReactDOM.render(
   <React.StrictMode>
-    <MoralisProvider
-      appId={appConfig.moralisAppId}
-      serverUrl={appConfig.moralisServerUrl}>
-      <MagicAuthProvider>
-        <SessionProvider>
-          <DappProvider>
-            <CurrencySettingsProvider>
-              <App />
-            </CurrencySettingsProvider>
-          </DappProvider>
-        </SessionProvider>
-      </MagicAuthProvider>
-    </MoralisProvider>
+    <HideScreenProviderContext>
+      <MoralisProvider
+        appId={appConfig.moralisAppId}
+        serverUrl={appConfig.moralisServerUrl}>
+        <MagicAuthProvider>
+          <SessionProvider>
+            <DappProvider>
+              <CurrencySettingsProvider>
+                <App />
+              </CurrencySettingsProvider>
+            </DappProvider>
+          </SessionProvider>
+        </MagicAuthProvider>
+      </MoralisProvider>
+    </HideScreenProviderContext>
   </React.StrictMode>,
   document.getElementById('root')
 )

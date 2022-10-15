@@ -1,12 +1,16 @@
 import { IonPage } from '@ionic/react';
+import { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import BottomFixedContainer from '../../components/layout/BottomFixedContainer/BottomFixedContainer';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
+import PrimaryFooter from '../../components/layout/PrimaryFooter/PrimaryFooter';
 import PrimarySlider from '../../components/sliders/PrimarySlider/PrimarySlider';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import { AppRoutes } from '../../constants/appRoutes';
+import useHideScreen from '../../hooks/useHideScreen';
 import useTabMenuHidder from '../../hooks/useTabMenuHidder';
+import { HideScreenContext, IHideScreen } from '../../providers/HideScreenProvider/HideScreenProvider.context';
 import styles from './onBoarding.module.scss';
 
 interface SlideProps {
@@ -18,6 +22,14 @@ interface SlideProps {
 const OnBoarding: React.FC = () => {
     const { replace } = useHistory();
     useTabMenuHidder();
+    const { setHideScreen } = useContext(HideScreenContext) as IHideScreen;
+    const { getHideFlag } = useHideScreen()
+
+    useEffect(() => {
+        getHideFlag().then((flag) => {
+            setHideScreen(flag)
+        });
+    }, [])
 
     const OnBoardingSlide = ({ image, title, description }: SlideProps) => {
         return (
@@ -35,7 +47,7 @@ const OnBoarding: React.FC = () => {
 
     return (
         <IonPage>
-            <PrimaryContainer>
+            <PrimaryContainer className={styles.onBoardingContainer}>
                 <PrimarySlider
                     slides={[
                         <OnBoardingSlide
@@ -52,14 +64,14 @@ const OnBoarding: React.FC = () => {
                             description='Consolidate and Exchange all your loyalty reward points from various providers into a single wallet.' />
                     ]}
                 />
-                <BottomFixedContainer>
-                    <PrimaryButton
-                        onClick={() => replace(AppRoutes.dashboard)}
-                        expand='block'>
-                        continue
-                    </PrimaryButton>
-                </BottomFixedContainer>
             </PrimaryContainer>
+            <PrimaryFooter className={styles.footer}>
+                <PrimaryButton
+                    onClick={() => replace(AppRoutes.dashboard)}
+                    expand='block'>
+                    continue
+                </PrimaryButton>
+            </PrimaryFooter>
         </IonPage>
     )
 }

@@ -1,0 +1,1 @@
+export const hideSplashAndOnboardingScreenSK: string = 'HIDE_SPLASH_ONBOARDING_SCREEN';

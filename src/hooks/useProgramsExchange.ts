@@ -73,8 +73,8 @@ const useProgramsExchange = () => {
 
         fetchMyLoyaltyPrograms()
             .then(programs => {
-                setExchangeInOptions(programs);
-                setExchangeOutOptions(programs);
+                setExchangeInOptions(programs.filter(prog => prog.currency.isRedemption));
+                setExchangeOutOptions(programs.filter(prog => prog.currency.isExchangeIn));
             })
     }, [])
 

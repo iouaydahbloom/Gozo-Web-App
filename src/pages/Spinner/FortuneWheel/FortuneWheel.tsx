@@ -1,6 +1,6 @@
 import styles from './fortuneWheel.module.scss';
 import { WheelSegment } from '../../../models/wheelSegment';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Winwheel } from '../WinWheelLibrary/Winwheel';
 import { ellipsisTruncate } from '../../../helpers/managment/string';
 
@@ -14,7 +14,7 @@ interface Props {
 }
 
 const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpinning, spinDuration }) => {
-
+  const [isSpinning, setIsSpinning] = useState(false)
   const myWheel: any = new Winwheel({
 
     // 'outerRadius'       : 200,               // Set outer radius so wheel fits inside the background.
@@ -111,6 +111,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     if (myWheel?.animation && selectedSegment) myWheel.animation.stopAngle = randomIntFromInterval(selectedSegment.startAngle, selectedSegment.endAngle);
     // May as well start the spin from here.
     myWheel.startAnimation();
+    setIsSpinning(true)
   }
 
   function drawTriangle() {
@@ -176,9 +177,20 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
 
 
+
+
+  // useEffect(() => {
+  //   if (spin && Object.keys(myWheel).length !== 0 && selectedPrizeId) calculatePrize()
+  // }, [spin, selectedPrizeId])
+
   useEffect(() => {
-    if (spin && Object.keys(myWheel).length !== 0 && selectedPrizeId) calculatePrize()
-  }, [spin, selectedPrizeId])
+      if(spin) calculatePrize()
+    }, [spin])
+
+
+
+
+
 
   // // useEffect(() => {
   //               // Create new image object in memory.
@@ -198,7 +210,14 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
   // return ( 
   return (
-    <div className={styles.myCanvas} style={{ backgroundImage: `url('assets/image/wheel_back.png')` }} >
+    // <div className={styles.myCanvas} style={{ backgroundImage: `url('assets/image/wheel_back.png')` }} >
+    <div className={styles.canvasContainer} >
+      <img
+        className={`${styles.iconPin} ${isSpinning ? styles.pinShaking : ''}`}
+        src="assets/image/wheel-marker.svg"
+        width="50"
+        height="50"
+      />
       <canvas
         id="myCanvas"
         width="300"

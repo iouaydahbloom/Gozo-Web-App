@@ -1,5 +1,19 @@
+.headerToolbar {
+    --background: var(--ion-color-dark);
+    padding: 40px 40px 10px 40px !important;
+}
+
 .wheelWrapper {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.accordionHeader {
+
+}
+
+.accordionContent {
+    --padding-end: 24px;
+    --padding-start: 24px;
 }

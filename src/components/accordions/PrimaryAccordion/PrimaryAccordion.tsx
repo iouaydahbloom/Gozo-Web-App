@@ -1,14 +1,23 @@
 import {
   IonAccordion,
   IonAccordionGroup,
+  IonIcon,
   IonItem,
+  IonLabel,
   IonText,
 } from '@ionic/react';
+import { star } from 'ionicons/icons';
 import { useRef, useState } from 'react';
+import PrimaryTypography from '../../typography/PrimaryTypography/PrimaryTypography';
 import styles from './primaryAccordion.module.scss'
 
 export class AccordionItemData {
-  constructor(public value: string, public label: string, public content: string) { }
+  constructor(
+    public value: string, 
+    public label: string, 
+    public content: string,
+    public icon: string
+    ) { }
 }
 
 interface Props {
@@ -29,10 +38,14 @@ const PrimaryAccordion: React.FC<Props> = ({ accordionItemData }) => {
       {accordionItemData && accordionItemData.map((item, key) => {
         return <IonAccordion key={key} value={item.value}>
           <IonItem slot="header">
-            <IonText className={`${value === item.value ? styles.active : ''} ion-padding-vertical`}>{item.label}</IonText>
+
+            <IonIcon color='light' icon={star}></IonIcon>
+            <IonLabel className={`${value === item.value ? styles.active : ''} ion-padding`}>{item.label}</IonLabel>
           </IonItem>
-          <div className="ion-padding-vertical" slot="content">
+          <div className="ion-padding" slot="content">
+          <PrimaryTypography color='light'>
             {item.content}
+          </PrimaryTypography>
           </div>
         </IonAccordion>
       })}

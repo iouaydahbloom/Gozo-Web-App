@@ -1,0 +1,61 @@
+.secondarySelectContainer {
+    width: 100%;
+
+    .label {
+        width: 100%;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--ion-color-dark);
+        margin-bottom: 8px !important;
+    }
+
+    .secondarySelect {
+        position: relative;
+
+        .secondarySelectLoading {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 10px;
+
+            span {
+                flex: 1;
+            }
+
+            ion-spinner {
+                width: 25px;
+            }
+        }
+
+        .select {
+            height: 35px;
+            width: 100%;
+            border: 1px solid var(--ion-color-light);
+            border-radius: 5px;
+            padding: 10px 10px 10px 8px;
+            --placeholder-color: var(--ion-color-medium);
+            --placeholder-opacity: 1 !important;
+        }
+
+        .secondarySelectIcon {
+            position: absolute;
+            top: 9px;
+            z-index: 2;
+            right: 9px;
+            cursor: pointer;
+        }
+
+        .select::part(icon) {
+            display: none;
+        }
+    }
+}
+
+.secondarySelectReset {
+    cursor: pointer;
+
+    ion-radio {
+        opacity: 0;
+    }
+}

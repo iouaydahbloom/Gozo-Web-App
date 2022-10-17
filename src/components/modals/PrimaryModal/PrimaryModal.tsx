@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import styles from './primaryModal.module.scss';
 import { modalController } from '@ionic/core'
 import PrimaryModalToolbar from './PrimaryModalToolbar/PrimaryModalToolbar';
+import { IonContent } from '@ionic/react';
 
 interface Props {
     title: string,
@@ -10,12 +11,12 @@ interface Props {
 
 const PrimaryModal: React.FC<Props> = ({ title, renderBody }) => {
     return (
-        <div className={styles.container}>
+        <>
             <PrimaryModalToolbar title={title} onClick={modalController.dismiss} />
-            <div className={styles.body}>
-                {renderBody()}
-            </div>
-        </div>
+            <IonContent className={styles.content}>
+            {renderBody()}
+            </IonContent>
+        </>
     )
 }
 

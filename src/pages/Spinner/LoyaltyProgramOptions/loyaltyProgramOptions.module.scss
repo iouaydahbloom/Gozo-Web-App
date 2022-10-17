@@ -1,0 +1,19 @@
+.header {
+    height: 40px
+}
+
+.container {
+    --background: none;
+    // --padding-top: 40px;
+    --padding-end: 20px;
+    --padding-start: 20px;
+
+    .containerList {
+        background: none;
+    }
+
+}
+
+.footer {
+    padding: 20px 40px 40px 40px;
+}

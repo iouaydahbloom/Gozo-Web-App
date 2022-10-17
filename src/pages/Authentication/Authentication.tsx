@@ -26,7 +26,7 @@ const Authentication: React.FC = () => {
                 size='m'
                 onClick={() => login(email)}
                 expand='block'
-                disabled={isAuthenticating}>
+                loading={isAuthenticating}>
                 Continue with email
             </PrimaryButton>
         </div>

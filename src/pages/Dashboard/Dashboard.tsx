@@ -1,4 +1,4 @@
-import { IonPage } from '@ionic/react';
+import { IonPage, useIonViewDidEnter } from '@ionic/react';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import HighlightedBalance from './HighlightedBalance/HighlightedBalance';
 //@ts-ignore
@@ -9,15 +9,20 @@ import '../../theme/primaryTabs.scss';
 import { useState } from 'react';
 import { AssetMode } from '../../constants/assetsMode';
 import styles from './dashboard.module.scss'
-
+import useOnBoardingPreview from '../../hooks/useOnBoardingPreview';
 
 const Dashboard: React.FC = () => {
 
     const [mode, setMode] = useState<AssetMode>(AssetMode.loyaltyPoint);
+    const { hide } = useOnBoardingPreview();
 
     function onSelect(tabIndex: number) {
         setMode(tabIndex == 0 ? AssetMode.loyaltyPoint : AssetMode.token);
     }
+
+    useIonViewDidEnter(() => {
+        hide();
+    })
 
     return (
         <IonPage>

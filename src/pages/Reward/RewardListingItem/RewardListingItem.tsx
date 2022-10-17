@@ -10,10 +10,12 @@ interface Props {
 
 const RewardListingItem: React.FC<Props> = ({ reward, lines }) => {
   return (
-    <IonItem className={styles.rewardListingItem} lines={lines} >
-      <IonIcon icon={star} slot="start"></IonIcon>
-      <IonLabel className="ion-text-wrap ion-padding-horizontal">{reward.name}</IonLabel>
-      <IonLabel className="ion-text-wrap">{reward.date}</IonLabel>
+    <IonItem className={`${styles.rewardListingItem} ion-text-center`} lines={lines}>
+      <IonLabel>
+      <IonIcon icon={star}></IonIcon>
+      </IonLabel>
+      <IonLabel>{reward.name}</IonLabel>
+      <IonLabel>{reward.date}</IonLabel>
     </IonItem>
   )
 }

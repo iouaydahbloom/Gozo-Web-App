@@ -1,0 +1,17 @@
+.container {
+    .grid {
+        .header {
+            background: var(--ion-color-tertiary);
+            border-radius: 11px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .text {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    }
+}

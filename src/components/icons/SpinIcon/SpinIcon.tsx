@@ -1,10 +1,7 @@
 import { IonIcon } from "@ionic/react"
-import { Icon } from "../icon"
+import { IconProps } from "../iconProps"
 
-interface Props extends Icon {
-}
-
-const SpinIcon: React.FC<Props> = ({color, size, className}) => {
+const SpinIcon: React.FC<IconProps> = ({color, size, className}) => {
     return (
         <IonIcon icon='assets/icon/spin-icon.svg' className={className} color={color} size={size}/>
     )

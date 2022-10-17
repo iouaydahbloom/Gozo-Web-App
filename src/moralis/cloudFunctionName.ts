@@ -6,7 +6,7 @@ export const cloudFunctionName = {
     defaultCurrency: 'default_currency',
     members: 'members',
     programs: 'programs',
-    program: 'program',
+    program: 'program_details',
     updateMyPrograms: 'update_my_programs',
     getMyPrograms: 'get_my_programs',
     transactionHistory: 'transaction_history',

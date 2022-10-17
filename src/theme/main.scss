@@ -2,11 +2,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Monda:wght@400;700&display=swap');
 
 * {
-    font-family: 'Monda', sans-serif;
+  font-family: 'Monda', sans-serif;
+}
+
+// Add safe area for ios
+ion-page {
+  margin-top: constant(safe-area-inset-top);
+  margin-top: env(safe-area-inset-top);
 }
 
 .primary-sheet {
   --border-radius: 50px 50px 0px 0px;
+  --border-color: var(--ion-color-medium-tint);
+  --border-style: solid;
+  --border-width: 1px;
+  --height: 85vh;
+  box-shadow: 0px 4px 4px 8px var(--ion-color-dark);
+
+  .ion-page {
+    background: var(--ion-color-medium);
+  }
+
+  &::part(backdrop) {
+    background: rgba(209, 213, 219);
+    opacity: 1;
+  }
+}
+
+.secondary-sheet {
+  --border-radius: 50px 50px 0px 0px;
+  --border-color: var(--ion-color-medium-tint);
+  --border-style: solid;
+  --border-width: 1px;
+  box-shadow: 0px 4px 4px 8px var(--ion-color-dark);
+  --height: 50vh;
+
+  .ion-page {
+    background: var(--ion-color-medium);
+  }
 
   &::part(backdrop) {
     background: rgba(209, 213, 219);
@@ -15,15 +48,15 @@
 }
 
 .primary-dialog {
-    --height: 30%;
-    --border-radius: 11px;
-    --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    padding: 0px 16px;
+  --height: 30%;
+  --border-radius: 11px;
+  --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  padding: 0px 16px;
 
-    &::part(backdrop) {
-      background: rgba(209, 213, 219);
-      opacity: 1;
-    }
+  &::part(backdrop) {
+    background: rgba(209, 213, 219);
+    opacity: 1;
+  }
 }
 
 .middle-screen-content {
@@ -31,6 +64,32 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.flex-row-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 12px;
+
+  .flex-row {
+    flex: auto;
+  }
+
+  .flex-row-1 {
+    flex: 1;
+  }
+
+  .flex-row-2 {
+    flex: 2;
+  }
+
+  .flex-row-3 {
+    flex: 3;
+  }
 }
 
 /** hide google social login in web3Auth **/

@@ -1,3 +1,4 @@
+import { IonAvatar, IonIcon, IonItem, IonLabel, IonText } from '@ionic/react';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import PrimaryCheckbox from '../../../../components/inputs/PrimaryCheckbox/PrimaryCheckbox';
@@ -13,7 +14,7 @@ interface Props {
     isSelectable?: boolean
 }
 
-const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSelectable=false }) => {
+const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSelectable = false }) => {
     const { push } = useHistory();
 
     const [isSelected, setIsSelected] = useState(false);
@@ -27,26 +28,42 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSe
         <div className={styles.container}>
             <div className={styles.dataContainer}>
                 {isSelectable &&
+                <div className={styles.selectionContainer}>
                     <PrimaryCheckbox value={isSelected} onChange={(selected) => {
                         setIsSelected(selected);
                         onSelection && onSelection(selected, loyaltyProgram)
                     }} />
+                </div>
                 }
-
-                <div>
-                    <PrimaryTypography color='dark' isBold size='m'>{loyaltyProgram.currency.loyaltyCurrencyName}</PrimaryTypography>
-                    <PrimaryTypography color='dark' customClassName={styles.middleRow}>{membership?.balance} pts</PrimaryTypography>
-                    <PrimaryTypography color='dark'>{membership?.state}</PrimaryTypography>
-                </div>
-            </div>
-
-            <div className={styles.actions}>
-                <div className={styles.spinAction} onClick={spin}>
-                    <div className={styles.spinIcon}>
-                        <img src='assets/icon/Spin1.svg' />
-                        <PrimaryTypography color='dark'>Spin</PrimaryTypography>
+                <IonItem>
+                    <IonAvatar slot="start">
+                        <img alt="program logo" src={loyaltyProgram.currency.programLogo} />
+                    </IonAvatar>
+                    <IonLabel>
+                        <IonLabel>
+                            <PrimaryTypography color='light' isBold size='m'>{loyaltyProgram.currency.loyaltyCurrencyName}</PrimaryTypography>
+                        </IonLabel>
+                        <IonLabel>
+                            <PrimaryTypography color='light' size='m' customClassName={styles.middleRow}><IonText color='medium-light'>Balance:</IonText> {membership?.balance} Miles</PrimaryTypography>
+                        </IonLabel>
+                        <IonLabel>
+                            <PrimaryTypography color='light' size='m'><IonText color='medium-light'>Cost to Spin:</IonText> test points</PrimaryTypography>
+                        </IonLabel>
+                        <IonLabel>
+                            <PrimaryTypography color='light' size='m'>{membership?.state}</PrimaryTypography>
+                        </IonLabel>
+                    </IonLabel>
+                </IonItem >
+                {loyaltyProgram.currency.isRedemption &&
+                    <div>
+                        <div className={styles.spinAction} onClick={spin}>
+                            <div className={styles.spinIcon}>
+                                <IonIcon color="light" size="large" icon='assets/icon/Spin1.svg' />
+                                <PrimaryTypography color='light'>Spin</PrimaryTypography>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     )

@@ -1,8 +1,8 @@
 import { IonPage } from '@ionic/react';
 import { useHistory } from 'react-router';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
-import BottomFixedContainer from '../../components/layout/BottomFixedContainer/BottomFixedContainer';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
+import PrimaryFooter from '../../components/layout/PrimaryFooter/PrimaryFooter';
 import PrimarySlider from '../../components/sliders/PrimarySlider/PrimarySlider';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import { AppRoutes } from '../../constants/appRoutes';
@@ -35,7 +35,7 @@ const OnBoarding: React.FC = () => {
 
     return (
         <IonPage>
-            <PrimaryContainer>
+            <PrimaryContainer className={styles.onBoardingContainer}>
                 <PrimarySlider
                     slides={[
                         <OnBoardingSlide
@@ -52,14 +52,14 @@ const OnBoarding: React.FC = () => {
                             description='Consolidate and Exchange all your loyalty reward points from various providers into a single wallet.' />
                     ]}
                 />
-                <BottomFixedContainer>
-                    <PrimaryButton
-                        onClick={() => replace(AppRoutes.dashboard)}
-                        expand='block'>
-                        continue
-                    </PrimaryButton>
-                </BottomFixedContainer>
             </PrimaryContainer>
+            <PrimaryFooter className={styles.footer}>
+                <PrimaryButton
+                    onClick={() => replace(AppRoutes.dashboard)}
+                    expand='block'>
+                    continue
+                </PrimaryButton>
+            </PrimaryFooter>
         </IonPage>
     )
 }

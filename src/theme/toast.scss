@@ -8,11 +8,11 @@
 
     &::part(container) {
         min-height: 64px;
-        background: var(--ion-color-light);
-        color: var(--ion-color-dark);
+        background: var(--ion-color-tertiary);
+        color: var(--ion-color-light);
         font-size: 14px;
-        border-radius: 3px;
-        border-left: 3px solid var(--ion-color-primary);
+        border-radius: 5px;
+        border-bottom: 4px solid var(--ion-color-primary);
     }
 
     &.info {
@@ -23,7 +23,7 @@
         }
 
         &::part(container) {
-            border-left: 3px solid var(--ion-color-primary);
+            border-bottom: 4px solid var(--ion-color-primary);
         }
     }
 
@@ -35,7 +35,7 @@
         }
 
         &::part(container) {
-            border-left: 3px solid var(--ion-color-danger);
+            border-bottom: 4px solid var(--ion-color-danger);
         }
     }
 
@@ -47,7 +47,7 @@
         }
 
         &::part(container) {
-            border-left: 3px solid var(--ion-color-success);
+            border-bottom: 4px solid var(--ion-color-success);
         }
     }
 }

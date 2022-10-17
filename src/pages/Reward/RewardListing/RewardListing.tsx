@@ -9,7 +9,7 @@ interface Props {
 
 const RewardListing: React.FC<Props> = ({ rewards }) => {
     return (
-        <IonList className={`${styles.rewardListing} ion-padding-horizontal`} inset={true} lines="full">
+        <IonList className={`${styles.rewardListing}`} inset={true} lines="full">
             {rewards.length !== 0 &&
                 rewards.map((reward, index) => (
                     <RewardListingItem 

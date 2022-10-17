@@ -11,7 +11,7 @@ export class Brand implements AppModel {
         ) { }
 
     static getFromDTO(dto: BrandDTO): Brand {
-        return new Brand(dto.key, dto.name, dto.logo, dto.color)
+        return new Brand(dto.attributes.key, dto.attributes.name, dto.attributes.logo, dto.attributes.color)
     }
 
     toDTO() { }

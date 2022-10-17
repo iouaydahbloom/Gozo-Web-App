@@ -1,37 +1,52 @@
 .container {
-    background: var(--ion-color-light);
+    background: var(--ion-color-medium);
     border-radius: 7px;
-    padding: 6px 12px;
     margin-bottom: 20px;
     position: relative;
 
     .dataContainer {
         display: flex;
-    }
+        justify-content: space-between;
+        flex-wrap: nowrap;
 
-    .middleRow {
-        margin: 6px 0;
-    }
+        .selectionContainer {
+            padding:10px 0 0 10px;
 
-    .actions {
-        position: absolute;
-        right: 0;
-        top: 0;
-        height: 100%;
-        width: 20%;
-
-        .spinAction {
-            background: var(--ion-color-quaternary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            border-top-right-radius: 7px;
-            border-bottom-right-radius: 7px;
-
-            .spinIcon {
-                text-align: center;
+            ion-checkbox {
+                --border-radius: 4px;
+                --background: var(--ion-color-dark);
+                --border-color: var(--ion-color-dark);
             }
+        }
+
+        .middleRow {
+            border-bottom: 1px solid var(--ion-color-medium-light);
+        }
+
+        ion-item {
+            --background: none;
+            flex: 2;
+
+            ion-avatar {
+                align-self: start;
+            }
+        }
+    }
+
+    .spinAction {
+        background: var(--ion-color-medium-light);
+        height: 100%;
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 7px;
+        width: 90px;
+        position: relative;
+
+        .spinIcon {
+            width: fit-content;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
     }
 }

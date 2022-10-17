@@ -1,5 +1,4 @@
 import React from 'react';
-import PrimarySearch from '../../inputs/PrimarySearch/PrimarySearch';
 import PrimaryTypography from '../../typography/PrimaryTypography/PrimaryTypography';
 import styles from './primaryGrid.module.scss';
 
@@ -11,7 +10,6 @@ interface Props {
 const PrimaryGrid: React.FC<Props> = ({ headers = [], data = [] }) => {
     return (
         <div className={styles.container}>
-            <PrimarySearch />
             <div className={styles.grid}>
                 <div className={styles.header}>
                     {

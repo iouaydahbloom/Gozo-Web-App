@@ -1,11 +1,7 @@
-.container {
-    .filterContainer {
-        margin-bottom: 35px;
-    }
-
-    .programsContainer {
-        --background: var(--ion-color-medium);
-        height: calc(100vh - (30px + 46px + 30px + 60px + 25px));
-        overflow-y: auto;
-    }
+.filterContainer {
+    padding-bottom: 20px;
+    position:sticky;
+    top:0;
+    background: var(--ion-color-medium);
+    z-index: 99999;
 }

@@ -1,0 +1,1 @@
+export const hiddenOnboardingScreen: string = 'HIDDEN_ONBOARDING_SCREEN';

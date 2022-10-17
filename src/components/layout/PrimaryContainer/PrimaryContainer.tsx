@@ -4,12 +4,13 @@ import styles from './primaryContainer.module.css';
 
 interface Props {
     children: ReactNode,
-    className?: string
+    className?: string,
+    scrollXAxis?: boolean
 }
 
-const PrimaryContainer: React.FC<Props> = ({ children, className }) => {
+const PrimaryContainer: React.FC<Props> = ({ children, className, scrollXAxis }) => {
     return (
-        <IonContent className={`ion-padding ${styles.container} ${className}`} fullscreen>
+        <IonContent className={`ion-padding ${styles.container} ${className}`} fullscreen scroll-x={scrollXAxis}>
             {children}
         </IonContent>
     )

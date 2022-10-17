@@ -15,12 +15,20 @@ const useAuthentication = () => {
     const [authError, setAuthError] = useState<string>();
 
     const login = useCallback(async (email: string) => {
-        setIsAuthenticating(true);
-        await initNewSession();
-        const magicResult = await handleMagicAuth(email);
-        if (magicResult) {
-            const userMetadata = (await magicUser?.getMetadata());
-            await handleServerAuth(userMetadata?.email!, userMetadata?.publicAddress!, magicResult);
+        try {
+            setIsAuthenticating(true);
+            await initNewSession();
+            const magicResult = await handleMagicAuth(email);
+            if (magicResult) {
+                const userMetadata = (await magicUser?.getMetadata());
+                await handleServerAuth(userMetadata?.email!, userMetadata?.publicAddress!, magicResult);
+            }
+        }
+        catch (error: any) {
+            setAuthError(error.message);
+        }
+        finally {
+            setIsAuthenticating(false)
         }
     }, [])
 
@@ -47,11 +55,7 @@ const useAuthentication = () => {
 
     async function handleMagicAuth(email: string) {
         const connectionResult = await connect(email);
-        if (connectionResult) {
-            return connectionResult
-        }
-        setAuthError(connectionResult!);
-        return null;
+        return connectionResult;
     }
 
     async function handleServerAuth(email: string, ethAddress: string, magicToken: string) {
@@ -65,9 +69,8 @@ const useAuthentication = () => {
                 user: userSession
             })
         } else {
-            setAuthError(serverAuthResult.message);
+            throw new Error(serverAuthResult.message);
         }
-        // setIsAuthenticating(false);
     }
 
     return {

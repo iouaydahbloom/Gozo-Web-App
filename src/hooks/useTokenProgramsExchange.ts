@@ -14,7 +14,7 @@ import useLoyaltyPrograms from "./useLoyaltyPrograms";
 import useToast from "./useToast";
 
 const useTokenProgramsExchange = () => {
-    const [tokenQuantity, setTokenQuantity] = useState<number>();
+    const [tokenQuantity, setTokenQuantity] = useState<number | undefined>(0);
     const [programQuantity, setProgramQuantity] = useState<number>();
     const [exchanging, setExchanging] = useState(false);
     const [tokenOptions, setTokenOptions] = useState<ERC20Asset[]>([]);
@@ -90,7 +90,7 @@ const useTokenProgramsExchange = () => {
         run(cloudFunctionName.executeP2Texchange, { recipient: walletAddress, amount: programQuantity }, (result: any) => result as number, true)
             .then(result => {
                 if (result.isSuccess) presentSuccess('Exchanged successfuly');
-                else presentFailure(result.errors?.errors[0].message);
+                else presentFailure(result.message ?? result.errors?.errors[0].message);
             })
             .finally(() => setExchanging(false))
     }, [programQuantity])
@@ -170,6 +170,7 @@ const useTokenProgramsExchange = () => {
         direction: direction,
         minimumValue,
         estimatedGasFee,
+        isDisabled: direction == 't2p' ? !tokenQuantity || tokenQuantity == 0 : !programQuantity || programQuantity == 0,
         toggleDirection: () => setDirection(prev => prev == 't2p' ? 'p2t' : 't2p')
     }
 }

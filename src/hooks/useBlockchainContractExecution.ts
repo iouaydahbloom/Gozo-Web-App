@@ -114,6 +114,7 @@ const useBlockchainContractExecution = () => {
             })
         }
         catch (error: any) {
+            onError && onError(error);
             setExecuting(false);
         }
     }

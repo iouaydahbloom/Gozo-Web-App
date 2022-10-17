@@ -11,7 +11,7 @@ const SwapTokens: React.FC = () => {
 
     const { tokenOptions, programOptions, token, tokenQuantity, setTokenQuantity, program,
         programQuantity, setProgramQuantity, exchanging, exchange, toggleDirection, direction,
-        minimumValue, estimatedGasFee } = useTokenProgramsExchange();
+        minimumValue, estimatedGasFee, isDisabled } = useTokenProgramsExchange();
 
     const renderTokensField = useCallback((label: string, isDisabled: boolean) => (
         <SwapField
@@ -60,7 +60,8 @@ const SwapTokens: React.FC = () => {
             <PrimaryButton
                 expand='block'
                 onClick={exchange}
-                disabled={exchanging}>
+                disabled={isDisabled}
+                loading={exchanging}>
                 swap
             </PrimaryButton>
         </div>

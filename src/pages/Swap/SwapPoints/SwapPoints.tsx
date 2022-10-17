@@ -9,7 +9,8 @@ import styles from './swapPoints.module.scss';
 const SwapPoints: React.FC = () => {
 
     const { exchangeInOptions, exchangeOutOptions, defaultExchangeOptions, originProgram, setOriginProgram,
-        destinationProgram, setDestinationProgram, exchange, exchanging, direction, toggleDirection } = useProgramsExchange();
+        destinationProgram, setDestinationProgram, exchange, exchanging, direction, toggleDirection,
+        isDisabled } = useProgramsExchange();
 
     return (
         <>
@@ -69,7 +70,8 @@ const SwapPoints: React.FC = () => {
             <PrimaryButton
                 expand='block'
                 onClick={exchange}
-                disabled={exchanging}>
+                loading={exchanging}
+                disabled={isDisabled}>
                 swap
             </PrimaryButton>
         </>

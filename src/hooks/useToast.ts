@@ -16,7 +16,7 @@ function useToast(): PresentingOptions {
     const options: ToastOptions = {
         buttons: [{ text: 'Ok', handler: () => dismiss() }],
         position: 'bottom',
-        duration: 300000
+        duration: 3000
     }
 
     const toaster: PresentingOptions = {

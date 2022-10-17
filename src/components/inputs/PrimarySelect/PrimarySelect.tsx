@@ -8,7 +8,7 @@ export class SelectOption {
         public label: string,
         public value: string,
         public icon?: string
-        ) { }
+    ) { }
 }
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
     value?: string,
     onChange?: (value: string) => void,
     options?: SelectOption[],
-    className?:string
+    className?: string
 }
 
 const PrimarySelect: React.FC<Props> = ({ label, value, onChange, options = [], className }) => {
@@ -39,36 +39,41 @@ const PrimarySelect: React.FC<Props> = ({ label, value, onChange, options = [], 
         },
         menu: (styles: React.CSSProperties, state: any) => {
             return {
-              ...styles,
-              background: 'var(--ion-color-tertiary)'
+                ...styles,
+                background: 'var(--ion-color-dark-tint)',
+                padding: 0,
+                margin: 0,
+                zIndex: '3',
+                top: '90px',
+                left: '-10px',
+                borderRadius: '6px'
             };
-          },
+        },
         option: (styles: React.CSSProperties, state: any) => {
             return {
-              ...styles,
-              background: state.isFocused ? 'var(--ion-color-primary)' : 'none'
+                ...styles,
+                background: state.isFocused ? 'var(--ion-color-medium)' : 'var(--ion-color-dark-tint)'
             };
-          }
-
+        }
     }
 
-    const formatOptionLabel = ({ value, label, icon } : any) => {
+    const formatOptionLabel = ({ value, label, icon }: any) => {
         return (
-         <IonItem lines='none' className={styles.formatOptionLabel}>
-         {icon &&
-         <IonAvatar>
-             <img
-             src={icon}
-             alt={label}
-           />
-         </IonAvatar> 
-             }
-             <IonLabel className={styles.optionLabel}>
-             {label}
-             </IonLabel>
-         </IonItem>
-       );
-     }
+            <IonItem lines='none' className={styles.formatOptionLabel}>
+                {icon &&
+                    <IonAvatar>
+                        <img
+                            src={icon}
+                            alt={label}
+                        />
+                    </IonAvatar>
+                }
+                <IonLabel className={styles.optionLabel}>
+                    {label}
+                </IonLabel>
+            </IonItem>
+        );
+    }
 
     return (
         <div>
@@ -79,6 +84,7 @@ const PrimarySelect: React.FC<Props> = ({ label, value, onChange, options = [], 
                 onChange={(event: any) => onChange && onChange(event.value ?? '')}
                 options={options as any}
                 className={className}
+                isSearchable={false}
                 theme={(theme) => ({
                     ...theme,
                     borderRadius: 0,
@@ -88,9 +94,9 @@ const PrimarySelect: React.FC<Props> = ({ label, value, onChange, options = [], 
                     }
                 })}
                 formatOptionLabel={formatOptionLabel}
-                components={{ 
-                    IndicatorSeparator:() => null
-                 }}
+                components={{
+                    IndicatorSeparator: () => null
+                }}
             />
         </div>
     )

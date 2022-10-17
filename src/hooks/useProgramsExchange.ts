@@ -40,6 +40,10 @@ const useProgramsExchange = () => {
 
     const simulateP2PExchange = useCallback(debounce(
         (from: string, to: string, amount: number, onSuccess: (result: number) => void) => {
+            if (!amount) {
+                onSuccess(0);
+                return;
+            }
             run(cloudFunctionName.simulateP2PExchange,
                 { origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount },
                 (result: any) => result[to] as number,
@@ -55,13 +59,22 @@ const useProgramsExchange = () => {
         setDestinationProgram({ loyaltyCurrency: '', quantity: 0 })
     }
 
+    function initSelectedPrograms() {
+        if (direction == 'p2s' &&
+            exchangeInOptions.length > 0 &&
+            defaultProgram) {
+            if (exchangeInOptions.length > 0) setOriginProgram({ loyaltyCurrency: exchangeInOptions[0].currency.loyaltyCurrency, quantity: 0 });
+            if (defaultProgram) setDestinationProgram({ loyaltyCurrency: defaultProgram.currency.loyaltyCurrency, quantity: 0 });
+        }
+    }
+
     useEffect(() => {
         setDefaultExchangeOptions(defaultProgram ? [defaultProgram] : []);
 
         fetchMyLoyaltyPrograms()
             .then(programs => {
-                setExchangeInOptions(programs.filter(prog => prog.currency.isRedemption));
-                setExchangeOutOptions(programs.filter(prog => prog.currency.isExchangeIn));
+                setExchangeInOptions(programs);
+                setExchangeOutOptions(programs);
             })
     }, [])
 
@@ -76,6 +89,10 @@ const useProgramsExchange = () => {
         }
     }, [originProgram.loyaltyCurrency, originProgram.quantity, destinationProgram.loyaltyCurrency])
 
+    useEffect(() => {
+        initSelectedPrograms();
+    }, [exchangeInOptions, exchangeOutOptions])
+
     return {
         exchange: () => executeP2PExchange(originProgram.loyaltyCurrency, destinationProgram.loyaltyCurrency, originProgram.quantity ?? 0),
         exchangeInOptions,
@@ -87,6 +104,7 @@ const useProgramsExchange = () => {
         setDestinationProgram: setDestinationProgram,
         exchanging: exchanging,
         direction: direction,
+        isDisabled: !originProgram.quantity || originProgram.quantity == 0,
         toggleDirection: () => {
             setDirection(prev => prev == 's2p' ? 'p2s' : 's2p');
             shuffleSelections();

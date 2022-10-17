@@ -1,1 +1,1 @@
-export const hideSplashAndOnboardingScreenSK: string = 'HIDE_SPLASH_ONBOARDING_SCREEN';
+export const hiddenOnboardingScreen: string = 'HIDDEN_ONBOARDING_SCREEN';

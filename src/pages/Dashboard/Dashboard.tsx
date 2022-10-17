@@ -9,23 +9,23 @@ import '../../theme/primaryTabs.scss';
 import { useContext, useState } from 'react';
 import { AssetMode } from '../../constants/assetsMode';
 import styles from './dashboard.module.scss'
-import { HideScreenContext, IHideScreen } from '../../providers/HideScreenProvider/HideScreenProvider.context';
-import useHideScreen from '../../hooks/useHideScreen';
+import { hideOnboarding, isOnboardingShown } from '../../helpers/onboardingPreview';
+import { IHideOnBoarding, OnBoardingPreviewContext } from '../../providers/OnBoardingPreviewProvider/OnBoardingPreviewProvider.context';
 
 
 const Dashboard: React.FC = () => {
 
     const [mode, setMode] = useState<AssetMode>(AssetMode.loyaltyPoint);
-    const { setHideScreen } = useContext(HideScreenContext) as IHideScreen;
-    const { storeHideFlag } = useHideScreen()
+    const { setHideOnBoarding } = useContext(OnBoardingPreviewContext) as IHideOnBoarding;
 
     function onSelect(tabIndex: number) {
         setMode(tabIndex == 0 ? AssetMode.loyaltyPoint : AssetMode.token);
     }
 
     useIonViewDidEnter(() => {
-        storeHideFlag().then((result) => {
-            setHideScreen(result)
+        hideOnboarding().then((result) => {
+            console.log("result", result)
+            setHideOnBoarding(result)
         })
     })
 

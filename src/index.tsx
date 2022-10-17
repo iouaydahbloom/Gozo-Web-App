@@ -9,12 +9,12 @@ import { appConfig } from './constants/appConfig';
 import MagicAuthProvider from './providers/MagicAuthProvider/MagicAuthProvider';
 import SessionProvider from './providers/SessionProvider/SessionProvider';
 import { DappProvider } from './providers/DappProvider/DappProvider';
-import HideScreenProviderContext from './providers/HideScreenProvider/HideScreenProvider.context';
+import OnBoardingPreviewProvider from './providers/OnBoardingPreviewProvider/OnBoardingPreviewProvider.context';
 require('dotenv').config();
 
 ReactDOM.render(
   <React.StrictMode>
-    <HideScreenProviderContext>
+    <OnBoardingPreviewProvider>
       <MoralisProvider
         appId={appConfig.moralisAppId}
         serverUrl={appConfig.moralisServerUrl}>
@@ -28,7 +28,7 @@ ReactDOM.render(
           </SessionProvider>
         </MagicAuthProvider>
       </MoralisProvider>
-    </HideScreenProviderContext>
+    </OnBoardingPreviewProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )

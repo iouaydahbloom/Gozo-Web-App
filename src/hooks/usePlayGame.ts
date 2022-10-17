@@ -19,7 +19,6 @@ const usePlayGame = () => {
             () => true,
             true)
             .then(result => {
-                console.log("result", result)
                 return (result.isSuccess && result.data) ? setIsPlaying(result.data) : null
             })
     }

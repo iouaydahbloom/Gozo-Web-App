@@ -9,7 +9,7 @@ import { appConfig } from './constants/appConfig';
 import MagicAuthProvider from './providers/MagicAuthProvider/MagicAuthProvider';
 import SessionProvider from './providers/SessionProvider/SessionProvider';
 import { DappProvider } from './providers/DappProvider/DappProvider';
-import OnBoardingPreviewProvider from './providers/OnBoardingPreviewProvider/OnBoardingPreviewProvider.context';
+import OnBoardingPreviewProvider from './providers/OnBoardingPreviewProvider/OnBoardingPreviewProvider';
 require('dotenv').config();
 
 ReactDOM.render(

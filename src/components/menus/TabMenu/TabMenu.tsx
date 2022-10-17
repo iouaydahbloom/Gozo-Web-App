@@ -72,9 +72,7 @@ const TabMenu: React.FC = () => {
                     <AuthCallback />
                 </PurePublicRoute>
                 <Route exact path="/">
-                    <OnBoardingRoute>
-                        <Redirect to={AppRoutes.landing} />
-                    </OnBoardingRoute>
+                    <Redirect to={AppRoutes.landing} />
                 </Route>
             </IonRouterOutlet>
 

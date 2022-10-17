@@ -8,10 +8,10 @@ interface Props {
     icon: ReactNode,
     text: string,
     onClick?: () => void,
-    customEndIcon?: ReactNode
+    customEndSlot?: ReactNode
 }
 
-const AccountItem: React.FC<Props> = ({ icon, text, onClick, customEndIcon }) => {
+const AccountItem: React.FC<Props> = ({ icon, text, onClick, customEndSlot }) => {
     return (
         <div className={styles.container} onClick={onClick}>
             <div className={`${styles.iconContainer} ${styles.innerContainer}`}>{icon}</div>
@@ -19,8 +19,8 @@ const AccountItem: React.FC<Props> = ({ icon, text, onClick, customEndIcon }) =>
                 <PrimaryTypography size='m'>{text}</PrimaryTypography>
             </div>
             <div className={`${styles.navigation} ${styles.innerContainer}`}>
-                {customEndIcon ?
-                    customEndIcon
+                {customEndSlot ?
+                    customEndSlot
                     :
                     <IonIcon icon={chevronForwardOutline} color='light' className={styles.navigateIcon} />
                 }

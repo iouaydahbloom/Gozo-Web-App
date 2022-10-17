@@ -6,27 +6,22 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import LoyaltyPrograms from './LoyaltyPrograms/LoyaltyPrograms';
 import CryptoTokens from './CryptoTokens/CryptoTokens';
 import '../../theme/primaryTabs.scss';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { AssetMode } from '../../constants/assetsMode';
 import styles from './dashboard.module.scss'
-import { hideOnboarding, isOnboardingShown } from '../../helpers/onboardingPreview';
-import { IHideOnBoarding, OnBoardingPreviewContext } from '../../providers/OnBoardingPreviewProvider/OnBoardingPreviewProvider.context';
-
+import useOnBoardingPreview from '../../hooks/useOnBoardingPreview';
 
 const Dashboard: React.FC = () => {
 
     const [mode, setMode] = useState<AssetMode>(AssetMode.loyaltyPoint);
-    const { setHideOnBoarding } = useContext(OnBoardingPreviewContext) as IHideOnBoarding;
+    const { hide } = useOnBoardingPreview();
 
     function onSelect(tabIndex: number) {
         setMode(tabIndex == 0 ? AssetMode.loyaltyPoint : AssetMode.token);
     }
 
     useIonViewDidEnter(() => {
-        hideOnboarding().then((result) => {
-            console.log("result", result)
-            setHideOnBoarding(result)
-        })
+        hide();
     })
 
     return (

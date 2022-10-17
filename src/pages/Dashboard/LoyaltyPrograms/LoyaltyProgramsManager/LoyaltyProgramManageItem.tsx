@@ -17,6 +17,7 @@ interface Props {
 }
 
 const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
+    console.log("item", item)
     const [isSelected, setIsSelected] = useState(!!myProgram);
     const [isConnected, setIsConnected] = useState(!!myProgram);
     const [partnershipMetadata, setPartnershipMetadata] = useState<LoyaltyPartnershipDetails | null>();
@@ -142,7 +143,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
     }
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} style={{background: item?.brand?.color}}>
             <div className={styles.togglerContainer}
                 onClick={() => setIsSelected(!isSelected)}>
                 <div className={styles.id}>

@@ -46,12 +46,12 @@ const Account: React.FC = () => {
                     <AccountItem
                         icon={<IonIcon icon={volumeHighOutline} />}
                         text='Enable Sounds'
-                        customEndIcon={<IonToggle checked={true}></IonToggle>}
+                        customEndSlot={<IonToggle checked={true}></IonToggle>}
                     />
                     <AccountItem
                         icon={<IonIcon icon={notificationsOutline} />}
                         text='Enable Push Notifications'
-                        customEndIcon={<IonToggle checked={false}></IonToggle>}
+                        customEndSlot={<IonToggle checked={false}></IonToggle>}
                     />
                     <AccountItem
                         icon={<IonIcon icon={lockClosedOutline} />}
@@ -61,7 +61,7 @@ const Account: React.FC = () => {
                     <AccountItem
                         icon={<IonIcon icon={invertModeOutline} />}
                         text='Light/ Dark Mode'
-                        customEndIcon={<IonToggle checked={true}></IonToggle>}
+                        customEndSlot={<IonToggle checked={true}></IonToggle>}
                     />
                     <AccountItem
                         icon={<IonIcon icon={helpCircleOutline} />}

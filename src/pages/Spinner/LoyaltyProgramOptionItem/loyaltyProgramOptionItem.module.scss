@@ -1,0 +1,24 @@
+.container {
+    --background: var(--ion-color-medium-tint);
+    --border-radius: 7px;
+    margin: 0 20px 20px 20px;
+
+    .info {
+        padding-left: 20px;
+    }
+}
+
+.active {
+    --background: none;
+    border: 3px solid var(--ion-color-primary);
+    border-radius: 7px;
+}
+
+.selector {
+    --border-radius: 50%;
+    --inner-border-radius: 50%;
+
+    --color: var(--ion-color-light);
+    --color-checked: var(--ion-color-primary);
+    margin: 20px 20px 20px 0;
+}

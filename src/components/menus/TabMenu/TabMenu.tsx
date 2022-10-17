@@ -15,7 +15,7 @@ import Spinner from '../../../pages/Spinner/Spinner';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
 import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
-import PrimitiveRoute from '../../routes/PrimitiveRoute/PrimitiveRoute';
+import OnBoardingRoute from '../../routes/OnBoardingRoute/OnBoardingRoute';
 import ProtectedRoute from '../../routes/ProtectedRoute/ProtectedRoute';
 import PurePublicRoute from '../../routes/PurePublicRoute/PurePublicRoute';
 import styles from './tabMenu.module.scss';
@@ -46,9 +46,9 @@ const TabMenu: React.FC = () => {
                     <Dashboard />
                 </ProtectedRoute>
                 <ProtectedRoute exact path={AppRoutes.onBoarding}>
-                    <PrimitiveRoute>
+                    <OnBoardingRoute>
                         <OnBoarding />
-                    </PrimitiveRoute>
+                    </OnBoardingRoute>
                 </ProtectedRoute>
                 <ProtectedRoute exact path={AppRoutes.account}>
                     <Account />
@@ -72,9 +72,9 @@ const TabMenu: React.FC = () => {
                     <AuthCallback />
                 </PurePublicRoute>
                 <Route exact path="/">
-                    <PrimitiveRoute>
+                    <OnBoardingRoute>
                         <Redirect to={AppRoutes.landing} />
-                    </PrimitiveRoute>
+                    </OnBoardingRoute>
                 </Route>
             </IonRouterOutlet>
 

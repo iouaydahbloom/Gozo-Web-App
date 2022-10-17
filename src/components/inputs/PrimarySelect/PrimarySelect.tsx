@@ -14,7 +14,6 @@ export class SelectOption {
 interface Props {
     label?: string,
     value?: string,
-    icon?: string,
     onChange?: (value: string) => void,
     options?: SelectOption[],
     className?:string

@@ -179,13 +179,13 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
 
 
-  // useEffect(() => {
-  //   if (spin && Object.keys(myWheel).length !== 0 && selectedPrizeId) calculatePrize()
-  // }, [spin, selectedPrizeId])
-
   useEffect(() => {
-      if(spin) calculatePrize()
-    }, [spin])
+    if (spin && Object.keys(myWheel).length !== 0 && selectedPrizeId) calculatePrize()
+  }, [spin, selectedPrizeId])
+
+  // useEffect(() => {
+  //     if(spin) calculatePrize()
+  //   }, [spin])
 
 
 

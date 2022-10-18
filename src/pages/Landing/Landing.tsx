@@ -19,7 +19,7 @@ const Landing: React.FC = () => {
         component: Authentication,
         title: 'Email',
         id: 'authenticationModal',
-        initialBreakpoint: 0.45
+        initialBreakpoint: .6
     });
     useTabMenuHidder();
 

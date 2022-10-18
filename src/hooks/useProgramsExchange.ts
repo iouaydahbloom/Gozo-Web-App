@@ -34,7 +34,7 @@ const useProgramsExchange = () => {
             .then(result => {
                 result.isSuccess ?
                     presentSuccess('Swapped successfuly') :
-                    presentFailure(result.errors?.errors[0].message);
+                    presentFailure(result.errors?.errors[0].message ?? result.message);
             })
             .finally(() => setExchanging(false))
     }, [])

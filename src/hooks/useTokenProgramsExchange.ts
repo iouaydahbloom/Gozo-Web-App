@@ -93,7 +93,7 @@ const useTokenProgramsExchange = () => {
         run(cloudFunctionName.executeP2Texchange, { recipient: walletAddress, amount: programQuantity }, (result: any) => result as number, true)
             .then(result => {
                 if (result.isSuccess) presentSuccess('Exchanged successfuly');
-                else presentFailure(result.message ?? result.errors?.errors[0].message);
+                else presentFailure(result.errors?.errors[0].message ?? result.message);
             })
             .finally(() => setExchanging(false))
     }, [programQuantity])

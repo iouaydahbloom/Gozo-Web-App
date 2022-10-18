@@ -1,4 +1,5 @@
 import { IonAvatar, IonIcon, IonItem, IonLabel, IonText } from '@ionic/react';
+import { ellipse } from 'ionicons/icons';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import PrimaryCheckbox from '../../../../components/inputs/PrimaryCheckbox/PrimaryCheckbox';
@@ -28,33 +29,47 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSe
         <div className={styles.container}>
             <div className={styles.dataContainer}>
                 {isSelectable &&
-                <div className={styles.selectionContainer}>
-                    <PrimaryCheckbox value={isSelected} onChange={(selected) => {
-                        setIsSelected(selected);
-                        onSelection && onSelection(selected, loyaltyProgram)
-                    }} />
-                </div>
+                    <div className={styles.selectionContainer}>
+                        <PrimaryCheckbox value={isSelected} onChange={(selected) => {
+                            setIsSelected(selected);
+                            onSelection && onSelection(selected, loyaltyProgram)
+                        }} />
+                    </div>
                 }
                 <IonItem>
                     <IonAvatar slot="start">
-                        <img alt="program logo" src={loyaltyProgram.currency.programLogo} />
+                        <img className={styles.logo} src={loyaltyProgram.currency.programLogo ? loyaltyProgram.currency.programLogo : "assets/image/image-placeholder.svg"} />
                     </IonAvatar>
                     <IonLabel>
-                        <IonLabel>
+                        <IonLabel >
                             <PrimaryTypography color='light' isBold size='m'>{loyaltyProgram.currency.loyaltyCurrencyName}</PrimaryTypography>
                         </IonLabel>
-                        <IonLabel>
-                            <PrimaryTypography color='light' size='m' customClassName={styles.middleRow}><IonText color='medium-light'>Balance:</IonText> {membership?.balance} Miles</PrimaryTypography>
+                        <IonLabel className={styles.balanceRow}>
+                            <IonText color='medium-light'>Balance:</IonText>
+                            <PrimaryTypography color='light' size='m'>{membership?.balance} Miles</PrimaryTypography>
                         </IonLabel>
-                        <IonLabel>
-                            <PrimaryTypography color='light' size='m'><IonText color='medium-light'>Cost to Spin:</IonText> test points</PrimaryTypography>
+                        <IonLabel className={styles.costRow}>
+                            <IonText color='medium-light'>Cost to Spin:</IonText>
+                            <PrimaryTypography color='light' size='m'>{loyaltyProgram.redemption?.spinCost ? loyaltyProgram.redemption?.spinCost : 0} Units</PrimaryTypography>
                         </IonLabel>
-                        <IonLabel>
-                            <PrimaryTypography color='light' size='m'>{membership?.state}</PrimaryTypography>
+                        <IonLabel className={styles.status}>
+                            {membership ?
+                                <>
+                                    <IonIcon icon={ellipse} color="success" />
+                                    <PrimaryTypography color='success' size='m'>Connected</PrimaryTypography>
+                                </>
+                                :
+                                <>
+                                    <IonIcon icon={ellipse} color="danger" />
+                                    <PrimaryTypography color='danger' size='m'>Disconnected</PrimaryTypography>
+                                </>
+
+                            }
+
                         </IonLabel>
                     </IonLabel>
                 </IonItem >
-                {loyaltyProgram.currency.isRedemption &&
+                {loyaltyProgram.redemption?.isSufficient &&
                     <div>
                         <div className={styles.spinAction} onClick={spin}>
                             <div className={styles.spinIcon}>

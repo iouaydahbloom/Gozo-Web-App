@@ -3,6 +3,7 @@ import { ActivePartnershipDetailsDTO, LoyaltyCurrencyDTO, LoyaltyExecuteActionDT
 import AppModel from "./appModel"
 import { Brand } from "./brand";
 import { DynamicInputIdentifier } from "./dynamicInputIdentifier";
+import { Redemption } from "./redemption";
 
 export class LoyaltyProgram implements AppModel {
     constructor(public companyName: string,
@@ -33,7 +34,8 @@ export class UserLoyaltyProgram implements AppModel {
         public memberFields: DynamicInputIdentifier[],
         public createdAt: Date,
         public id: string,
-        public userCurrencyId: string) { }
+        public userCurrencyId: string,
+        public redemption: Redemption | null) { }
 
     static getFromDTO(dto: UserLoyaltyProgramDTO): UserLoyaltyProgram {
         return new UserLoyaltyProgram(
@@ -44,7 +46,8 @@ export class UserLoyaltyProgram implements AppModel {
             }),
             new Date(dto.createdAt),
             dto.objectId,
-            dto.userCurrencyId
+            dto.userCurrencyId,
+            dto.redemption ? Redemption.getFromDTO(dto.redemption) : null
         )
     }
 
@@ -55,7 +58,8 @@ export class UserLoyaltyProgram implements AppModel {
             [],
             new Date(),
             '',
-            ''
+            '',
+            new Redemption(0, false)
         )
     }
 

@@ -1,4 +1,4 @@
-import { IonIcon, IonToolbar } from '@ionic/react'
+import { IonIcon } from '@ionic/react'
 import { chevronDownOutline, chevronForwardOutline } from 'ionicons/icons';
 import { useCallback, useEffect, useState } from 'react'
 import PrimaryButton from '../../../../components/buttons/PrimaryButton/PrimaryButton';
@@ -7,7 +7,7 @@ import PrimaryTypography from '../../../../components/typography/PrimaryTypograp
 import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms';
 import useToast from '../../../../hooks/useToast';
 import { DynamicInputIdentifier } from '../../../../models/dynamicInputIdentifier';
-import { LoyaltyPartnershipDetails, LoyaltyProgram, UserLoyaltyProgram, UserLoyaltyProgramCurrency } from '../../../../models/loyaltyProgram'
+import { LoyaltyPartnershipDetails, LoyaltyProgram, UserLoyaltyProgram, UserLoyaltyProgramCurrency } from '../../../../models/loyaltyProgram';
 import { PartnershipType } from '../../../../types/exchangeType';
 import styles from './loyaltyProgramManageItem.module.scss';
 
@@ -17,7 +17,6 @@ interface Props {
 }
 
 const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
-    console.log("item", item)
     const [isSelected, setIsSelected] = useState(!!myProgram);
     const [isConnected, setIsConnected] = useState(!!myProgram);
     const [partnershipMetadata, setPartnershipMetadata] = useState<LoyaltyPartnershipDetails | null>();
@@ -45,7 +44,8 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
                 }) : [],
             new Date(),
             '',
-            ''
+            '',
+            myProgram?.redemption ?? null
         );
         setMyUpdatedProgram(userLoyaltyProgram);
     }

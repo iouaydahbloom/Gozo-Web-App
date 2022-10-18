@@ -8,7 +8,7 @@ interface Props {
     isBold?: boolean,
     size?: 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl',
     customClassName?: string,
-    color?: 'light' | 'dark' | 'danger' | 'medium' | 'medium-light'
+    color?: 'light' | 'dark' | 'danger' | 'medium' | 'medium-light' | 'success'
 }
 
 const PrimaryTypography: React.FC<Props> = ({

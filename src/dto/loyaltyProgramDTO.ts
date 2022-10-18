@@ -1,5 +1,6 @@
 import { BrandDTO } from "./brandDTO"
 import { DynamicInputIdentifierDTO } from "./dynamicInputIdentifierDTO"
+import { RedemptionDTO } from "./redemptionDTO"
 import { ValueIdentifierDTO } from "./valueIdentifierDTO"
 
 export interface LoyaltyProgramDTO {
@@ -65,7 +66,8 @@ export interface UserLoyaltyProgramDTO {
     createdAt: string,
     updatedAt: string,
     objectId: string,
-    userCurrencyId: string
+    userCurrencyId: string,
+    redemption: RedemptionDTO
 }
 
 export interface UserLoyaltyProgramCurrencyDTO {

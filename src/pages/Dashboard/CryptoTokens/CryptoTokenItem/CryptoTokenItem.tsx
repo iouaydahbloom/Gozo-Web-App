@@ -14,7 +14,7 @@ const CryptoTokenItem: React.FC<Props> = ({ name, logo, balance, symbol }) => {
         <div className={styles.container}>
             <IonItem lines="none" className={styles.info}>
                 <IonAvatar slot="start">
-                    <img alt="program logo" src={logo} />
+                    <img src={logo ? logo : "assets/image/image-placeholder.svg"} />
                 </IonAvatar>
                 <IonLabel>
                     <PrimaryTypography color='light' isBold size='m'>{name}</PrimaryTypography>

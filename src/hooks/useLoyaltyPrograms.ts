@@ -48,9 +48,7 @@ const useLoyaltyPrograms = () => {
             cloudFunctionName.program,
             { partner_id: programId },
             (result: LoyaltyProgramDTO) => {
-                const stringifiedResult = JSON.stringify(result);
-                const parsedResult: LoyaltyProgramDTO = JSON.parse(stringifiedResult);
-                return LoyaltyProgram.getFromDTO(parsedResult)
+                return LoyaltyProgram.getFromDTO(result)
             })
             .then(result => {
                 return result.isSuccess ? result.data : null

@@ -8,7 +8,7 @@ import { currencySettingsContext } from "./currencySettingsContext";
 const CurrencySettingsProvider: React.FC = ({ children }) => {
 
     const [gozoLoyalty] = useState<UserLoyaltyProgram | null>(UserLoyaltyProgram.getFromDefaultCurrencyDTO({
-        curency_display_name: 'GZL',
+        curency_display_name: 'Super Points',
         currency_id: 'GZL_LVXMS'
     }));
     const { membership, fetchMembership } = useMemberShip('GZL_LVXMS');

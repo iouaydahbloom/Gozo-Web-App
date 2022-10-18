@@ -11,6 +11,7 @@
 
     .gasFeeContainer {
         display: flex;
+        position: relative;
 
         .gasFeeTitle {
             flex: 1;
@@ -19,6 +20,13 @@
         .gasFeeValue {
             flex: 1;
             text-align: right;
+        }
+
+        .spinner {
+            width: 22px;
+            position: absolute;
+            right: 33px;
+            top: -2px;
         }
     }
 

@@ -15,6 +15,7 @@ const useProgramsExchange = () => {
     const [originProgram, setOriginProgram] = useState<ExchangeState>({ loyaltyCurrency: '', quantity: 0 });
     const [destinationProgram, setDestinationProgram] = useState<ExchangeState>({ loyaltyCurrency: '', quantity: 0 });
     const [exchanging, setExchanging] = useState(false);
+    const [simulating, setSimulating] = useState(false);
     const [exchangeInOptions, setExchangeInOptions] = useState<UserLoyaltyProgram[]>([]);
     const [exchangeOutOptions, setExchangeOutOptions] = useState<UserLoyaltyProgram[]>([]);
     const [defaultExchangeOptions, setDefaultExchangeOptions] = useState<UserLoyaltyProgram[]>([]);
@@ -44,6 +45,7 @@ const useProgramsExchange = () => {
                 onSuccess(0);
                 return;
             }
+            setSimulating(true);
             run(cloudFunctionName.simulateP2PExchange,
                 { origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount },
                 (result: any) => result[to] as number,
@@ -52,20 +54,24 @@ const useProgramsExchange = () => {
                     if (result.isSuccess) onSuccess(result.data);
                     else presentFailure('Unable to simulate conversion');
                 })
+                .finally(() => setSimulating(false))
         }, 1000), [])
 
-    function shuffleSelections() {
-        setOriginProgram({ loyaltyCurrency: '', quantity: 0 })
-        setDestinationProgram({ loyaltyCurrency: '', quantity: 0 })
+    function updateSelections() {
+        if (!checkShufflingEnable()) return;
+
+        if (direction == 'p2s') {
+            setOriginProgram({ loyaltyCurrency: exchangeInOptions[0].currency.loyaltyCurrency!, quantity: 0 })
+            setDestinationProgram({ loyaltyCurrency: defaultProgram!.currency.loyaltyCurrency!, quantity: 0 })
+        }
+        else {
+            setOriginProgram({ loyaltyCurrency: defaultProgram!.currency.loyaltyCurrency!, quantity: 0 })
+            setDestinationProgram({ loyaltyCurrency: exchangeOutOptions[0].currency.loyaltyCurrency, quantity: 0 })
+        }
     }
 
-    function initSelectedPrograms() {
-        if (direction == 'p2s' &&
-            exchangeInOptions.length > 0 &&
-            defaultProgram) {
-            if (exchangeInOptions.length > 0) setOriginProgram({ loyaltyCurrency: exchangeInOptions[0].currency.loyaltyCurrency, quantity: 0 });
-            if (defaultProgram) setDestinationProgram({ loyaltyCurrency: defaultProgram.currency.loyaltyCurrency, quantity: 0 });
-        }
+    function checkShufflingEnable() {
+        return exchangeInOptions.length > 0 && exchangeOutOptions.length > 0 && !!defaultProgram
     }
 
     useEffect(() => {
@@ -90,8 +96,8 @@ const useProgramsExchange = () => {
     }, [originProgram.loyaltyCurrency, originProgram.quantity, destinationProgram.loyaltyCurrency])
 
     useEffect(() => {
-        initSelectedPrograms();
-    }, [exchangeInOptions, exchangeOutOptions])
+        updateSelections();
+    }, [direction, exchangeInOptions, exchangeOutOptions, defaultProgram])
 
     return {
         exchange: () => executeP2PExchange(originProgram.loyaltyCurrency, destinationProgram.loyaltyCurrency, originProgram.quantity ?? 0),
@@ -103,12 +109,10 @@ const useProgramsExchange = () => {
         destinationProgram: destinationProgram,
         setDestinationProgram: setDestinationProgram,
         exchanging: exchanging,
+        simulating,
         direction: direction,
         isDisabled: !originProgram.quantity || originProgram.quantity == 0,
-        toggleDirection: () => {
-            setDirection(prev => prev == 's2p' ? 'p2s' : 's2p');
-            shuffleSelections();
-        }
+        toggleDirection: () => setDirection(prev => prev == 's2p' ? 'p2s' : 's2p')
     }
 }
 

@@ -10,7 +10,7 @@ const SwapPoints: React.FC = () => {
 
     const { exchangeInOptions, exchangeOutOptions, defaultExchangeOptions, originProgram, setOriginProgram,
         destinationProgram, setDestinationProgram, exchange, exchanging, direction, toggleDirection,
-        isDisabled } = useProgramsExchange();
+        isDisabled, simulating } = useProgramsExchange();
 
     return (
         <>
@@ -51,7 +51,8 @@ const SwapPoints: React.FC = () => {
                             selectedOption={destinationProgram?.loyaltyCurrency}
                             onQuantityChange={(quantity) => setDestinationProgram({ ...destinationProgram, quantity: quantity })}
                             onSelectionChange={(value) => setDestinationProgram({ ...destinationProgram, loyaltyCurrency: value })}
-                            disabledQuantity={true}
+                            isPassive={true}
+                            isLoadingQuantity={simulating}
                         />
                         :
                         <SwapField
@@ -63,7 +64,8 @@ const SwapPoints: React.FC = () => {
                             selectedOption={destinationProgram?.loyaltyCurrency}
                             onQuantityChange={(quantity) => setDestinationProgram({ ...destinationProgram, quantity: quantity })}
                             onSelectionChange={(value) => setDestinationProgram({ ...destinationProgram, loyaltyCurrency: value })}
-                            disabledQuantity={true}
+                            isPassive={true}
+                            isLoadingQuantity={simulating}
                         />
                 }
             </div>

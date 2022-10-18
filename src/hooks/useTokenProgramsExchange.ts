@@ -17,6 +17,7 @@ const useTokenProgramsExchange = () => {
     const [tokenQuantity, setTokenQuantity] = useState<number | undefined>(0);
     const [programQuantity, setProgramQuantity] = useState<number>();
     const [exchanging, setExchanging] = useState(false);
+    const [simulating, setSimulating] = useState(false);
     const [tokenOptions, setTokenOptions] = useState<ERC20Asset[]>([]);
     const [programOptions, setProgramOptions] = useState<UserLoyaltyProgram[]>([]);
     const { run } = useCloud();
@@ -56,11 +57,13 @@ const useTokenProgramsExchange = () => {
             onSuccess(0);
             return;
         }
+        setSimulating(true);
         run(cloudFunctionName.simulateT2PExchange, { amount: amount }, (result: any) => result as number, true)
             .then(result => {
                 if (result.isSuccess) onSuccess(result.data);
                 else presentFailure(result.message);
             })
+            .finally(() => setSimulating(false))
     }, 1000), [])
 
     const minimumT2PExchange = useCallback(() => {
@@ -100,11 +103,13 @@ const useTokenProgramsExchange = () => {
             onSuccess(0);
             return;
         }
+        setSimulating(true);
         run(cloudFunctionName.simulateP2TExchange, { amount: amount }, (result: any) => result as number)
             .then(result => {
                 if (result.isSuccess) onSuccess(result.data);
                 else presentFailure(result.message);
             })
+            .finally(() => setSimulating(false))
     }, 1000), [])
 
     const minimumP2TExchange = useCallback(() => {
@@ -167,6 +172,7 @@ const useTokenProgramsExchange = () => {
         programQuantity: programQuantity,
         setProgramQuantity: setProgramQuantity,
         exchanging: exchanging,
+        simulating,
         direction: direction,
         minimumValue,
         estimatedGasFee,

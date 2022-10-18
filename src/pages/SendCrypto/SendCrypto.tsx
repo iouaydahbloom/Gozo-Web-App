@@ -38,7 +38,8 @@ const SendCrypto: React.FC = () => {
                 <PrimaryInput
                     placeholder='Enter Receiver Address'
                     value={receiver}
-                    onChange={setReceiver} />
+                    onChange={setReceiver}
+                    className={styles.inputWithscanner} />
                 <IonIcon
                     icon={scanOutline}
                     onClick={handleScan}
@@ -66,7 +67,8 @@ const SendCrypto: React.FC = () => {
             <PrimaryButton
                 expand='block'
                 onClick={handleTransfer}
-                disabled={executing}>
+                disabled={!amount || parseInt(amount) == 0 || !receiver}
+                loading={executing}>
                 send
             </PrimaryButton>
         </div>

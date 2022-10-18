@@ -11,7 +11,7 @@ const SwapTokens: React.FC = () => {
 
     const { tokenOptions, programOptions, token, tokenQuantity, setTokenQuantity, program,
         programQuantity, setProgramQuantity, exchanging, exchange, toggleDirection, direction,
-        minimumValue, estimatedGasFee, isDisabled } = useTokenProgramsExchange();
+        minimumValue, estimatedGasFee, isDisabled, simulating } = useTokenProgramsExchange();
 
     const renderTokensField = useCallback((label: string, isDisabled: boolean) => (
         <SwapField
@@ -22,9 +22,10 @@ const SwapTokens: React.FC = () => {
             quantity={tokenQuantity}
             selectedOption={token?.token_address!}
             onQuantityChange={setTokenQuantity}
-            disabledQuantity={isDisabled}
+            isPassive={isDisabled}
+            isLoadingQuantity={simulating}
         />
-    ), [tokenOptions, tokenQuantity])
+    ), [tokenOptions, tokenQuantity, simulating])
 
     const renderProgramsField = useCallback((label: string, isDisabled: boolean) => (
         <SwapField
@@ -35,9 +36,10 @@ const SwapTokens: React.FC = () => {
             quantity={programQuantity}
             selectedOption={program?.currency.loyaltyCurrency!}
             onQuantityChange={setProgramQuantity}
-            disabledQuantity={isDisabled}
+            isPassive={isDisabled}
+            isLoadingQuantity={simulating}
         />
-    ), [programOptions, programQuantity])
+    ), [programOptions, programQuantity, simulating])
 
     return (
         <div className={styles.swapContainer}>

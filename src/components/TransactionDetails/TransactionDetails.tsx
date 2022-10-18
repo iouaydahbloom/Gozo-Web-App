@@ -26,7 +26,7 @@ const TransactionDetails: React.FC<Props> = ({
                 showFeeEstimation && <div className={styles.gasFeeContainer}>
                     <PrimaryTypography customClassName={styles.gasFeeTitle} isBold>Gas Fee</PrimaryTypography>
                     <PrimaryTypography customClassName={styles.gasFeeValue} isBold>
-                        {!estimatedFee ? <IonSpinner color='primary' name='crescent' /> : estimatedFee} {estimatedFeeUnit}
+                        {!estimatedFee ? <IonSpinner color='light' className={styles.spinner} /> : estimatedFee} {estimatedFeeUnit}
                     </PrimaryTypography>
                 </div>
             }

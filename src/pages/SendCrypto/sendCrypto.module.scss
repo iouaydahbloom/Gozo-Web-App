@@ -1,6 +1,10 @@
 .receiverContainer {
     position: relative;
 
+    .inputWithscanner {
+        --padding-end: 50px;
+    }
+
     .scan {
         position: absolute;
         top: 9px;

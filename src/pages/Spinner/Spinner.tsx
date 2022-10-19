@@ -1,7 +1,6 @@
-import { IonHeader, IonLabel, IonListHeader, IonPage, IonToolbar } from '@ionic/react';
+import { IonHeader, IonPage, IonToolbar } from '@ionic/react';
 import { useEffect, useMemo, useState } from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
-import BottomFixedContainer from '../../components/layout/BottomFixedContainer/BottomFixedContainer';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import { WheelSegment } from '../../models/wheelSegment';
 import FortuneWheel from './FortuneWheel/FortuneWheel';
@@ -23,6 +22,7 @@ import ProgramSelection, { ProgramSelectOption } from './ProgramSelection/Progra
 import useAssets from '../../hooks/useAssets';
 import useMemberShip from '../../hooks/useMembership';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
+import ParticlesLoader from '../../components/sections/ParticlesLoader/ParticlesLoader';
 
 const options: any = [
     { name: 'Air France Loyalty Program', balance: '400', icon: "https://currencyalliance-uploads.s3.amazonaws.com/partner/company-pictures/part_erihtzpqr00o7.jpg?AWSAccessKeyId=ASIA4TUXDFEVBG7MNT5F&Signature=wXyyuRr15OD%2FoP1Btgc088wnA4Q%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEPT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCWV1LXdlc3QtMSJHMEUCIQD%2FGZCBKGoOAKNddvZhACwMsq%2Bhod5uwYKYH4fA655bawIgA0MlurBNSgxC0bqRBOOKK94MZzyTwFHy2MBR%2FIFP97wq1QQIvf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARACGgw4NjY4MjY1MjkwNjYiDB6Wl0LOZPbzT8px6CqpBOSVjbGgQ333Dkf2yZAGCJ9gt2Sox16IGdn9QlRuVo8zqSQuY%2FBSDmBqKTWO8DNyPgMJR1GCAY%2BSqyyiiRwbqmqxRorTGyJprP3FmvicSjdDRHEooEKOwkeOi%2BmEOj1wEI8rU7ylCKWBl0DSPDG7%2BSW7M6%2Fz75UvEDdRO%2BdypH3Yy4W7aN1C4w7t5fWNgvSK3AsVL4m8rffW0BHim87iCezDVBNj87msFE0N4nyjPVv7uTKJhP8oMIKwBf6BZalDn1cKggqjANawT0nGBv8YDvhrO06xBFpIb7YMW7pW9TbyNHQOO6mck1%2Fk7nco3aXuwaT%2FbizEsPlSAXI1YJ4S2Zp7RpRQWZx8dPQ71sycARxqpiWhPa%2Fv8iX8jk4W1tRUQa6GHP%2BzZrDHTu299nopXGeIIVLT%2FRlhyysY%2FZPGo72HG9gajVcEKmPffyEgfogArqWspdZnBkwnmZuSRHHYZSgCL3E0MliAgjQkmudLLfcxBttE%2FG1W56Ub4PeKsOES2EeKh%2F96XOFy4baCS7nCXJ96eynmJYiOHFl9HuaGaRinSlWX5CY0jR6DlVpmBZ0RTUW3cKdMGA9LucOf2Ub%2BkYEpNukAAv7xoNe%2BJGKySVmp%2BEksmSjeKEfl%2FzcOKOhMejtM1%2F%2FjEVdIgK6L2bwLBpdj%2F1v5We4KNUPRiUMMW%2B5NNFzpfNJ6B7xQW1kg2xMaOV52KelsR4%2BsQcFaQBzp%2Fnvu6CMvIeDfVMAwgpmlmgY6qQHQrq6e5VxmmHYfu2mlNwqwlhcSkGdnS%2FtktmD4iDVdLoWNko5ygnL5SEuC6XOsqbZm0VyVsclqxQ4xBN7WuBB9wgP5M6hrs0gJmES7JhvFyGmA5k%2FHiuw1%2B5qfReCH4bpKxsGmObf2qU3oLGLEPzltPh%2Bne3QRQ84Ug9%2F5jGrU6FLI6Kkx%2B6lfnatUxxIRV7REGe5KXQaDj43od9n5PGneCH5hKa%2F%2FsGNk&Expires=1666358318" },
@@ -34,7 +34,7 @@ const options: any = [
 ]
 
 const prizes: AccordionItemData[] = [
-    new AccordionItemData("test", "test", "test","https://currencyalliance-uploads.s3.amazonaws.com/partner/company-pictures/part_erihtzpqr00o7.jpg?AWSAccessKeyId=ASIA4TUXDFEVBG7MNT5F&Signature=wXyyuRr15OD%2FoP1Btgc088wnA4Q%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEPT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCWV1LXdlc3QtMSJHMEUCIQD%2FGZCBKGoOAKNddvZhACwMsq%2Bhod5uwYKYH4fA655bawIgA0MlurBNSgxC0bqRBOOKK94MZzyTwFHy2MBR%2FIFP97wq1QQIvf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARACGgw4NjY4MjY1MjkwNjYiDB6Wl0LOZPbzT8px6CqpBOSVjbGgQ333Dkf2yZAGCJ9gt2Sox16IGdn9QlRuVo8zqSQuY%2FBSDmBqKTWO8DNyPgMJR1GCAY%2BSqyyiiRwbqmqxRorTGyJprP3FmvicSjdDRHEooEKOwkeOi%2BmEOj1wEI8rU7ylCKWBl0DSPDG7%2BSW7M6%2Fz75UvEDdRO%2BdypH3Yy4W7aN1C4w7t5fWNgvSK3AsVL4m8rffW0BHim87iCezDVBNj87msFE0N4nyjPVv7uTKJhP8oMIKwBf6BZalDn1cKggqjANawT0nGBv8YDvhrO06xBFpIb7YMW7pW9TbyNHQOO6mck1%2Fk7nco3aXuwaT%2FbizEsPlSAXI1YJ4S2Zp7RpRQWZx8dPQ71sycARxqpiWhPa%2Fv8iX8jk4W1tRUQa6GHP%2BzZrDHTu299nopXGeIIVLT%2FRlhyysY%2FZPGo72HG9gajVcEKmPffyEgfogArqWspdZnBkwnmZuSRHHYZSgCL3E0MliAgjQkmudLLfcxBttE%2FG1W56Ub4PeKsOES2EeKh%2F96XOFy4baCS7nCXJ96eynmJYiOHFl9HuaGaRinSlWX5CY0jR6DlVpmBZ0RTUW3cKdMGA9LucOf2Ub%2BkYEpNukAAv7xoNe%2BJGKySVmp%2BEksmSjeKEfl%2FzcOKOhMejtM1%2F%2FjEVdIgK6L2bwLBpdj%2F1v5We4KNUPRiUMMW%2B5NNFzpfNJ6B7xQW1kg2xMaOV52KelsR4%2BsQcFaQBzp%2Fnvu6CMvIeDfVMAwgpmlmgY6qQHQrq6e5VxmmHYfu2mlNwqwlhcSkGdnS%2FtktmD4iDVdLoWNko5ygnL5SEuC6XOsqbZm0VyVsclqxQ4xBN7WuBB9wgP5M6hrs0gJmES7JhvFyGmA5k%2FHiuw1%2B5qfReCH4bpKxsGmObf2qU3oLGLEPzltPh%2Bne3QRQ84Ug9%2F5jGrU6FLI6Kkx%2B6lfnatUxxIRV7REGe5KXQaDj43od9n5PGneCH5hKa%2F%2FsGNk&Expires=1666358318"),
+    new AccordionItemData("test", "test", "test", "https://currencyalliance-uploads.s3.amazonaws.com/partner/company-pictures/part_erihtzpqr00o7.jpg?AWSAccessKeyId=ASIA4TUXDFEVBG7MNT5F&Signature=wXyyuRr15OD%2FoP1Btgc088wnA4Q%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEPT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCWV1LXdlc3QtMSJHMEUCIQD%2FGZCBKGoOAKNddvZhACwMsq%2Bhod5uwYKYH4fA655bawIgA0MlurBNSgxC0bqRBOOKK94MZzyTwFHy2MBR%2FIFP97wq1QQIvf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARACGgw4NjY4MjY1MjkwNjYiDB6Wl0LOZPbzT8px6CqpBOSVjbGgQ333Dkf2yZAGCJ9gt2Sox16IGdn9QlRuVo8zqSQuY%2FBSDmBqKTWO8DNyPgMJR1GCAY%2BSqyyiiRwbqmqxRorTGyJprP3FmvicSjdDRHEooEKOwkeOi%2BmEOj1wEI8rU7ylCKWBl0DSPDG7%2BSW7M6%2Fz75UvEDdRO%2BdypH3Yy4W7aN1C4w7t5fWNgvSK3AsVL4m8rffW0BHim87iCezDVBNj87msFE0N4nyjPVv7uTKJhP8oMIKwBf6BZalDn1cKggqjANawT0nGBv8YDvhrO06xBFpIb7YMW7pW9TbyNHQOO6mck1%2Fk7nco3aXuwaT%2FbizEsPlSAXI1YJ4S2Zp7RpRQWZx8dPQ71sycARxqpiWhPa%2Fv8iX8jk4W1tRUQa6GHP%2BzZrDHTu299nopXGeIIVLT%2FRlhyysY%2FZPGo72HG9gajVcEKmPffyEgfogArqWspdZnBkwnmZuSRHHYZSgCL3E0MliAgjQkmudLLfcxBttE%2FG1W56Ub4PeKsOES2EeKh%2F96XOFy4baCS7nCXJ96eynmJYiOHFl9HuaGaRinSlWX5CY0jR6DlVpmBZ0RTUW3cKdMGA9LucOf2Ub%2BkYEpNukAAv7xoNe%2BJGKySVmp%2BEksmSjeKEfl%2FzcOKOhMejtM1%2F%2FjEVdIgK6L2bwLBpdj%2F1v5We4KNUPRiUMMW%2B5NNFzpfNJ6B7xQW1kg2xMaOV52KelsR4%2BsQcFaQBzp%2Fnvu6CMvIeDfVMAwgpmlmgY6qQHQrq6e5VxmmHYfu2mlNwqwlhcSkGdnS%2FtktmD4iDVdLoWNko5ygnL5SEuC6XOsqbZm0VyVsclqxQ4xBN7WuBB9wgP5M6hrs0gJmES7JhvFyGmA5k%2FHiuw1%2B5qfReCH4bpKxsGmObf2qU3oLGLEPzltPh%2Bne3QRQ84Ug9%2F5jGrU6FLI6Kkx%2B6lfnatUxxIRV7REGe5KXQaDj43od9n5PGneCH5hKa%2F%2FsGNk&Expires=1666358318"),
     new AccordionItemData("test1", "test1", "test1", "https://currencyalliance-uploads.s3.amazonaws.com/partner/company-pictures/part_erihtzpqr00o7.jpg?AWSAccessKeyId=ASIA4TUXDFEVBG7MNT5F&Signature=wXyyuRr15OD%2FoP1Btgc088wnA4Q%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEPT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCWV1LXdlc3QtMSJHMEUCIQD%2FGZCBKGoOAKNddvZhACwMsq%2Bhod5uwYKYH4fA655bawIgA0MlurBNSgxC0bqRBOOKK94MZzyTwFHy2MBR%2FIFP97wq1QQIvf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARACGgw4NjY4MjY1MjkwNjYiDB6Wl0LOZPbzT8px6CqpBOSVjbGgQ333Dkf2yZAGCJ9gt2Sox16IGdn9QlRuVo8zqSQuY%2FBSDmBqKTWO8DNyPgMJR1GCAY%2BSqyyiiRwbqmqxRorTGyJprP3FmvicSjdDRHEooEKOwkeOi%2BmEOj1wEI8rU7ylCKWBl0DSPDG7%2BSW7M6%2Fz75UvEDdRO%2BdypH3Yy4W7aN1C4w7t5fWNgvSK3AsVL4m8rffW0BHim87iCezDVBNj87msFE0N4nyjPVv7uTKJhP8oMIKwBf6BZalDn1cKggqjANawT0nGBv8YDvhrO06xBFpIb7YMW7pW9TbyNHQOO6mck1%2Fk7nco3aXuwaT%2FbizEsPlSAXI1YJ4S2Zp7RpRQWZx8dPQ71sycARxqpiWhPa%2Fv8iX8jk4W1tRUQa6GHP%2BzZrDHTu299nopXGeIIVLT%2FRlhyysY%2FZPGo72HG9gajVcEKmPffyEgfogArqWspdZnBkwnmZuSRHHYZSgCL3E0MliAgjQkmudLLfcxBttE%2FG1W56Ub4PeKsOES2EeKh%2F96XOFy4baCS7nCXJ96eynmJYiOHFl9HuaGaRinSlWX5CY0jR6DlVpmBZ0RTUW3cKdMGA9LucOf2Ub%2BkYEpNukAAv7xoNe%2BJGKySVmp%2BEksmSjeKEfl%2FzcOKOhMejtM1%2F%2FjEVdIgK6L2bwLBpdj%2F1v5We4KNUPRiUMMW%2B5NNFzpfNJ6B7xQW1kg2xMaOV52KelsR4%2BsQcFaQBzp%2Fnvu6CMvIeDfVMAwgpmlmgY6qQHQrq6e5VxmmHYfu2mlNwqwlhcSkGdnS%2FtktmD4iDVdLoWNko5ygnL5SEuC6XOsqbZm0VyVsclqxQ4xBN7WuBB9wgP5M6hrs0gJmES7JhvFyGmA5k%2FHiuw1%2B5qfReCH4bpKxsGmObf2qU3oLGLEPzltPh%2Bne3QRQ84Ug9%2F5jGrU6FLI6Kkx%2B6lfnatUxxIRV7REGe5KXQaDj43od9n5PGneCH5hKa%2F%2FsGNk&Expires=1666358318"),
     new AccordionItemData("test2", "test2", "test2", "https://currencyalliance-uploads.s3.amazonaws.com/partner/company-pictures/part_erihtzpqr00o7.jpg?AWSAccessKeyId=ASIA4TUXDFEVBG7MNT5F&Signature=wXyyuRr15OD%2FoP1Btgc088wnA4Q%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEPT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCWV1LXdlc3QtMSJHMEUCIQD%2FGZCBKGoOAKNddvZhACwMsq%2Bhod5uwYKYH4fA655bawIgA0MlurBNSgxC0bqRBOOKK94MZzyTwFHy2MBR%2FIFP97wq1QQIvf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARACGgw4NjY4MjY1MjkwNjYiDB6Wl0LOZPbzT8px6CqpBOSVjbGgQ333Dkf2yZAGCJ9gt2Sox16IGdn9QlRuVo8zqSQuY%2FBSDmBqKTWO8DNyPgMJR1GCAY%2BSqyyiiRwbqmqxRorTGyJprP3FmvicSjdDRHEooEKOwkeOi%2BmEOj1wEI8rU7ylCKWBl0DSPDG7%2BSW7M6%2Fz75UvEDdRO%2BdypH3Yy4W7aN1C4w7t5fWNgvSK3AsVL4m8rffW0BHim87iCezDVBNj87msFE0N4nyjPVv7uTKJhP8oMIKwBf6BZalDn1cKggqjANawT0nGBv8YDvhrO06xBFpIb7YMW7pW9TbyNHQOO6mck1%2Fk7nco3aXuwaT%2FbizEsPlSAXI1YJ4S2Zp7RpRQWZx8dPQ71sycARxqpiWhPa%2Fv8iX8jk4W1tRUQa6GHP%2BzZrDHTu299nopXGeIIVLT%2FRlhyysY%2FZPGo72HG9gajVcEKmPffyEgfogArqWspdZnBkwnmZuSRHHYZSgCL3E0MliAgjQkmudLLfcxBttE%2FG1W56Ub4PeKsOES2EeKh%2F96XOFy4baCS7nCXJ96eynmJYiOHFl9HuaGaRinSlWX5CY0jR6DlVpmBZ0RTUW3cKdMGA9LucOf2Ub%2BkYEpNukAAv7xoNe%2BJGKySVmp%2BEksmSjeKEfl%2FzcOKOhMejtM1%2F%2FjEVdIgK6L2bwLBpdj%2F1v5We4KNUPRiUMMW%2B5NNFzpfNJ6B7xQW1kg2xMaOV52KelsR4%2BsQcFaQBzp%2Fnvu6CMvIeDfVMAwgpmlmgY6qQHQrq6e5VxmmHYfu2mlNwqwlhcSkGdnS%2FtktmD4iDVdLoWNko5ygnL5SEuC6XOsqbZm0VyVsclqxQ4xBN7WuBB9wgP5M6hrs0gJmES7JhvFyGmA5k%2FHiuw1%2B5qfReCH4bpKxsGmObf2qU3oLGLEPzltPh%2Bne3QRQ84Ug9%2F5jGrU6FLI6Kkx%2B6lfnatUxxIRV7REGe5KXQaDj43od9n5PGneCH5hKa%2F%2FsGNk&Expires=1666358318"),
     new AccordionItemData("test3", "test3", "test3", "https://currencyalliance-uploads.s3.amazonaws.com/partner/company-pictures/part_erihtzpqr00o7.jpg?AWSAccessKeyId=ASIA4TUXDFEVBG7MNT5F&Signature=wXyyuRr15OD%2FoP1Btgc088wnA4Q%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEPT%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCWV1LXdlc3QtMSJHMEUCIQD%2FGZCBKGoOAKNddvZhACwMsq%2Bhod5uwYKYH4fA655bawIgA0MlurBNSgxC0bqRBOOKK94MZzyTwFHy2MBR%2FIFP97wq1QQIvf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARACGgw4NjY4MjY1MjkwNjYiDB6Wl0LOZPbzT8px6CqpBOSVjbGgQ333Dkf2yZAGCJ9gt2Sox16IGdn9QlRuVo8zqSQuY%2FBSDmBqKTWO8DNyPgMJR1GCAY%2BSqyyiiRwbqmqxRorTGyJprP3FmvicSjdDRHEooEKOwkeOi%2BmEOj1wEI8rU7ylCKWBl0DSPDG7%2BSW7M6%2Fz75UvEDdRO%2BdypH3Yy4W7aN1C4w7t5fWNgvSK3AsVL4m8rffW0BHim87iCezDVBNj87msFE0N4nyjPVv7uTKJhP8oMIKwBf6BZalDn1cKggqjANawT0nGBv8YDvhrO06xBFpIb7YMW7pW9TbyNHQOO6mck1%2Fk7nco3aXuwaT%2FbizEsPlSAXI1YJ4S2Zp7RpRQWZx8dPQ71sycARxqpiWhPa%2Fv8iX8jk4W1tRUQa6GHP%2BzZrDHTu299nopXGeIIVLT%2FRlhyysY%2FZPGo72HG9gajVcEKmPffyEgfogArqWspdZnBkwnmZuSRHHYZSgCL3E0MliAgjQkmudLLfcxBttE%2FG1W56Ub4PeKsOES2EeKh%2F96XOFy4baCS7nCXJ96eynmJYiOHFl9HuaGaRinSlWX5CY0jR6DlVpmBZ0RTUW3cKdMGA9LucOf2Ub%2BkYEpNukAAv7xoNe%2BJGKySVmp%2BEksmSjeKEfl%2FzcOKOhMejtM1%2F%2FjEVdIgK6L2bwLBpdj%2F1v5We4KNUPRiUMMW%2B5NNFzpfNJ6B7xQW1kg2xMaOV52KelsR4%2BsQcFaQBzp%2Fnvu6CMvIeDfVMAwgpmlmgY6qQHQrq6e5VxmmHYfu2mlNwqwlhcSkGdnS%2FtktmD4iDVdLoWNko5ygnL5SEuC6XOsqbZm0VyVsclqxQ4xBN7WuBB9wgP5M6hrs0gJmES7JhvFyGmA5k%2FHiuw1%2B5qfReCH4bpKxsGmObf2qU3oLGLEPzltPh%2Bne3QRQ84Ug9%2F5jGrU6FLI6Kkx%2B6lfnatUxxIRV7REGe5KXQaDj43od9n5PGneCH5hKa%2F%2FsGNk&Expires=1666358318"),
@@ -44,17 +44,19 @@ const prizes: AccordionItemData[] = [
 ]
 
 const data: WheelSegment[] = [
-    new WheelSegment("United kingdom", "United kingdom", "#e3e3e3"),
-    new WheelSegment("United States", "United States", "#ffffff"),
-    new WheelSegment("France", "France", "#e3e3e3"),
-    new WheelSegment("Germany", "Germany", "#ffffff"),
-    new WheelSegment("Spain", "Spain", "#e3e3e3"),
-    new WheelSegment("China", "China", "#ffffff")
-  ];
+    new WheelSegment("United kingdom", "United kingdom", "#95181B"),
+    new WheelSegment("United States", "United States", "#214697", 'assets/image/sarah.png'),
+    new WheelSegment("France", "France", "#95181B"),
+    new WheelSegment("Germany", "Germany", "#214697", 'assets/image/sarah.png'),
+    new WheelSegment("Spain", "Spain", "#95181B"),
+    new WheelSegment("China", "China", "#214697", 'assets/image/sarah.png'),
+    new WheelSegment("Portugal", "Portugal", "#95181B"),
+    new WheelSegment("Lebanon", "Lebanon", "#214697", 'assets/image/sarah.png')
+];
 
 const Spinner: React.FC = () => {
     const search = useSearchParams();
-    const { fetchProgram } = useLoyaltyPrograms();
+    const { fetchProgram, defaultProgram } = useLoyaltyPrograms();
     const { getUserLoyaltyPrograms } = useAssets();
     const { play, isPlaying, setIsPlaying } = usePlayGame();
     const { fetchPrizes, isLoadingPrizes } = usePrize();
@@ -71,12 +73,12 @@ const Spinner: React.FC = () => {
 
     const { showModal: showSpinCondition } = useDialog({
         id: 'spinConditionModal',
-        component: <SpinCondition setSpinWheel={setSpinWheel} dismiss={dismiss} />
+        component: <SpinCondition setSpinWheel={setSpinWheel} dismiss={dismissSpinCondition} />
     });
 
     const { showModal: showSuccessModal } = useDialog({
         id: 'spinSuccessModal',
-        component: <SpinSuccess dismiss={dismiss} text={`You just won ${getSelectedPrize()?.text}`} />,
+        component: <SpinSuccess dismiss={dismissSpinSuccess} text={`You just won ${getSelectedPrize()?.text}`} />,
         onDismiss: () => {
             setSpinWheel(false)
             setSelectedPrizeId('')
@@ -84,8 +86,12 @@ const Spinner: React.FC = () => {
         }
     });
 
-    function dismiss() {
+    function dismissSpinCondition() {
         modalController.dismiss(null, undefined, "spinConditionModal");
+    }
+
+    function dismissSpinSuccess() {
+        modalController.dismiss(null, undefined, "spinSuccessModal");
     }
 
     const handleSpinClick = () => {
@@ -97,11 +103,14 @@ const Spinner: React.FC = () => {
     }
 
     function getLoyaltyProgram() {
-        if (!loyaltyProgramId) return;
-        fetchProgram(loyaltyProgramId ?? '')
+        if (!loyaltyProgramId) {
+            // setLoyaltyProgram(defaultProgram)
+        } else {
+            fetchProgram(loyaltyProgramId ?? '')
             .then(program => {
                 if (program) setLoyaltyProgram(program);
             })
+        }
     }
 
     function getPrizes() {
@@ -133,7 +142,9 @@ const Spinner: React.FC = () => {
 
     const programsOpts: ProgramSelectOption[] = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0) {
-            return myLoyaltyPrograms.map((loyaltyProgram) => {
+            var programs = [...myLoyaltyPrograms]
+            programs = programs.filter((program) => program.currency.isRedemption)
+            return programs.map((loyaltyProgram) => {
                 return new ProgramSelectOption(loyaltyProgram?.currency?.loyaltyCurrencyName, loyaltyProgram?.currency?.loyaltyCurrency, loyaltyProgram?.currency?.programLogo)
             })
         }
@@ -177,7 +188,7 @@ const Spinner: React.FC = () => {
         <IonPage>
             <IonHeader className='ion-no-border'>
                 <IonToolbar className={styles.headerToolbar}>
-                    <div className='flex-row-container'>
+                    <div className='flex-row-container ion-padding-horizontal'>
                         <ProgramSelection options={programsOpts} selectedBalance={membership?.balance ?? 0} selectedValue={loyaltyProgram?.loyaltyCurrency?.shortName} setSelectedValue={handleSelectedValue} />
                         <PrimaryButton
                             customStyles='flex-row-1'
@@ -191,7 +202,15 @@ const Spinner: React.FC = () => {
 
 
                     <div className={`${styles.wheelWrapper} ion-padding-vertical`}>
-                        <FortuneWheel spinDuration={0.3} data={data} spin={spinWheel} selectedPrizeId={selectedPrizeId} onStopSpinning={handleStopWheelSpinning} />
+                        {/* {spinWheel ?
+                            <div className={styles.loaderWrapper}>
+                                <ParticlesLoader />
+                                <PrimaryTypography customClassName={styles.loaderOverlay}>Please wait one moment while we are connecting with blockchain to activate the Spin wheel...</PrimaryTypography>
+                            </div>
+
+                            : */}
+                            <FortuneWheel logoAtCenter={'assets/image/gozo-512 x 512.png'} spinDuration={0.3} data={data} spin={spinWheel} selectedPrizeId={selectedPrizeId} onStopSpinning={handleStopWheelSpinning} />
+                        {/* } */}
                     </div>
                     <PrimaryTypography customClassName={styles.accordionHeader} isBold size='m' color='light'>Available Prizes</PrimaryTypography>
                 </IonToolbar>

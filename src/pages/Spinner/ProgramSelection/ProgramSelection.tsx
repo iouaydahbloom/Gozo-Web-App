@@ -18,10 +18,11 @@ interface Props {
     options: ProgramSelectOption[],
     selectedValue: string,
     selectedBalance: number,
-    setSelectedValue: (name: string) => void
+    setSelectedValue: (name: string) => void, 
+    className?: string
 }
 
-const ProgramSelection: React.FC<Props> = ({ options, selectedValue, selectedBalance, setSelectedValue }) => {
+const ProgramSelection: React.FC<Props> = ({ options, selectedValue, selectedBalance, setSelectedValue, className }) => {
     const [value, setValue] = useState<string>('')
 
     const { showModal: showSelect, dismissModal: dismissSelect } = useSecondarySheet({
@@ -48,7 +49,7 @@ const ProgramSelection: React.FC<Props> = ({ options, selectedValue, selectedBal
     
 
     return (
-        <div className={styles.select} onClick={showSelect} >
+        <div className={`${styles.select} ${className}`} onClick={showSelect} >
             <PrimaryTypography size='m' isBlock={false}>
               {selectedBalance} {selectedValue}
             </PrimaryTypography>

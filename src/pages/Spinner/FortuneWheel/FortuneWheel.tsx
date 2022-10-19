@@ -1,6 +1,6 @@
 import styles from './fortuneWheel.module.scss';
 import { WheelSegment } from '../../../models/wheelSegment';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Winwheel } from '../WinWheelLibrary/Winwheel';
 import { ellipsisTruncate } from '../../../helpers/managment/string';
 
@@ -9,20 +9,22 @@ interface Props {
   spin: boolean,
   selectedPrizeId: string,
   onStopSpinning: () => void,
-  spinDuration?: number
-
+  spinDuration?: number,
+  logoAtCenter?: string
 }
 
-const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpinning, spinDuration }) => {
+const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpinning, spinDuration, logoAtCenter }) => {
   const [isSpinning, setIsSpinning] = useState(false)
-  const myWheel: any = new Winwheel({
+  const spinner = useRef<Winwheel>();
 
-    // 'outerRadius'       : 200,               // Set outer radius so wheel fits inside the background.
-    // 'drawText'          : true,              // Code drawn text can be used with segment images.
-    // 'textFontSize'      : 16,
-    // 'textOrientation'   : 'curved',
-    'textAlignment': 'inner',
-    // 'textMargin'        : 90,
+  var myWheel: any
+  useEffect(() => {
+
+
+  myWheel = new Winwheel({
+
+    'drawText'          : true,              // Code drawn text can be used with segment images.
+    'textAlignment': 'center',
     'textFontFamily': 'monospace',
     // 'textStrokeStyle'   : 'black',
     // 'textLineWidth'     : 3,
@@ -34,25 +36,21 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     'canvasId': 'myCanvas',
     'numSegments': data.length,
     'segments': getOptimizeData(),
-    'textFontSize': 12,
+    'textFontSize': 14, 
     'textMargin': 6,
 
-    // 'outerRadius' : 146,    // Use these three properties to
-    // 'centerX'     : 200,    // correctly position the wheel
-    // 'centerY'     : 201,    // over the background.
+    'outerRadius': 170,    // Use these three properties to
+    'centerX': 230,    // correctly position the wheel
+    'centerY': 230,    // over the background.
 
-    'outerRadius': 140,    // Use these three properties to
-    'centerX': 150,    // correctly position the wheel
-    'centerY': 187,    // over the background.
+    // 'outerRadius': 140,    // Use these three properties to
+    // 'centerX': 150,    // correctly position the wheel
+    // 'centerY': 187,    // over the background.
     'lineWidth': 2,
+    'strokeStyle': "#fff",
 
-    // 'textAlignment' : 'center',
-    // 'centerY'         : 230,
-    // 'outerRadius'     : 170,
-    'innerRadius': 20,             // The larger the inner radius, the bigger the
-    // 'textFontSize'    : 14,             // hollow space inside the wheel.
-    // 'textMargin'      : 0,
-    // 'textFontFamily'  : 'Courier',
+    'innerRadius': 35,             // The larger the inner radius, the bigger the
+                                   // hollow space inside the wheel.
     // 'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
     // 'textOrientation' : 'curved',  
     // [
@@ -61,14 +59,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     //     {'fillStyle' : '#7de6ef', 'text' : 'Prize Three'},
     //     {'fillStyle' : '#e7706f', 'text' : 'Prize Four'}
     // ],
-
-    // 'drawMode'          : 'segmentImage',
-    // 'textOverflow': 'ellipsis',
     // 'responsive': true, // This wheel is responsive!
-
-    // 'drawMode'          : 'image',   // drawMode must be set to image.
-    // 'drawText'          : true,      // Need to set this true if want code-drawn text on image wheels.
-
     'animation':
     {
       'type': 'spinToStop',
@@ -88,6 +79,8 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     //     // 'responsive': true,
     // }
   });
+
+})
 
 
   function getOptimizeData() {
@@ -146,6 +139,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
   // Called when the animation has finished.
   function callbackFinished() {
     onStopSpinning()
+    setIsSpinning(false)
     resetWheel()
   }
 
@@ -179,13 +173,13 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
 
 
-  useEffect(() => {
-    if (spin && Object.keys(myWheel).length !== 0 && selectedPrizeId) calculatePrize()
-  }, [spin, selectedPrizeId])
-
   // useEffect(() => {
-  //     if(spin) calculatePrize()
-  //   }, [spin])
+  //   if (spin && Object.keys(myWheel).length !== 0 && selectedPrizeId) calculatePrize()
+  // }, [spin, selectedPrizeId])
+
+  useEffect(() => {
+      if(spin) calculatePrize()
+    }, [spin])
 
 
 
@@ -212,6 +206,16 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
   return (
     // <div className={styles.myCanvas} style={{ backgroundImage: `url('assets/image/wheel_back.png')` }} >
     <div className={styles.canvasContainer} >
+      {logoAtCenter &&
+      // <IonAvatar>
+            <img
+            className={styles.logo}
+            src={logoAtCenter}
+            width="70"
+            height="70"
+          />
+      // </IonAvatar>
+}
       <img
         className={`${styles.iconPin} ${isSpinning ? styles.pinShaking : ''}`}
         src="assets/image/wheel-marker.svg"
@@ -220,8 +224,8 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
       />
       <canvas
         id="myCanvas"
-        width="300"
-        height="350"
+        width="460"
+        height="460"
       />
     </div>
   )

@@ -7,7 +7,7 @@ import styles from './spinConditionModal.module.scss'
 interface Props {
     setSpinWheel: React.Dispatch<React.SetStateAction<boolean>>,
     dismiss: () => void,
-    cost?: string
+    cost?: number
 }
 
 const SpinCondition: React.FC<Props> = ({ setSpinWheel, dismiss, cost }) => {

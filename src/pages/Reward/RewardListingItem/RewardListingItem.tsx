@@ -1,5 +1,4 @@
-import { IonIcon, IonItem, IonLabel, IonText } from "@ionic/react"
-import { star } from "ionicons/icons"
+import { IonItem, IonLabel } from "@ionic/react"
 import { Reward } from "../../../models/reward"
 import styles from "./rewardListingItem.module.scss"
 
@@ -10,9 +9,9 @@ interface Props {
 
 const RewardListingItem: React.FC<Props> = ({ reward, lines }) => {
   return (
-    <IonItem className={`${styles.rewardListingItem} ion-text-center`} lines={lines}>
+    <IonItem className={`${styles.rewardListingItem} ion-text-center ion-padding-horizontal`} lines={lines}>
       <IonLabel>
-      <IonIcon icon={star}></IonIcon>
+        <img src={reward.icon} className={styles.prizeImage} />
       </IonLabel>
       <IonLabel>{reward.name}</IonLabel>
       <IonLabel>{reward.date}</IonLabel>

@@ -21,66 +21,67 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
   useEffect(() => {
 
 
-  myWheel = new Winwheel({
+    myWheel = new Winwheel({
 
-    'drawText'          : true,              // Code drawn text can be used with segment images.
-    'textAlignment': 'center',
-    'textFontFamily': 'monospace',
-    // 'textStrokeStyle'   : 'black',
-    // 'textLineWidth'     : 3,
-    'textFillStyle': 'white',
-    // 'drawMode'          : 'segmentImage',
-    // 'drawMode'     : 'image',    // drawMode must be set to image.
-    // 'imageDirection': "N",
-    // 'imageOverlay': true,
-    'canvasId': 'myCanvas',
-    'numSegments': data.length,
-    'segments': getOptimizeData(),
-    'textFontSize': 14, 
-    'textMargin': 6,
+      'drawText': true,              // Code drawn text can be used with segment images.
+      'textAlignment': 'center',
+      'textFontFamily': 'monospace',
+      // 'textStrokeStyle'   : 'black',
+      // 'textLineWidth'     : 3,
+      'textFillStyle': 'white',
+      // 'drawMode'          : 'segmentImage',
+      // 'drawMode'     : 'image',    // drawMode must be set to image.
+      // 'imageDirection': "N",
+      // 'imageOverlay': true,
+      'canvasId': 'myCanvas',
+      'numSegments': data.length,
+      'segments': getOptimizeData(),
+      'textFontSize': 13,
+      'textMargin': 6,
 
-    'outerRadius': 170,    // Use these three properties to
-    'centerX': 230,    // correctly position the wheel
-    'centerY': 230,    // over the background.
+      'outerRadius': 170,    // Use these three properties to
+      'centerX': 200,    // correctly position the wheel
+      'centerY': 200,    // over the background.
 
-    // 'outerRadius': 140,    // Use these three properties to
-    // 'centerX': 150,    // correctly position the wheel
-    // 'centerY': 187,    // over the background.
-    'lineWidth': 2,
-    'strokeStyle': "#fff",
+      // 'outerRadius': 140,    // Use these three properties to
+      // 'centerX': 150,    // correctly position the wheel
+      // 'centerY': 187,    // over the background.
+      'lineWidth': 2,
+      'strokeStyle': "#fff",
+      'fillStyle': "#000",
 
-    'innerRadius': 35,             // The larger the inner radius, the bigger the
-                                   // hollow space inside the wheel.
-    // 'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
-    // 'textOrientation' : 'curved',  
-    // [
-    //     {'fillStyle' : '#eae56f', 'text' : 'Prize One'},
-    //     {'fillStyle' : '#89f26e', 'text' : 'Prize Two'},
-    //     {'fillStyle' : '#7de6ef', 'text' : 'Prize Three'},
-    //     {'fillStyle' : '#e7706f', 'text' : 'Prize Four'}
-    // ],
-    // 'responsive': true, // This wheel is responsive!
-    'animation':
-    {
-      'type': 'spinToStop',
-      'duration': 10,
-      'spins': 5,
-      'callbackAfter': drawTriangle,
-      'callbackFinished': callbackFinished,  // Function to call whent the spinning has stopped.
-      'callbackSound': playSound,   // Called when the tick sound is to be played.
-      // 'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound.
-    },
-    // 'pins' :                // Turn pins on.
-    // {
-    //     // 'number'     : data.length,
-    //     // 'number': 18
-    //     // 'fillStyle'  : 'silver',
-    //     // 'outerRadius': 4,
-    //     // 'responsive': true,
-    // }
-  });
+      'innerRadius': 35,             // The larger the inner radius, the bigger the
+      // hollow space inside the wheel.
+      // 'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
+      // 'textOrientation' : 'curved',  
+      // [
+      //     {'fillStyle' : '#eae56f', 'text' : 'Prize One'},
+      //     {'fillStyle' : '#89f26e', 'text' : 'Prize Two'},
+      //     {'fillStyle' : '#7de6ef', 'text' : 'Prize Three'},
+      //     {'fillStyle' : '#e7706f', 'text' : 'Prize Four'}
+      // ],
+      // 'responsive': true, // This wheel is responsive!
+      'animation':
+      {
+        'type': 'spinToStop',
+        'duration': 10,
+        'spins': 5,
+        'callbackAfter': drawTriangle,
+        'callbackFinished': callbackFinished,  // Function to call whent the spinning has stopped.
+        'callbackSound': playSound,   // Called when the tick sound is to be played.
+        // 'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound.
+      },
+      // 'pins' :                // Turn pins on.
+      // {
+      //     // 'number'     : data.length,
+      //     // 'number': 18
+      //     // 'fillStyle'  : 'silver',
+      //     // 'outerRadius': 4,
+      //     // 'responsive': true,
+      // }
+    });
 
-})
+  })
 
 
   function getOptimizeData() {
@@ -173,13 +174,13 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
 
 
-  // useEffect(() => {
-  //   if (spin && Object.keys(myWheel).length !== 0 && selectedPrizeId) calculatePrize()
-  // }, [spin, selectedPrizeId])
-
   useEffect(() => {
-      if(spin) calculatePrize()
-    }, [spin])
+    if (spin && Object.keys(myWheel).length !== 0 && selectedPrizeId) calculatePrize()
+  }, [spin, selectedPrizeId])
+
+  // useEffect(() => {
+  //     if(spin) calculatePrize()
+  //   }, [spin])
 
 
 
@@ -204,30 +205,29 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
   // return ( 
   return (
-    // <div className={styles.myCanvas} style={{ backgroundImage: `url('assets/image/wheel_back.png')` }} >
-    <div className={styles.canvasContainer} >
-      {logoAtCenter &&
-      // <IonAvatar>
-            <img
-            className={styles.logo}
-            src={logoAtCenter}
-            width="70"
-            height="70"
+        <div className={styles.canvasContainer} 
+        style={{ backgroundImage: `url('assets/image/wheel-background.png')` }}
+        >
+          {logoAtCenter &&
+                <img
+                className={styles.logo}
+                src={logoAtCenter}
+                width="70"
+                height="70"
+              />
+    }
+          <img
+            className={`${styles.iconPin} ${isSpinning ? styles.pinShaking : ''}`}
+            src="assets/image/wheel-marker.svg"
+            width="50"
+            height="50"
           />
-      // </IonAvatar>
-}
-      <img
-        className={`${styles.iconPin} ${isSpinning ? styles.pinShaking : ''}`}
-        src="assets/image/wheel-marker.svg"
-        width="50"
-        height="50"
-      />
-      <canvas
-        id="myCanvas"
-        width="460"
-        height="460"
-      />
-    </div>
+          <canvas
+            id="myCanvas"
+            width="400"
+            height="400"
+          />
+        </div>
   )
 }
 

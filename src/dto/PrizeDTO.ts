@@ -1,5 +1,6 @@
 export interface PrizeDTO {
     name: string,
     objectId: string,
-    caLoyaltyCurrency: string
+    caLoyaltyCurrency: string,
+    logoUrl: string,
 }

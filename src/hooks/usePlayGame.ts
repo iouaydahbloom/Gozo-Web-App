@@ -2,11 +2,14 @@ import { useState } from "react";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import useCloud from "./useCloud";
 import { useDapp } from "../providers/DappProvider/DappProvider";
+import useToast from "./useToast";
 
 const usePlayGame = () => {
     const [ isPlaying, setIsPlaying ] = useState(false)
+    const [errorInSpin, setErrorInSpin] = useState(false)
     const { walletAddress } = useDapp();
     const { run } = useCloud();
+    const { presentFailure } = useToast();
 
 
     async function play(brand: string) {
@@ -16,18 +19,26 @@ const usePlayGame = () => {
                 brand: brand ,
                 player_address: walletAddress
              },
-            () => true,
+            (res) => {
+                setIsPlaying(res as boolean)
+                if(res) {
+                    return res
+                }
+                else {
+                    setErrorInSpin(true)
+                    presentFailure("Unknown Error")
+                }
+            },
             true)
-            .then(result => {
-                return (result.isSuccess && result.data) ? setIsPlaying(result.data) : null
-            })
     }
 
 
     return {
         play,
         isPlaying,
-        setIsPlaying
+        setIsPlaying,
+        errorInSpin,
+        setErrorInSpin
     }
 }
 

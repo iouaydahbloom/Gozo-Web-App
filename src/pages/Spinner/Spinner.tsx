@@ -197,7 +197,6 @@ const Spinner: React.FC = () => {
     }
 
     useIonViewDidEnter(() => {
-        console.log("id", id)
         if (id) {
             setLoyaltyProgramId(id)
         } else {
@@ -218,7 +217,10 @@ const Spinner: React.FC = () => {
     }, [loyaltyProgramId])
 
     useEffect(() => {
-      if(errorInSpin) setSpinWheel(false)
+      if(errorInSpin) {
+        setSpinWheel(false)
+        setErrorInSpin(false)
+      }
     }, [errorInSpin])
     
 

@@ -1,7 +1,7 @@
 import { Deeplinks } from '@awesome-cordova-plugins/deeplinks';
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { gridOutline, personCircleOutline, walletOutline } from 'ionicons/icons';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Redirect, Route, useHistory } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
 import Account from '../../../pages/Account/Account';
@@ -23,6 +23,7 @@ import styles from './tabMenu.module.scss';
 const TabMenu: React.FC = () => {
 
     const { push } = useHistory();
+    const spinnerBtnRef = useRef<any>(null);
 
     useEffect(() => {
         const deeplinkSubscription = Deeplinks.route({
@@ -90,8 +91,8 @@ const TabMenu: React.FC = () => {
                         <RewardIcon />
                         <IonLabel>Rewards</IonLabel>
                     </IonTabButton>
-    
-                    <IonTabButton tab="spinner" href={AppRoutes.spinner}>
+
+                    <IonTabButton ref={spinnerBtnRef} tab="spinner" href={AppRoutes.spinner}>
                         <IonLabel style={{ marginBottom: '-25px' }}>Play</IonLabel>
                     </IonTabButton>
 
@@ -110,8 +111,7 @@ const TabMenu: React.FC = () => {
             <div
                 id='fab-button'
                 className={styles.floatingButton}
-                onClick={() => push(AppRoutes.spinner)}
-            >
+                onClick={() => spinnerBtnRef.current.handleIonTabButtonClick()}>
                 <SpinIcon size='large' />
             </div>
         </>

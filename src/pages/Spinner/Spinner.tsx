@@ -1,4 +1,4 @@
-import { IonHeader, IonPage, IonToolbar, useIonViewDidEnter } from '@ionic/react';
+import { IonHeader, IonPage, IonToolbar, useIonViewDidEnter, useIonViewDidLeave, useIonViewWillLeave } from '@ionic/react';
 import { useEffect, useMemo, useState } from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
@@ -71,8 +71,7 @@ const Spinner: React.FC = () => {
     const [myLoyaltyPrograms, setMyLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([])
     const { presentFailure, presentInfo } = useToast();
     const [isPlaying, setIsPlaying] = useState(false);
-    const [error, setError] = useState<string>()
-    const [infoInterval, setInfoInterval] = useState<NodeJS.Timeout>();
+    const [error, setError] = useState<string>();
     const { addListener } = useBlockchainContractExecution();
 
     const getMySelectedProgram = useMemo(() => {
@@ -141,18 +140,10 @@ const Spinner: React.FC = () => {
         setIsPlaying(true);
         const playingResult = await play(loyaltyProgram?.brand?.key ?? '');
         if (!playingResult?.isSuccess || !playingResult.data) {
+            setError('Server is busy, try again later')
             setIsPlaying(false);
-            setError('Unable to play at the meantime, try again later')
+            return;
         }
-
-        startLatencyWarningInterval();
-    }
-
-    function startLatencyWarningInterval() {
-        const ID = setInterval(() => {
-            presentInfo('Execution taking longer than usual, please wait ...');
-        }, 20000)
-        setInfoInterval(ID);
     }
 
     const programsOpts: ProgramSelectOption[] = useMemo(() => {
@@ -216,13 +207,10 @@ const Spinner: React.FC = () => {
     }, [loyaltyProgramId])
 
     useEffect(() => {
-        clearInterval(infoInterval)
-    }, [selectedPrizeId])
-
-    useEffect(() => {
         if (error) {
             setIsPlaying(false)
             presentFailure(error)
+            setError(undefined)
         }
     }, [error])
 

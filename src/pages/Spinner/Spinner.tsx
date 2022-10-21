@@ -73,6 +73,7 @@ const Spinner: React.FC = () => {
     const { presentFailure } = useToast();
 
     const { addListener } = useBlockchainContractExecution();
+    var listnerTimer: ReturnType<typeof setTimeout>;
 
     const getMySelectedProgram = useMemo(() => { 
         if (myLoyaltyPrograms.length !== 0 && Object.keys(loyaltyProgram).length !== 0) {
@@ -92,9 +93,14 @@ const Spinner: React.FC = () => {
         onDismiss: () => {
             setSpinWheel(false)
             setIsPlaying(false)
+            setSelectedPrizeId('')
             fetchMembership()
         }
     });
+
+    console.log("wheelSegments", wheelSegments)
+    console.log("getSelectedPrize()", getSelectedPrize())
+    console.log("getSelectedPrize()?.text", getSelectedPrize()?.text)
 
     function dismissSpinCondition() {
         modalController.dismiss(null, undefined, "spinConditionModal");
@@ -133,6 +139,7 @@ const Spinner: React.FC = () => {
         // if(result.player_address === walletAddress) setSelectedPrizeId(id)
         // else console.log("error")
         setSelectedPrizeId(id)
+        clearTimeout(listnerTimer);
     }
 
     function getSelectedPrize() {
@@ -187,13 +194,8 @@ const Spinner: React.FC = () => {
     }
 
     function releaseListener() {
-        if(!selectedPrizeId) {
-            console.log("entered")
-            setErrorInSpin(true)
-            presentFailure("Unknown Error")
-        } else {
-            setSelectedPrizeId('')
-        }
+        setErrorInSpin(true)
+        presentFailure("Unknown Error")
     }
 
     useIonViewDidEnter(() => {
@@ -228,7 +230,7 @@ const Spinner: React.FC = () => {
         if (spinWheel && (Object.keys(loyaltyProgram).length !== 0)) {
             addListener(appConfig.gozoGameContract, contractsAbi.game, 'prizeSelected', listenerCallBack)
             play(loyaltyProgram?.brand?.key ?? '')
-            setTimeout(releaseListener, 50000);
+            listnerTimer = setTimeout(releaseListener, 50000);
         }
     }, [spinWheel])
 

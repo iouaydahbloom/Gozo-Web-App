@@ -27,9 +27,9 @@ const LoyaltyProgramOptionItem: React.FC<Props> = ({ name, currency, icon, isAct
                         {name}
                     </PrimaryTypography>
                 </IonLabel>
-                <IonLabel>
-                    <PrimaryTypography color="medium-light" isBlock={false} size='m'>
-                        Balance:
+                <IonLabel className={styles.balanceWrapper}>
+                    <PrimaryTypography customClassName={styles.balance} isBlock={false} size='m'>
+                        Balance: 
                     </PrimaryTypography>
                     <PrimaryTypography isBlock={false} size='m'>
                         {membership?.balance} Units

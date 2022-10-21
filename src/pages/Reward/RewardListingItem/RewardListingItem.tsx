@@ -13,7 +13,7 @@ const RewardListingItem: React.FC<Props> = ({ reward, lines }) => {
       <IonLabel>
         <img src={reward.icon} className={styles.prizeImage} />
       </IonLabel>
-      <IonLabel>{reward.name}</IonLabel>
+      <IonLabel className={styles.textWrapper}>{reward.name}</IonLabel>
       <IonLabel>{reward.date}</IonLabel>
     </IonItem>
   )

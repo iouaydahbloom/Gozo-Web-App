@@ -1,5 +1,6 @@
 .header {
-    height: 40px
+    height: 40px;
+    box-shadow: 2px 0px 0px 1px var(--ion-color-dark);
 }
 
 .container {
@@ -16,4 +17,5 @@
 
 .footer {
     padding: 20px 40px 40px 40px;
+    box-shadow: 2px 0px 0px 1px var(--ion-color-dark);
 }

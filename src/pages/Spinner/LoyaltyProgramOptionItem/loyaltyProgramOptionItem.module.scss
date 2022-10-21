@@ -1,10 +1,19 @@
 .container {
-    --background: var(--ion-color-medium-tint);
+    --background: var(--ion-color-dark-tint);
     --border-radius: 7px;
     margin: 0 20px 20px 20px;
 
     .info {
         padding-left: 20px;
+
+        .balanceWrapper {
+            display: flex;
+            justify-content: space-between;
+
+            .balance {
+                color: var(--ion-color-medium-tint) !important;
+            }
+        }
     }
 }
 

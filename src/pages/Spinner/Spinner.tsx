@@ -1,4 +1,4 @@
-import { IonHeader, IonPage, IonToolbar, useIonViewDidEnter, useIonViewWillEnter } from '@ionic/react';
+import { IonHeader, IonPage, IonToolbar, useIonViewDidEnter } from '@ionic/react';
 import { useEffect, useMemo, useState } from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
@@ -60,23 +60,23 @@ const Spinner: React.FC = () => {
     const search = useSearchParams();
     const { fetchProgram, defaultProgram, loadingProgram } = useLoyaltyPrograms();
     const { getUserLoyaltyPrograms, loadingMyLoyaltyPrograms } = useAssets();
-    const { play, isPlaying, setIsPlaying, errorInSpin, setErrorInSpin } = usePlayGame();
+    const { play } = usePlayGame();
     const { fetchPrizes, isLoadingPrizes } = usePrize();
     const id = search.get('program_id')
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
-    const [spinWheel, setSpinWheel] = useState(false);
     const [selectedPrizeId, setSelectedPrizeId] = useState<string>('')
     const [loyaltyProgramId, setLoyaltyProgramId] = useState<string>()
-    const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram>({} as LoyaltyProgram)
+    const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram>()
     const { membership, fetchMembership } = useMemberShip(loyaltyProgram?.loyaltyCurrency?.id);
     const [myLoyaltyPrograms, setMyLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([])
-    const { presentFailure } = useToast();
-
+    const { presentFailure, presentInfo } = useToast();
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [error, setError] = useState<string>()
+    const [infoInterval, setInfoInterval] = useState<NodeJS.Timeout>();
     const { addListener } = useBlockchainContractExecution();
-    var listnerTimer: ReturnType<typeof setTimeout>;
 
-    const getMySelectedProgram = useMemo(() => { 
-        if (myLoyaltyPrograms.length !== 0 && Object.keys(loyaltyProgram).length !== 0) {
+    const getMySelectedProgram = useMemo(() => {
+        if (myLoyaltyPrograms.length !== 0 && !!loyaltyProgram) {
             return myLoyaltyPrograms.find((program) => program.currency.loyaltyCurrency === loyaltyProgram.loyaltyCurrency.id)
         }
         return
@@ -84,23 +84,18 @@ const Spinner: React.FC = () => {
 
     const { showModal: showSpinCondition } = useDialog({
         id: 'spinConditionModal',
-        component: <SpinCondition cost={getMySelectedProgram?.redemption?.spinCost ? getMySelectedProgram?.redemption?.spinCost : 100} setSpinWheel={setSpinWheel} dismiss={dismissSpinCondition} />
+        component: <SpinCondition
+            cost={getMySelectedProgram?.redemption?.spinCost ? getMySelectedProgram?.redemption?.spinCost : 100}
+            onSuccess={handlePlaying}
+            dismiss={dismissSpinCondition} />
     });
 
     const { showModal: showSuccessModal } = useDialog({
         id: 'spinSuccessModal',
-        component: <SpinSuccess dismiss={dismissSpinSuccess} text={`You just won ${getSelectedPrize()?.text}`} />,
-        onDismiss: () => {
-            setSpinWheel(false)
-            setIsPlaying(false)
-            setSelectedPrizeId('')
-            fetchMembership()
-        }
+        component: <SpinSuccess
+            dismiss={dismissSpinSuccess}
+            text={`You just won ${getSelectedPrize()?.text}`} />
     });
-
-    console.log("wheelSegments", wheelSegments)
-    console.log("getSelectedPrize()", getSelectedPrize())
-    console.log("getSelectedPrize()?.text", getSelectedPrize()?.text)
 
     function dismissSpinCondition() {
         modalController.dismiss(null, undefined, "spinConditionModal");
@@ -108,14 +103,6 @@ const Spinner: React.FC = () => {
 
     function dismissSpinSuccess() {
         modalController.dismiss(null, undefined, "spinSuccessModal");
-    }
-
-    const handleSpinClick = () => {
-        showSpinCondition()
-    }
-
-    const handleStopWheelSpinning = () => {
-        showSuccessModal()
     }
 
     function getLoyaltyProgram() {
@@ -126,20 +113,16 @@ const Spinner: React.FC = () => {
     }
 
     function getPrizes() {
-        if (Object.keys(loyaltyProgram).length === 0) return
-        fetchPrizes(loyaltyProgram?.brand?.name ?? '')
+        if (!loyaltyProgram) return
+        fetchPrizes(loyaltyProgram.brand?.name ?? '')
             .then(prizes => {
                 if (prizes) setWheelSegments(prizes)
             })
     }
 
     function listenerCallBack(id: any) {
-        console.log("listening to event id =", id)
-        // add condition that checks if the event belongs to the desired player_address
-        // if(result.player_address === walletAddress) setSelectedPrizeId(id)
-        // else console.log("error")
+        console.log("listening to event id =", id);
         setSelectedPrizeId(id)
-        clearTimeout(listnerTimer);
     }
 
     function getSelectedPrize() {
@@ -154,7 +137,23 @@ const Spinner: React.FC = () => {
             })
     }
 
+    async function handlePlaying() {
+        setIsPlaying(true);
+        const playingResult = await play(loyaltyProgram?.brand?.key ?? '');
+        if (!playingResult?.isSuccess || !playingResult.data) {
+            setIsPlaying(false);
+            setError('Unable to play at the meantime, try again later')
+        }
 
+        startLatencyWarningInterval();
+    }
+
+    function startLatencyWarningInterval() {
+        const ID = setInterval(() => {
+            presentInfo('Execution taking longer than usual, please wait ...');
+        }, 20000)
+        setInfoInterval(ID);
+    }
 
     const programsOpts: ProgramSelectOption[] = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0) {
@@ -193,17 +192,15 @@ const Spinner: React.FC = () => {
         if (lp) setLoyaltyProgramId(lp?.currency?.programId)
     }
 
-    function releaseListener() {
-        setErrorInSpin(true)
-        presentFailure("Unknown Error")
-    }
-
     useIonViewDidEnter(() => {
-        if (id) {
-            setLoyaltyProgramId(id)
-        } else {
-            setLoyaltyProgramId("")
-        }
+        addListener(
+            appConfig.gozoGameContract,
+            contractsAbi.game,
+            'prizeSelected',
+            listenerCallBack
+        );
+
+        id ? setLoyaltyProgramId(id) : setLoyaltyProgramId("");
     }, [id])
 
     useEffect(() => {
@@ -219,33 +216,31 @@ const Spinner: React.FC = () => {
     }, [loyaltyProgramId])
 
     useEffect(() => {
-      if(errorInSpin) {
-        setSpinWheel(false)
-        setErrorInSpin(false)
-      }
-    }, [errorInSpin])
-    
+        clearInterval(infoInterval)
+    }, [selectedPrizeId])
 
     useEffect(() => {
-        if (spinWheel && (Object.keys(loyaltyProgram).length !== 0)) {
-            addListener(appConfig.gozoGameContract, contractsAbi.game, 'prizeSelected', listenerCallBack)
-            play(loyaltyProgram?.brand?.key ?? '')
-            listnerTimer = setTimeout(releaseListener, 50000);
+        if (error) {
+            setIsPlaying(false)
+            presentFailure(error)
         }
-    }, [spinWheel])
+    }, [error])
 
     return (
         <IonPage>
             <IonHeader className='ion-no-border'>
                 <IonToolbar className={styles.headerToolbar}>
                     <div className='flex-row-container ion-padding-horizontal'>
-                        <ProgramSelection options={programsOpts} selectedBalance={membership?.balance ?? 0} selectedValue={loyaltyProgram?.loyaltyCurrency?.shortName} setSelectedValue={handleSelectedValue} />
+                        <ProgramSelection
+                            options={programsOpts}
+                            selectedBalance={membership?.balance ?? 0}
+                            selectedValue={loyaltyProgram?.loyaltyCurrency?.shortName ?? ''}
+                            setSelectedValue={handleSelectedValue} />
                         <PrimaryButton
                             customStyles='flex-row-1'
-                            onClick={handleSpinClick}
+                            onClick={showSpinCondition}
                             size='m'
-                            disabled={spinWheel}
-                        >
+                            disabled={isPlaying}>
                             spin!
                         </PrimaryButton>
                     </div>
@@ -255,17 +250,37 @@ const Spinner: React.FC = () => {
                 {(!loadingProgram && !isLoadingPrizes && !loadingMyLoyaltyPrograms) ?
                     <>
                         <div className={`${styles.wheelWrapper}`}>
-                            {spinWheel && !selectedPrizeId ?
-                                <div className={styles.loaderWrapper}>
-                                    <ParticlesLoader />
-                                    <PrimaryTypography customClassName={styles.loaderOverlay}>Please wait one moment while we are connecting with blockchain to activate the Spin wheel...</PrimaryTypography>
-                                </div>
-
-                                :
-                                <FortuneWheel logoAtCenter={loyaltyProgram?.brand?.logo} spinDuration={0.3} data={wheelSegmentsOpts} spin={spinWheel} selectedPrizeId={selectedPrizeId} onStopSpinning={handleStopWheelSpinning} />
+                            {
+                                isPlaying && !selectedPrizeId ?
+                                    <div className={styles.loaderWrapper}>
+                                        <ParticlesLoader />
+                                        <PrimaryTypography
+                                            customClassName={styles.loaderOverlay}>
+                                            Please wait one moment while we are connecting with blockchain to activate the Spin wheel...
+                                        </PrimaryTypography>
+                                    </div>
+                                    :
+                                    <FortuneWheel
+                                        logoAtCenter={loyaltyProgram?.brand?.logo}
+                                        spinDuration={0.3} data={wheelSegmentsOpts}
+                                        spin={isPlaying}
+                                        selectedPrizeId={selectedPrizeId}
+                                        onStopSpinning={() => {
+                                            showSuccessModal();
+                                            setIsPlaying(false);
+                                            setError(undefined);
+                                            setSelectedPrizeId('');
+                                            fetchMembership();
+                                        }} />
                             }
                         </div>
-                        <PrimaryTypography customClassName={styles.accordionHeader} isBold size='m' color='light'>Available Prizes</PrimaryTypography>
+                        <PrimaryTypography
+                            customClassName={styles.accordionHeader}
+                            isBold
+                            size='m'
+                            color='light'>
+                            Available Prizes
+                        </PrimaryTypography>
                         <PrimaryAccordion accordionItemData={prizesOpts} />
                     </>
                     : <PageLoader />

@@ -5,12 +5,12 @@ import PrimaryTypography from '../../../components/typography/PrimaryTypography/
 import styles from './spinConditionModal.module.scss'
 
 interface Props {
-    setSpinWheel: React.Dispatch<React.SetStateAction<boolean>>,
     dismiss: () => void,
+    onSuccess?: () => void
     cost?: number
 }
 
-const SpinCondition: React.FC<Props> = ({ setSpinWheel, dismiss, cost }) => {
+const SpinCondition: React.FC<Props> = ({ dismiss, cost, onSuccess }) => {
     return (
         <IonContent className={`${styles.container} ion-text-center ion-padding`}>
             <div className={styles.containerContent}>
@@ -20,7 +20,7 @@ const SpinCondition: React.FC<Props> = ({ setSpinWheel, dismiss, cost }) => {
                     {cost} points will be redeemed from your account
                 </PrimaryTypography>
 
-                <PrimaryButton onClick={() => { dismiss(); setSpinWheel(true) }} size='m' expand='block'>
+                <PrimaryButton onClick={() => { dismiss(); onSuccess && onSuccess() }} size='m' expand='block'>
                     confirm
                 </PrimaryButton>
                 <PrimaryButton fill='clear' type='link' onClick={() => dismiss()} size='m' expand='block'>

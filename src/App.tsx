@@ -21,15 +21,30 @@ import './theme/variables.css';
 import './theme/main.scss';
 import './theme/toast.scss';
 import TabMenu from './components/menus/TabMenu/TabMenu';
+import { useContext, useEffect } from 'react';
+import { sessionContext } from './providers/SessionProvider/sessionContext';
+import { SplashScreen } from '@capacitor/splash-screen';
+
 setupIonicReact();
 
 const App: React.FC = () => {
+
+  const { isSessionReady } = useContext(sessionContext);
+
+  useEffect(() => {
+    if (isSessionReady) SplashScreen.hide({
+      fadeOutDuration: 600
+    });
+  }, [isSessionReady])
+
   return (
-    <IonApp>
-      <IonReactRouter>
-        <TabMenu />
-      </IonReactRouter>
-    </IonApp>
+    <>
+      {isSessionReady && <IonApp>
+        <IonReactRouter>
+          <TabMenu />
+        </IonReactRouter>
+      </IonApp>}
+    </>
   )
 }
 

@@ -5,6 +5,7 @@ import { sessionContext } from "./sessionContext";
 const SessionProvider: React.FC = ({ children }) => {
 
     const [session, setSession] = useState<any>();
+    const [isSessionReady, setIsSessionReady] = useState(false);
 
     function clear() {
         setSession(null);
@@ -15,16 +16,17 @@ const SessionProvider: React.FC = ({ children }) => {
             .getFromStorage('authSession')
             .then(session => {
                 setSession(session);
+                setIsSessionReady(true);
             })
     }, [])
 
     useEffect(() => {
         if (session) InternalStorage.setInStorage('authSession', session)
-        else InternalStorage.removeFromStorage('authSession')
+        else InternalStorage.removeFromStorage('authSession');
     }, [session])
 
     return (
-        <sessionContext.Provider value={{ session, setSession, clear }}>
+        <sessionContext.Provider value={{ session, setSession, clear, isSessionReady }}>
             {children}
         </sessionContext.Provider>
     )

@@ -7,9 +7,13 @@ import { LoyaltyMemberHistoryDTO } from '../../../dto/loyaltyMemberDTO'
 import { Pagination } from '../../../models/data/pagination';
 import styles from './loyaltyProgramsHistory.module.scss';
 import PrimaryGrid from '../../../components/grids/PrimaryGrid/PrimaryGrid';
+import { stringToDate } from '../../../helpers/dateManagment';
+import { useHistory } from 'react-router';
+import { AppRoutes } from '../../../constants/appRoutes';
 
 const LoyaltyPogramsHistory = () => {
 
+    const { push } = useHistory();
     const { gozoLoyalty } = useContext(currencySettingsContext);
     const [historyFields, setHistoryFields] = useState<LoyaltyMemberHistory[]>([]);
     const { run } = useCloud();
@@ -35,9 +39,14 @@ const LoyaltyPogramsHistory = () => {
     return (
         <div className={styles.container}>
             <PrimaryGrid
-                headers={['Type', 'Reason', 'Amount']}
+                headers={['Date', 'Reason', 'Amount']}
                 data={historyFields.map(hf => (
-                    { type: hf.sub_type, reason: hf.reason, amount: hf.amount }
+                    {
+                        date: stringToDate(hf.completed_at ?? ''),
+                        reason: hf.reason,
+                        amount: hf.amount,
+                        onClick: () => push({ pathname: AppRoutes.loyaltyProgramHistoryDetails, search: `?transaction_id=${hf.id}` })
+                    }
                 ))}
             />
         </div>

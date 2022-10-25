@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useMoralis, useMoralisWeb3Api } from 'react-moralis';
+import { useMoralis } from 'react-moralis';
 import { chainHex } from '../../helpers/networks';
 import MoralisDappContext, { ContractsMetadata } from './dappContext';
 import { ERC20Metadata } from '../../models/assets/ERC20Asset';
@@ -41,9 +41,6 @@ const DappProvider: React.FC = ({ children }) => {
         }
 
         return null
-      })
-      .catch(error => {
-        console.log('Error: get default token metadata ', error);
       })
   }, [])
 

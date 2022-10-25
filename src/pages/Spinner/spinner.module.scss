@@ -25,9 +25,13 @@
     align-items: center;
 
 }
+.accordionHeaderwrapper {
+    display: flex;
+    align-items: center;
 
-.accordionHeader {
-    padding-left: 15px;
+    .accordionHeader {
+        padding-left: 15px;
+    }
 }
 
 .accordionContent {

@@ -222,6 +222,12 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
             width="50"
             height="50"
           />
+          {/* <img
+            className={`${styles.iconSpin}`}
+            src="assets/image/Eclipse-1s-200px.svg"
+            width="50"
+            height="50"
+          /> */}
           <canvas
             id="myCanvas"
             width="400"

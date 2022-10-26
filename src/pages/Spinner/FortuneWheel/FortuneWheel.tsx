@@ -1,6 +1,6 @@
 import styles from './fortuneWheel.module.scss';
 import { WheelSegment } from '../../../models/wheelSegment';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { Winwheel } from '../WinWheelLibrary/Winwheel';
 import { ellipsisTruncate } from '../../../helpers/managment/string';
 
@@ -66,7 +66,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
         'type': 'spinToStop',
         'duration': 10,
         'spins': 5,
-        'callbackAfter': drawTriangle,
+        // 'callbackAfter': drawTriangle,
         'callbackFinished': callbackFinished,  // Function to call whent the spinning has stopped.
         'callbackSound': playSound,   // Called when the tick sound is to be played.
         // 'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound.
@@ -81,13 +81,13 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
       // }
     });
 
-  },[])
+  }, [data])
 
 
   function getOptimizeData() {
     let trasformedData: WheelSegment[] = structuredClone(data)
     trasformedData = trasformedData.map((item: WheelSegment) => {
-      item.text = ellipsisTruncate(item.text, 13)
+      item.text = ellipsisTruncate(item.text, 12)
       return item
     })
 
@@ -108,22 +108,6 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     // setIsSpinning(true)
   }
 
-  function drawTriangle() {
-    // console.log("myWheel", myWheel)
-    //     // Get the canvas context the wheel uses.
-    //     let ctx = myWheel.ctx;
-    //     // Set fill colour.
-    //     ctx.lineWidth   = 2;
-    //     ctx.strokeStyle = 'white';
-    //     ctx.fillStyle = 'white';
-    //     ctx.beginPath();
-    //     ctx.moveTo(180, 10);
-    //     ctx.lineTo(220, 10);
-    //     ctx.lineTo(200, 42);
-    //     ctx.lineTo(180, 10);               // Complete the path by stroking (draw lines).
-    //     ctx.fill();                   // Then fill.
-  }
-
   // Loads the tick audio sound in to an audio object.
   let audio = new Audio('/assets/audio/tick.mp3');
 
@@ -140,8 +124,27 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
   // Called when the animation has finished.
   function callbackFinished() {
     onStopSpinning()
+    winAnimation()
     // setIsSpinning(false)
     // resetWheel()
+  }
+
+  // This function called after the spin animation has stopped.
+  function winAnimation() {
+
+    // Get the number of the winning segment.
+    let winningSegmentNumber = myWheel.getIndicatedSegmentNumber();
+
+    // // Loop and set fillStyle of all segments to gray.
+    // for (let x = 1; x < myWheel.segments.length; x++) {
+    //   myWheel.segments[x].fillStyle = 'gray';
+    // }
+
+    // Make the winning one yellow.
+    myWheel.segments[winningSegmentNumber].lineWidth = '6';
+
+    // Call draw function to render changes.
+    myWheel.draw();
   }
 
   function resetWheel() {
@@ -205,36 +208,36 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
   // return ( 
   return (
-        <div className={styles.canvasContainer} 
-        style={{ backgroundImage: `url('assets/image/wheel-background.png')` }}
-        >
-          {logoAtCenter &&
-                <img
-                className={styles.logo}
-                src={logoAtCenter}
-                width="70"
-                height="70"
-              />
-    }
-          <img
-            // className={`${styles.iconPin} ${isSpinning ? styles.pinShaking : ''}`}
-            className={`${styles.iconPin}`}
-            src="assets/image/wheel-marker.svg"
-            width="50"
-            height="50"
-          />
-          {/* <img
+    <div className={styles.canvasContainer}
+      style={{ backgroundImage: `url('assets/image/wheel-background.png')` }}
+    >
+      {logoAtCenter &&
+        <img
+          className={styles.logo}
+          src={logoAtCenter}
+          width="70"
+          height="70"
+        />
+      }
+      <img
+        // className={`${styles.iconPin} ${isSpinning ? styles.pinShaking : ''}`}
+        className={`${styles.iconPin}`}
+        src="assets/image/wheel-marker.svg"
+        width="50"
+        height="50"
+      />
+      {/* <img
             className={`${styles.iconSpin}`}
             src="assets/image/Eclipse-1s-200px.svg"
             width="50"
             height="50"
           /> */}
-          <canvas
-            id="myCanvas"
-            width="400"
-            height="400"
-          />
-        </div>
+      <canvas
+        id="myCanvas"
+        width="400"
+        height="400"
+      />
+    </div>
   )
 }
 

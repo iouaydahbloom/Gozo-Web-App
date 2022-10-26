@@ -81,7 +81,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
       // }
     });
 
-  })
+  },[])
 
 
   function getOptimizeData() {

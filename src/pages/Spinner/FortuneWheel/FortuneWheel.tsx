@@ -14,8 +14,8 @@ interface Props {
 }
 
 const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpinning, spinDuration, logoAtCenter }) => {
-  const [isSpinning, setIsSpinning] = useState(false)
-  const spinner = useRef<Winwheel>();
+  // const [isSpinning, setIsSpinning] = useState(false)
+  // const spinner = useRef<Winwheel>();
 
   var myWheel: any
   useEffect(() => {
@@ -105,7 +105,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     if (myWheel?.animation && selectedSegment) myWheel.animation.stopAngle = randomIntFromInterval(selectedSegment.startAngle, selectedSegment.endAngle);
     // May as well start the spin from here.
     myWheel.startAnimation();
-    setIsSpinning(true)
+    // setIsSpinning(true)
   }
 
   function drawTriangle() {
@@ -140,8 +140,8 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
   // Called when the animation has finished.
   function callbackFinished() {
     onStopSpinning()
-    setIsSpinning(false)
-    resetWheel()
+    // setIsSpinning(false)
+    // resetWheel()
   }
 
   function resetWheel() {
@@ -217,7 +217,8 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
               />
     }
           <img
-            className={`${styles.iconPin} ${isSpinning ? styles.pinShaking : ''}`}
+            // className={`${styles.iconPin} ${isSpinning ? styles.pinShaking : ''}`}
+            className={`${styles.iconPin}`}
             src="assets/image/wheel-marker.svg"
             width="50"
             height="50"

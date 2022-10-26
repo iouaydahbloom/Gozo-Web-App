@@ -12,7 +12,7 @@ const usePrize = () => {
         if (!loyaltyCurrency) return;
         setIsLoadingPrizes(true);
         return run(cloudFunctionName.groupedPrize,
-            { loyalty_currency: loyaltyCurrency },
+            { brand: loyaltyCurrency },
             (result: PrizeDTO[]) => WheelSegment.getFromDTO(result),
             true)
             .then(result => {

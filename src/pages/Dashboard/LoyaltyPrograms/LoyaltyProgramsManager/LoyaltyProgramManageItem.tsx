@@ -112,7 +112,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
 
                             {
                                 myUpdatedProgram && partnershipMetadata?.executeAction.requiredFields.map((field, index) => {
-                                    return <div className={styles.connectionInput}>
+                                    return <div key={`field-${index}`} className={styles.connectionInput}>
                                         <PrimaryInput
                                             key={`field-${index}`}
                                             placeholder={`Enter your ${field.name}`}

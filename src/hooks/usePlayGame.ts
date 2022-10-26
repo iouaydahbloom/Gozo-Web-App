@@ -10,13 +10,17 @@ const usePlayGame = () => {
     const { run } = useCloud();
 
 
-    async function play(brand: string) {
+    async function play(brand: string, partner_id: string) {
         if (!brand && !walletAddress) return;
+        let params: any = {
+            brand: brand,
+            partner_id : partner_id,
+            player_address: walletAddress
+        }
+        if (!partner_id) delete params['partner_id'];
         return run(cloudFunctionName.playWithSuperPoints,
-            {
-                brand: brand,
-                player_address: walletAddress
-            },
+            params
+            ,
             res => res as boolean,
             true)
     }

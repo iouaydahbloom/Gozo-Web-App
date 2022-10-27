@@ -42,7 +42,7 @@ const Spinner: React.FC = () => {
     const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram>()
     const { membership, fetchMembership } = useMemberShip(loyaltyProgram?.loyaltyCurrency?.id);
     const [myLoyaltyPrograms, setMyLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([])
-    const { presentInfo } = useToast();
+    const { presentInfo } = useToast(5000);
     const { addListener } = useBlockchainContractExecution();
     const [prizesExpired, setPrizesExpired] = useState(false)
     const prizeInfo = "Spin now, list of prizes is reserved for 3 mins, if spinned after 3 mins the list of prizes might be different"

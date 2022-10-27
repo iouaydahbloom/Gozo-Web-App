@@ -6,6 +6,10 @@
     align-items: center;
     margin-bottom: 20px;
 
+    &.disabled {
+        opacity: 0.5;
+    }
+
     .innerContainer {
         display: flex;
         align-items: center;

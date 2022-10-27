@@ -98,6 +98,10 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     return Math.floor(Math.random() * (max - min + 1) + min)
   }
 
+  function setStopAngle(min: number, max: number) {
+    return min + (max - min) / 2
+  }
+
 
   function calculatePrize() {
     // Important thing is to set the stopAngle of the animation before stating the spin.

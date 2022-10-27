@@ -1,6 +1,6 @@
 import React from 'react';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
-import { SelectOption } from '../../../components/inputs/PrimarySelect/PrimarySelect';
+import { SelectOption } from '../SwapSelect/SwapSelect';
 import useProgramsExchange from '../../../hooks/useProgramsExchange';
 import SwapDirection from '../SwapDirectionToggle/SwapDirectionToggle';
 import SwapField from '../SwapField/SwapField';
@@ -31,7 +31,7 @@ const SwapPoints: React.FC = () => {
                         <SwapField
                             label='From'
                             options={defaultExchangeOptions.map((opt) => (
-                                new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency)
+                                new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency, opt.currency.programLogo)
                             ))}
                             quantity={originProgram.quantity}
                             selectedOption={originProgram?.loyaltyCurrency}

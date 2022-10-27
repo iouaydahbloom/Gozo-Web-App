@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
-import { SelectOption } from '../../../components/inputs/PrimarySelect/PrimarySelect';
+import { SelectOption } from '../SwapSelect/SwapSelect';
 import TransactionDetails from '../../../components/TransactionDetails/TransactionDetails';
 import useTokenProgramsExchange from '../../../hooks/useTokenProgramsExchange';
 import SwapDirection from '../SwapDirectionToggle/SwapDirectionToggle';
@@ -17,7 +17,7 @@ const SwapTokens: React.FC = () => {
         <SwapField
             label={label}
             options={tokenOptions.map((opt) => (
-                new SelectOption(opt.name, opt.token_address)
+                new SelectOption(opt.name, opt.token_address, opt.logo)
             ))}
             quantity={tokenQuantity}
             selectedOption={token?.token_address!}
@@ -31,7 +31,7 @@ const SwapTokens: React.FC = () => {
         <SwapField
             label={label}
             options={programOptions.map((opt) => (
-                new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency)
+                new SelectOption(opt.currency.loyaltyCurrencyName, opt.currency.loyaltyCurrency, opt.currency.programLogo)
             ))}
             quantity={programQuantity}
             selectedOption={program?.currency.loyaltyCurrency!}

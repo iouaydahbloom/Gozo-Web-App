@@ -17,10 +17,9 @@ const usePlayGame = () => {
         setIsPlaying(true);
         let params: any = {
             brand: brand,
-            partner_id : partner_id,
             player_address: walletAddress
         }
-        if (!partner_id) delete params['partner_id'];
+        if (partner_id) params['partner_id'] = partner_id;
         return run(cloudFunctionName.playWithSuperPoints,
             params
             ,

@@ -1,5 +1,5 @@
 import { IonInput, IonSpinner } from "@ionic/react";
-import PrimarySelect, { SelectOption } from "../../../components/inputs/PrimarySelect/PrimarySelect";
+import SwapSelect, { SelectOption } from "../SwapSelect/SwapSelect";
 import PrimaryTypography from "../../../components/typography/PrimaryTypography/PrimaryTypography";
 import styles from './swapField.module.scss';
 
@@ -27,7 +27,7 @@ const SwapField: React.FC<Props> = ({
     return (
         <div className={styles.swapField}>
             <div className={styles.selectContainer}>
-                <PrimarySelect
+                <SwapSelect
                     label={label}
                     className={styles.select}
                     value={selectedOption}

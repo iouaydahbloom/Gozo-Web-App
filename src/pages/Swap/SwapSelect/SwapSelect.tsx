@@ -1,7 +1,7 @@
 import { IonAvatar, IonItem, IonLabel } from '@ionic/react';
 import React from 'react'
 import Select from 'react-select';
-import styles from './primarySelect.module.scss'
+import styles from './swapSelect.module.scss'
 
 export class SelectOption {
     constructor(
@@ -19,7 +19,7 @@ interface Props {
     className?: string
 }
 
-const PrimarySelect: React.FC<Props> = ({ label, value, onChange, options = [], className }) => {
+const SwapSelect: React.FC<Props> = ({ label, value, onChange, options = [], className }) => {
 
     const customStyles: any = {
         menuPortal: (base: React.CSSProperties) => ({ ...base, zIndex: 9999 }),
@@ -101,4 +101,4 @@ const PrimarySelect: React.FC<Props> = ({ label, value, onChange, options = [], 
     )
 }
 
-export default PrimarySelect;
+export default SwapSelect;

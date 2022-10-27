@@ -28,6 +28,7 @@ const Account: React.FC = () => {
                         icon={<IonIcon className={styles.customIcon} icon={personOutline} />}
                         text='Profile Details'
                         onClick={() => {}}
+                        isDisabled
                     />
                     <AccountItem
                         icon={<IonIcon icon={readerOutline} />}
@@ -38,6 +39,7 @@ const Account: React.FC = () => {
                         icon={<IonIcon icon={peopleOutline} />}
                         text='Refer to a Friend'
                         onClick={() => {}}
+                        isDisabled
                     />
                 </div>
                 <div className={styles.section}>
@@ -46,27 +48,32 @@ const Account: React.FC = () => {
                     <AccountItem
                         icon={<IonIcon icon={volumeHighOutline} />}
                         text='Enable Sounds'
-                        customEndSlot={<IonToggle checked={true}></IonToggle>}
+                        customEndSlot={<IonToggle disabled checked={false}></IonToggle>}
+                        isDisabled
                     />
                     <AccountItem
                         icon={<IonIcon icon={notificationsOutline} />}
                         text='Enable Push Notifications'
-                        customEndSlot={<IonToggle checked={false}></IonToggle>}
+                        customEndSlot={<IonToggle disabled checked={false}></IonToggle>}
+                        isDisabled
                     />
                     <AccountItem
                         icon={<IonIcon icon={lockClosedOutline} />}
                         text='Security'
                         onClick={() => {}}
+                        isDisabled
                     />
                     <AccountItem
                         icon={<IonIcon icon={invertModeOutline} />}
                         text='Light/ Dark Mode'
-                        customEndSlot={<IonToggle checked={true}></IonToggle>}
+                        customEndSlot={<IonToggle disabled checked={false}></IonToggle>}
+                        isDisabled
                     />
                     <AccountItem
                         icon={<IonIcon icon={helpCircleOutline} />}
                         text='Help Center'
                         onClick={() => {}}
+                        isDisabled
                     />
                     <AccountItem
                         icon={<IonIcon icon={logOutOutline} />}

@@ -8,12 +8,13 @@ interface Props {
     icon: ReactNode,
     text: string,
     onClick?: () => void,
-    customEndSlot?: ReactNode
+    customEndSlot?: ReactNode,
+    isDisabled?: boolean
 }
 
-const AccountItem: React.FC<Props> = ({ icon, text, onClick, customEndSlot }) => {
+const AccountItem: React.FC<Props> = ({ icon, text, onClick, customEndSlot, isDisabled }) => {
     return (
-        <div className={styles.container} onClick={onClick}>
+        <div className={`${styles.container} ${isDisabled ? styles.disabled : ''}`} onClick={isDisabled ? () => {} : onClick}>
             <div className={`${styles.iconContainer} ${styles.innerContainer}`}>{icon}</div>
             <div className={`${styles.text}`}>
                 <PrimaryTypography size='m'>{text}</PrimaryTypography>

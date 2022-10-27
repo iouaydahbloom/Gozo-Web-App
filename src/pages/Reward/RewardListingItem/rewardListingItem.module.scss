@@ -1,4 +1,17 @@
 .rewardListingItem {
     --background: var(--ion-color-medium);
     --color: var(--ion-color-light);
+    --border-color: var(--ion-color-medium-light);
+    --inner-padding-start: 0;
+    --inner-padding-end: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+
+    .prizeImage {
+        width: 30px;
+    }
+
+    .textWrapper {
+        text-align: justify;
+    }
 }

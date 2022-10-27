@@ -6,13 +6,12 @@ export class Reward implements AppModel {
     constructor(
         public id: string,
         public name: string,
-        public caLoyaltyCurrency: string,
         public date: string,
         public icon?: string
         ) { }
 
     static getFromDTO(dto: RewardDTO[]): Reward[] {
-        return dto.map(item => (new Reward(item.objectId, item.prize.name, item.prize.caLoyaltyCurrency, item.createdAt)))
+        return dto.map(item => (new Reward(item.objectId, item.name, item.date ? item.date.split(',')[0] : '', item.logoUrl)))
     }
 
     toDTO() { }

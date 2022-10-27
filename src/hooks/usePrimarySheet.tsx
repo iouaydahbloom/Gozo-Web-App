@@ -18,7 +18,7 @@ const usePrimarySheet = (options: Options) => {
         id: options.id,
         className: "primary-sheet",
         onDismiss: options.onDismiss,
-        initialBreakpoint: options.initialBreakpoint ? options.initialBreakpoint : 0.9,
+        initialBreakpoint: options.initialBreakpoint ? options.initialBreakpoint : 0.95,
         component: <PrimaryModal
             title={options.title}
             renderBody={() => (

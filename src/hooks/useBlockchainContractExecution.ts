@@ -15,7 +15,7 @@ const useBlockchainContractExecution = () => {
     const { walletAddress } = useDapp();
     const { rpcProvider, getProviderSigner } = useMagicAuth();
     const [executing, setExecuting] = useState(false);
-    const [contracts, setContracts] = useState<ethers.Contract[]>([])
+    const [contracts, setContracts] = useState<ethers.Contract[]>([]);
     const { Moralis } = useMoralis();
     const { confirm } = useConfirmation();
     const { presentInfo } = useToast();
@@ -120,12 +120,13 @@ const useBlockchainContractExecution = () => {
     }
 
     async function addListener(contractAddress: string, abi: any[], eventName: string, callBack: (...args: any[]) => void) {
-        let contract: ethers.Contract | null = null;
-        if (!contracts?.find(ctrct => ctrct.address.toLocaleLowerCase() == contractAddress.toLocaleLowerCase())) {
+        let contract = contracts?.find(ctrct => ctrct.address.toLocaleLowerCase() == contractAddress.toLocaleLowerCase());
+        if (!contract) {
             contract = new ethers.Contract(contractAddress, abi, getProviderSigner());
             setContracts([...contracts, contract]);
         }
-        if (contract) contract.on(eventName, callBack);
+
+        contract.on(eventName, callBack);
     }
 
     async function estimateExecutionFee(contractAddress: Contract, fn: string, params: any[]) {

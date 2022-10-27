@@ -1,16 +1,37 @@
 .headerToolbar {
     --background: var(--ion-color-dark);
-    padding: 40px 40px 10px 40px !important;
+    padding: 40px 10px 10px 10px !important;
+}
+
+.loaderWrapper {
+    width: 100%;
+    height: 400px;
+    position: relative;;
+
+    .loaderOverlay {
+        background: var(--ion-color-tertiary);
+        opacity: 0.6;
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+        padding: 20px;
+        border-radius: 5px;
+    }
 }
 
 .wheelWrapper {
     display: flex;
     justify-content: center;
     align-items: center;
+
 }
+.accordionHeaderwrapper {
+    display: flex;
+    align-items: center;
 
-.accordionHeader {
-
+    .accordionHeader {
+        padding-left: 15px;
+    }
 }
 
 .accordionContent {

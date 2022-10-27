@@ -112,7 +112,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
 
                             {
                                 myUpdatedProgram && partnershipMetadata?.executeAction.requiredFields.map((field, index) => {
-                                    return <div className={styles.connectionInput}>
+                                    return <div key={`field-${index}`} className={styles.connectionInput}>
                                         <PrimaryInput
                                             key={`field-${index}`}
                                             placeholder={`Enter your ${field.name}`}
@@ -143,7 +143,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
     }
 
     return (
-        <div className={styles.container} style={{background: item?.brand?.color}}>
+        <div className={styles.container} style={{background: item?.brand?.color1}}>
             <div className={styles.togglerContainer}
                 onClick={() => setIsSelected(!isSelected)}>
                 <div className={styles.id}>

@@ -2,5 +2,11 @@
 	"appId": "gozo.app.mvp",
 	"appName": "GOZO",
 	"webDir": "build",
-	"bundledWebRuntime": false
+	"bundledWebRuntime": false,
+	"plugins": {
+		"SplashScreen": {
+			"launchAutoHide": false,
+			"backgroundColor": "#1C1C1D"
+		}
+	}
 }

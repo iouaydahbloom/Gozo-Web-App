@@ -10,6 +10,7 @@ import { PartnershipType } from "../types/exchangeType";
 
 const useLoyaltyPrograms = () => {
     const [loadingMyPrograms, setLoadingMyPrograms] = useState(false);
+    const [loadingProgram, setLoadingProgram] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const { gozoLoyalty } = useContext(currencySettingsContext);
     const { run } = useCloud();
@@ -44,15 +45,17 @@ const useLoyaltyPrograms = () => {
     }
 
     async function getProgram(programId: string) {
+        setLoadingProgram(true)
         return run(
             cloudFunctionName.program,
-            { partner_id: programId },
+            programId ? { partner_id: programId } : {},
             (result: LoyaltyProgramDTO) => {
                 return LoyaltyProgram.getFromDTO(result)
             })
             .then(result => {
                 return result.isSuccess ? result.data : null
             })
+            .finally(() => setLoadingProgram(false))
     }
 
     async function getMyPrograms() {
@@ -115,6 +118,7 @@ const useLoyaltyPrograms = () => {
         fetchFilteredProgram: getFilteredProgram,
         fetchProgram: getProgram,
         loadingMyLoyaltyPrograms: loadingMyPrograms,
+        loadingProgram: loadingProgram,
         connectProgram,
         disconnectProgram,
         disconnectPrograms,

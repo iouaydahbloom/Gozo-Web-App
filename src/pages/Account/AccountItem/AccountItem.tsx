@@ -15,7 +15,7 @@ const AccountItem: React.FC<Props> = ({ icon, text, onClick, customEndSlot }) =>
     return (
         <div className={styles.container} onClick={onClick}>
             <div className={`${styles.iconContainer} ${styles.innerContainer}`}>{icon}</div>
-            <div className={`${styles.text} ${styles.innerContainer}`}>
+            <div className={`${styles.text}`}>
                 <PrimaryTypography size='m'>{text}</PrimaryTypography>
             </div>
             <div className={`${styles.navigation} ${styles.innerContainer}`}>

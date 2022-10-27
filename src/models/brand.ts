@@ -7,11 +7,22 @@ export class Brand implements AppModel {
         public key: string,
         public name: string,
         public logo: string,
-        public color: string
+        public color1: string,
+        public color2: string
         ) { }
 
     static getFromDTO(dto: BrandDTO): Brand {
-        return new Brand(dto.key, dto.name, dto.logo, dto.color)
+        var color1 = ''
+        var color2 = '#000'
+        if(dto.color) {
+            color1 = dto.color
+            var color = dto.color.split(',')
+            if(color.length === 2) {
+                color1 = color[0]
+                color2 = color[1]
+            }
+        }
+        return new Brand(dto.key, dto.name, dto.logoUrl, color1, color2)
     }
 
     toDTO() { }

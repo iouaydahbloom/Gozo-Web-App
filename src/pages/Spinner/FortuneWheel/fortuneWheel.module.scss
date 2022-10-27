@@ -1,83 +1,90 @@
-// .myCanvas
-// {
-//     // background-image: url("assets/image/wheel_back.png");
-//     // background-position: center;
-//     // background-repeat: none;
-//     background-repeat: no-repeat;   /* Ensure that background does not repeat */
-//     background-position: center;    /* Ensure image is centred */
-//     // width: 400px;
-//     //  height: 400px;
-//      background-size: contain;
-// }
-
 .canvasContainer {
     position: relative;
-    // padding-top: 60px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-size: 342px;
 
     canvas {
         display: block;
-        margin: 0 auto 30px;
+    }
+
+    .logo {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--ion-color-light);
+        border-radius: 50%;
     }
 
     .iconPin {
         position: absolute;
         left: 50%;
-        top: 20px;
+        top: 2px;
         margin-left: calc(-50px / 2);
         transform-origin: 50% 31%;
     }
 
-    .pinShaking {
-        /* Start the shake animation and make the animation last for 0.5 seconds */
-        animation: pinShaking 0.5s;
+    // .iconSpin {
+    //     position: absolute;
+    //     left: 50%;
+    //     top: 48%;
+    //     width:400px;
+    //     height:400px;
+    // }
 
-        /* When the animation is finished, start again */
-        animation-iteration-count: infinite;
-    }
+    // .pinShaking {
+    //     /* Start the shake animation and make the animation last for 0.5 seconds */
+    //     animation: pinShaking 0.5s;
 
-    @keyframes pinShaking {
-        0% {
-            transform: rotate(50deg);
-        }
+    //     /* When the animation is finished, start again */
+    //     animation-iteration-count: infinite;
+    // }
 
-        10% {
-            transform: rotate(-50deg);
-        }
+    //     @keyframes pinShaking {
+    //         0% {
+    //             transform: rotate(50deg);
+    //         }
 
-        20% {
-            transform: rotate(50deg);
-        }
+    //         10% {
+    //             transform: rotate(-50deg);
+    //         }
 
-        30% {
-            transform: rotate(-50deg);
-        }
+    //         20% {
+    //             transform: rotate(50deg);
+    //         }
 
-        40% {
-            transform: rotate(50deg);
-        }
+    //         30% {
+    //             transform: rotate(-50deg);
+    //         }
 
-        50% {
-            transform: rotate(-50deg);
-        }
+    //         40% {
+    //             transform: rotate(50deg);
+    //         }
 
-        60% {
-            transform: rotate(50deg);
-        }
+    //         50% {
+    //             transform: rotate(-50deg);
+    //         }
 
-        70% {
-            transform: rotate(-50deg);
-        }
+    //         60% {
+    //             transform: rotate(50deg);
+    //         }
 
-        80% {
-            transform: rotate(50deg);
-        }
+    //         70% {
+    //             transform: rotate(-50deg);
+    //         }
 
-        90% {
-            transform: rotate(-50deg);
-        }
+    //         80% {
+    //             transform: rotate(50deg);
+    //         }
 
-        100% {
-            transform: rotate(50deg);
-        }
-    }
+    //         90% {
+    //             transform: rotate(-50deg);
+    //         }
+
+    //         100% {
+    //             transform: rotate(50deg);
+    //         }
+    //     }
 }

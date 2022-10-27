@@ -1,7 +1,8 @@
 .filterContainer {
     padding-bottom: 20px;
     position:sticky;
-    top:0;
+    top: 0px;
     background: var(--ion-color-medium);
     z-index: 99999;
+    box-shadow: 0 4px 2px -2px var(--ion-color-dark);
 }

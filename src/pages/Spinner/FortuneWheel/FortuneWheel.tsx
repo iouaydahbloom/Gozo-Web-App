@@ -1,6 +1,6 @@
 import styles from './fortuneWheel.module.scss';
 import { WheelSegment } from '../../../models/wheelSegment';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Winwheel } from '../WinWheelLibrary/Winwheel';
 import { ellipsisTruncate } from '../../../helpers/managment/string';
 
@@ -9,91 +9,85 @@ interface Props {
   spin: boolean,
   selectedPrizeId: string,
   onStopSpinning: () => void,
-  spinDuration?: number
-
+  spinDuration?: number,
+  logoAtCenter?: string
 }
 
-const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpinning, spinDuration }) => {
-  const [isSpinning, setIsSpinning] = useState(false)
-  const myWheel: any = new Winwheel({
+const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpinning, spinDuration, logoAtCenter }) => {
+  // const [isSpinning, setIsSpinning] = useState(false)
+  // const spinner = useRef<Winwheel>();
 
-    // 'outerRadius'       : 200,               // Set outer radius so wheel fits inside the background.
-    // 'drawText'          : true,              // Code drawn text can be used with segment images.
-    // 'textFontSize'      : 16,
-    // 'textOrientation'   : 'curved',
-    'textAlignment': 'inner',
-    // 'textMargin'        : 90,
-    'textFontFamily': 'monospace',
-    // 'textStrokeStyle'   : 'black',
-    // 'textLineWidth'     : 3,
-    'textFillStyle': 'white',
-    // 'drawMode'          : 'segmentImage',
-    // 'drawMode'     : 'image',    // drawMode must be set to image.
-    // 'imageDirection': "N",
-    // 'imageOverlay': true,
-    'canvasId': 'myCanvas',
-    'numSegments': data.length,
-    'segments': getOptimizeData(),
-    'textFontSize': 12,
-    'textMargin': 6,
+  var myWheel: any
+  useEffect(() => {
 
-    // 'outerRadius' : 146,    // Use these three properties to
-    // 'centerX'     : 200,    // correctly position the wheel
-    // 'centerY'     : 201,    // over the background.
 
-    'outerRadius': 140,    // Use these three properties to
-    'centerX': 150,    // correctly position the wheel
-    'centerY': 187,    // over the background.
-    'lineWidth': 2,
+    myWheel = new Winwheel({
 
-    // 'textAlignment' : 'center',
-    // 'centerY'         : 230,
-    // 'outerRadius'     : 170,
-    'innerRadius': 20,             // The larger the inner radius, the bigger the
-    // 'textFontSize'    : 14,             // hollow space inside the wheel.
-    // 'textMargin'      : 0,
-    // 'textFontFamily'  : 'Courier',
-    // 'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
-    // 'textOrientation' : 'curved',  
-    // [
-    //     {'fillStyle' : '#eae56f', 'text' : 'Prize One'},
-    //     {'fillStyle' : '#89f26e', 'text' : 'Prize Two'},
-    //     {'fillStyle' : '#7de6ef', 'text' : 'Prize Three'},
-    //     {'fillStyle' : '#e7706f', 'text' : 'Prize Four'}
-    // ],
+      'drawText': true,              // Code drawn text can be used with segment images.
+      'textAlignment': 'center',
+      'textFontFamily': 'monospace',
+      // 'textStrokeStyle'   : 'black',
+      // 'textLineWidth'     : 3,
+      'textFillStyle': 'white',
+      // 'drawMode'          : 'segmentImage',
+      // 'drawMode'     : 'image',    // drawMode must be set to image.
+      // 'imageDirection': "N",
+      // 'imageOverlay': true,
+      'canvasId': 'myCanvas',
+      'numSegments': data.length,
+      'segments': getOptimizeData(),
+      'textFontSize': 13,
+      'textMargin': 6,
 
-    // 'drawMode'          : 'segmentImage',
-    // 'textOverflow': 'ellipsis',
-    // 'responsive': true, // This wheel is responsive!
+      'outerRadius': 170,    // Use these three properties to
+      'centerX': 200,    // correctly position the wheel
+      'centerY': 200,    // over the background.
 
-    // 'drawMode'          : 'image',   // drawMode must be set to image.
-    // 'drawText'          : true,      // Need to set this true if want code-drawn text on image wheels.
+      // 'outerRadius': 140,    // Use these three properties to
+      // 'centerX': 150,    // correctly position the wheel
+      // 'centerY': 187,    // over the background.
+      'lineWidth': 2,
+      'strokeStyle': "#fff",
+      'fillStyle': "#000",
 
-    'animation':
-    {
-      'type': 'spinToStop',
-      'duration': 10,
-      'spins': 5,
-      'callbackAfter': drawTriangle,
-      'callbackFinished': callbackFinished,  // Function to call whent the spinning has stopped.
-      'callbackSound': playSound,   // Called when the tick sound is to be played.
-      // 'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound.
-    },
-    // 'pins' :                // Turn pins on.
-    // {
-    //     // 'number'     : data.length,
-    //     // 'number': 18
-    //     // 'fillStyle'  : 'silver',
-    //     // 'outerRadius': 4,
-    //     // 'responsive': true,
-    // }
-  });
+      'innerRadius': 35,             // The larger the inner radius, the bigger the
+      // hollow space inside the wheel.
+      // 'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
+      // 'textOrientation' : 'curved',  
+      // [
+      //     {'fillStyle' : '#eae56f', 'text' : 'Prize One'},
+      //     {'fillStyle' : '#89f26e', 'text' : 'Prize Two'},
+      //     {'fillStyle' : '#7de6ef', 'text' : 'Prize Three'},
+      //     {'fillStyle' : '#e7706f', 'text' : 'Prize Four'}
+      // ],
+      // 'responsive': true, // This wheel is responsive!
+      'animation':
+      {
+        'type': 'spinToStop',
+        'duration': 10,
+        'spins': 5,
+        // 'callbackAfter': drawTriangle,
+        'callbackFinished': callbackFinished,  // Function to call whent the spinning has stopped.
+        'callbackSound': playSound,   // Called when the tick sound is to be played.
+        // 'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound.
+      },
+      // 'pins' :                // Turn pins on.
+      // {
+      //     // 'number'     : data.length,
+      //     // 'number': 18
+      //     // 'fillStyle'  : 'silver',
+      //     // 'outerRadius': 4,
+      //     // 'responsive': true,
+      // }
+    });
+
+  }, [data])
 
 
   function getOptimizeData() {
     let trasformedData: WheelSegment[] = structuredClone(data)
     trasformedData = trasformedData.map((item: WheelSegment) => {
-      item.text = ellipsisTruncate(item.text, 13)
+      item.text = ellipsisTruncate(item.text, 12)
       return item
     })
 
@@ -111,23 +105,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     if (myWheel?.animation && selectedSegment) myWheel.animation.stopAngle = randomIntFromInterval(selectedSegment.startAngle, selectedSegment.endAngle);
     // May as well start the spin from here.
     myWheel.startAnimation();
-    setIsSpinning(true)
-  }
-
-  function drawTriangle() {
-    // console.log("myWheel", myWheel)
-    //     // Get the canvas context the wheel uses.
-    //     let ctx = myWheel.ctx;
-    //     // Set fill colour.
-    //     ctx.lineWidth   = 2;
-    //     ctx.strokeStyle = 'white';
-    //     ctx.fillStyle = 'white';
-    //     ctx.beginPath();
-    //     ctx.moveTo(180, 10);
-    //     ctx.lineTo(220, 10);
-    //     ctx.lineTo(200, 42);
-    //     ctx.lineTo(180, 10);               // Complete the path by stroking (draw lines).
-    //     ctx.fill();                   // Then fill.
+    // setIsSpinning(true)
   }
 
   // Loads the tick audio sound in to an audio object.
@@ -146,7 +124,27 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
   // Called when the animation has finished.
   function callbackFinished() {
     onStopSpinning()
-    resetWheel()
+    winAnimation()
+    // setIsSpinning(false)
+    // resetWheel()
+  }
+
+  // This function called after the spin animation has stopped.
+  function winAnimation() {
+
+    // Get the number of the winning segment.
+    let winningSegmentNumber = myWheel.getIndicatedSegmentNumber();
+
+    // // Loop and set fillStyle of all segments to gray.
+    // for (let x = 1; x < myWheel.segments.length; x++) {
+    //   myWheel.segments[x].fillStyle = 'gray';
+    // }
+
+    // Make the winning one yellow.
+    myWheel.segments[winningSegmentNumber].lineWidth = '6';
+
+    // Call draw function to render changes.
+    myWheel.draw();
   }
 
   function resetWheel() {
@@ -210,18 +208,34 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
   // return ( 
   return (
-    // <div className={styles.myCanvas} style={{ backgroundImage: `url('assets/image/wheel_back.png')` }} >
-    <div className={styles.canvasContainer} >
+    <div className={styles.canvasContainer}
+      style={{ backgroundImage: `url('assets/image/wheel-background.png')` }}
+    >
+      {logoAtCenter &&
+        <img
+          className={styles.logo}
+          src={logoAtCenter}
+          width="70"
+          height="70"
+        />
+      }
       <img
-        className={`${styles.iconPin} ${isSpinning ? styles.pinShaking : ''}`}
+        // className={`${styles.iconPin} ${isSpinning ? styles.pinShaking : ''}`}
+        className={`${styles.iconPin}`}
         src="assets/image/wheel-marker.svg"
         width="50"
         height="50"
       />
+      {/* <img
+            className={`${styles.iconSpin}`}
+            src="assets/image/Eclipse-1s-200px.svg"
+            width="50"
+            height="50"
+          /> */}
       <canvas
         id="myCanvas"
-        width="300"
-        height="350"
+        width="400"
+        height="400"
       />
     </div>
   )

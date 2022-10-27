@@ -33,7 +33,7 @@ const Spinner: React.FC = () => {
     const search = useSearchParams();
     const { fetchProgram, defaultProgram, loadingProgram } = useLoyaltyPrograms();
     const { getUserLoyaltyPrograms, loadingMyLoyaltyPrograms } = useAssets();
-    const { play } = usePlayGame();
+    const { play, setIsPlaying, isPlaying } = usePlayGame();
     const { fetchPrizes, isLoadingPrizes } = usePrize();
     const id = search.get('program_id')
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
@@ -42,9 +42,7 @@ const Spinner: React.FC = () => {
     const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram>()
     const { membership, fetchMembership } = useMemberShip(loyaltyProgram?.loyaltyCurrency?.id);
     const [myLoyaltyPrograms, setMyLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([])
-    const { presentFailure, presentInfo } = useToast();
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [error, setError] = useState<string>();
+    const { presentInfo } = useToast();
     const { addListener } = useBlockchainContractExecution();
     const [prizesExpired, setPrizesExpired] = useState(false)
     const prizeInfo = "Spin now, list of prizes is reserved for 3 mins, if spinned after 3 mins the list of prizes might be different"
@@ -78,7 +76,6 @@ const Spinner: React.FC = () => {
         />,
         onDismiss: () => {
             setIsPlaying(false);
-            setError(undefined);
             setSelectedPrizeId('');
             getPrizes()
             fetchMembership();
@@ -131,14 +128,8 @@ const Spinner: React.FC = () => {
     }
 
     async function handlePlaying() {
-        setIsPlaying(true);
         if (prizesExpired) await getPrizes()
-        const playingResult = await play(loyaltyProgram?.brand?.key ?? '', loyaltyProgram?.partnerId ?? '');
-        if (!playingResult?.isSuccess || !playingResult.data) {
-            setError('Server is busy, try again later')
-            setIsPlaying(false);
-            return;
-        }
+        await play(loyaltyProgram?.brand?.key ?? '', loyaltyProgram?.partnerId ?? '');
     }
 
     const programsOpts: ProgramSelectOption[] = useMemo(() => {
@@ -200,14 +191,6 @@ const Spinner: React.FC = () => {
     useEffect(() => {
         getLoyaltyProgram()
     }, [loyaltyProgramId])
-
-    useEffect(() => {
-        if (error) {
-            setIsPlaying(false)
-            presentFailure(error)
-            setError(undefined)
-        }
-    }, [error])
 
     return (
         <IonPage>

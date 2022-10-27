@@ -64,7 +64,6 @@ const PrimarySelect: React.FC<Props> = ({ label, value, onChange, options = [], 
                     <IonAvatar>
                         <img
                             src={icon}
-                            alt={label}
                         />
                     </IonAvatar>
                 }

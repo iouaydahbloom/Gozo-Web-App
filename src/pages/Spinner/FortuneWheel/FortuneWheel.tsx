@@ -106,7 +106,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
   function calculatePrize() {
     // Important thing is to set the stopAngle of the animation before stating the spin.
     const selectedSegment = myWheel.segments.find((item: WheelSegment) => item?.id === selectedPrizeId)
-    if (myWheel?.animation && selectedSegment) myWheel.animation.stopAngle = setStopAngle(selectedSegment.startAngle, selectedSegment.endAngle);
+    if (myWheel?.animation && selectedSegment) myWheel.animation.stopAngle = randomIntFromInterval(selectedSegment.startAngle, selectedSegment.endAngle);
     // May as well start the spin from here.
     myWheel.startAnimation();
     // setIsSpinning(true)

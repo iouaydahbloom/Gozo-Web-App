@@ -1,4 +1,4 @@
-import { IonPage } from '@ionic/react';
+import { IonPage, useIonViewWillLeave } from '@ionic/react';
 import { useEffect, useState } from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import GozoIcon from '../../components/icons/GozoIcon/GozoIcon';
@@ -33,6 +33,10 @@ const Landing: React.FC = () => {
             </div>
         )
     }
+
+    useIonViewWillLeave(() => {
+        dismissModal();
+    }, [])
 
     useEffect(() => {
         return () => {

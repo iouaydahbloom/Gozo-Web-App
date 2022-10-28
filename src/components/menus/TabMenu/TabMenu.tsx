@@ -1,8 +1,8 @@
 import { Deeplinks } from '@awesome-cordova-plugins/deeplinks';
-import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
+import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, useIonRouter } from '@ionic/react';
 import { gridOutline, personCircleOutline, walletOutline } from 'ionicons/icons';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { Redirect, Route, useHistory } from 'react-router';
+import { Route, useHistory } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
 import useAuthentication from '../../../hooks/useAuthentication';
 import useOnBoardingPreview from '../../../hooks/useOnBoardingPreview';
@@ -11,11 +11,9 @@ import AuthCallback from '../../../pages/Authentication/AuthCallback/AuthCallbac
 import Buy from '../../../pages/Buy/Buy';
 import Dashboard from '../../../pages/Dashboard/Dashboard';
 import Landing from '../../../pages/Landing/Landing';
-import LoyaltyProgramHistoryDetails from '../../../pages/LoyaltyProgramHistoryDetails/LoyaltyProgramHistoryDetails';
 import OnBoarding from '../../../pages/OnBoarding/OnBoarding';
 import Rewards from '../../../pages/Reward/Reward';
 import Spinner from '../../../pages/Spinner/Spinner';
-import TokenHistoryDetails from '../../../pages/TokenHistoryDetails/TokenHistoryDetails';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
 import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
@@ -23,7 +21,7 @@ import styles from './tabMenu.module.scss';
 
 const TabMenu: React.FC = () => {
 
-    const { push, replace } = useHistory();
+    const { push } = useHistory();
     const spinnerBtnRef = useRef<any>(null);
     const { isAuthenticated } = useAuthentication();
     const { isHidden: isOnboardingHidden } = useOnBoardingPreview();
@@ -45,11 +43,11 @@ const TabMenu: React.FC = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            isOnboardingHidden ? replace(AppRoutes.dashboard) : replace(AppRoutes.onBoarding);
+            isOnboardingHidden ? push(AppRoutes.dashboard) : push(AppRoutes.onBoarding);
         } else {
-            replace(AppRoutes.landing);
+            push(AppRoutes.landing);
         }
-    }, [isAuthenticated])
+    }, [isAuthenticated, isOnboardingHidden])
 
     const playButton = useMemo(() => (
         <div
@@ -91,9 +89,9 @@ const TabMenu: React.FC = () => {
                     <Route exact path={AppRoutes.authCallback}>
                         <AuthCallback />
                     </Route>
-                    <Route exact path="/">
+                    {/* <Route exact path="/">
                         <Redirect to={AppRoutes.landing} />
-                    </Route>
+                    </Route> */}
                 </IonRouterOutlet>
                 <IonTabBar
                     id='app-tab-bar'

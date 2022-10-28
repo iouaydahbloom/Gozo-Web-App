@@ -72,7 +72,7 @@ const Spinner: React.FC = () => {
     const { showModal: showSpinCondition } = useDialog({
         id: 'spinConditionModal',
         component: <SpinCondition
-            cost={getMySelectedProgram?.redemption?.spinCost ? getMySelectedProgram?.redemption?.spinCost : 100}
+            cost={getMySelectedProgram?.redemption?.spinCost}
             onSuccess={handlePlaying}
             dismiss={dismissSpinCondition} />
     });

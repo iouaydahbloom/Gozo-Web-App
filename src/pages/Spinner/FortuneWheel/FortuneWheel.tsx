@@ -94,8 +94,8 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     return trasformedData
   }
 
-  function randomIntFromInterval(min: number, max: number) { // min and max included 
-    return Math.floor(Math.random() * (max - min + 1) + min)
+  function randomIntFromInterval(min: number, max: number) { // interval between min + 1 and max - 1
+    return Math.floor(Math.random() * (max - min - 2) + (min + 1))
   }
 
   function setStopAngle(min: number, max: number) {

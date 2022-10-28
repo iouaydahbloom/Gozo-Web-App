@@ -47,7 +47,12 @@ const Spinner: React.FC = () => {
     const [prizesExpired, setPrizesExpired] = useState(false)
     const prizeInfo = "Spin now, list of prizes is reserved for 3 mins, if spinned after 3 mins the list of prizes might be different";
     const { walletAddress } = useDapp();
-    var displayMessages = ["Please wait a moment", "We are connecting to the Blockchain", "Please be patient", "Activating the wheel"];
+    var displayMessages = [
+        "Blockchain Node Connection. in Progress", 
+        "Creating Transparent Winning Algorithm", 
+        "Prizes Being Generated", 
+        "Spin Wheel Powering Up..."
+    ];
     var displayMessagesCounter = 0;
     const [displayMessagesInterval, setDisplayMessagesInterval] = useState<any>();
     const [displayMessage, setDisplayMessage] = useState(displayMessages[0]);
@@ -179,9 +184,11 @@ const Spinner: React.FC = () => {
     function handleMessageChange() {
         if (displayMessagesCounter >= displayMessages.length - 1) {
             displayMessagesCounter = displayMessages.length - 1;
+            setDisplayMessage(displayMessages[displayMessagesCounter]);
+            return 
         }
-        setDisplayMessage(displayMessages[displayMessagesCounter]);
         displayMessagesCounter++;
+        setDisplayMessage(displayMessages[displayMessagesCounter]);
     }
 
     function clearDisplayMessageInterval() {

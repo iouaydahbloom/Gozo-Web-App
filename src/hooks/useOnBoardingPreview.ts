@@ -4,17 +4,18 @@ import InternalStorage from "../helpers/InternalStorage";
 import { OnBoardingPreviewContext } from "../providers/OnBoardingPreviewProvider/onBoardingPreviewContext";
 
 const useOnBoardingPreview = () => {
-    const { isHidden, hide } = useContext(OnBoardingPreviewContext);
+    const { isHidden, hide, isReady } = useContext(OnBoardingPreviewContext);
 
     async function hideOnBoarding() {
-        if(isHidden) return
+        if (isHidden) return
         await InternalStorage.setInStorage(hiddenOnboardingScreen, true);
         hide();
     }
 
     return {
         isHidden,
-        hide: hideOnBoarding
+        isReady,
+        hide: hideOnBoarding,
     }
 }
 

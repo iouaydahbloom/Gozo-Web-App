@@ -24,12 +24,15 @@ import TabMenu from './components/menus/TabMenu/TabMenu';
 import { useContext, useEffect } from 'react';
 import { sessionContext } from './providers/SessionProvider/sessionContext';
 import { SplashScreen } from '@capacitor/splash-screen';
+import useOnBoardingPreview from './hooks/useOnBoardingPreview';
 
 setupIonicReact();
 
 const App: React.FC = () => {
 
   const { isSessionReady } = useContext(sessionContext);
+  const { isReady: isOnboardingStateReady } = useOnBoardingPreview();
+
 
   useEffect(() => {
     if (isSessionReady) SplashScreen.hide({
@@ -39,7 +42,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      {isSessionReady && <IonApp>
+      {(isSessionReady && isOnboardingStateReady) && <IonApp>
         <IonReactRouter>
           <TabMenu />
         </IonReactRouter>

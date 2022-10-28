@@ -11,16 +11,18 @@ interface Props {
 const OnBoardingPreviewProvider: React.FC<Props> = ({ children }) => {
 
   const [isHidden, setIsHidden] = useState<boolean>(false);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     InternalStorage.getFromStorage<boolean>(hiddenOnboardingScreen)
       .then(isHidden => {
-        setIsHidden(isHidden)
+        setIsHidden(isHidden);
+        setIsReady(true);
       });
   }, [])
 
   return (
-    <OnBoardingPreviewContext.Provider value={{ hide: () => setIsHidden(true), isHidden }}>
+    <OnBoardingPreviewContext.Provider value={{ hide: () => setIsHidden(true), isHidden, isReady }}>
       {children}
     </OnBoardingPreviewContext.Provider>
   )

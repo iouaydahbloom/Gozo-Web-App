@@ -1,15 +1,21 @@
 import { IonPage } from "@ionic/react"
 import SecondaryHeader from "../../components/headers/SecondaryHeader/SecondaryHeader"
 import PrimaryContainer from "../../components/layout/PrimaryContainer/PrimaryContainer"
+import DetailItem from "./DetailItem/DetailItem"
 
-const LoyaltyProgramHistoryDetails: React.FC = () => {
-  console.log("enteredd")
+interface Props {
+  details: any[]
+}
+
+const LoyaltyProgramHistoryDetails: React.FC<Props> = ({details}) => {
   return (
     <IonPage>
       <SecondaryHeader
         title='Transaction Details' />
       <PrimaryContainer >
-        LoyaltyProgramHistoryDetails
+        {details && details.map((detail) => {
+          return <DetailItem header={detail.header} text={detail.text}/>
+        })}
       </PrimaryContainer>
     </IonPage>
   )

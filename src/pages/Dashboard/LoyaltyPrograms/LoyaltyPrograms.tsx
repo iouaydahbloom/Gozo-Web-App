@@ -73,7 +73,7 @@ const LoyaltyPrograms = () => {
                 disconnectPrograms(selectedUserCurrencyIds)
                     .then(disconnected => {
                         if (disconnected) {
-                            presentSuccess('Programs successfuly disconnected');
+                            presentSuccess('Programs successfully disconnected');
                             switchButtons()
                             getPrograms();
                         }

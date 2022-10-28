@@ -1,5 +1,5 @@
 .header {
-    height: 100px;
+    height: 56px;
 
     .toolbar {
         display: flex;
@@ -11,6 +11,7 @@
 
         .icon {
             flex: 0.35;
+            align-self: baseline;
         }
 
         .text {

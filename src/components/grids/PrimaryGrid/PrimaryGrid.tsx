@@ -27,7 +27,7 @@ const PrimaryGrid: React.FC<Props> = ({ headers = [], data = [] }) => {
                 <div className={styles.body}>
                     {
                         data.map((obj, index) => (
-                            <div className={styles.bodyData} key={index} onClick={obj.onClick}>
+                            <div className={styles.bodyData} key={index} onClick={() => {}}>
                                 {Object.keys(obj).map((key, index) => (
                                     key !== 'onClick' &&
                                     <PrimaryTypography

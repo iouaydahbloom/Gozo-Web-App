@@ -1,9 +1,11 @@
 import { Deeplinks } from '@awesome-cordova-plugins/deeplinks';
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { gridOutline, personCircleOutline, walletOutline } from 'ionicons/icons';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Redirect, Route, useHistory } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
+import useAuthentication from '../../../hooks/useAuthentication';
+import useOnBoardingPreview from '../../../hooks/useOnBoardingPreview';
 import Account from '../../../pages/Account/Account';
 import AuthCallback from '../../../pages/Authentication/AuthCallback/AuthCallback';
 import Buy from '../../../pages/Buy/Buy';
@@ -15,15 +17,14 @@ import Spinner from '../../../pages/Spinner/Spinner';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
 import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
-import OnBoardingRoute from '../../routes/OnBoardingRoute/OnBoardingRoute';
-import ProtectedRoute from '../../routes/ProtectedRoute/ProtectedRoute';
-import PurePublicRoute from '../../routes/PurePublicRoute/PurePublicRoute';
 import styles from './tabMenu.module.scss';
 
 const TabMenu: React.FC = () => {
 
-    const { push } = useHistory();
+    const { push, replace } = useHistory();
     const spinnerBtnRef = useRef<any>(null);
+    const { isAuthenticated } = useAuthentication();
+    const { isHidden: isOnboardingHidden } = useOnBoardingPreview();
 
     useEffect(() => {
         const deeplinkSubscription = Deeplinks.route({
@@ -40,44 +41,58 @@ const TabMenu: React.FC = () => {
         }
     }, [])
 
-    return (
+    useEffect(() => {
+        if (isAuthenticated) {
+            isOnboardingHidden ? replace(AppRoutes.dashboard) : replace(AppRoutes.onBoarding);
+        } else {
+            replace(AppRoutes.landing);
+        }
+    }, [isAuthenticated])
+
+    const playButton = useMemo(() => (
+        <div
+            id='fab-button'
+            className={styles.floatingButton}
+            onClick={() => spinnerBtnRef.current.handleIonTabButtonClick()}>
+            <SpinIcon size='large' />
+        </div>
+    ), [spinnerBtnRef])
+
+    const tabRoutes = useMemo(() => (
         <>
             <IonTabs className={styles.tabsBar}>
                 <IonRouterOutlet>
-                    <ProtectedRoute exact path={AppRoutes.dashboard}>
+                    <Route exact path={AppRoutes.dashboard}>
                         <Dashboard />
-                    </ProtectedRoute>
-                    <ProtectedRoute exact path={AppRoutes.onBoarding}>
-                        <OnBoardingRoute>
-                            <OnBoarding />
-                        </OnBoardingRoute>
-                    </ProtectedRoute>
-                    <ProtectedRoute exact path={AppRoutes.account}>
+                    </Route>
+                    <Route exact path={AppRoutes.onBoarding}>
+                        <OnBoarding />
+                    </Route>
+                    <Route exact path={AppRoutes.account}>
                         <Account />
-                    </ProtectedRoute>
-                    <ProtectedRoute exact path={AppRoutes.transactionHistory}>
+                    </Route>
+                    <Route exact path={AppRoutes.transactionHistory}>
                         <TransactionHistory />
-                    </ProtectedRoute>
-                    <ProtectedRoute exact path={AppRoutes.reward}>
+                    </Route>
+                    <Route exact path={AppRoutes.reward}>
                         <Rewards />
-                    </ProtectedRoute>
-                    <ProtectedRoute exact path={AppRoutes.spinner}>
+                    </Route>
+                    <Route exact path={AppRoutes.spinner}>
                         <Spinner />
-                    </ProtectedRoute>
-                    <ProtectedRoute exact path={AppRoutes.buy}>
+                    </Route>
+                    <Route exact path={AppRoutes.buy}>
                         <Buy />
-                    </ProtectedRoute>
-                    <PurePublicRoute exact path={AppRoutes.landing}>
+                    </Route>
+                    <Route exact path={AppRoutes.landing}>
                         <Landing />
-                    </PurePublicRoute>
-                    <PurePublicRoute exact path={AppRoutes.authCallback}>
+                    </Route>
+                    <Route exact path={AppRoutes.authCallback}>
                         <AuthCallback />
-                    </PurePublicRoute>
+                    </Route>
                     <Route exact path="/">
                         <Redirect to={AppRoutes.landing} />
                     </Route>
                 </IonRouterOutlet>
-
                 <IonTabBar
                     id='app-tab-bar'
                     slot="bottom"
@@ -108,13 +123,12 @@ const TabMenu: React.FC = () => {
                 </IonTabBar>
 
             </IonTabs>
-            <div
-                id='fab-button'
-                className={styles.floatingButton}
-                onClick={() => spinnerBtnRef.current.handleIonTabButtonClick()}>
-                <SpinIcon size='large' />
-            </div>
+            {playButton}
         </>
+    ), [])
+
+    return (
+        <>{tabRoutes}</>
     )
 }
 

@@ -6,7 +6,6 @@ import PrimaryCheckbox from '../../components/inputs/PrimaryCheckbox/PrimaryChec
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryFooter from '../../components/layout/PrimaryFooter/PrimaryFooter';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
-import useAuthentication from '../../hooks/useAuthentication';
 import usePrimarySheet from '../../hooks/usePrimarySheet';
 import useTabMenuHidder from '../../hooks/useTabMenuHidder';
 import Authentication from '../Authentication/Authentication';
@@ -14,7 +13,6 @@ import styles from './landing.module.scss';
 
 const Landing: React.FC = () => {
     const [accepted, setAccepted] = useState(true);
-    const { login, isAuthenticating, authError } = useAuthentication();
     const { showModal: showAuthentication, dismissModal } = usePrimarySheet({
         component: Authentication,
         title: 'Email',

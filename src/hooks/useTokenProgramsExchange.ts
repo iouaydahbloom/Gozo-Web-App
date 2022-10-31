@@ -47,7 +47,7 @@ const useTokenProgramsExchange = () => {
             contractsAbi.erc20,
             'transferToOwner',
             [tokenQuantityInWei],
-            () => presentSuccess('Exchanged successfuly'),
+            () => presentSuccess('Exchanged successfully'),
             (error) => presentFailure(error.message)
         );
     }, [tokenQuantity])
@@ -92,7 +92,7 @@ const useTokenProgramsExchange = () => {
         setExchanging(true);
         run(cloudFunctionName.executeP2Texchange, { recipient: walletAddress, amount: programQuantity }, (result: any) => result as number, true)
             .then(result => {
-                if (result.isSuccess) presentSuccess('Exchanged successfuly');
+                if (result.isSuccess) presentSuccess('Exchanged successfully');
                 else presentFailure(result.errors?.errors[0].message ?? result.message);
             })
             .finally(() => setExchanging(false))

@@ -28,6 +28,7 @@ import useToast from '../../hooks/useToast';
 import { informationCircleOutline } from 'ionicons/icons';
 import PrimaryPopover from '../../components/popovers/PrimaryPopover/PrimaryPopover';
 import { useDapp } from '../../providers/DappProvider/DappProvider';
+import useMessagesInterval from '../../hooks/useMessagesInterval';
 
 const Spinner: React.FC = () => {
     const search = useSearchParams();
@@ -45,8 +46,15 @@ const Spinner: React.FC = () => {
     const { presentInfo } = useToast(5000);
     const { addListener } = useBlockchainContractExecution();
     const [prizesExpired, setPrizesExpired] = useState(false)
-    const prizeInfo = "Spin now, list of prizes is reserved for 3 mins, if spinned after 3 mins the list of prizes might be different"
+    const prizeInfo = "Spin now, list of prizes is reserved for 3 mins, if spinned after 3 mins the list of prizes might be different";
     const { walletAddress } = useDapp();
+    var displayMessages = [
+        "Blockchain Node Connection. in Progress", 
+        "Creating Transparent Winning Algorithm", 
+        "Prizes Being Generated", 
+        "Spin Wheel Powering Up..."
+    ];
+    const { loadingDisplayMessage, setDisplayMessagesInterval, clearDisplayMessageInterval} = useMessagesInterval(displayMessages)
 
     const getMySelectedProgram = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0 && !!loyaltyProgram) {
@@ -63,7 +71,7 @@ const Spinner: React.FC = () => {
     const { showModal: showSpinCondition } = useDialog({
         id: 'spinConditionModal',
         component: <SpinCondition
-            cost={getMySelectedProgram?.redemption?.spinCost ? getMySelectedProgram?.redemption?.spinCost : 100}
+            cost={getMySelectedProgram?.redemption?.spinCost}
             onSuccess={handlePlaying}
             dismiss={dismissSpinCondition} />
     });
@@ -115,6 +123,7 @@ const Spinner: React.FC = () => {
         // console.log("listening to event prizeSelected with id: ${0}, amount: ${1}, playerAddress: ${2}, gameToken: ${3}", id, amount, playerAddress, gameToken);
         console.log("listening to event prizeSelected with id:", id)
         if (playerAddress.toLocaleLowerCase() == walletAddress?.toLocaleLowerCase()) {
+            clearDisplayMessageInterval()
             setSelectedPrizeId(id)
         }
     }
@@ -128,6 +137,7 @@ const Spinner: React.FC = () => {
     }
 
     async function handlePlaying() {
+        setDisplayMessagesInterval()
         if (prizesExpired) await getPrizes()
         await play(loyaltyProgram?.brand?.key ?? '', loyaltyProgram?.partnerId ?? '');
     }
@@ -168,6 +178,19 @@ const Spinner: React.FC = () => {
         const lp = myLoyaltyPrograms.find(item => item?.currency?.loyaltyCurrencyName === name)
         if (lp) setLoyaltyProgramId(lp?.currency?.programId)
     }
+
+    useEffect(() => {
+        if (selectedPrizeId) {
+            clearDisplayMessageInterval();
+        }
+    }, [selectedPrizeId])
+
+    useEffect(() => {
+        if (!isPlaying) {
+            clearDisplayMessageInterval();
+        }
+    }, [isPlaying])
+
 
     useIonViewWillEnter(() => {
         addListener(
@@ -222,7 +245,7 @@ const Spinner: React.FC = () => {
                                         <ParticlesLoader />
                                         <PrimaryTypography
                                             customClassName={styles.loaderOverlay}>
-                                            Please wait one moment while we are connecting with blockchain to activate the Spin wheel...
+                                            {loadingDisplayMessage}
                                         </PrimaryTypography>
                                     </div>
                                     :

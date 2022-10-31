@@ -5,6 +5,8 @@ export const AppRoutes = {
     home: '/home',
     account: '/account',
     transactionHistory: '/transactionHistory',
+    loyaltyProgramHistoryDetails: '/transactionHistory/loyaltyDetails',
+    tokenHistoryDetails: '/transactionHistory/tokenDetails',
     authCallback: '/authCallback',
     spinner: '/spinner',
     reward: '/reward',

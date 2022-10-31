@@ -1,8 +1,8 @@
-import { Deeplinks } from '@awesome-cordova-plugins/deeplinks';
-import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
+// import { Deeplinks } from '@awesome-cordova-plugins/deeplinks';
+import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, useIonRouter } from '@ionic/react';
 import { gridOutline, personCircleOutline, walletOutline } from 'ionicons/icons';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { Redirect, Route, useHistory } from 'react-router';
+import { Redirect, Route, useLocation } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
 import useAuthentication from '../../../hooks/useAuthentication';
 import useOnBoardingPreview from '../../../hooks/useOnBoardingPreview';
@@ -21,33 +21,48 @@ import styles from './tabMenu.module.scss';
 
 const TabMenu: React.FC = () => {
 
-    const { push, replace } = useHistory();
+    const { push } = useIonRouter();
     const spinnerBtnRef = useRef<any>(null);
     const { isAuthenticated } = useAuthentication();
     const { isHidden: isOnboardingHidden } = useOnBoardingPreview();
+    const { pathname } = useLocation();
+
+    // useEffect(() => {
+    //     const deeplinkSubscription = Deeplinks.route({
+    //         '/landing': Landing,
+    //         '/authCallback': AuthCallback
+    //     }).subscribe(match => {
+    //         push({ pathname: match.$link.path, search: match.$link.queryString })
+    //     }, nomatch => {
+    //         console.error('Got a deeplink that didn\'t match', nomatch);
+    //     })
+
+    //     return () => {
+    //         deeplinkSubscription.unsubscribe();
+    //     }
+    // }, [])
+
+    function handleRoutesProtections() {
+        if (pathname == AppRoutes.landing && isAuthenticated && isOnboardingHidden) {
+            setTimeout(() => {
+                push(AppRoutes.dashboard)
+            }, 1000);
+        }
+        else if (pathname == AppRoutes.landing && isAuthenticated) {
+            setTimeout(() => {
+                push(AppRoutes.onBoarding)
+            }, 1000);
+        }
+        else if (pathname !== AppRoutes.landing && !isAuthenticated) {
+            setTimeout(() => {
+                push(AppRoutes.landing)
+            }, 1000);
+        }
+    }
 
     useEffect(() => {
-        const deeplinkSubscription = Deeplinks.route({
-            '/landing': Landing,
-            '/authCallback': AuthCallback
-        }).subscribe(match => {
-            push({ pathname: match.$link.path, search: match.$link.queryString })
-        }, nomatch => {
-            console.error('Got a deeplink that didn\'t match', nomatch);
-        })
-
-        return () => {
-            deeplinkSubscription.unsubscribe();
-        }
-    }, [])
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            isOnboardingHidden ? replace(AppRoutes.dashboard) : replace(AppRoutes.onBoarding);
-        } else {
-            replace(AppRoutes.landing);
-        }
-    }, [isAuthenticated])
+        handleRoutesProtections();
+    }, [isAuthenticated, isOnboardingHidden, pathname])
 
     const playButton = useMemo(() => (
         <div
@@ -89,9 +104,7 @@ const TabMenu: React.FC = () => {
                     <Route exact path={AppRoutes.authCallback}>
                         <AuthCallback />
                     </Route>
-                    <Route exact path="/">
-                        <Redirect to={AppRoutes.landing} />
-                    </Route>
+                    <Redirect exact from='/' to={AppRoutes.landing} />
                 </IonRouterOutlet>
                 <IonTabBar
                     id='app-tab-bar'

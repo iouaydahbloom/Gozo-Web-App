@@ -1,6 +1,6 @@
 .container {
     .grid {
-        padding-top: 30px;
+        padding-top: 0px;
 
         .header {
             background: var(--ion-color-tertiary);
@@ -30,7 +30,10 @@
                 .text {
                     flex: 1;
                     text-align: center;
+                    white-space: nowrap;
                     overflow: hidden;
+                    text-overflow: ellipsis;
+                    padding: 0 5px
                 }
             }
         }

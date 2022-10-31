@@ -49,7 +49,7 @@ const OnBoarding: React.FC = () => {
                         <OnBoardingSlide
                             image='assets/icon/onboarding-3.svg'
                             title='BlockChain-Based Rewards with Gozo token'
-                            description='Consolidate and Exchange all your loyalty reward points from various providers into a single wallet.' />
+                            description='' />
                     ]}
                 />
             </PrimaryContainer>

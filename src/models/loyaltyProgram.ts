@@ -59,7 +59,7 @@ export class UserLoyaltyProgram implements AppModel {
             new Date(),
             '',
             '',
-            new Redemption(0, false)
+            new Redemption(100, false)
         )
     }
 

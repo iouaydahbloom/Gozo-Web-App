@@ -28,6 +28,7 @@ import useToast from '../../hooks/useToast';
 import { informationCircleOutline } from 'ionicons/icons';
 import PrimaryPopover from '../../components/popovers/PrimaryPopover/PrimaryPopover';
 import { useDapp } from '../../providers/DappProvider/DappProvider';
+import useMessagesInterval from '../../hooks/useMessagesInterval';
 
 const Spinner: React.FC = () => {
     const search = useSearchParams();
@@ -53,9 +54,7 @@ const Spinner: React.FC = () => {
         "Prizes Being Generated", 
         "Spin Wheel Powering Up..."
     ];
-    var displayMessagesCounter = 0;
-    const [displayMessagesInterval, setDisplayMessagesInterval] = useState<any>();
-    const [displayMessage, setDisplayMessage] = useState(displayMessages[0]);
+    const { loadingDisplayMessage, setDisplayMessagesInterval, clearDisplayMessageInterval} = useMessagesInterval(displayMessages)
 
     const getMySelectedProgram = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0 && !!loyaltyProgram) {
@@ -124,8 +123,7 @@ const Spinner: React.FC = () => {
         // console.log("listening to event prizeSelected with id: ${0}, amount: ${1}, playerAddress: ${2}, gameToken: ${3}", id, amount, playerAddress, gameToken);
         console.log("listening to event prizeSelected with id:", id)
         if (playerAddress.toLocaleLowerCase() == walletAddress?.toLocaleLowerCase()) {
-            clearInterval(displayMessagesInterval);
-            displayMessagesCounter = 0;
+            clearDisplayMessageInterval()
             setSelectedPrizeId(id)
         }
     }
@@ -139,7 +137,7 @@ const Spinner: React.FC = () => {
     }
 
     async function handlePlaying() {
-        setDisplayMessagesInterval(setInterval(handleMessageChange, 5000))
+        setDisplayMessagesInterval()
         if (prizesExpired) await getPrizes()
         await play(loyaltyProgram?.brand?.key ?? '', loyaltyProgram?.partnerId ?? '');
     }
@@ -179,22 +177,6 @@ const Spinner: React.FC = () => {
     const handleSelectedValue = (name: string) => {
         const lp = myLoyaltyPrograms.find(item => item?.currency?.loyaltyCurrencyName === name)
         if (lp) setLoyaltyProgramId(lp?.currency?.programId)
-    }
-
-    function handleMessageChange() {
-        if (displayMessagesCounter >= displayMessages.length - 1) {
-            displayMessagesCounter = displayMessages.length - 1;
-            setDisplayMessage(displayMessages[displayMessagesCounter]);
-            return 
-        }
-        displayMessagesCounter++;
-        setDisplayMessage(displayMessages[displayMessagesCounter]);
-    }
-
-    function clearDisplayMessageInterval() {
-        clearInterval(displayMessagesInterval)
-        displayMessagesCounter = 0;
-        setDisplayMessage(displayMessages[displayMessagesCounter]);
     }
 
     useEffect(() => {
@@ -263,7 +245,7 @@ const Spinner: React.FC = () => {
                                         <ParticlesLoader />
                                         <PrimaryTypography
                                             customClassName={styles.loaderOverlay}>
-                                            {displayMessage}
+                                            {loadingDisplayMessage}
                                         </PrimaryTypography>
                                     </div>
                                     :

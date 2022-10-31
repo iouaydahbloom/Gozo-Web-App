@@ -18,6 +18,7 @@ import { AssetMode } from '../../../constants/assetsMode';
 import { currencySettingsContext } from '../../../providers/CurrencySettingsProvider/currencySettingsContext';
 import usePrimarySheet from '../../../hooks/usePrimarySheet';
 import SecondaryButtonsGroup from '../../../components/buttons/SecondaryButtonsGroup/SecondaryButtonsGroup';
+import { primaryContainerContext } from '../../../providers/PrimaryContainerProvider/primaryContainerContext';
 
 const LoyaltyPrograms = () => {
     const { fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
@@ -25,6 +26,8 @@ const LoyaltyPrograms = () => {
     const [isRemoving, setIsRemoving] = useState(false)
     const { getUserLoyaltyPrograms } = useAssets();
     const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
+    //const { isRefreshing } = useContext(primaryContainerContext);
+
     const { showModal: showManager } = usePrimarySheet({
         title: 'Partners',
         component: LoyaltyProgramsManager,
@@ -49,8 +52,13 @@ const LoyaltyPrograms = () => {
         getPrograms();
     }, [])
 
-    function getPrograms() {
-        getUserLoyaltyPrograms()
+    // useEffect(() => {
+    //     debugger
+    //     if (isRefreshing) getPrograms();
+    // }, [isRefreshing])
+
+    async function getPrograms() {
+        return getUserLoyaltyPrograms()
             .then(programs => {
                 setLoyaltyPrograms(programs);
             })

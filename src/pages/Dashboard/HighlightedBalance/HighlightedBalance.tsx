@@ -21,12 +21,17 @@ const HighlightedBalance: React.FC<Props> = ({ mode }) => {
     const { gozoToken, gozoLoyaltyMembership, fetchToken, fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [asset, setAsset] = useState<Asset>();
 
+    function getMetadata() {
+        return mode == AssetMode.token ? fetchToken() : fetchGozoLoyaltyMembership();
+    }
+
     useEffect(() => {
-        if (mode == AssetMode.token) {
-            fetchToken();
-        } else if (mode == AssetMode.loyaltyPoint) {
-            fetchGozoLoyaltyMembership()
-        }
+        getMetadata();
+        // if (mode == AssetMode.token) {
+        //     fetchToken();
+        // } else if (mode == AssetMode.loyaltyPoint) {
+        //     fetchGozoLoyaltyMembership()
+        // }
     }, [mode])
 
     useEffect(() => {
@@ -49,7 +54,7 @@ const HighlightedBalance: React.FC<Props> = ({ mode }) => {
 
     return (
         <div className={styles.container} >
-            <img src='/assets/image/gozo-element.png' className={styles.img}/>
+            <img src='/assets/image/gozo-element.png' className={styles.img} />
             <div className={styles.innerContainer}>
                 <IonBadge className={styles.badge}>
                     <PrimaryTypography size='xxxl'> {asset ? asset.balance : 0}</PrimaryTypography>

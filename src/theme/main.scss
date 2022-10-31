@@ -95,6 +95,11 @@ ion-page {
   }
 }
 
+//Pull to refresh styles
+.lds-ellipsis div {
+  background: var(--ion-color-light) !important;
+}
+
 /** hide google social login in web3Auth **/
 // .w3ajs-socials-adapters {
 //     li {

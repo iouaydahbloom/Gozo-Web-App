@@ -12,9 +12,9 @@ const useMemberShip = (loyaltyCurrency?: string) => {
     const { isInitialized } = useMoralis();
     const { isAuthenticated } = useAuthentication();
 
-    function fetchMembership() {
-        if (!loyaltyCurrency || !isAuthenticated) return;
-        run(cloudFunctionName.members,
+    async function fetchMembership(): Promise<any> {
+        if (!loyaltyCurrency || !isAuthenticated) return Promise.resolve(null);
+        return run(cloudFunctionName.members,
             { ca_loyalty_currency: loyaltyCurrency },
             (result: LoyaltyMemberDTO) => LoyaltyMember.getFromDTO(result),
             true)

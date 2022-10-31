@@ -1,7 +1,6 @@
-// import { Deeplinks } from '@awesome-cordova-plugins/deeplinks';
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, useIonRouter } from '@ionic/react';
 import { gridOutline, personCircleOutline, walletOutline } from 'ionicons/icons';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Redirect, Route, useLocation } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
 import useAuthentication from '../../../hooks/useAuthentication';
@@ -18,21 +17,7 @@ import Spinner from '../../../pages/Spinner/Spinner';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
 import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
-import PrimaryContainer from '../../layout/PrimaryContainer/PrimaryContainer';
-import PageStopper from '../../sections/PageStopper/PageStopper';
 import styles from './tabMenu.module.scss';
-
-const NoNetworkConnection: React.FC = () => {
-    return (
-        <PrimaryContainer className='ion-text-center ion-padding' >
-            <PageStopper
-                title='OOPS! No Internet Connection'
-                description='make sure wifi or cellular data is turned on'
-                logoUrl='assets/image/no-internet.svg'
-            />
-        </PrimaryContainer>
-    )
-}
 
 const TabMenu: React.FC = () => {
 
@@ -43,22 +28,7 @@ const TabMenu: React.FC = () => {
     const { pathname } = useLocation();
     useNetwork();
 
-    // useEffect(() => {
-    //     const deeplinkSubscription = Deeplinks.route({
-    //         '/landing': Landing,
-    //         '/authCallback': AuthCallback
-    //     }).subscribe(match => {
-    //         push({ pathname: match.$link.path, search: match.$link.queryString })
-    //     }, nomatch => {
-    //         console.error('Got a deeplink that didn\'t match', nomatch);
-    //     })
-
-    //     return () => {
-    //         deeplinkSubscription.unsubscribe();
-    //     }
-    // }, [])
-
-    function handleRoutesProtections() {
+    const handleRoutesProtections = useCallback(() => {
         if (pathname == AppRoutes.landing && isAuthenticated && isOnboardingHidden) {
             setTimeout(() => {
                 push(AppRoutes.dashboard)
@@ -74,7 +44,7 @@ const TabMenu: React.FC = () => {
                 push(AppRoutes.landing)
             }, 1000);
         }
-    }
+    }, [pathname, isAuthenticated, isOnboardingHidden])
 
     useEffect(() => {
         handleRoutesProtections();

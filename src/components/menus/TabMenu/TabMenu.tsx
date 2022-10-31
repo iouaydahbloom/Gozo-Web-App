@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { Redirect, Route, useLocation } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
 import useAuthentication from '../../../hooks/useAuthentication';
+import useNetwork from '../../../hooks/useNetwork';
 import useOnBoardingPreview from '../../../hooks/useOnBoardingPreview';
 import Account from '../../../pages/Account/Account';
 import AuthCallback from '../../../pages/Authentication/AuthCallback/AuthCallback';
@@ -17,7 +18,21 @@ import Spinner from '../../../pages/Spinner/Spinner';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
 import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
+import PrimaryContainer from '../../layout/PrimaryContainer/PrimaryContainer';
+import PageStopper from '../../sections/PageStopper/PageStopper';
 import styles from './tabMenu.module.scss';
+
+const NoNetworkConnection: React.FC = () => {
+    return (
+        <PrimaryContainer className='ion-text-center ion-padding' >
+            <PageStopper
+                title='OOPS! No Internet Connection'
+                description='make sure wifi or cellular data is turned on'
+                logoUrl='assets/image/no-internet.svg'
+            />
+        </PrimaryContainer>
+    )
+}
 
 const TabMenu: React.FC = () => {
 
@@ -26,6 +41,7 @@ const TabMenu: React.FC = () => {
     const { isAuthenticated } = useAuthentication();
     const { isHidden: isOnboardingHidden } = useOnBoardingPreview();
     const { pathname } = useLocation();
+    useNetwork();
 
     // useEffect(() => {
     //     const deeplinkSubscription = Deeplinks.route({

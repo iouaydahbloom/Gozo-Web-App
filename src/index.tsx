@@ -10,25 +10,28 @@ import MagicAuthProvider from './providers/MagicAuthProvider/MagicAuthProvider';
 import SessionProvider from './providers/SessionProvider/SessionProvider';
 import { DappProvider } from './providers/DappProvider/DappProvider';
 import OnBoardingPreviewProvider from './providers/OnBoardingPreviewProvider/OnBoardingPreviewProvider';
+import NetworkProvider from './providers/networkProvider/NetworkProvider';
 require('dotenv').config();
 
 ReactDOM.render(
   <React.StrictMode>
-    <OnBoardingPreviewProvider>
-      <MoralisProvider
-        appId={appConfig.moralisAppId}
-        serverUrl={appConfig.moralisServerUrl}>
-        <MagicAuthProvider>
-          <SessionProvider>
-            <DappProvider>
-              <CurrencySettingsProvider>
-                <App />
-              </CurrencySettingsProvider>
-            </DappProvider>
-          </SessionProvider>
-        </MagicAuthProvider>
-      </MoralisProvider>
-    </OnBoardingPreviewProvider>
+    <NetworkProvider>
+      <OnBoardingPreviewProvider>
+        <MoralisProvider
+          appId={appConfig.moralisAppId}
+          serverUrl={appConfig.moralisServerUrl}>
+          <MagicAuthProvider>
+            <SessionProvider>
+              <DappProvider>
+                <CurrencySettingsProvider>
+                  <App />
+                </CurrencySettingsProvider>
+              </DappProvider>
+            </SessionProvider>
+          </MagicAuthProvider>
+        </MoralisProvider>
+      </OnBoardingPreviewProvider>
+    </NetworkProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )

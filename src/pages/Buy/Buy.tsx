@@ -1,16 +1,16 @@
 import { IonPage } from '@ionic/react'
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer'
-import UnderConstruction from '../../components/sections/UnderConstruction/UnderConstruction';
-import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
-import styles from './buy.module.scss'
+import PageStopper from '../../components/sections/PageStopper/PageStopper';
 
 const Buy: React.FC = () => {
     return (
         <IonPage>
             <PrimaryContainer className='ion-text-center ion-padding' >
-                <UnderConstruction 
+                <PageStopper
+                    title='Coming Soon!'
                     description='We are in the process of creating this page for you. Don’t miss out on our buy section'
-                    />
+                    logoUrl='assets/image/coming-soon.svg'
+                />
             </PrimaryContainer>
         </IonPage>
     )

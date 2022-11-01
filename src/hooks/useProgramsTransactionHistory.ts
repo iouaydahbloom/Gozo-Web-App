@@ -6,7 +6,7 @@ import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import { currencySettingsContext } from "../providers/CurrencySettingsProvider/currencySettingsContext";
 import useCloud from "./useCloud";
 
-const useTransactionHistory = (transaction_id?: string) => {
+const useProgramsTransactionHistory = (transaction_id?: string) => {
     const { run } = useCloud();
     const { gozoLoyalty } = useContext(currencySettingsContext);
     const [historyFields, setHistoryFields] = useState<LoyaltyMemberHistory[]>([]);
@@ -61,4 +61,4 @@ const useTransactionHistory = (transaction_id?: string) => {
     }
 }
 
-export default useTransactionHistory
+export default useProgramsTransactionHistory

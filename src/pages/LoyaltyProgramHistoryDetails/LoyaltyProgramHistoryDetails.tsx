@@ -3,7 +3,7 @@ import SecondaryHeader from "../../components/headers/SecondaryHeader/SecondaryH
 import PrimaryContainer from "../../components/layout/PrimaryContainer/PrimaryContainer"
 import PageLoader from "../../components/loaders/PageLoader/PageLoader"
 import useSearchParams from "../../hooks/useSearchParams"
-import useTransactionHistory from "../../hooks/useTransactionHistory"
+import useProgramsTransactionHistory from "../../hooks/useProgramsTransactionHistory"
 import { LoyaltyMemberHistory } from "../../models/loyaltyMember"
 import DetailItem from "../Common/DetailItem/DetailItem"
 
@@ -11,7 +11,7 @@ import DetailItem from "../Common/DetailItem/DetailItem"
 const LoyaltyProgramHistoryDetails: React.FC = () => {
   const search = useSearchParams();
   const id = search.get('transaction_id')
-  const { historyField, isLoadingHistory } = useTransactionHistory(id ?? '')
+  const { historyField, isLoadingHistory } = useProgramsTransactionHistory(id ?? '')
 
   const keys = [
     {key: 'amount', label: 'Amount'},

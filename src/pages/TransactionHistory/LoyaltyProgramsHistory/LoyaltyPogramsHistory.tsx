@@ -3,12 +3,12 @@ import PrimaryGrid from '../../../components/grids/PrimaryGrid/PrimaryGrid';
 import { formatDate } from '../../../helpers/dateManagment';
 import { useHistory } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
-import useTransactionHistory from '../../../hooks/useTransactionHistory';
+import useProgramsTransactionHistory from '../../../hooks/useProgramsTransactionHistory';
 import PageLoader from '../../../components/loaders/PageLoader/PageLoader';
 
 const LoyaltyPogramsHistory = () => {
     const { push } = useHistory();
-    const { isLoadingHistory, historyFields } = useTransactionHistory()
+    const { isLoadingHistory, historyFields } = useProgramsTransactionHistory()
 
     return (
         <div className={styles.container}>

@@ -11,9 +11,11 @@ import AuthCallback from '../../../pages/Authentication/AuthCallback/AuthCallbac
 import Buy from '../../../pages/Buy/Buy';
 import Dashboard from '../../../pages/Dashboard/Dashboard';
 import Landing from '../../../pages/Landing/Landing';
+import LoyaltyProgramHistoryDetails from '../../../pages/LoyaltyProgramHistoryDetails/LoyaltyProgramHistoryDetails';
 import OnBoarding from '../../../pages/OnBoarding/OnBoarding';
 import Rewards from '../../../pages/Reward/Reward';
 import Spinner from '../../../pages/Spinner/Spinner';
+import TokenHistoryDetails from '../../../pages/TokenHistoryDetails/TokenHistoryDetails';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
 import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
@@ -74,6 +76,12 @@ const TabMenu: React.FC = () => {
                     </Route>
                     <Route exact path={AppRoutes.transactionHistory}>
                         <TransactionHistory />
+                    </Route>
+                    <Route exact path={AppRoutes.loyaltyProgramHistoryDetails}>
+                        <LoyaltyProgramHistoryDetails />
+                    </Route>
+                    <Route exact path={AppRoutes.tokenHistoryDetails}>
+                        <TokenHistoryDetails />
                     </Route>
                     <Route exact path={AppRoutes.reward}>
                         <Rewards />

@@ -1,7 +1,5 @@
 import { IonContent } from '@ionic/react'
-import React, { ReactNode, useContext } from 'react';
-import { primaryContainerContext } from '../../../providers/PrimaryContainerProvider/primaryContainerContext';
-import PrimaryContainerProvider from '../../../providers/PrimaryContainerProvider/PrimaryContainerProvider';
+import React, { ReactNode } from 'react';
 import PageRefresher from '../../PageRefresher/PageRefresher';
 import styles from './primaryContainer.module.css';
 

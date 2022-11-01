@@ -1,17 +1,32 @@
 .rewardListingItem {
-    --background: var(--ion-color-medium);
-    --color: var(--ion-color-light);
-    --border-color: var(--ion-color-medium-light);
-    --inner-padding-start: 0;
-    --inner-padding-end: 0;
-    --padding-start: 0;
-    --padding-end: 0;
+    background: var(--ion-color-medium);
+    color: var(--ion-color-light);
+    border-bottom: 1px solid var(--ion-color-medium-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 0;
+    margin: 0 16px;
 
-    .prizeImage {
-        width: 30px;
+    .imageWrapper {
+        flex: 0.3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .prizeImage {
+            width: 30px;
+        }
     }
 
     .textWrapper {
-        text-align: justify;
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .dateWrapper {
+        flex: 0.7;
     }
 }

@@ -10,6 +10,7 @@ const useERC20Assets = (chain?: string) => {
   const { isInitialized } = useMoralis();
   const { walletAddress, chainId, defaultTokenMetadata } = useDapp();
   const [assets, setAssets] = useState<ERC20Asset[]>();
+  const [isLoadingAssets, setIsLoadingAssets] = useState(false);
 
   useEffect(() => {
     if (isInitialized) {
@@ -18,7 +19,8 @@ const useERC20Assets = (chain?: string) => {
   }, [isInitialized, chainId, walletAddress]);
 
   const fetchERC20Assets = useCallback(async () => {
-    if (!walletAddress) return [];
+    if (!walletAddress) return [] as ERC20Asset[];
+    setIsLoadingAssets(true);
 
     return await account
       .getTokenBalances({
@@ -27,11 +29,13 @@ const useERC20Assets = (chain?: string) => {
       })
       .then((erc20Tokens) => {
         setAssets(erc20Tokens);
+        return erc20Tokens;
       })
       .catch((e) => {
         console.log(e.message);
         return [];
       })
+      .finally(() => setIsLoadingAssets(false))
   }, [walletAddress, chainId, chain])
 
   const defaultAsset = useMemo(() => {
@@ -51,7 +55,12 @@ const useERC20Assets = (chain?: string) => {
         defaultTokenMetadata.thumbnail) : null;
   }, [defaultTokenMetadata, assets])
 
-  return { fetchERC20Assets, assets, defaultAsset }
+  return {
+    fetchERC20Assets,
+    assets,
+    defaultAsset,
+    isLoadingAssets
+  }
 }
 
 export default useERC20Assets;

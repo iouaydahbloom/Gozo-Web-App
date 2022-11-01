@@ -14,13 +14,14 @@ interface IProps {
 const SectionLoaderComponent: React.FC<IProps> = ({
     text = 'Please wait...',
     type = 'block',
-    spinnerName = 'circles',
+    spinnerName = 'crescent',
     color = 'primary',
     className
 }) => {
     return (
         <div className={`${styles.container}  ${type} ${className}`}>
             <IonSpinner name={spinnerName} color={color} />
+            <br />
             <PrimaryTypography customClassName={styles.description}>
                 {text}
             </PrimaryTypography>

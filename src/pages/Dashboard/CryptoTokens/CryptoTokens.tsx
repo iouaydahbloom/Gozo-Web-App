@@ -1,14 +1,13 @@
 import { IonIcon } from "@ionic/react";
 import { arrowDownOutline, arrowUpOutline, swapHorizontalOutline } from "ionicons/icons";
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 import { useMoralis } from "react-moralis";
 import PrimaryButtonsGroup from "../../../components/buttons/PrimaryButtonsGroup/PrimaryButtonsGroup";
+import SectionLoader from "../../../components/loaders/section-loader/SectionLoader";
 import PrimaryTypography from "../../../components/typography/PrimaryTypography/PrimaryTypography";
 import { AssetMode } from "../../../constants/assetsMode";
-import useERC20Assets from "../../../hooks/useERC20Assets";
 import usePrimarySheet from "../../../hooks/usePrimarySheet";
 import { ERC20Asset } from "../../../models/assets/ERC20Asset";
-import { currencySettingsContext } from "../../../providers/CurrencySettingsProvider/currencySettingsContext";
 import ReceiveCrypto from "../../ReceiveCrypto/ReceiveCrypto";
 import SendCrypto from "../../SendCrypto/SendCrypto";
 import Swap from "../../Swap/Swap";
@@ -16,14 +15,13 @@ import CryptoTokenItem from "./CryptoTokenItem/CryptoTokenItem";
 import styles from './cryptoTokens.module.scss';
 
 interface Props {
-    chain?: string,
-    setToken?: (item: any) => any
+    assets?: ERC20Asset[],
+    getAssets: () => Promise<ERC20Asset[]>,
+    refreshDefaultToken: () => Promise<any>,
+    isLoading: boolean
 }
 
-const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
-
-    const { assets, fetchERC20Assets } = useERC20Assets(chain);
-    const { fetchToken } = useContext(currencySettingsContext);
+const CryptoTokens: React.FC<Props> = ({ assets = [], getAssets, refreshDefaultToken, isLoading }) => {
 
     const { Moralis } = useMoralis();
     const { showModal: showSwap } = usePrimarySheet({
@@ -32,8 +30,8 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
         componentProps: { mode: AssetMode.token },
         id: 'swapModal',
         onDismiss: () => {
-            fetchToken();
-            fetchERC20Assets();
+            refreshDefaultToken();
+            getAssets();
         }
     });
 
@@ -42,8 +40,8 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
         component: SendCrypto,
         id: 'sendCryptoModal',
         onDismiss: () => {
-            fetchToken();
-            fetchERC20Assets();
+            refreshDefaultToken();
+            getAssets();
         }
     });
 
@@ -55,7 +53,7 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
 
     const renderItem = useCallback((item: ERC20Asset, index: number) => {
         return (
-            <div key={`token_${index}`} onClick={() => (setToken ? setToken(item) : null)}>
+            <div key={`token_${index}`}>
                 <CryptoTokenItem
                     name={item.name}
                     logo={item.logo ?? ''}
@@ -64,7 +62,7 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
                 />
             </div>
         )
-    }, [chain])
+    }, [])
 
     return (
         <div className={styles.container}>
@@ -78,13 +76,15 @@ const CryptoTokens: React.FC<Props> = ({ chain, setToken }) => {
                 />
             </div>
             {
-                assets && assets.length > 0 ?
-                    <>
-                        {assets.map((asset, index) => {
-                            return renderItem(asset, index)
-                        })}
-                    </> :
-                    <PrimaryTypography customClassName={styles.noDataContainer}>No Tokens in your wallet</PrimaryTypography>
+                isLoading ?
+                    <SectionLoader /> :
+                    assets && assets.length > 0 ?
+                        <>
+                            {assets.map((asset, index) => {
+                                return renderItem(asset, index)
+                            })}
+                        </> :
+                        <PrimaryTypography customClassName={styles.noDataContainer}>No Tokens in your wallet</PrimaryTypography>
             }
         </div>
     )

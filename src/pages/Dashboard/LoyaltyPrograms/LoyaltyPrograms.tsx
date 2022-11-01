@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
 import { UserLoyaltyProgram } from '../../../models/loyaltyProgram';
-import useAssets from '../../../hooks/useAssets';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import { IonIcon } from '@ionic/react';
 import LoyaltyProgramsManager from './LoyaltyProgramsManager/LoyaltyProgramsManager';
@@ -18,13 +17,19 @@ import { AssetMode } from '../../../constants/assetsMode';
 import { currencySettingsContext } from '../../../providers/CurrencySettingsProvider/currencySettingsContext';
 import usePrimarySheet from '../../../hooks/usePrimarySheet';
 import SecondaryButtonsGroup from '../../../components/buttons/SecondaryButtonsGroup/SecondaryButtonsGroup';
+import SectionLoader from '../../../components/loaders/section-loader/SectionLoader';
 
-const LoyaltyPrograms = () => {
+interface Props {
+    programs: UserLoyaltyProgram[],
+    getPrograms: () => Promise<UserLoyaltyProgram[]>,
+    isLoading: boolean
+}
+
+const LoyaltyPrograms: React.FC<Props> = ({ programs, getPrograms, isLoading }) => {
     const { fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [selectedUserCurrencyIds, setSelectedUserCurrencyIds] = useState<string[]>([]);
-    const [isRemoving, setIsRemoving] = useState(false)
-    const { getUserLoyaltyPrograms } = useAssets();
-    const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
+    const [isRemoving, setIsRemoving] = useState(false);
+
     const { showModal: showManager } = usePrimarySheet({
         title: 'Partners',
         component: LoyaltyProgramsManager,
@@ -44,17 +49,6 @@ const LoyaltyPrograms = () => {
     const { disconnectPrograms } = useLoyaltyPrograms();
     const { presentSuccess, presentInfo } = useToast();
     const { confirm } = useConfirmation();
-
-    useEffect(() => {
-        getPrograms();
-    }, [])
-
-    function getPrograms() {
-        getUserLoyaltyPrograms()
-            .then(programs => {
-                setLoyaltyPrograms(programs);
-            })
-    }
 
     function switchButtons() {
         setIsRemoving(prev => !prev)
@@ -96,45 +90,47 @@ const LoyaltyPrograms = () => {
     }
 
     return (
-        <div className={`${styles.container} ${loyaltyPrograms.length == 0 ? styles.empty : ''}`}>
+        <div className={`${styles.container} ${programs.length == 0 ? styles.empty : ''}`}>
             {
-                loyaltyPrograms.length > 0 ?
-                    <>
-                        <div className={styles.actions}>
-                            {isRemoving ?
-                                <SecondaryButtonsGroup
-                                    buttons={[
-                                        { title: "Cancel", onClick: switchButtons },
-                                        { title: "Remove", fill: 'outline', onClick: disconnectSelected }
-                                    ]}
-                                />
-                                :
-                                <PrimaryButtonsGroup
-                                    buttons={[
-                                        { title: 'Add', icon: <IonIcon icon={addOutline} />, onClick: showManager },
-                                        { title: 'Remove', icon: <IonIcon icon={trashOutline} />, onClick: switchButtons },
-                                        { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
-                                    ]}
-                                />
-                            }
-                        </div>
-                        {loyaltyPrograms.map((lp, index) => (
-                            <LoyaltyProgramItem
-                                key={index}
-                                isSelectable={isRemoving}
-                                loyaltyProgram={lp}
-                                onSelection={(selected, program) => {
-                                    if (selected) {
-                                        setSelectedUserCurrencyIds([...selectedUserCurrencyIds, program.userCurrencyId]);
-                                    } else {
-                                        const index = selectedUserCurrencyIds.findIndex(sp => sp == program.userCurrencyId);
-                                        const updated = collectionManipulationHelper.removeAtIndex(selectedUserCurrencyIds, index);
-                                        setSelectedUserCurrencyIds(updated);
-                                    }
-                                }} />
-                        ))}
-                    </> :
-                    <NoProgramsContainer />
+                isLoading ?
+                    <SectionLoader /> :
+                    programs.length > 0 ?
+                        <>
+                            <div className={styles.actions}>
+                                {isRemoving ?
+                                    <SecondaryButtonsGroup
+                                        buttons={[
+                                            { title: "Cancel", onClick: switchButtons },
+                                            { title: "Remove", fill: 'outline', onClick: disconnectSelected }
+                                        ]}
+                                    />
+                                    :
+                                    <PrimaryButtonsGroup
+                                        buttons={[
+                                            { title: 'Add', icon: <IonIcon icon={addOutline} />, onClick: showManager },
+                                            { title: 'Remove', icon: <IonIcon icon={trashOutline} />, onClick: switchButtons },
+                                            { title: 'Swap', icon: <IonIcon icon={swapHorizontalOutline} />, onClick: showSwap }
+                                        ]}
+                                    />
+                                }
+                            </div>
+                            {programs.map((lp, index) => (
+                                <LoyaltyProgramItem
+                                    key={index}
+                                    isSelectable={isRemoving}
+                                    loyaltyProgram={lp}
+                                    onSelection={(selected, program) => {
+                                        if (selected) {
+                                            setSelectedUserCurrencyIds([...selectedUserCurrencyIds, program.userCurrencyId]);
+                                        } else {
+                                            const index = selectedUserCurrencyIds.findIndex(sp => sp == program.userCurrencyId);
+                                            const updated = collectionManipulationHelper.removeAtIndex(selectedUserCurrencyIds, index);
+                                            setSelectedUserCurrencyIds(updated);
+                                        }
+                                    }} />
+                            ))}
+                        </> :
+                        <NoProgramsContainer />
             }
         </div>
     )

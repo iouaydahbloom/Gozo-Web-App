@@ -1,5 +1,5 @@
-import { IonIcon, IonItemDivider, IonItemGroup, IonLabel, IonPage, IonToggle } from '@ionic/react';
-import { helpCircleOutline, invertModeOutline, lockClosedOutline, logOutOutline, notificationsOutline, peopleOutline, personCircleOutline, personOutline, readerOutline, volumeHighOutline } from 'ionicons/icons';
+import { IonIcon, IonPage, IonToggle } from '@ionic/react';
+import { helpCircleOutline, invertModeOutline, lockClosedOutline, logOutOutline, notificationsOutline, peopleOutline, personOutline, readerOutline, volumeHighOutline } from 'ionicons/icons';
 import React from 'react'
 import { useHistory } from 'react-router';
 import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
@@ -7,27 +7,27 @@ import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryCo
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import { AppRoutes } from '../../constants/appRoutes';
 import useAuthentication from '../../hooks/useAuthentication';
-import { useDapp } from '../../providers/DappProvider/DappProvider';
 import styles from './account.module.scss';
 import AccountItem from './AccountItem/AccountItem';
+import useAppDetails from '../../hooks/useAppDetails';
 
 const Account: React.FC = () => {
     const { push } = useHistory();
-    const { walletAddress } = useDapp();
     const { logout } = useAuthentication();
+    const { appVersion } = useAppDetails();
 
     return (
         <IonPage>
             <TertiaryHeader title='Account' className='ion-text-center' />
             <PrimaryContainer>
-                
+
                 <div className={styles.section}>
                     <PrimaryTypography size='l'>Profile</PrimaryTypography>
                     <br />
                     <AccountItem
                         icon={<IonIcon className={styles.customIcon} icon={personOutline} />}
                         text='Profile Details'
-                        onClick={() => {}}
+                        onClick={() => { }}
                         isDisabled
                     />
                     <AccountItem
@@ -38,7 +38,7 @@ const Account: React.FC = () => {
                     <AccountItem
                         icon={<IonIcon icon={peopleOutline} />}
                         text='Refer to a Friend'
-                        onClick={() => {}}
+                        onClick={() => { }}
                         isDisabled
                     />
                 </div>
@@ -60,7 +60,7 @@ const Account: React.FC = () => {
                     <AccountItem
                         icon={<IonIcon icon={lockClosedOutline} />}
                         text='Security'
-                        onClick={() => {}}
+                        onClick={() => { }}
                         isDisabled
                     />
                     <AccountItem
@@ -72,7 +72,7 @@ const Account: React.FC = () => {
                     <AccountItem
                         icon={<IonIcon icon={helpCircleOutline} />}
                         text='Help Center'
-                        onClick={() => {}}
+                        onClick={() => { }}
                         isDisabled
                     />
                     <AccountItem
@@ -81,6 +81,9 @@ const Account: React.FC = () => {
                         onClick={logout}
                     />
                 </div>
+
+                <PrimaryTypography>Application Version {appVersion}</PrimaryTypography>
+                <br />
             </PrimaryContainer>
         </IonPage>
     )

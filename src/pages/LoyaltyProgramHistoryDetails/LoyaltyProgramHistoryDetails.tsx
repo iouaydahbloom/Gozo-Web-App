@@ -1,21 +1,46 @@
 import { IonPage } from "@ionic/react"
 import SecondaryHeader from "../../components/headers/SecondaryHeader/SecondaryHeader"
 import PrimaryContainer from "../../components/layout/PrimaryContainer/PrimaryContainer"
-import DetailItem from "./DetailItem/DetailItem"
+import PageLoader from "../../components/loaders/PageLoader/PageLoader"
+import useSearchParams from "../../hooks/useSearchParams"
+import useTransactionHistory from "../../hooks/useTransactionHistory"
+import { LoyaltyMemberHistory } from "../../models/loyaltyMember"
+import DetailItem from "../Common/DetailItem/DetailItem"
 
-interface Props {
-  details: any[]
-}
 
-const LoyaltyProgramHistoryDetails: React.FC<Props> = ({details}) => {
+const LoyaltyProgramHistoryDetails: React.FC = () => {
+  const search = useSearchParams();
+  const id = search.get('transaction_id')
+  const { historyField, isLoadingHistory } = useTransactionHistory(id ?? '')
+
+  const keys = [
+    {key: 'amount', label: 'Amount'},
+    {key: 'completed_at', label: 'Completed At'},
+    {key: 'created_at', label: 'Created At'},
+    {key: 'id', label: 'Id'},
+    {key: 'loyalty_currency', label: 'Loyalty Currency'},
+    {key: 'reason', label: 'Reason'},
+    {key: 'status', label: 'Status'},
+    {key: 'sub_type', label: 'Sub Type'},
+    {key: 'type', label: 'Type'},
+  ]
+
+
+
   return (
     <IonPage>
       <SecondaryHeader
         title='Transaction Details' />
       <PrimaryContainer >
-        {details && details.map((detail) => {
-          return <DetailItem header={detail.header} text={detail.text}/>
-        })}
+        {!isLoadingHistory ?
+          historyField &&
+          Object.keys(historyField).filter((item) => keys.some(event => event.key === item)).map((key, index) => {
+            const keyObj = keys.find((item) => item.key === key)
+            return <DetailItem key={index} header={keyObj?.label ?? ''} text={historyField[key as keyof LoyaltyMemberHistory]} />
+          })
+          :
+          <PageLoader />
+        }
       </PrimaryContainer>
     </IonPage>
   )

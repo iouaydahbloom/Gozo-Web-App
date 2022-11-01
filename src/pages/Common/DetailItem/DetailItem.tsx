@@ -1,4 +1,3 @@
-import { IonItem, IonText } from '@ionic/react'
 import PrimaryTag from '../../../components/tags/PrimaryTag/PrimaryTag'
 import styles from './detailItem.module.scss'
 

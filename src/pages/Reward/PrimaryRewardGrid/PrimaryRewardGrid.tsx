@@ -4,7 +4,7 @@ import RewardListing from '../RewardListing/RewardListing';
 import styles from './primaryRewardGrid.module.scss';
 
 interface Props {
-    headers: string[],
+    headers: any[],
     data?: any[]
 }
 
@@ -14,13 +14,16 @@ const PrimaryRewardGrid: React.FC<Props> = ({ headers = [], data = [] }) => {
             <div className={styles.grid}>
                 <div className={styles.header}>
                     {
-                        headers.map((header, index) => (
+                        headers.map((header, index) => {
+                            return (
                             <PrimaryTypography
                                 key={index}
-                                customClassName={styles.text}>
-                                {header}
+                                style={header.style}
+                                customClassName={styles.cell}>
+                                {header.text}
                             </PrimaryTypography>
-                        ))
+                            )
+})
                     }
                 </div>
                 <div className={styles.body}>

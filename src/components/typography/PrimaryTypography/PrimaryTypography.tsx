@@ -1,5 +1,6 @@
 import { IonText } from '@ionic/react';
-import React, { ReactNode, useCallback, useMemo } from 'react';
+import { StyleReactProps } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
+import React, { CSSProperties, ReactNode, useCallback, useMemo } from 'react';
 import styles from './primaryTypography.module.scss';
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
     size?: 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl',
     customClassName?: string,
     color?: 'light' | 'dark' | 'danger' | 'medium' | 'medium-light' | 'success' | 'slightly-light' | 'quaternary'
+    style?: CSSProperties
 }
 
 const PrimaryTypography: React.FC<Props> = ({
@@ -17,7 +19,8 @@ const PrimaryTypography: React.FC<Props> = ({
     isBold = false,
     size = 's',
     customClassName = '',
-    color = 'light'
+    color = 'light',
+    style
 }) => {
 
     const styledSize = useMemo(() => {
@@ -51,6 +54,7 @@ const PrimaryTypography: React.FC<Props> = ({
 
     return (
         <IonText
+        style={style}
             color={color}
             className={`
             ${styles.text} 

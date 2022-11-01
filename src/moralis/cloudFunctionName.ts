@@ -10,6 +10,7 @@ export const cloudFunctionName = {
     updateMyPrograms: 'update_my_programs',
     getMyPrograms: 'get_my_programs',
     transactionHistory: 'transaction_history',
+    transactionDetails: 'transaction',
     simulateP2PExchange: 'simulate_p2p_exchange',
     executeP2PExchange: 'execute_p2p_exchange',
     simulateP2TExchange: 'simulate_p2t_exchange',

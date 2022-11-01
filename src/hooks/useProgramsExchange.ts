@@ -4,6 +4,7 @@ import { UserLoyaltyProgram } from "../models/loyaltyProgram";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import useCloud from "./useCloud";
 import useLoyaltyPrograms from "./useLoyaltyPrograms";
+import useMemberShip from "./useMembership";
 import useToast from "./useToast";
 
 export interface ExchangeState {
@@ -23,6 +24,7 @@ const useProgramsExchange = () => {
     const { fetchMyLoyaltyPrograms, defaultProgram } = useLoyaltyPrograms();
     const { presentFailure, presentSuccess } = useToast();
     const [direction, setDirection] = useState<'p2s' | 's2p'>('p2s');
+    const { membership } = useMemberShip(originProgram.loyaltyCurrency);
 
     const executeP2PExchange = useCallback(async (from: string, to: string, amount: number) => {
         if (amount <= 0) return;
@@ -71,7 +73,9 @@ const useProgramsExchange = () => {
     }
 
     function checkShufflingEnable() {
-        return exchangeInOptions.length > 0 && exchangeOutOptions.length > 0 && !!defaultProgram
+        return direction == 'p2s' ?
+            exchangeInOptions.length > 0 && (exchangeOutOptions.length > 0 || !!defaultProgram) :
+            exchangeOutOptions.length > 0 && (exchangeInOptions.length > 0 || !!defaultProgram)
     }
 
     useEffect(() => {
@@ -112,7 +116,8 @@ const useProgramsExchange = () => {
         simulating,
         direction: direction,
         isDisabled: !originProgram.quantity || originProgram.quantity == 0,
-        toggleDirection: () => setDirection(prev => prev == 's2p' ? 'p2s' : 's2p')
+        toggleDirection: () => setDirection(prev => prev == 's2p' ? 'p2s' : 's2p'),
+        originBalance: membership?.balance
     }
 }
 

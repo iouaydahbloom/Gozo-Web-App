@@ -11,6 +11,7 @@ import useBlockchainContractExecution from "./useBlockchainContractExecution";
 import useCloud from "./useCloud";
 import useERC20Assets from "./useERC20Assets";
 import useLoyaltyPrograms from "./useLoyaltyPrograms";
+import useMemberShip from "./useMembership";
 import useToast from "./useToast";
 
 const useTokenProgramsExchange = () => {
@@ -29,6 +30,7 @@ const useTokenProgramsExchange = () => {
     const [minimumValue, setMinimumValue] = useState<number>();
     const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
     const [direction, setDirection] = useState<'t2p' | 'p2t'>('t2p');
+    const { membership } = useMemberShip(defaultProgram?.currency.loyaltyCurrency);
 
     const tokenQuantityInWei = useMemo(() => {
         return Moralis.Units.Token(tokenQuantity ?? 0, 18);
@@ -177,7 +179,9 @@ const useTokenProgramsExchange = () => {
         minimumValue,
         estimatedGasFee,
         isDisabled: direction == 't2p' ? !tokenQuantity || tokenQuantity == 0 : !programQuantity || programQuantity == 0,
-        toggleDirection: () => setDirection(prev => prev == 't2p' ? 'p2t' : 't2p')
+        toggleDirection: () => setDirection(prev => prev == 't2p' ? 'p2t' : 't2p'),
+        pointsBalance: membership?.balance,
+        tokensBalance: defaultAsset ? parseFloat(Moralis.Units.FromWei(defaultAsset?.balance, 18)) : 0
     }
 }
 

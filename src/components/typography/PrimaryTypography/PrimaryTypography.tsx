@@ -26,6 +26,9 @@ const PrimaryTypography: React.FC<Props> = ({
     const styledSize = useMemo(() => {
         let selectedStyle;
         switch (size) {
+            case 'xs':
+                selectedStyle = styles.xs;
+                break;
             case 's':
                 selectedStyle = styles.small;
                 break;

@@ -8,6 +8,7 @@ const useERC20Transfers = () => {
   const { walletAddress, chainId } = useDapp();
   const { isInitialized } = useMoralis();
   const [eRC20Transfers, setERC20Transfers] = useState<ERC20Transfer[]>();
+  const [isLoading, setIsLoading] = useState<boolean>()
 
   useEffect(() => {
     if (isInitialized)
@@ -20,12 +21,18 @@ const useERC20Transfers = () => {
   }, [isInitialized, walletAddress]);
 
   const fetchERC20Transfers = async () => {
+    setIsLoading(true)
     return await account
       .getTokenTransfers({ address: walletAddress ?? '', chain: chainId as any })
       .then((result) => result.result)
-      .catch((e) => console.log(e.message));
+      .catch((e) => console.log(e.message))
+      .finally(()=> setIsLoading(false))
   }
-  return { fetchERC20Transfers, eRC20Transfers };
+  return { 
+    fetchERC20Transfers, 
+    eRC20Transfers,
+    isLoadingTransfers: isLoading
+   };
 }
 
 export default useERC20Transfers;

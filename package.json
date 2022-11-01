@@ -45,6 +45,7 @@
     "ionic-plugin-deeplinks": "^1.0.24",
     "ionicons": "^5.4.0",
     "magic-sdk": "^9.0.0",
+    "moment": "^2.29.4",
     "moralis": "^1.11.0",
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "react": "^17.0.2",

@@ -1,53 +1,90 @@
 import { IonPage, useIonViewDidEnter } from '@ionic/react';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
-import HighlightedBalance from './HighlightedBalance/HighlightedBalance';
+import HighlightedBalance, { HighlightedBalanceAsset } from './HighlightedBalance/HighlightedBalance';
 //@ts-ignore
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import LoyaltyPrograms from './LoyaltyPrograms/LoyaltyPrograms';
 import CryptoTokens from './CryptoTokens/CryptoTokens';
 import '../../theme/primaryTabs.scss';
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { AssetMode } from '../../constants/assetsMode';
 import styles from './dashboard.module.scss'
 import useOnBoardingPreview from '../../hooks/useOnBoardingPreview';
-import useAssets from '../../hooks/useAssets';
 import useERC20Assets from '../../hooks/useERC20Assets';
 import { currencySettingsContext } from '../../providers/CurrencySettingsProvider/currencySettingsContext';
+import { useMoralis } from 'react-moralis';
+import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
+import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
 
 const Dashboard: React.FC = () => {
 
     const [mode, setMode] = useState<AssetMode>(AssetMode.loyaltyPoint);
-    const { hide } = useOnBoardingPreview();
-    const { getUserLoyaltyPrograms } = useAssets();
-    const { assets, fetchERC20Assets } = useERC20Assets();
+    const { hide: hideOnboarding } = useOnBoardingPreview();
+    const { fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms } = useLoyaltyPrograms();
+    const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
+    const { assets, fetchERC20Assets, isLoadingAssets } = useERC20Assets();
     const {
         gozoToken,
         gozoLoyaltyMembership,
         fetchToken,
         fetchGozoLoyaltyMembership
     } = useContext(currencySettingsContext);
+    const [highlightedAsset, setHighlightedAsset] = useState<HighlightedBalanceAsset>();
+    const { Moralis } = useMoralis();
 
-    function onSelect(tabIndex: number) {
+    const onSelect = useCallback((tabIndex: number) => {
         setMode(tabIndex == 0 ? AssetMode.loyaltyPoint : AssetMode.token);
-    }
+    }, [])
 
-    async function onRefresh(): Promise<any> {
+    const getPrograms = useCallback(async () => {
+        const programs = await fetchMyLoyaltyPrograms();
+        setLoyaltyPrograms(programs);
+        return programs;
+    }, [])
+
+    const handleHighlightedAssetMetadata = useCallback(() => {
+        mode == AssetMode.loyaltyPoint ? fetchGozoLoyaltyMembership() : fetchToken();
+    }, [mode])
+
+    const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
-            getUserLoyaltyPrograms(),
+            getPrograms(),
             fetchERC20Assets(),
-            fetchToken(),
-            fetchGozoLoyaltyMembership()
+            handleHighlightedAssetMetadata()
         ])
-    }
+    }, [])
+
+    useEffect(() => {
+        handleHighlightedAssetMetadata();
+    }, [mode])
+
+    useEffect(() => {
+        if (mode == AssetMode.token) {
+            setHighlightedAsset({
+                balance: gozoToken ? parseFloat(Moralis.Units.FromWei(gozoToken.balance, parseInt(gozoToken.decimals))) : 0,
+                description: 'Gozo Tokens'
+            });
+        }
+    }, [gozoToken])
+
+    useEffect(() => {
+        if (mode == AssetMode.loyaltyPoint) {
+            setHighlightedAsset({
+                balance: gozoLoyaltyMembership ? gozoLoyaltyMembership.balance : 0,
+                description: 'Super Points'
+            });
+        }
+    }, [gozoLoyaltyMembership])
 
     useIonViewDidEnter(() => {
-        hide();
+        hideOnboarding();
+        onRefresh();
     })
 
     return (
         <IonPage>
             <PrimaryContainer isRefreshable onRefresh={onRefresh}>
-                <HighlightedBalance mode={mode} />
+                <HighlightedBalance asset={highlightedAsset} />
                 <Tabs onSelect={onSelect}>
                     <TabList className={styles.tabList}>
                         <Tab className={styles.tab}>Loyalty Programs</Tab>
@@ -55,10 +92,17 @@ const Dashboard: React.FC = () => {
                     </TabList>
 
                     <TabPanel>
-                        <LoyaltyPrograms />
+                        <LoyaltyPrograms
+                            isLoading={loadingMyLoyaltyPrograms}
+                            programs={loyaltyPrograms}
+                            getPrograms={getPrograms} />
                     </TabPanel>
                     <TabPanel>
-                        <CryptoTokens />
+                        <CryptoTokens
+                            isLoading={isLoadingAssets}
+                            assets={assets}
+                            refreshDefaultToken={fetchToken}
+                            getAssets={fetchERC20Assets} />
                     </TabPanel>
                 </Tabs>
             </PrimaryContainer>

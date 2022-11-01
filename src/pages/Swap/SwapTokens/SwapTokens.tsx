@@ -11,9 +11,9 @@ const SwapTokens: React.FC = () => {
 
     const { tokenOptions, programOptions, token, tokenQuantity, setTokenQuantity, program,
         programQuantity, setProgramQuantity, exchanging, exchange, toggleDirection, direction,
-        minimumValue, estimatedGasFee, isDisabled, simulating } = useTokenProgramsExchange();
+        minimumValue, estimatedGasFee, isDisabled, simulating, pointsBalance, tokensBalance } = useTokenProgramsExchange();
 
-    const renderTokensField = useCallback((label: string, isDisabled: boolean) => (
+    const renderTokensField = useCallback((label: string, isDisabled: boolean, withAvailability: boolean, availability?: number) => (
         <SwapField
             label={label}
             options={tokenOptions.map((opt) => (
@@ -24,10 +24,12 @@ const SwapTokens: React.FC = () => {
             onQuantityChange={setTokenQuantity}
             isPassive={isDisabled}
             isLoadingQuantity={simulating}
+            withAvailability={withAvailability}
+            availability={availability}
         />
     ), [tokenOptions, tokenQuantity, simulating])
 
-    const renderProgramsField = useCallback((label: string, isDisabled: boolean) => (
+    const renderProgramsField = useCallback((label: string, isDisabled: boolean, withAvailability: boolean, availability?: number) => (
         <SwapField
             label={label}
             options={programOptions.map((opt) => (
@@ -38,15 +40,17 @@ const SwapTokens: React.FC = () => {
             onQuantityChange={setProgramQuantity}
             isPassive={isDisabled}
             isLoadingQuantity={simulating}
+            withAvailability={withAvailability}
+            availability={availability}
         />
     ), [programOptions, programQuantity, simulating])
 
     return (
         <div className={styles.swapContainer}>
             <div className={styles.swapControl}>
-                {direction == 't2p' ? renderTokensField('From', false) : renderProgramsField('From', false)}
+                {direction == 't2p' ? renderTokensField('From', false, true, tokensBalance) : renderProgramsField('From', false, true, pointsBalance)}
                 <SwapDirection doubleDirection onClick={toggleDirection} />
-                {direction == 'p2t' ? renderTokensField('To', true) : renderProgramsField('To', true)}
+                {direction == 'p2t' ? renderTokensField('To', true, false) : renderProgramsField('To', true, false)}
             </div>
 
             <TransactionDetails

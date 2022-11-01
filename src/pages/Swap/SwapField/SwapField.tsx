@@ -11,7 +11,9 @@ interface Props {
     quantity?: number,
     onQuantityChange?: (value?: number) => void,
     isPassive?: boolean,
-    isLoadingQuantity?: boolean
+    isLoadingQuantity?: boolean,
+    withAvailability?: boolean,
+    availability?: number
 }
 
 const SwapField: React.FC<Props> = ({
@@ -22,33 +24,41 @@ const SwapField: React.FC<Props> = ({
     quantity,
     onQuantityChange,
     isPassive = false,
-    isLoadingQuantity = false
+    isLoadingQuantity = false,
+    withAvailability = false,
+    availability = 0
 }) => {
     return (
-        <div className={styles.swapField}>
-            <div className={styles.selectContainer}>
-                <SwapSelect
-                    label={label}
-                    className={styles.select}
-                    value={selectedOption}
-                    onChange={onSelectionChange}
-                    options={options} />
-            </div>
-            <div className={styles.inputContainer}>
-                <IonInput
-                    color='light'
-                    className={styles.input}
-                    value={quantity}
-                    disabled={isPassive}
-                    type='number'
-                    onIonChange={(event) => {
-                        onQuantityChange && onQuantityChange(event.detail.value ? parseInt(event.detail.value) : undefined)
-                    }} />
+        <div className={`${styles.swapFieldContainer}`}>
+            <div className={`${styles.swapField} ${withAvailability ? styles.withAvailability : ''}`}>
+                <div className={styles.selectContainer}>
+                    <SwapSelect
+                        label={label}
+                        className={styles.select}
+                        value={selectedOption}
+                        onChange={onSelectionChange}
+                        options={options} />
+                </div>
+                <div className={styles.inputContainer}>
+                    <IonInput
+                        color='light'
+                        className={styles.input}
+                        value={quantity}
+                        disabled={isPassive}
+                        type='number'
+                        onIonChange={(event) => {
+                            onQuantityChange && onQuantityChange(event.detail.value ? parseInt(event.detail.value) : undefined)
+                        }} />
 
-                {isPassive && isLoadingQuantity && <IonSpinner color='light' className={styles.spinner}/>}
+                    {isPassive && isLoadingQuantity && <IonSpinner color='light' className={styles.spinner} />}
 
-                <PrimaryTypography size="m" customClassName={styles.postInput}>Units</PrimaryTypography>
+                    <PrimaryTypography size="m" customClassName={styles.postInput}>Units</PrimaryTypography>
+                </div>
             </div>
+            {
+                withAvailability &&
+                <PrimaryTypography size='xs' customClassName={styles.availability}>Available: {availability}</PrimaryTypography>
+            }
         </div>
     )
 }

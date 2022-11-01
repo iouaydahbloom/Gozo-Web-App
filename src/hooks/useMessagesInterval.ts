@@ -26,9 +26,9 @@ const useMessagesInterval = (messages: string[], duration: number = 5000) => {
     }
 
     return {
-        setDisplayMessagesInterval,
-        clearDisplayMessageInterval,
-        loadingDisplayMessage
+        start:setDisplayMessagesInterval,
+        stop:clearDisplayMessageInterval,
+        currentMessage:loadingDisplayMessage
 
     }
 }

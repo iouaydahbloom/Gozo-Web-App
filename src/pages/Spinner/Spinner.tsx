@@ -54,7 +54,7 @@ const Spinner: React.FC = () => {
         "Prizes Being Generated", 
         "Spin Wheel Powering Up..."
     ];
-    const { loadingDisplayMessage, setDisplayMessagesInterval, clearDisplayMessageInterval} = useMessagesInterval(displayMessages)
+    const { currentMessage, start, stop} = useMessagesInterval(displayMessages)
 
     const getMySelectedProgram = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0 && !!loyaltyProgram) {
@@ -123,7 +123,7 @@ const Spinner: React.FC = () => {
         // console.log("listening to event prizeSelected with id: ${0}, amount: ${1}, playerAddress: ${2}, gameToken: ${3}", id, amount, playerAddress, gameToken);
         console.log("listening to event prizeSelected with id:", id)
         if (playerAddress.toLocaleLowerCase() == walletAddress?.toLocaleLowerCase()) {
-            clearDisplayMessageInterval()
+            stop()
             setSelectedPrizeId(id)
         }
     }
@@ -137,7 +137,7 @@ const Spinner: React.FC = () => {
     }
 
     async function handlePlaying() {
-        setDisplayMessagesInterval()
+        start()
         if (prizesExpired) await getPrizes()
         await play(loyaltyProgram?.brand?.key ?? '', loyaltyProgram?.partnerId ?? '');
     }
@@ -181,13 +181,13 @@ const Spinner: React.FC = () => {
 
     useEffect(() => {
         if (selectedPrizeId) {
-            clearDisplayMessageInterval();
+            stop();
         }
     }, [selectedPrizeId])
 
     useEffect(() => {
         if (!isPlaying) {
-            clearDisplayMessageInterval();
+            stop();
         }
     }, [isPlaying])
 
@@ -245,7 +245,7 @@ const Spinner: React.FC = () => {
                                         <ParticlesLoader />
                                         <PrimaryTypography
                                             customClassName={styles.loaderOverlay}>
-                                            {loadingDisplayMessage}
+                                            {currentMessage}
                                         </PrimaryTypography>
                                     </div>
                                     :

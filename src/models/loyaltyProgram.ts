@@ -12,7 +12,8 @@ export class LoyaltyProgram implements AppModel {
         public partnerId: string,
         public partnershipDetails: LoyaltyPartnershipDetails | null,
         public activePartnerships: ActivePartnershipDetails | null,
-        public brand: Brand | null) { }
+        public brand: Brand | null,
+        public base64Logo?: string) { }
 
     static getFromDTO(dto: LoyaltyProgramDTO): LoyaltyProgram {
         return new LoyaltyProgram(dto.company_name,
@@ -21,7 +22,8 @@ export class LoyaltyProgram implements AppModel {
             dto.partner_id,
             dto.partnership_details ? LoyaltyPartnershipDetails.getFromDTO(dto.partnership_details) : null,
             dto.active_partnerships ? ActivePartnershipDetails.getFromDTO(dto.active_partnerships) : null,
-            dto.brand ? Brand.getFromDTO(dto.brand) : null
+            dto.brand ? Brand.getFromDTO(dto.brand) : null,
+            dto.base64Logo
         )
     }
 
@@ -35,7 +37,9 @@ export class UserLoyaltyProgram implements AppModel {
         public createdAt: Date,
         public id: string,
         public userCurrencyId: string,
-        public redemption: Redemption | null) { }
+        public redemption: Redemption | null,
+        public base64Logo?: string,
+    ) { }
 
     static getFromDTO(dto: UserLoyaltyProgramDTO): UserLoyaltyProgram {
         return new UserLoyaltyProgram(
@@ -66,6 +70,7 @@ export class UserLoyaltyProgram implements AppModel {
     toMyLoyaltyProgramDTO(): MyLoyaltyProgramDTO {
         return {
             ca_loyalty_currency: this.currency.loyaltyCurrency,
+            program_base64_logo: this.base64Logo ? this.base64Logo : '',
             ca_loyalty_currency_name: this.currency.loyaltyCurrencyName,
             company_name: this.currency.companyName,
             program_id: this.currency.programId,

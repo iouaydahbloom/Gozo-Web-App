@@ -49,12 +49,12 @@ const Spinner: React.FC = () => {
     const prizeInfo = "Spin now, list of prizes is reserved for 3 mins, if spinned after 3 mins the list of prizes might be different";
     const { walletAddress } = useDapp();
     var displayMessages = [
-        "Blockchain Node Connection. in Progress", 
-        "Creating Transparent Winning Algorithm", 
-        "Prizes Being Generated", 
+        "Blockchain Node Connection. in Progress",
+        "Creating Transparent Winning Algorithm",
+        "Prizes Being Generated",
         "Spin Wheel Powering Up..."
     ];
-    const { currentMessage, start, stop} = useMessagesInterval(displayMessages)
+    const { currentMessage, start, stop } = useMessagesInterval(displayMessages)
 
     const getMySelectedProgram = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0 && !!loyaltyProgram) {
@@ -63,7 +63,7 @@ const Spinner: React.FC = () => {
         return
     }, [myLoyaltyPrograms, loyaltyProgram])
 
-    const getSelectedPrize = useMemo(() => {
+    const selectedPrize = useMemo(() => {
         return wheelSegments && wheelSegments.find(item => item.id === selectedPrizeId)
     }, [wheelSegments, selectedPrizeId])
 
@@ -80,8 +80,9 @@ const Spinner: React.FC = () => {
         id: 'spinSuccessModal',
         component: <SpinSuccess
             dismiss={dismissSpinSuccess}
-            text={`You just won ${getSelectedPrize?.text}`}
+            prize={selectedPrize?.text}
         />,
+        customClass: styles.spinSuccessModal,
         onDismiss: () => {
             setIsPlaying(false);
             setSelectedPrizeId('');

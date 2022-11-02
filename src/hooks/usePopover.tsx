@@ -18,7 +18,7 @@ const usePopover = (options: Options) => {
     function showPopover(event:Event) {
         present({
             event: event,
-            cssClass: options.className,
+            cssClass: options.className ? options.className : 'popover-hook',
             id: options.id,
             onDidDismiss: options.onDismiss,
             mode: 'ios'

@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonHeader, IonIcon, IonPage, IonToolbar, useIonViewWillEnter } from '@ionic/react';
+import { IonButton, IonButtons, IonHeader, IonIcon, IonPage, IonToolbar, useIonViewWillEnter, useIonViewWillLeave } from '@ionic/react';
 import { useEffect, useMemo, useState } from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
@@ -203,6 +203,10 @@ const Spinner: React.FC = () => {
 
         id ? setLoyaltyProgramId(id) : setLoyaltyProgramId("");
     }, [id])
+
+    useIonViewWillLeave(() => {
+        setIsPlaying(false)
+    })
 
     useEffect(() => {
         getMyPrograms();

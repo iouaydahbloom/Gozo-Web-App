@@ -45,7 +45,8 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
             new Date(),
             '',
             '',
-            myProgram?.redemption ?? null
+            myProgram?.redemption ?? null,
+            item.base64Logo
         );
         setMyUpdatedProgram(userLoyaltyProgram);
     }

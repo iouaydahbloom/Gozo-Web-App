@@ -5,6 +5,7 @@ import { useHistory } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
 import useProgramsTransactionHistory from '../../../hooks/useProgramsTransactionHistory';
 import PageLoader from '../../../components/loaders/PageLoader/PageLoader';
+import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
 
 const LoyaltyPogramsHistory = () => {
     const { push } = useHistory();
@@ -19,7 +20,14 @@ const LoyaltyPogramsHistory = () => {
                         {
                             date: formatDate(hf.completed_at ?? ''),
                             reason: hf.reason,
-                            amount: hf.amount,
+                            amount: hf.type === "redemption" ?
+                                <PrimaryTypography color='danger'>
+                                    {`- ${hf.amount}`}
+                                </PrimaryTypography>
+                                :
+                                <PrimaryTypography color='success'>
+                                    {`+ ${hf.amount}`}
+                                </PrimaryTypography>,
                             onClick: () => push({ pathname: AppRoutes.loyaltyProgramHistoryDetails, search: `?transaction_id=${hf.id}` })
                         }
                     ))}

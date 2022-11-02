@@ -36,7 +36,18 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
           historyField &&
           Object.keys(historyField).filter((item) => keys.some(event => event.key === item)).map((key, index) => {
             const keyObj = keys.find((item) => item.key === key)
-            return <DetailItem key={index} header={keyObj?.label ?? ''} text={historyField[key as keyof LoyaltyMemberHistory]} />
+            return <DetailItem 
+              key={index} 
+              header={keyObj?.label ?? ''} 
+              text={key === 'amount' ? historyField['type'] === 'redemption' ? 
+              `- ${historyField[key as keyof LoyaltyMemberHistory]}` 
+              :
+              `+ ${historyField[key as keyof LoyaltyMemberHistory]}`
+              : 
+              historyField[key as keyof LoyaltyMemberHistory]
+              }
+              textColor={key === 'amount' ? historyField['type'] === 'redemption' ? 'danger' : 'success' : undefined} 
+              />
           })
           :
           <PageLoader />

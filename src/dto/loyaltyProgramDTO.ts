@@ -10,7 +10,8 @@ export interface LoyaltyProgramDTO {
     partner_id: string,
     partnership_details?: LoyaltyPartnershipDetailsDTO,
     active_partnerships?: ActivePartnershipDetailsDTO,
-    brand?: BrandDTO
+    brand?: BrandDTO,
+    base64Logo?: string
 }
 
 export interface LoyaltyCurrencyDTO {
@@ -57,7 +58,8 @@ export interface MyLoyaltyProgramDTO {
     exchange_in: boolean,
     exchange_out: boolean,
     redemption: boolean,
-    issuing: boolean
+    issuing: boolean,
+    program_base64_logo?: string
 }
 
 export interface UserLoyaltyProgramDTO {

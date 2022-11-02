@@ -5,6 +5,7 @@ import SecondaryHeader from "../../components/headers/SecondaryHeader/SecondaryH
 import PrimaryContainer from "../../components/layout/PrimaryContainer/PrimaryContainer"
 import PageLoader from "../../components/loaders/PageLoader/PageLoader"
 import { LoyaltyMemberHistory } from "../../models/loyaltyMember"
+import { useDapp } from "../../providers/DappProvider/DappProvider"
 import DetailItem from "../Common/DetailItem/DetailItem"
 
 
@@ -12,9 +13,9 @@ const TokenHistoryDetails: React.FC = () => {
   const location = useLocation();
   const transaction = location.state
   const [historyField, setHistoryField] = useState<LoyaltyMemberHistory>();
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { walletAddress } = useDapp();
 
-  console.log("historyField", historyField)
   const keys = [
     {key: 'address', label: 'Address'},
     {key: 'block_hash', label: 'Block Hash'},
@@ -45,7 +46,20 @@ const TokenHistoryDetails: React.FC = () => {
           historyField &&
           Object.keys(historyField).filter((item) => keys.some(event => event.key === item)).map((key, index) => {
             const keyObj = keys.find((item) => item.key === key)
-            return <DetailItem key={index} header={keyObj?.label ?? ''} text={historyField[key as keyof LoyaltyMemberHistory]} />
+            return <DetailItem 
+              key={index} 
+              header={keyObj?.label ?? ''} 
+              text={historyField[key as keyof LoyaltyMemberHistory]} 
+              textColor={
+                (key === 'from_address' && walletAddress === historyField[key as keyof LoyaltyMemberHistory]) ?
+                'danger'
+                :
+                (key === 'to_address' && walletAddress === historyField[key as keyof LoyaltyMemberHistory]) ? 
+                'success'
+                :
+                undefined
+              }
+              />
           })
           :
           <PageLoader />

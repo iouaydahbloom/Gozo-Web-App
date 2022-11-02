@@ -29,7 +29,7 @@ const PrimaryGrid: React.FC<Props> = ({ headers = [], data = [] }) => {
                         data.map((obj, index) => (
                             <div className={styles.bodyData} key={index} onClick={obj.onClick}>
                                 {Object.keys(obj).map((key, index) => (
-                                    key !== 'onClick' &&
+                                    key !== 'onClick' && 
                                     <PrimaryTypography
                                         key={index}
                                         customClassName={styles.text}>

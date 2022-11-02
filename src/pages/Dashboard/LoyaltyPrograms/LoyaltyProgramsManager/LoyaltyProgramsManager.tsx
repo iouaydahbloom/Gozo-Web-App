@@ -6,16 +6,16 @@ import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms'
 import PrimarySearch from '../../../../components/inputs/PrimarySearch/PrimarySearch'
 import styles from './loyaltyProgramsManager.module.scss';
 import { ProgramFilter } from '../../../../models/data/filter'
-import { IonContent, IonToolbar } from '@ionic/react'
+import PageLoader from '../../../../components/loaders/PageLoader/PageLoader'
 
 const LoyaltyProgramsManager: React.FC = () => {
 
-    const [isLoading, setLoading] = useState(false);
+    const [isLoadingMyPrograms, setIsLoadingMyPrograms] = useState(false);
     const [myPrograms, setMyPrograms] = useState<UserLoyaltyProgram[]>([]);
     const [searchKey, setSearchKey] = useState<string>('');
     const { fetchAllPrograms, fetchMyLoyaltyPrograms } = useLoyaltyPrograms();
 
-    const { data: programs } = useServerPagination<LoyaltyProgram, ProgramFilter>({
+    const { data: programs, isLoading } = useServerPagination<LoyaltyProgram, ProgramFilter>({
         getData: fetchAllPrograms as any
     })
 
@@ -31,14 +31,14 @@ const LoyaltyProgramsManager: React.FC = () => {
     }, [programs, myPrograms, searchKey])
 
     useEffect(() => {
-        setLoading(true)
+        setIsLoadingMyPrograms(true)
         fetchMyLoyaltyPrograms()
             .then(result => {
                 if (result) {
                     setMyPrograms(result);
                 }
             })
-            .finally(() => setLoading(false))
+            .finally(() => setIsLoadingMyPrograms(false))
     }, [])
 
     return (
@@ -49,12 +49,15 @@ const LoyaltyProgramsManager: React.FC = () => {
                     placeholder="Search Partners"
                     onChange={setSearchKey} />
             </div>
-            {!isLoading &&
-                programs
-                    .filter(prog => !searchKey ||
-                        prog.companyName.toLowerCase().includes(searchKey?.toLowerCase()) ||
-                        prog.loyaltyCurrency?.shortName?.toLowerCase().includes(searchKey?.toLowerCase()))
-                    .map((lp, index) => renderLoyaltyProgramItem(lp, index))}
+            {
+                isLoading || isLoadingMyPrograms ?
+                    <PageLoader /> :
+                    programs
+                        .filter(prog => !searchKey ||
+                            prog.companyName.toLowerCase().includes(searchKey?.toLowerCase()) ||
+                            prog.loyaltyCurrency?.shortName?.toLowerCase().includes(searchKey?.toLowerCase()))
+                        .map((lp, index) => renderLoyaltyProgramItem(lp, index))
+            }
         </>
     )
 }

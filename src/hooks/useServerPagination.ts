@@ -14,8 +14,10 @@ const useServerPagination = <T, F extends Filter>({
 
     const [metadata, setMetadata] = useState<{ count: number, next: string, previous: string } | null>(null);
     const [data, setData] = useState<T[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+        setIsLoading(true);
         getData(intialFilters)
             .then(result => {
                 setMetadata({
@@ -25,6 +27,7 @@ const useServerPagination = <T, F extends Filter>({
                 });
                 setData(result.results as any[]);
             })
+            .finally(() => setIsLoading(false))
     }, [])
 
     function getFilterFromParamProp(param: string) {
@@ -35,6 +38,8 @@ const useServerPagination = <T, F extends Filter>({
 
     function loadMore() {
         if (!metadata || !metadata.next) return;
+
+        setIsLoading(true);
         getData(getFilterFromParamProp(metadata.next))
             .then(result => {
                 setMetadata({
@@ -44,10 +49,12 @@ const useServerPagination = <T, F extends Filter>({
                 });
                 setData([...data, ...result.results]);
             })
+            .finally(() => setIsLoading(false))
     }
 
     return {
         data: data,
+        isLoading,
         loadMore: loadMore,
         hasMore: !!metadata?.next
     }

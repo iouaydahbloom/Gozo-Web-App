@@ -8,7 +8,8 @@ export class WheelSegment implements AppModel {
         public description: string,
         public label: string,
         public image?: string,
-        public fillStyle?: string
+        public fillStyle?: string,
+        public textFillStyle?: string
         ) { }
 
     static getFromDTO(dto: PrizeDTO[]): WheelSegment[] {

@@ -167,8 +167,14 @@ const Spinner: React.FC = () => {
     const wheelSegmentsOpts = useMemo(() => {
         if (wheelSegments.length !== 0) {
             return wheelSegments.map((item, index) => {
-                if (index % 2) item.fillStyle = loyaltyProgram?.brand?.color2
-                else item.fillStyle = loyaltyProgram?.brand?.color1
+                if (index % 2) {
+                    item.fillStyle = loyaltyProgram?.brand?.color2;
+                    item.textFillStyle = loyaltyProgram?.brand?.color1;
+                }
+                else {
+                    item.fillStyle = loyaltyProgram?.brand?.color1
+                    item.textFillStyle = loyaltyProgram?.brand?.color2;
+                }
                 return item
             })
         }

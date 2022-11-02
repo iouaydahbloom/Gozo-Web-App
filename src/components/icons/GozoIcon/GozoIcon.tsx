@@ -1,7 +1,10 @@
-const GozoIcon: React.FC = () => {
+import { memo } from "react";
+
+const GozoIconComponent: React.FC = () => {
     return (
         <img src='assets/icon/Gozo logo.svg' />
     )
 }
 
-export default GozoIcon
+const GozoIcon = memo(GozoIconComponent);
+export default GozoIcon;

@@ -1,10 +1,15 @@
 import { IonIcon } from "@ionic/react"
+import { memo } from "react";
 import { IconProps } from "../iconProps"
 
-const RewardIcon: React.FC<IconProps> = ({color, size}) => {
+const RewardIconComponent: React.FC<IconProps> = ({ color, size, isFilled }) => {
     return (
-        <IonIcon icon='assets/icon/rewards-icon.svg' color={color} size={size}/>
+        <IonIcon
+            icon={isFilled ? 'assets/icon/rewards-filled.svg' : 'assets/icon/rewards.svg'}
+            color={color}
+            size={size} />
     )
 }
 
-export default RewardIcon
+const RewardIcon = memo(RewardIconComponent);
+export default RewardIcon;

@@ -1,5 +1,5 @@
 import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, useIonRouter } from '@ionic/react';
-import { gridOutline, personCircleOutline, walletOutline } from 'ionicons/icons';
+import { grid, gridOutline, gridSharp, personCircleOutline, walletOutline } from 'ionicons/icons';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Redirect, Route, useLocation } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
@@ -17,6 +17,9 @@ import Rewards from '../../../pages/Reward/Reward';
 import Spinner from '../../../pages/Spinner/Spinner';
 import TokenHistoryDetails from '../../../pages/TokenHistoryDetails/TokenHistoryDetails';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
+import AccountIcon from '../../icons/AccountIcon/AccountIcon';
+import BuyIcon from '../../icons/BuyIcon/BuyIcon';
+import DashboardIcon from '../../icons/DashboardIcon/DashboardIcon';
 import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
 import styles from './tabMenu.module.scss';
@@ -57,60 +60,64 @@ const TabMenu: React.FC = () => {
             id='fab-button'
             className={styles.floatingButton}
             onClick={() => spinnerBtnRef.current.handleIonTabButtonClick()}>
-            <SpinIcon size='large' />
+            <SpinIcon size='large' isFilled={pathname == AppRoutes.spinner} />
         </div>
-    ), [spinnerBtnRef])
+    ), [spinnerBtnRef, pathname])
+
+    const routes = useMemo(() => (
+        <IonRouterOutlet>
+            <Route exact path={AppRoutes.dashboard}>
+                <Dashboard />
+            </Route>
+            <Route exact path={AppRoutes.onBoarding}>
+                <OnBoarding />
+            </Route>
+            <Route exact path={AppRoutes.account}>
+                <Account />
+            </Route>
+            <Route exact path={AppRoutes.transactionHistory}>
+                <TransactionHistory />
+            </Route>
+            <Route exact path={AppRoutes.loyaltyProgramHistoryDetails}>
+                <LoyaltyProgramHistoryDetails />
+            </Route>
+            <Route exact path={AppRoutes.tokenHistoryDetails}>
+                <TokenHistoryDetails />
+            </Route>
+            <Route exact path={AppRoutes.reward}>
+                <Rewards />
+            </Route>
+            <Route exact path={AppRoutes.spinner}>
+                <Spinner />
+            </Route>
+            <Route exact path={AppRoutes.buy}>
+                <Buy />
+            </Route>
+            <Route exact path={AppRoutes.landing}>
+                <Landing />
+            </Route>
+            <Route exact path={AppRoutes.authCallback}>
+                <AuthCallback />
+            </Route>
+            <Redirect exact from='/' to={AppRoutes.landing} />
+        </IonRouterOutlet>
+    ), [])
 
     const tabRoutes = useMemo(() => (
         <>
             <IonTabs className={styles.tabsBar}>
-                <IonRouterOutlet>
-                    <Route exact path={AppRoutes.dashboard}>
-                        <Dashboard />
-                    </Route>
-                    <Route exact path={AppRoutes.onBoarding}>
-                        <OnBoarding />
-                    </Route>
-                    <Route exact path={AppRoutes.account}>
-                        <Account />
-                    </Route>
-                    <Route exact path={AppRoutes.transactionHistory}>
-                        <TransactionHistory />
-                    </Route>
-                    <Route exact path={AppRoutes.loyaltyProgramHistoryDetails}>
-                        <LoyaltyProgramHistoryDetails />
-                    </Route>
-                    <Route exact path={AppRoutes.tokenHistoryDetails}>
-                        <TokenHistoryDetails />
-                    </Route>
-                    <Route exact path={AppRoutes.reward}>
-                        <Rewards />
-                    </Route>
-                    <Route exact path={AppRoutes.spinner}>
-                        <Spinner />
-                    </Route>
-                    <Route exact path={AppRoutes.buy}>
-                        <Buy />
-                    </Route>
-                    <Route exact path={AppRoutes.landing}>
-                        <Landing />
-                    </Route>
-                    <Route exact path={AppRoutes.authCallback}>
-                        <AuthCallback />
-                    </Route>
-                    <Redirect exact from='/' to={AppRoutes.landing} />
-                </IonRouterOutlet>
+                {routes}
                 <IonTabBar
                     id='app-tab-bar'
                     slot="bottom"
                     className={styles.tabBar}>
                     <IonTabButton tab="dashboard" href={AppRoutes.dashboard}>
-                        <IonIcon icon={gridOutline} />
+                        <DashboardIcon isFilled={pathname == AppRoutes.dashboard} />
                         <IonLabel>Dashboard</IonLabel>
                     </IonTabButton>
 
                     <IonTabButton tab="reward" href={AppRoutes.reward}>
-                        <RewardIcon />
+                        <RewardIcon isFilled={pathname == AppRoutes.reward} />
                         <IonLabel>Rewards</IonLabel>
                     </IonTabButton>
 
@@ -119,12 +126,12 @@ const TabMenu: React.FC = () => {
                     </IonTabButton>
 
                     <IonTabButton tab="buy" href={AppRoutes.buy}>
-                        <IonIcon icon={walletOutline} />
+                        <BuyIcon isFilled={pathname == AppRoutes.buy} />
                         <IonLabel>Buy</IonLabel>
                     </IonTabButton>
 
                     <IonTabButton tab="account" href={AppRoutes.account}>
-                        <IonIcon icon={personCircleOutline} />
+                        <AccountIcon isFilled={pathname == AppRoutes.account} />
                         <IonLabel>Account</IonLabel>
                     </IonTabButton>
                 </IonTabBar>
@@ -132,10 +139,12 @@ const TabMenu: React.FC = () => {
             </IonTabs>
             {playButton}
         </>
-    ), [])
+    ), [pathname])
 
     return (
-        <>{tabRoutes}</>
+        <>
+            {tabRoutes}
+        </>
     )
 }
 

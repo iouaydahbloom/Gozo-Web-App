@@ -132,7 +132,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
                                 size='s'
                                 type={`${isConnected ? 'success' : 'dark'}`}
                                 onClick={handleConnection}
-                                disabled={isUpdating}>
+                                loading={isUpdating}>
                                 {isConnected ? 'Disconnect' : 'Connect'}
                             </PrimaryButton>
                         </div>
@@ -144,7 +144,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
     }
 
     return (
-        <div className={styles.container} style={{background: item?.brand?.color1}}>
+        <div className={styles.container} style={{ background: item?.brand?.color1 }}>
             <div className={styles.togglerContainer}
                 onClick={() => setIsSelected(!isSelected)}>
                 <div className={styles.id}>

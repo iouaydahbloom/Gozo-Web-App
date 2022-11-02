@@ -1,5 +1,4 @@
-import { IonIcon, IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, useIonRouter } from '@ionic/react';
-import { grid, gridOutline, gridSharp, personCircleOutline, walletOutline } from 'ionicons/icons';
+import { IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, useIonRouter } from '@ionic/react';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Redirect, Route, useLocation } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';

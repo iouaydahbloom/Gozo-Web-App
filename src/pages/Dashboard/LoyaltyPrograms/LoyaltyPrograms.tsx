@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { UserLoyaltyProgram } from '../../../models/loyaltyProgram';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import { IonIcon } from '@ionic/react';

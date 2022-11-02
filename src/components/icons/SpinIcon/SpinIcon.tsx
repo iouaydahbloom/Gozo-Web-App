@@ -1,10 +1,16 @@
 import { IonIcon } from "@ionic/react"
+import { memo } from "react";
 import { IconProps } from "../iconProps"
 
-const SpinIcon: React.FC<IconProps> = ({color, size, className}) => {
+const SpinIconComponent: React.FC<IconProps> = ({ color, size, className, isFilled }) => {
     return (
-        <IonIcon icon='assets/icon/spin-icon.svg' className={className} color={color} size={size}/>
+        <IonIcon
+            icon={isFilled ? 'assets/icon/play-filled.svg' : 'assets/icon/play.svg'}
+            className={className}
+            color={color}
+            size={size} />
     )
 }
 
-export default SpinIcon
+const SpinIcon = memo(SpinIconComponent);
+export default SpinIcon;

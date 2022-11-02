@@ -1,6 +1,5 @@
-import { IonIcon, IonPage, IonToggle } from '@ionic/react';
-import { helpCircleOutline, invertModeOutline, lockClosedOutline, logOutOutline, notificationsOutline, peopleOutline, personOutline, readerOutline, volumeHighOutline } from 'ionicons/icons';
-import React from 'react'
+import { IonPage, IonToggle } from '@ionic/react';
+import React from 'react';
 import { useHistory } from 'react-router';
 import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
@@ -10,11 +9,32 @@ import useAuthentication from '../../hooks/useAuthentication';
 import styles from './account.module.scss';
 import AccountItem from './AccountItem/AccountItem';
 import useAppDetails from '../../hooks/useAppDetails';
+import ProfileIcon from '../../components/icons/ProfileIcon/ProfileIcon';
+import TransactionHistoryIcon from '../../components/icons/TransactionHistoryIcon/TransactionHistoryIcon';
+import ReferFriendsIcon from '../../components/icons/ReferFriendsIcon/ReferFriendsIcon';
+import EnableSoundsIcon from '../../components/icons/EnableSoundsIcon/EnableSoundsIcon';
+import PushNotificationsIcon from '../../components/icons/PushNotificationsIcon/PushNotificationsIcon';
+import SecurityIcon from '../../components/icons/SecurityIcon/SecurityIcon';
+import LightDarkIcon from '../../components/icons/LightDarkIcon/LightDarkIcon';
+import HelpCenterIcon from '../../components/icons/HelpCenterIcon/HelpCenterIcon';
+import LogoutIcon from '../../components/icons/LogoutIcon/LogoutIcon';
+import useConfirmation from '../../hooks/useConfirmation';
 
 const Account: React.FC = () => {
     const { push } = useHistory();
     const { logout } = useAuthentication();
     const { appVersion } = useAppDetails();
+    const { confirm } = useConfirmation();
+
+    function handleLogout() {
+        confirm({
+            message: 'Are you sure you want to logout ?',
+            title: 'Logout',
+            onConfirmed: () => {
+                logout();
+            }
+        })
+    }
 
     return (
         <IonPage>
@@ -25,18 +45,18 @@ const Account: React.FC = () => {
                     <PrimaryTypography size='l'>Profile</PrimaryTypography>
                     <br />
                     <AccountItem
-                        icon={<IonIcon className={styles.customIcon} icon={personOutline} />}
+                        icon={<ProfileIcon />}
                         text='Profile Details'
                         onClick={() => { }}
                         isDisabled
                     />
                     <AccountItem
-                        icon={<IonIcon icon={readerOutline} />}
+                        icon={<TransactionHistoryIcon />}
                         text='Transaction History'
                         onClick={() => push(AppRoutes.transactionHistory)}
                     />
                     <AccountItem
-                        icon={<IonIcon icon={peopleOutline} />}
+                        icon={<ReferFriendsIcon />}
                         text='Refer to a Friend'
                         onClick={() => { }}
                         isDisabled
@@ -46,39 +66,39 @@ const Account: React.FC = () => {
                     <PrimaryTypography size='l'>Settings</PrimaryTypography>
                     <br />
                     <AccountItem
-                        icon={<IonIcon icon={volumeHighOutline} />}
+                        icon={<EnableSoundsIcon />}
                         text='Enable Sounds'
                         customEndSlot={<IonToggle disabled checked={false}></IonToggle>}
                         isDisabled
                     />
                     <AccountItem
-                        icon={<IonIcon icon={notificationsOutline} />}
+                        icon={<PushNotificationsIcon />}
                         text='Enable Push Notifications'
                         customEndSlot={<IonToggle disabled checked={false}></IonToggle>}
                         isDisabled
                     />
                     <AccountItem
-                        icon={<IonIcon icon={lockClosedOutline} />}
+                        icon={<SecurityIcon />}
                         text='Security'
                         onClick={() => { }}
                         isDisabled
                     />
                     <AccountItem
-                        icon={<IonIcon icon={invertModeOutline} />}
+                        icon={<LightDarkIcon />}
                         text='Light/ Dark Mode'
                         customEndSlot={<IonToggle disabled checked={false}></IonToggle>}
                         isDisabled
                     />
                     <AccountItem
-                        icon={<IonIcon icon={helpCircleOutline} />}
+                        icon={<HelpCenterIcon />}
                         text='Help Center'
                         onClick={() => { }}
                         isDisabled
                     />
                     <AccountItem
-                        icon={<IonIcon icon={logOutOutline} />}
+                        icon={<LogoutIcon />}
                         text='Log Out'
-                        onClick={logout}
+                        onClick={handleLogout}
                     />
                 </div>
 

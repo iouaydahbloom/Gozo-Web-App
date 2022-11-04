@@ -12,12 +12,9 @@ npm install
 
 ## Deployment
 ### Android
-* First time building android package, For Package **@awesome-cordova-plugins/barcode-scanner**
-
-Change the way to use this plugin in: **Android Studio > Project Structure > Dependencies**
 
 * Update build version ex: (1.1) in
-**android/app/build.gradle**
+**android/app/build.gradle** on each build
 
 ```gradle
 versionCode 1
@@ -29,6 +26,8 @@ versionName "1.2"
 ionic capacitor build android
 ```
 Open Android Studio:
+
+* First time building android package, For Package **@awesome-cordova-plugins/barcode-scanner**, Change the way to use this plugin in: **Android Studio > Project Structure > Dependencies**
 * Build APK
 * Locate APK
 * Rename APK to **GOZO-{versionName}.apk**

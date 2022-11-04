@@ -14,7 +14,7 @@ const SendCrypto: React.FC = () => {
 
     const [receiver, setReceiver] = useState('');
     const [amount, setAmount] = useState('');
-    const { transfer, transferFee, executing } = useBlockchainTransfer(receiver, amount);
+    const { transfer, transferFee, isEstimatingTransferFee, executing } = useBlockchainTransfer(receiver, amount);
     const { presentFailure } = useToast();
     const { scan } = useBarcodeScanner();
 
@@ -57,6 +57,7 @@ const SendCrypto: React.FC = () => {
 
             <TransactionDetails
                 hasMinimumValue={false}
+                isEstimatingFee={isEstimatingTransferFee}
                 showFeeEstimation={true}
                 estimatedFee={transferFee}
                 estimatedFeeUnit='GZT'

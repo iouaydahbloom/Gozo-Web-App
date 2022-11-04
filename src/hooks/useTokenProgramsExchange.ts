@@ -29,6 +29,7 @@ const useTokenProgramsExchange = () => {
     const { walletAddress } = useDapp();
     const [minimumValue, setMinimumValue] = useState<number>();
     const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
+    const [isEstimatingGasFee, setIsEstimatingGasFee] = useState(false);
     const [direction, setDirection] = useState<'t2p' | 'p2t'>('t2p');
     const { membership } = useMemberShip(defaultProgram?.currency.loyaltyCurrency);
 
@@ -76,13 +77,22 @@ const useTokenProgramsExchange = () => {
     }, [])
 
     const estimateTokenTransferFee = useCallback(async () => {
-        const estimatedGasFee = await estimate(
-            appConfig.tokenContract,
-            contractsAbi.erc20,
-            'transferToOwner',
-            [tokenQuantityInWei]
-        );
-        setEstimatedGasFee(estimatedGasFee);
+        try {
+            setIsEstimatingGasFee(true);
+            const estimatedGasFee = await estimate(
+                appConfig.tokenContract,
+                contractsAbi.erc20,
+                'transferToOwner',
+                [0]
+            );
+            setEstimatedGasFee(estimatedGasFee);
+        }
+        catch (error: any) {
+            presentFailure(error.message);
+        }
+        finally {
+            setIsEstimatingGasFee(false)
+        }
     }, [])
 
     /**
@@ -178,6 +188,7 @@ const useTokenProgramsExchange = () => {
         direction: direction,
         minimumValue,
         estimatedGasFee,
+        isEstimatingGasFee,
         isDisabled: direction == 't2p' ? !tokenQuantity || tokenQuantity == 0 : !programQuantity || programQuantity == 0,
         toggleDirection: () => setDirection(prev => prev == 't2p' ? 'p2t' : 't2p'),
         pointsBalance: membership?.balance,

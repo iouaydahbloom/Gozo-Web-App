@@ -82,6 +82,9 @@
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
     "eject": "react-scripts eject"
   },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -105,7 +108,8 @@
     "@types/eth-sig-util": "^2.1.1",
     "@types/lodash": "^4.14.184",
     "@types/react-tabs": "^5.0.5",
-    "rollup": "^2.79.1"
+    "rollup": "^2.79.1",
+    "react-error-overlay": "6.0.9"
   },
   "description": "An Ionic project"
 }

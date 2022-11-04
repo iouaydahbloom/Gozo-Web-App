@@ -11,7 +11,8 @@ const SwapTokens: React.FC = () => {
 
     const { tokenOptions, programOptions, token, tokenQuantity, setTokenQuantity, program,
         programQuantity, setProgramQuantity, exchanging, exchange, toggleDirection, direction,
-        minimumValue, estimatedGasFee, isDisabled, simulating, pointsBalance, tokensBalance } = useTokenProgramsExchange();
+        minimumValue, estimatedGasFee, isEstimatingGasFee, isDisabled, simulating, pointsBalance, 
+        tokensBalance } = useTokenProgramsExchange();
 
     const renderTokensField = useCallback((label: string, isDisabled: boolean, withAvailability: boolean, availability?: number) => (
         <SwapField
@@ -57,6 +58,7 @@ const SwapTokens: React.FC = () => {
                 hasMinimumValue={true}
                 minimumValue={minimumValue}
                 showFeeEstimation={direction == "t2p"}
+                isEstimatingFee={isEstimatingGasFee}
                 estimatedFee={estimatedGasFee}
                 estimatedFeeUnit='GZT'
                 notification={direction == "t2p" ? 'Transaction might take around 1 min' : ''}

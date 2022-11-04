@@ -5,6 +5,7 @@ import styles from './transactionDetails.module.scss';
 
 interface Props {
     showFeeEstimation: boolean,
+    isEstimatingFee: boolean,
     estimatedFee?: number,
     estimatedFeeUnit?: string,
     hasMinimumValue: boolean,
@@ -14,6 +15,7 @@ interface Props {
 
 const TransactionDetails: React.FC<Props> = ({
     showFeeEstimation,
+    isEstimatingFee,
     estimatedFee,
     estimatedFeeUnit,
     hasMinimumValue,
@@ -26,7 +28,9 @@ const TransactionDetails: React.FC<Props> = ({
                 showFeeEstimation && <div className={styles.gasFeeContainer}>
                     <PrimaryTypography customClassName={styles.gasFeeTitle} isBold>Gas Fee</PrimaryTypography>
                     <PrimaryTypography customClassName={styles.gasFeeValue} isBold>
-                        {!estimatedFee ? <IonSpinner color='light' className={styles.spinner} /> : estimatedFee} {estimatedFeeUnit}
+                        {isEstimatingFee ?
+                            <IonSpinner color='light' className={styles.spinner} /> :
+                            estimatedFee} {estimatedFeeUnit}
                     </PrimaryTypography>
                 </div>
             }

@@ -1,5 +1,7 @@
 import ethSigUtil from 'eth-sig-util';
-import { utils } from 'ethers';
+import { BigNumber, Contract, ethers, utils } from 'ethers';
+import { appConfig } from '../constants/appConfig';
+import { contractsAbi } from '../constants/contractsAbis';
 
 const EIP712Domain = [
     { name: 'name', type: 'string' },
@@ -49,6 +51,17 @@ async function signTypedData(signer: any, from: any, data: any) {
     return await signer.send(method, [from, argData]);
 }
 
+async function estimateExecutionFee(contractAddress: Contract, fn: string, params: any[]) {
+    let gasLimit: BigNumber;
+    try {
+        gasLimit = await contractAddress.estimateGas[fn](...params);
+    } catch (error: any) {
+        throw new Error('Executed amount exceeds balance');
+    }
+
+    return gasLimit;
+}
+
 export async function buildRequest(forwarder: any, input: any, gas: any) {
     const nonce = await forwarder.getNonce(input.from).then((nonce: any) => nonce.toString());
     return { value: 0, gas: utils.formatUnits(gas, 'wei'), nonce, ...input };
@@ -60,9 +73,28 @@ export async function buildTypedData(forwarder: any, request: any) {
     return { ...typeData, message: request };
 }
 
-export async function signMetaTxRequest(signer: any, forwarder: any, gasLimit: any, input: any) {
-    const request = await buildRequest(forwarder, input, gasLimit);
+export async function signMetaTxRequest(
+    provider: any,
+    signer: any,
+    requestData: {
+        from: string,
+        contract: Contract,
+        contractInterface: ethers.utils.Interface,
+        method: string,
+        params: any
+    }
+) {
+    const forwarder = new Contract(appConfig.forwarderContract, contractsAbi.forwarder, signer);
+    const gasLimit = await estimateExecutionFee(requestData.contract, requestData.method, requestData.params);
+    const request = await buildRequest(
+        forwarder,
+        {
+            from: requestData.from,
+            to: requestData.contract.address,
+            data: requestData.contractInterface.encodeFunctionData(requestData.method, requestData.params)
+        },
+        gasLimit);
     const toSign = await buildTypedData(forwarder, request);
-    const signature = await signTypedData(signer, input.from, toSign);
+    const signature = await signTypedData(provider, requestData.from, toSign);
     return { signature, request };
 }

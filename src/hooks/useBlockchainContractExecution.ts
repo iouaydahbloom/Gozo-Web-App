@@ -34,16 +34,18 @@ const useBlockchainContractExecution = () => {
         isEstimating: boolean = false,
         skipFees: boolean = false
     ): Promise<any> {
-        const forwarder = new ethers.Contract(appConfig.forwarderContract, contractsAbi.forwarder, getProviderSigner());
         const contractInterface = new ethers.utils.Interface(abi);
         const recipientContract = new ethers.Contract(contractAddress, abi, getProviderSigner());
-        const gasLimit = await estimateExecutionFee(recipientContract, fn, params);
-
-        const { request, signature } = await signMetaTxRequest(rpcProvider, forwarder, gasLimit, {
-            from: walletAddress,
-            to: contractAddress,
-            data: contractInterface.encodeFunctionData(fn, params)
-        });
+        const { request, signature } = await signMetaTxRequest(
+            rpcProvider,
+            getProviderSigner(),
+            {
+                from: walletAddress ?? '',
+                contract: recipientContract,
+                contractInterface: contractInterface,
+                method: fn,
+                params
+            });
 
         return fetch(appConfig.relayAutoTaskUrl, {
             method: 'POST',
@@ -127,17 +129,6 @@ const useBlockchainContractExecution = () => {
         }
 
         contract.on(eventName, callBack);
-    }
-
-    async function estimateExecutionFee(contractAddress: Contract, fn: string, params: any[]) {
-        let gasLimit: BigNumber;
-        try {
-            gasLimit = await contractAddress.estimateGas[fn](...params);
-        } catch (error: any) {
-            throw new Error('Executed amount exceeds balance');
-        }
-
-        return gasLimit;
     }
 
     return {

@@ -1,8 +1,37 @@
-For Package @awesome-cordova-plugins/barcode-scanner
-Change the way to use this plugin in:
-Android Studio > Project Structure > Dependencies and after this, it worked as expected.
+# GOZO IONIC APP
 
-On each new build:
-Update build version for
-1) android: android/app/build.gradle
-2) ios: later ...
+Gozo ionic APP is a frontend Ionic React mobile application.
+
+## Installation
+
+use node version 14.18.1 for a compatible usage.
+
+```bash
+npm install
+```
+
+## Deployment
+### Android
+* First time building android package, For Package **@awesome-cordova-plugins/barcode-scanner**
+
+Change the way to use this plugin in: **Android Studio > Project Structure > Dependencies**
+
+* Update build version ex: (1.1) in
+**android/app/build.gradle**
+
+```gradle
+versionCode 1
+versionName "1.2"
+```
+
+* Create an android build
+```bash
+ionic capacitor build android
+```
+Open Android Studio:
+* Build APK
+* Locate APK
+* Rename APK to **GOZO-{versionName}.apk**
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)

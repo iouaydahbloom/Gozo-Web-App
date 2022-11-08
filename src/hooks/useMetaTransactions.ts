@@ -54,10 +54,10 @@ const useMetaTransactions = () => {
         return await signer.send(method, [from, argData]);
     }
 
-    async function estimateExecutionFee(contractAddress: Contract, fn: string, params: any[]) {
+    async function estimateExecutionFee(contract: Contract, fn: string, params: any[]) {
         let gasLimit: BigNumber;
         try {
-            gasLimit = await contractAddress.estimateGas[fn](...params);
+            gasLimit = await contract.estimateGas[fn](...params);
         } catch (error: any) {
             throw new Error('Executed amount exceeds balance');
         }

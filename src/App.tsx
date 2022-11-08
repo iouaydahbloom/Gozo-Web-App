@@ -33,7 +33,7 @@ const App: React.FC = () => {
 
   const { isSessionReady } = useContext(sessionContext);
   const { isReady: isOnboardingStateReady } = useOnBoardingPreview();
-  const { isReady } = useDapp();
+  const { isReady: isDappReady } = useDapp();
 
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      {(isSessionReady && isOnboardingStateReady && isReady) && <IonApp>
+      {(isSessionReady && isOnboardingStateReady && isDappReady) && <IonApp>
         <IonReactRouter>
           <TabMenu />
         </IonReactRouter>

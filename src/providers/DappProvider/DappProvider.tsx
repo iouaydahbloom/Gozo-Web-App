@@ -81,8 +81,8 @@ const DappProvider: React.FC = ({ children }) => {
         isReady,
         tokenContractAddress: contractsMetadata.tokenContractAddress,
         gameContractAddress: contractsMetadata.gameContractAddress,
-        relayerContractAddress: contractsMetadata.tokenContractAddress,
-        forwarderContractAddress: contractsMetadata.tokenContractAddress,
+        relayerContractAddress: contractsMetadata.relayerContractAddress,
+        forwarderContractAddress: contractsMetadata.forwarderContractAddress,
         tokenContractAbi: contractsMetadata.tokenContractAbi,
         gameContractAbi: contractsMetadata.gameContractAbi,
         forwarderContractAbi: contractsMetadata.forwarderContractAbi

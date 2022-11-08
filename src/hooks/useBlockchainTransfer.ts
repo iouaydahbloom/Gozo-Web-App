@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useMoralis } from 'react-moralis';
-import { appConfig } from '../constants/appConfig';
-import { contractsAbi } from '../constants/contractsAbis';
 import { useDapp } from '../providers/DappProvider/DappProvider';
 import useBlockchainContractExecution from './useBlockchainContractExecution';
 import useToast from './useToast';
@@ -13,13 +11,13 @@ const useBlockchainTransfer = (receiver: string, amount: string | number) => {
     const { presentSuccess, presentFailure } = useToast();
     const [transferFee, setTransferFee] = useState<number>();
     const [isEstimatingTransferFee, setIsEstimatingTransferFee] = useState(false);
-    const { walletAddress } = useDapp();
+    const { walletAddress, tokenContractAddress, tokenContractAbi } = useDapp();
 
     useEffect(() => {
         setIsEstimatingTransferFee(true);
         estimate(
-            appConfig.tokenContract,
-            contractsAbi.erc20,
+            tokenContractAddress,
+            tokenContractAbi,
             'transfer',
             [walletAddress, 0]
         )
@@ -36,8 +34,8 @@ const useBlockchainTransfer = (receiver: string, amount: string | number) => {
 
     return {
         transfer: () => execute(
-            appConfig.tokenContract,
-            contractsAbi.erc20,
+            tokenContractAddress,
+            tokenContractAbi,
             'transfer',
             [receiver, amount != "" ? Moralis.Units.Token(amount) : 0],
             () => presentSuccess('Successfully Transfered'),

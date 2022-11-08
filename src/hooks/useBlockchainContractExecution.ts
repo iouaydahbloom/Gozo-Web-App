@@ -1,24 +1,24 @@
 import useMagicAuth from "./useMagicAuth";
-import { BigNumber, Contract, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { useState } from "react";
 import { appConfig } from "../constants/appConfig";
 import { useIonViewDidLeave } from "@ionic/react";
-import { signMetaTxRequest } from "../helpers/metaTransactionsSigner";
-import { contractsAbi } from "../constants/contractsAbis";
 import { useDapp } from "../providers/DappProvider/DappProvider";
 import { useMoralis } from "react-moralis";
 import useConfirmation from "./useConfirmation";
 import useToast from "./useToast";
+import useMetaTransactions from "./useMetaTransactions";
 
 const useBlockchainContractExecution = () => {
 
-    const { walletAddress } = useDapp();
+    const { walletAddress, tokenContractAddress, tokenContractAbi, relayerContractAddress } = useDapp();
     const { rpcProvider, getProviderSigner } = useMagicAuth();
     const [executing, setExecuting] = useState(false);
     const [contracts, setContracts] = useState<ethers.Contract[]>([]);
     const { Moralis } = useMoralis();
     const { confirm } = useConfirmation();
     const { presentInfo } = useToast();
+    const { signMetaTxRequest } = useMetaTransactions();
 
     useIonViewDidLeave(() => {
         contracts?.forEach(contract => {
@@ -71,10 +71,10 @@ const useBlockchainContractExecution = () => {
         if (!fees) return;
         //get approval from user to transfer tokens by the relayer as gas fees
         return sendRelayedRequest(
-            appConfig.tokenContract,
-            contractsAbi.erc20,
+            tokenContractAddress,
+            tokenContractAbi,
             'approve',
-            [appConfig.relayerContract, Moralis.Units.Token(fees, 18)],
+            [relayerContractAddress, Moralis.Units.Token(fees, 18)],
             false,
             true
         );

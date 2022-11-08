@@ -10,8 +10,6 @@ import { modalController } from '@ionic/core';
 import SpinSuccess from './SpinSuccessModal/SpinSuccess';
 import { LoyaltyProgram, UserLoyaltyProgram } from '../../models/loyaltyProgram';
 import useBlockchainContractExecution from '../../hooks/useBlockchainContractExecution';
-import { appConfig } from '../../constants/appConfig';
-import { contractsAbi } from '../../constants/contractsAbis';
 import useSearchParams from '../../hooks/useSearchParams';
 import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
 import usePlayGame from '../../hooks/usePlayGame';
@@ -54,7 +52,8 @@ const Spinner: React.FC = () => {
         "Prizes Being Generated",
         "Spin Wheel Powering Up..."
     ];
-    const { currentMessage, start, stop } = useMessagesInterval(displayMessages)
+    const { currentMessage, start, stop } = useMessagesInterval(displayMessages);
+    const { gameContractAddress, gameContractAbi } = useDapp();
 
     const getMySelectedProgram = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0 && !!loyaltyProgram) {
@@ -121,7 +120,6 @@ const Spinner: React.FC = () => {
     }
 
     function listenerCallBack(id: any, amount: any, playerAddress: string, gameToken: string) {
-        // console.log("listening to event prizeSelected with id: ${0}, amount: ${1}, playerAddress: ${2}, gameToken: ${3}", id, amount, playerAddress, gameToken);
         console.log("listening to event prizeSelected with id:", id)
         if (playerAddress.toLocaleLowerCase() == walletAddress?.toLocaleLowerCase()) {
             stop()
@@ -201,8 +199,8 @@ const Spinner: React.FC = () => {
 
     useIonViewWillEnter(() => {
         addListener(
-            appConfig.gozoGameContract,
-            contractsAbi.game,
+            gameContractAddress,
+            gameContractAbi,
             'prizeSelected',
             listenerCallBack
         );

@@ -1,8 +1,6 @@
 import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMoralis } from "react-moralis";
-import { appConfig } from "../constants/appConfig";
-import { contractsAbi } from "../constants/contractsAbis";
 import { ERC20Asset } from "../models/assets/ERC20Asset";
 import { UserLoyaltyProgram } from "../models/loyaltyProgram";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
@@ -26,7 +24,7 @@ const useTokenProgramsExchange = () => {
     const { defaultAsset } = useERC20Assets();
     const { presentFailure, presentSuccess } = useToast();
     const { Moralis } = useMoralis();
-    const { walletAddress } = useDapp();
+    const { walletAddress, tokenContractAddress, tokenContractAbi } = useDapp();
     const [minimumValue, setMinimumValue] = useState<number>();
     const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
     const [isEstimatingGasFee, setIsEstimatingGasFee] = useState(false);
@@ -46,8 +44,8 @@ const useTokenProgramsExchange = () => {
     const executeT2PExchange = useCallback(async () => {
         if (tokenQuantity && tokenQuantity <= 0) return;
         return transferTokens(
-            appConfig.tokenContract,
-            contractsAbi.erc20,
+            tokenContractAddress,
+            tokenContractAbi,
             'transferToOwner',
             [tokenQuantityInWei],
             () => presentSuccess('Exchanged successfully'),
@@ -80,8 +78,8 @@ const useTokenProgramsExchange = () => {
         try {
             setIsEstimatingGasFee(true);
             const estimatedGasFee = await estimate(
-                appConfig.tokenContract,
-                contractsAbi.erc20,
+                tokenContractAddress,
+                tokenContractAbi,
                 'transferToOwner',
                 [0]
             );

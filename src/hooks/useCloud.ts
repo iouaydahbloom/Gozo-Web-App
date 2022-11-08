@@ -32,7 +32,7 @@ const useCloud = () => {
         return updatedParams;
     }, [session?.user.accessToken])
 
-    const run = useCallback(async <T, Y>(functionName: string, params: any, mapper: (args: Y) => T, isPrivate: boolean = false): Promise<CloudResponse<T>> => {
+    const run = useCallback(async <T, Y>(functionName: string, params: any, mapper?: (args: Y) => T, isPrivate: boolean = false): Promise<CloudResponse<T>> => {
         return Moralis.Cloud
             .run(functionName, resolveParams(params, isPrivate))
             .then((result: SuccessResponse<Y>) => {

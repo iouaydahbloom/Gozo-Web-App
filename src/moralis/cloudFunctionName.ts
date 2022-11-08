@@ -25,5 +25,6 @@ export const cloudFunctionName = {
     reward: 'reward',
     playWithSuperPoints: 'play_with_super_points',
     minimumT2Pexchange: 'minimum_t2p_exchange',
-    minimumP2Texchange: 'minimum_p2t_exchange'
+    minimumP2Texchange: 'minimum_p2t_exchange',
+    web3Dependencies: 'web3_dependencies'
 }

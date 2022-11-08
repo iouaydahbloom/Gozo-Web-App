@@ -25,6 +25,7 @@ import { useContext, useEffect } from 'react';
 import { sessionContext } from './providers/SessionProvider/sessionContext';
 import { SplashScreen } from '@capacitor/splash-screen';
 import useOnBoardingPreview from './hooks/useOnBoardingPreview';
+import { useDapp } from './providers/DappProvider/DappProvider';
 
 setupIonicReact();
 
@@ -32,6 +33,7 @@ const App: React.FC = () => {
 
   const { isSessionReady } = useContext(sessionContext);
   const { isReady: isOnboardingStateReady } = useOnBoardingPreview();
+  const { isReady } = useDapp();
 
 
   useEffect(() => {
@@ -42,7 +44,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      {(isSessionReady && isOnboardingStateReady) && <IonApp>
+      {(isSessionReady && isOnboardingStateReady && isReady) && <IonApp>
         <IonReactRouter>
           <TabMenu />
         </IonReactRouter>

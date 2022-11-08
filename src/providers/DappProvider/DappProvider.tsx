@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMoralis, useMoralisWeb3Api } from 'react-moralis';
 import { chainHex } from '../../helpers/networks';
-import MoralisDappContext from './dappContext';
+import MoralisDappContext, { ContractsMetadata } from './dappContext';
 import { ERC20Metadata } from '../../models/assets/ERC20Asset';
-import { appConfig } from '../../constants/appConfig';
 import useAuthentication from '../../hooks/useAuthentication';
 import dapContext from './dappContext';
+import useCloud from '../../hooks/useCloud';
+import { cloudFunctionName } from '../../moralis/cloudFunctionName';
 
 const DappProvider: React.FC = ({ children }) => {
   const { isInitialized } = useMoralis();
@@ -13,28 +14,58 @@ const DappProvider: React.FC = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [defaultTokenMetadata, setDefaultTokenMetadata] = useState<ERC20Metadata | null>(null);
   const Web3Api = useMoralisWeb3Api();
+  const [isReady, setIsReady] = useState(false);
+  const [contractsMetadata, setContractsMetadata] = useState<ContractsMetadata>({
+    tokenContractAddress: '',
+    gameContractAddress: '',
+    relayerContractAddress: '',
+    forwarderContractAddress: '',
+    tokenContractAbi: [],
+    gameContractAbi: [],
+    forwarderContractAbi: []
+  })
+  const { run } = useCloud();
 
-  const getDefaultTokenMetadata = useCallback(() => {
+  const getDefaultTokenMetadata = useCallback(async (tokenAddress: string) => {
     const options = {
       chain: chainHex.Fuji,
-      addresses: appConfig.tokenContract
+      addresses: tokenAddress
     };
-    Web3Api.token
+    return Web3Api.token
       .getTokenMetadata(options as any)
       .then(tokens => {
         if (tokens && tokens[0]) {
           setDefaultTokenMetadata(tokens[0]);
+          return tokens[0]
         }
+
+        return null
       })
       .catch(error => {
         console.log('Error: get default token metadata ', error);
       })
   }, [])
 
+  const getAppContractsMetadata = useCallback(async () => {
+    const web3DependenciesResult = await run(cloudFunctionName.web3Dependencies, null, res => res as ContractsMetadata)
+    if (!web3DependenciesResult.isSuccess) return null;
+    setContractsMetadata(web3DependenciesResult.data);
+    return web3DependenciesResult.data;
+  }, [])
+
   useEffect(() => {
-    if (isInitialized) {
-      getDefaultTokenMetadata();
-    }
+    if (!isInitialized) return;
+
+    getAppContractsMetadata()
+      .then(data => {
+        return data ?
+          getDefaultTokenMetadata(data.tokenContractAddress)
+            .then(() => true) :
+          false;
+      })
+      .then(success => {
+        setIsReady(success);
+      })
   }, [isInitialized])
 
   useEffect(() => {
@@ -46,7 +77,15 @@ const DappProvider: React.FC = ({ children }) => {
       value={{
         walletAddress,
         chainId: chainHex.Fuji,
-        defaultTokenMetadata: defaultTokenMetadata
+        defaultTokenMetadata: defaultTokenMetadata,
+        isReady,
+        tokenContractAddress: contractsMetadata.tokenContractAddress,
+        gameContractAddress: contractsMetadata.gameContractAddress,
+        relayerContractAddress: contractsMetadata.tokenContractAddress,
+        forwarderContractAddress: contractsMetadata.tokenContractAddress,
+        tokenContractAbi: contractsMetadata.tokenContractAbi,
+        gameContractAbi: contractsMetadata.gameContractAbi,
+        forwarderContractAbi: contractsMetadata.forwarderContractAbi
       }}>
       {children}
     </dapContext.Provider>

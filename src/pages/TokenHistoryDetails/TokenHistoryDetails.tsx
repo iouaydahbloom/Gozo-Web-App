@@ -4,15 +4,15 @@ import { useLocation } from "react-router"
 import SecondaryHeader from "../../components/headers/SecondaryHeader/SecondaryHeader"
 import PrimaryContainer from "../../components/layout/PrimaryContainer/PrimaryContainer"
 import PageLoader from "../../components/loaders/PageLoader/PageLoader"
-import { LoyaltyMemberHistory } from "../../models/loyaltyMember"
+import { ERC20Transfer } from "../../models/assets/ERC20Transfer"
 import { useDapp } from "../../providers/DappProvider/DappProvider"
 import DetailItem from "../Common/DetailItem/DetailItem"
 
 
 const TokenHistoryDetails: React.FC = () => {
   const location = useLocation();
-  const transaction = location.state
-  const [historyField, setHistoryField] = useState<LoyaltyMemberHistory>();
+  const transaction = location.state as ERC20Transfer
+  const [historyField, setHistoryField] = useState<ERC20Transfer>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { walletAddress } = useDapp();
 
@@ -25,11 +25,11 @@ const TokenHistoryDetails: React.FC = () => {
     {key: 'from_address', label: 'From Address'},
     {key: 'to_address', label: 'To Address'},
     {key: 'transaction_hash', label: 'Transaction Hash'},
-    {key: 'value', label: 'Value'},
+    {key: 'value', label: 'amount'},
   ]
 
   useIonViewWillEnter(() => {
-    setHistoryField(transaction as LoyaltyMemberHistory)
+    setHistoryField(transaction)
   })
 
   useEffect(() => {
@@ -49,12 +49,12 @@ const TokenHistoryDetails: React.FC = () => {
             return <DetailItem 
               key={index} 
               header={keyObj?.label ?? ''} 
-              text={historyField[key as keyof LoyaltyMemberHistory]} 
+              text={historyField[key as keyof ERC20Transfer]} 
               textColor={
-                (key === 'from_address' && walletAddress === historyField[key as keyof LoyaltyMemberHistory]) ?
+                (key === 'from_address' && walletAddress === historyField[key as keyof ERC20Transfer]) ?
                 'danger'
                 :
-                (key === 'to_address' && walletAddress === historyField[key as keyof LoyaltyMemberHistory]) ? 
+                (key === 'to_address' && walletAddress === historyField[key as keyof ERC20Transfer]) ? 
                 'success'
                 :
                 undefined

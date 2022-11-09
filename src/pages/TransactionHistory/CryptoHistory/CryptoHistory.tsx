@@ -20,25 +20,26 @@ const CryptoHistory: React.FC = () => {
             {!isLoadingTransfers ?
                 <PrimaryGrid
                     headers={['Date', 'From', 'To', 'Amount']}
-                    data={eRC20Transfers?.map(hf => (
-                        {
-                            date: formatDate(hf.block_timestamp),
-                            from: walletAddress === hf.from_address ?
+                    data={eRC20Transfers?.map(transfer => {
+                        transfer = { ...transfer, value: Moralis.Units.FromWei(transfer.value, 18) }
+                        return {
+                            date: formatDate(transfer.block_timestamp),
+                            from: walletAddress === transfer.from_address ?
                                 <PrimaryTypography color='danger'>
-                                    {hf.from_address}
+                                    {transfer.from_address}
                                 </PrimaryTypography>
                                 :
-                                hf.from_address,
-                            to: walletAddress === hf.to_address ?
+                                transfer.from_address,
+                            to: walletAddress === transfer.to_address ?
                                 <PrimaryTypography color='success'>
-                                    {hf.to_address}
+                                    {transfer.to_address}
                                 </PrimaryTypography>
                                 :
-                                hf.to_address,
-                            amount: Moralis.Units.FromWei(hf.value, 18),
-                            onClick: () => push(AppRoutes.tokenHistoryDetails, hf)
+                                transfer.to_address,
+                            amount: transfer.value,
+                            onClick: () => push(AppRoutes.tokenHistoryDetails, transfer)
                         }
-                    ))}
+                    })}
                 />
                 :
                 <PageLoader />

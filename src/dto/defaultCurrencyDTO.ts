@@ -1,4 +1,6 @@
 export interface DefaultCurrencyDTO {
-    currency_id: string,
-    curency_display_name: string
+    currencyId: string,
+    currencyDisplayName: string,
+    spinWinGamePointFee: number,
+    currencyLogo: string,
 }

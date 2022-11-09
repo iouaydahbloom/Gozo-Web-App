@@ -6,5 +6,5 @@ export function stringToDate(dateStr: string){
 }
 
 export function formatDate(dateStr : string, format : string = 'MM/DD/YY, h:mm:ss a'){
-    return dateStr && moment(dateStr).format(format);
+    return dateStr && moment.utc(dateStr).local().format(format);
 }

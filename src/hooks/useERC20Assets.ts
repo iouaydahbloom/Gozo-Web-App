@@ -27,7 +27,7 @@ const useERC20Assets = (chain?: string) => {
         address: walletAddress ?? '',
         chain: chain || chainId as any
       })
-      .then((erc20Tokens) => {
+      .then((erc20Tokens: any) => {
         setAssets(erc20Tokens);
         return erc20Tokens;
       })

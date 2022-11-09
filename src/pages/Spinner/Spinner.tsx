@@ -28,15 +28,21 @@ import PrimaryPopover from '../../components/popovers/PrimaryPopover/PrimaryPopo
 import { useDapp } from '../../providers/DappProvider/DappProvider';
 import useMessagesInterval from '../../hooks/useMessagesInterval';
 
+interface IPrize {
+    prizeId: string,
+    gameToken: string
+}
+
 const Spinner: React.FC = () => {
     const search = useSearchParams();
     const { fetchProgram, defaultProgram, loadingProgram } = useLoyaltyPrograms();
     const { getUserLoyaltyPrograms, loadingMyLoyaltyPrograms } = useAssets();
-    const { play, setIsPlaying, isPlaying } = usePlayGame();
+    const { play, setIsPlaying, gameId, isPlaying } = usePlayGame();
     const { fetchPrizes, isLoadingPrizes } = usePrize();
     const id = search.get('program_id')
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
     const [selectedPrizeId, setSelectedPrizeId] = useState<string>('')
+    const [returnedPrize, setReturnedPrize] = useState<IPrize>()
     const [loyaltyProgramId, setLoyaltyProgramId] = useState<string>('')
     const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram>()
     const { membership, fetchMembership } = useMemberShip(loyaltyProgram?.loyaltyCurrency?.id);
@@ -87,6 +93,7 @@ const Spinner: React.FC = () => {
             setSelectedPrizeId('');
             getPrizes()
             fetchMembership();
+            setReturnedPrize(undefined);
         }
     });
 
@@ -122,15 +129,19 @@ const Spinner: React.FC = () => {
     function listenerCallBack(id: any, amount: any, playerAddress: string, gameToken: string) {
         console.log("listening to event prizeSelected with id:", id)
         if (playerAddress.toLocaleLowerCase() == walletAddress?.toLocaleLowerCase()) {
+            const prize: IPrize = {
+                prizeId: id,
+                gameToken: gameToken
+            }
             stop()
-            setSelectedPrizeId(id)
+            setReturnedPrize(prize)
         }
     }
 
     function getMyPrograms() {
         getUserLoyaltyPrograms()
             .then(programs => {
-                if (defaultProgram) programs.push(defaultProgram)
+                programs.push(defaultProgram as UserLoyaltyProgram)
                 setMyLoyaltyPrograms(programs);
             })
     }
@@ -185,6 +196,11 @@ const Spinner: React.FC = () => {
     }
 
     useEffect(() => {
+      if(returnedPrize && returnedPrize.gameToken === gameId) setSelectedPrizeId(returnedPrize.prizeId)
+    }, [returnedPrize])
+    
+
+    useEffect(() => {
         if (selectedPrizeId) {
             stop();
         }
@@ -213,8 +229,8 @@ const Spinner: React.FC = () => {
     })
 
     useEffect(() => {
-        getMyPrograms();
-    }, [])
+        if (defaultProgram) getMyPrograms();
+    }, [defaultProgram])
 
     useEffect(() => {
         getPrizes()
@@ -260,7 +276,8 @@ const Spinner: React.FC = () => {
                                     :
                                     <FortuneWheel
                                         logoAtCenter={loyaltyProgram?.brand?.logo}
-                                        spinDuration={0.3} data={wheelSegmentsOpts}
+                                        spinDuration={0.3} 
+                                        data={wheelSegmentsOpts}
                                         spin={isPlaying}
                                         selectedPrizeId={selectedPrizeId}
                                         onStopSpinning={() => {

@@ -11,10 +11,16 @@ const SwapTokens: React.FC = () => {
 
     const { tokenOptions, programOptions, token, tokenQuantity, setTokenQuantity, program,
         programQuantity, setProgramQuantity, exchanging, exchange, toggleDirection, direction,
-        minimumValue, estimatedGasFee, isEstimatingGasFee, isDisabled, simulating, pointsBalance, 
+        minimumValue, estimatedGasFee, isEstimatingGasFee, isDisabled, simulating, pointsBalance,
         tokensBalance } = useTokenProgramsExchange();
 
-    const renderTokensField = useCallback((label: string, isDisabled: boolean, withAvailability: boolean, availability?: number) => (
+    const renderTokensField = useCallback((
+        label: string,
+        isPassive: boolean,
+        withAvailability: boolean,
+        availability?: number,
+        acceptedValue: boolean = true
+    ) => (
         <SwapField
             label={label}
             options={tokenOptions.map((opt) => (
@@ -23,14 +29,21 @@ const SwapTokens: React.FC = () => {
             quantity={tokenQuantity}
             selectedOption={token?.token_address!}
             onQuantityChange={setTokenQuantity}
-            isPassive={isDisabled}
+            isPassive={isPassive}
             isLoadingQuantity={simulating}
             withAvailability={withAvailability}
             availability={availability}
+            acceptedValue={acceptedValue}
         />
     ), [tokenOptions, tokenQuantity, simulating])
 
-    const renderProgramsField = useCallback((label: string, isDisabled: boolean, withAvailability: boolean, availability?: number) => (
+    const renderProgramsField = useCallback((
+        label: string,
+        isPassive: boolean,
+        withAvailability: boolean,
+        availability?: number,
+        acceptedValue: boolean = true
+    ) => (
         <SwapField
             label={label}
             options={programOptions.map((opt) => (
@@ -39,19 +52,28 @@ const SwapTokens: React.FC = () => {
             quantity={programQuantity}
             selectedOption={program?.currency.loyaltyCurrency!}
             onQuantityChange={setProgramQuantity}
-            isPassive={isDisabled}
+            isPassive={isPassive}
             isLoadingQuantity={simulating}
             withAvailability={withAvailability}
             availability={availability}
+            acceptedValue={acceptedValue}
         />
     ), [programOptions, programQuantity, simulating])
 
     return (
         <div className={styles.swapContainer}>
             <div className={styles.swapControl}>
-                {direction == 't2p' ? renderTokensField('From', false, true, tokensBalance) : renderProgramsField('From', false, true, pointsBalance)}
+                {
+                    direction == 't2p' ?
+                        renderTokensField('From', false, true, tokensBalance, !isDisabled) :
+                        renderProgramsField('From', false, true, pointsBalance, !isDisabled)
+                }
                 <SwapDirection doubleDirection onClick={toggleDirection} />
-                {direction == 'p2t' ? renderTokensField('To', true, false) : renderProgramsField('To', true, false)}
+                {
+                    direction == 'p2t' ?
+                        renderTokensField('To', true, false) :
+                        renderProgramsField('To', true, false)
+                }
             </div>
 
             <TransactionDetails

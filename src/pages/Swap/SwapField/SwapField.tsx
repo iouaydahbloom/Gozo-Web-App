@@ -13,7 +13,8 @@ interface Props {
     isPassive?: boolean,
     isLoadingQuantity?: boolean,
     withAvailability?: boolean,
-    availability?: number
+    availability?: number,
+    acceptedValue?: boolean
 }
 
 const SwapField: React.FC<Props> = ({
@@ -26,7 +27,8 @@ const SwapField: React.FC<Props> = ({
     isPassive = false,
     isLoadingQuantity = false,
     withAvailability = false,
-    availability = 0
+    availability = 0,
+    acceptedValue = true
 }) => {
     return (
         <div className={`${styles.swapFieldContainer}`}>
@@ -41,7 +43,7 @@ const SwapField: React.FC<Props> = ({
                 </div>
                 <div className={styles.inputContainer}>
                     <IonInput
-                        color='light'
+                        color={acceptedValue ? 'light' : 'danger'}
                         className={styles.input}
                         value={quantity}
                         disabled={isPassive}

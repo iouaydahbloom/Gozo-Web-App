@@ -62,7 +62,9 @@ const useTokenProgramsExchange = () => {
         run(cloudFunctionName.simulateT2PExchange, { amount: amount }, (result: any) => result as number, true)
             .then(result => {
                 if (result.isSuccess) onSuccess(result.data);
-                else presentFailure(result.message);
+                else {
+                    onSuccess(0)
+                }
             })
             .finally(() => setSimulating(false))
     }, 1000), [])
@@ -117,7 +119,9 @@ const useTokenProgramsExchange = () => {
         run(cloudFunctionName.simulateP2TExchange, { amount: amount }, (result: any) => result as number)
             .then(result => {
                 if (result.isSuccess) onSuccess(result.data);
-                else presentFailure(result.message);
+                else {
+                    onSuccess(0)
+                }
             })
             .finally(() => setSimulating(false))
     }, 1000), [])
@@ -128,6 +132,15 @@ const useTokenProgramsExchange = () => {
                 if (result.isSuccess) setMinimumValue(result.data);
             })
     }, [])
+
+    const isDisabled = useMemo(() => {
+        if (!tokenQuantity) return true;
+
+        if (direction == 't2p') {
+            return (minimumValue && (tokenQuantity! < minimumValue)) || !tokenQuantity || tokenQuantity == 0;
+        }
+        return (minimumValue && (programQuantity! < minimumValue)) || !programQuantity || programQuantity == 0;
+    }, [tokenQuantity, programQuantity, minimumValue])
 
     /**
      * Lifecycles events
@@ -187,7 +200,7 @@ const useTokenProgramsExchange = () => {
         minimumValue,
         estimatedGasFee,
         isEstimatingGasFee,
-        isDisabled: direction == 't2p' ? !tokenQuantity || tokenQuantity == 0 : !programQuantity || programQuantity == 0,
+        isDisabled,
         toggleDirection: () => setDirection(prev => prev == 't2p' ? 'p2t' : 't2p'),
         pointsBalance: membership?.balance,
         tokensBalance: defaultAsset ? parseFloat(Moralis.Units.FromWei(defaultAsset?.balance, 18)) : 0

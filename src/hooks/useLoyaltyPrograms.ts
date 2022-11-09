@@ -7,6 +7,7 @@ import { currencySettingsContext } from "../providers/CurrencySettingsProvider/c
 import useCloud from "./useCloud";
 import { ProgramFilter } from "../models/data/filter";
 import { PartnershipType } from "../types/exchangeType";
+import { DefaultCurrencyDTO } from "../dto/defaultCurrencyDTO";
 
 const useLoyaltyPrograms = () => {
     const [loadingMyPrograms, setLoadingMyPrograms] = useState(false);
@@ -14,6 +15,16 @@ const useLoyaltyPrograms = () => {
     const [isUpdating, setIsUpdating] = useState(false);
     const { gozoLoyalty } = useContext(currencySettingsContext);
     const { run } = useCloud();
+
+    async function fetchDefaultCurrency() {
+        return run(cloudFunctionName.defaultCurrency,
+            {},
+            (result: DefaultCurrencyDTO) => UserLoyaltyProgram.getFromDefaultCurrencyDTO(result),
+            true)
+            .then(result => {
+                return result.isSuccess ? result.data : null
+            })
+    }
 
     async function getAllAvailablePrograms(filter: ProgramFilter) {
         return run(
@@ -119,6 +130,7 @@ const useLoyaltyPrograms = () => {
         fetchProgram: getProgram,
         loadingMyLoyaltyPrograms: loadingMyPrograms,
         loadingProgram: loadingProgram,
+        fetchDefaultCurrency,
         connectProgram,
         disconnectProgram,
         disconnectPrograms,

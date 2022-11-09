@@ -121,7 +121,7 @@ const TabMenu: React.FC = () => {
                     </IonTabButton>
 
                     <IonTabButton ref={spinnerBtnRef} tab="spinner" href={AppRoutes.spinner}>
-                        <IonLabel style={{ marginBottom: '-25px' }}>Play</IonLabel>
+                        <IonLabel style={{ marginBottom: '-33px' }}>Play</IonLabel>
                     </IonTabButton>
 
                     <IonTabButton tab="buy" href={AppRoutes.buy}>

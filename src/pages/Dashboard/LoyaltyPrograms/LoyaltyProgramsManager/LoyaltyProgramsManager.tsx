@@ -27,18 +27,22 @@ const LoyaltyProgramsManager: React.FC = () => {
         return <LoyaltyProgramManageItem
             item={lp}
             key={index}
+            fetchMyPrograms={() => getMyLoyaltyProgram()}
             myProgram={getMyProgram(lp.partnerId)} />
     }, [programs, myPrograms, searchKey])
 
+    function getMyLoyaltyProgram() {
+        fetchMyLoyaltyPrograms()
+        .then(result => {
+            if (result) {
+                setMyPrograms(result);
+            }
+        })
+        .finally(() => setIsLoadingMyPrograms(false))
+    }
     useEffect(() => {
         setIsLoadingMyPrograms(true)
-        fetchMyLoyaltyPrograms()
-            .then(result => {
-                if (result) {
-                    setMyPrograms(result);
-                }
-            })
-            .finally(() => setIsLoadingMyPrograms(false))
+        getMyLoyaltyProgram()
     }, [])
 
     return (

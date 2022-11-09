@@ -13,11 +13,12 @@ interface Props {
   logoAtCenter?: string
 }
 
+var myWheel: any
+
 const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpinning, spinDuration, logoAtCenter }) => {
   // const [isSpinning, setIsSpinning] = useState(false)
   // const spinner = useRef<Winwheel>();
 
-  var myWheel: any
   useEffect(() => {
 
 
@@ -25,7 +26,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
       'drawText': true,              // Code drawn text can be used with segment images.
       'textAlignment': 'center',
-      'textFontFamily': 'monospace',
+      'textFontFamily': 'Monda',
       // 'textStrokeStyle'   : 'black',
       // 'textLineWidth'     : 3,
       'textFillStyle': 'white',
@@ -33,10 +34,10 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
       // 'drawMode'     : 'image',    // drawMode must be set to image.
       // 'imageDirection': "N",
       // 'imageOverlay': true,
-      'canvasId': 'myCanvas',
+      'canvasId': 'canvas',
       'numSegments': data.length,
       'segments': getOptimizeData(),
-      'textFontSize': 13,
+      'textFontSize': 16,
       'textMargin': 6,
 
       'outerRadius': 170,    // Use these three properties to
@@ -85,9 +86,27 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
 
   function getOptimizeData() {
+    // let canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    // let ctx = canvas.getContext('2d');
+
+    // // Create radial gradient (this works best with the roundness of the wheel)
+    // // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
+    // // Many values should be the centre of the canvas. If the canvas is square can just use the height / 2.
+    // // The remaining values are the radius of the starting circle then the radius of the ending circle.
+    // let canvasCenter = canvas.height / 2;
+    // // x0,y0,r0,x1,y1,r1
+    // let radGradient = ctx && ctx.createRadialGradient(canvasCenter, canvasCenter, 35, canvasCenter, canvasCenter, 170);
+
     let trasformedData: WheelSegment[] = structuredClone(data)
     trasformedData = trasformedData.map((item: WheelSegment) => {
-      item.text = ellipsisTruncate(item.text, 12)
+      // // Add the colour stops - 0.0 should be the first, 1.0 the last, others in between.
+      // radGradient && radGradient.addColorStop(0, item.fillStyle ?? '');
+      // // radGradient && radGradient.addColorStop(1, "red");
+      // radGradient && radGradient.addColorStop(1, item.textFillStyle ?? '');
+      // item.fillStyle = radGradient as any
+      // // console.log("item", item)
+      // // console.log("radGradient", radGradient)
+      item.text = ellipsisTruncate(item.text, 10)
       return item
     })
 
@@ -182,7 +201,9 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
 
   useEffect(() => {
-    if (spin && Object.keys(myWheel).length !== 0 && selectedPrizeId) calculatePrize()
+    if (spin && Object.keys(myWheel).length !== 0 && selectedPrizeId) {
+      calculatePrize()
+    }
   }, [spin, selectedPrizeId])
 
   // useEffect(() => {
@@ -237,7 +258,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
             height="50"
           /> */}
       <canvas
-        id="myCanvas"
+        id="canvas"
         width="400"
         height="400"
       />

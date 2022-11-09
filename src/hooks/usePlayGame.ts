@@ -3,8 +3,11 @@ import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import useCloud from "./useCloud";
 import { useDapp } from "../providers/DappProvider/DappProvider";
 import useToast from "./useToast";
+import { PlayGame } from "../models/playGame";
+import { PlayGameDTO } from "../dto/PlayGameDTO";
 
 const usePlayGame = () => {
+    const [gameToken, setGameToken] = useState<string>('')
     const [isPlaying, setIsPlaying] = useState(false);
     const [error, setError] = useState<string>();
     const { presentFailure } = useToast();
@@ -23,13 +26,15 @@ const usePlayGame = () => {
         return run(cloudFunctionName.playWithSuperPoints,
             params
             ,
-            res => res as boolean,
+            (res : PlayGameDTO) => PlayGame.getFromDTO(res),
             true).then((result) => {
                 if (!result?.isSuccess || !result.data) {
                     if(result?.errors) setError(result.errors?.errors[0]?.message)
                     else setError('Server is busy, try again later')
                     setIsPlaying(false);
                     return;
+                } else {
+                    setGameToken(result.data.gameToken)
                 }
             })
     }
@@ -47,6 +52,7 @@ const usePlayGame = () => {
         play,
         isPlaying,
         setIsPlaying,
+        gameId: gameToken,
         error,
         setError
     }

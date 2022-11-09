@@ -13,14 +13,15 @@ import styles from './loyaltyProgramManageItem.module.scss';
 
 interface Props {
     item: LoyaltyProgram,
-    myProgram: UserLoyaltyProgram | null
+    myProgram: UserLoyaltyProgram | null,
+    fetchMyPrograms?: () => void
 }
 
-const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
-    const [isSelected, setIsSelected] = useState(!!myProgram);
-    const [isConnected, setIsConnected] = useState(!!myProgram);
+const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPrograms }) => {
+    const [isSelected, setIsSelected] = useState(false);
+    const [isConnected, setIsConnected] = useState(false);
     const [partnershipMetadata, setPartnershipMetadata] = useState<LoyaltyPartnershipDetails | null>();
-    const [myUpdatedProgram, setMyUpdatedProgram] = useState<UserLoyaltyProgram | null>(myProgram);
+    const [myUpdatedProgram, setMyUpdatedProgram] = useState<UserLoyaltyProgram | null>();
     const { connectProgram, disconnectProgram, fetchFilteredProgram, isUpdating } = useLoyaltyPrograms();
     const { presentFailure } = useToast();
 
@@ -56,6 +57,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
             disconnectProgram(myUpdatedProgram?.userCurrencyId!)
                 .then(disconnected => {
                     if (disconnected) {
+                        fetchMyPrograms && fetchMyPrograms()
                         setIsConnected(false);
                         initMyProgram();
                     }
@@ -64,6 +66,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
             connectProgram(myUpdatedProgram!)
                 .then(result => {
                     if (result.isSuccess) {
+                        fetchMyPrograms && fetchMyPrograms()
                         setIsConnected(true);
                         setMyUpdatedProgram(result.data);
                     } else if (result.errors) {
@@ -93,12 +96,19 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram }) => {
         }
     }, [isSelected])
 
-    useEffect(() => {
-        if (!myProgram) {
-            initMyProgram()
-        }
-    }, [partnershipMetadata])
 
+    useEffect(() => {
+        if (myProgram) {
+            setMyUpdatedProgram(myProgram)
+            setIsSelected(true)
+            setIsConnected(true)
+        } else {
+            initMyProgram()
+            setIsSelected(false)
+            setIsConnected(false)
+        }
+    }, [myProgram])
+    
     const LoyaltyProgramPartnership = () => {
         return (
             <>

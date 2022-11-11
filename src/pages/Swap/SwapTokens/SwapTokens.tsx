@@ -24,10 +24,10 @@ const SwapTokens: React.FC = () => {
         <SwapField
             label={label}
             options={tokenOptions.map((opt) => (
-                new SelectOption(opt.name, opt.token_address, opt.logo)
+                new SelectOption(opt.name, opt.tokenAddress, opt.logo)
             ))}
             quantity={tokenQuantity}
-            selectedOption={token?.token_address!}
+            selectedOption={token?.tokenAddress!}
             onQuantityChange={setTokenQuantity}
             isPassive={isPassive}
             isLoadingQuantity={simulating}

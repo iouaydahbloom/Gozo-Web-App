@@ -1,8 +1,8 @@
-import useERC20Assets from "./useERC20Assets";
+import useCryptoAssets from "./useCryptoAssets";
 import useLoyaltyProgramAssets from "./useLoyaltyPrograms";
 
 const useAssets = () => {
-    const { assets: erc20Assets, defaultAsset: defaultCryptoAsset } = useERC20Assets();
+    const { assets: erc20Assets, defaultERC20Asset: defaultCryptoAsset } = useCryptoAssets();
     const { defaultProgram, fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms } = useLoyaltyProgramAssets();
 
     return {

@@ -17,7 +17,6 @@ import usePrize from '../../hooks/usePrize';
 import useDialog from '../../hooks/useDialog';
 import PrimaryAccordion, { AccordionItemData } from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
 import ProgramSelection, { ProgramSelectOption } from './ProgramSelection/ProgramSelection';
-import useAssets from '../../hooks/useAssets';
 import useMemberShip from '../../hooks/useMembership';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import ParticlesLoader from '../../components/sections/ParticlesLoader/ParticlesLoader';
@@ -35,8 +34,13 @@ interface IPrize {
 
 const Spinner: React.FC = () => {
     const search = useSearchParams();
-    const { fetchProgram, defaultProgram, loadingProgram } = useLoyaltyPrograms();
-    const { getUserLoyaltyPrograms, loadingMyLoyaltyPrograms } = useAssets();
+    const {
+        fetchProgram,
+        defaultProgram,
+        loadingProgram,
+        loadingMyLoyaltyPrograms,
+        fetchMyLoyaltyPrograms
+    } = useLoyaltyPrograms();
     const { play, setIsPlaying, gameId, isPlaying } = usePlayGame();
     const { fetchPrizes, isLoadingPrizes } = usePrize();
     const id = search.get('program_id')
@@ -139,7 +143,7 @@ const Spinner: React.FC = () => {
     }
 
     function getMyPrograms() {
-        getUserLoyaltyPrograms()
+        fetchMyLoyaltyPrograms()
             .then(programs => {
                 programs.push(defaultProgram as UserLoyaltyProgram)
                 setMyLoyaltyPrograms(programs);
@@ -196,9 +200,9 @@ const Spinner: React.FC = () => {
     }
 
     useEffect(() => {
-      if(returnedPrize && returnedPrize.gameToken === gameId) setSelectedPrizeId(returnedPrize.prizeId)
+        if (returnedPrize && returnedPrize.gameToken === gameId) setSelectedPrizeId(returnedPrize.prizeId)
     }, [returnedPrize])
-    
+
 
     useEffect(() => {
         if (selectedPrizeId) {
@@ -276,7 +280,7 @@ const Spinner: React.FC = () => {
                                     :
                                     <FortuneWheel
                                         logoAtCenter={loyaltyProgram?.brand?.logo}
-                                        spinDuration={0.3} 
+                                        spinDuration={0.3}
                                         data={wheelSegmentsOpts}
                                         spin={isPlaying}
                                         selectedPrizeId={selectedPrizeId}

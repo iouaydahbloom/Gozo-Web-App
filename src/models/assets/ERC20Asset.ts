@@ -1,11 +1,28 @@
-export class ERC20Asset {
-    constructor(public token_address: string,
+import { ERC20AssetDTO } from "../../dto/cryptoDTO";
+import { CryptoAsset } from "./CryptoAsset";
+
+export class ERC20Asset extends CryptoAsset {
+    constructor(public tokenAddress: string,
         public name: string,
         public symbol: string,
         public decimals: string,
         public balance: string,
         public logo?: string,
-        public thumbnail?: string) { }
+        public thumbnail?: string) {
+        super(name, symbol, decimals, balance, logo, thumbnail)
+    }
+
+    static fromDto(dto: ERC20AssetDTO): ERC20Asset {
+        return new ERC20Asset(
+            dto.token_address,
+            dto.name,
+            dto.symbol,
+            dto.decimals,
+            dto.balance,
+            dto.logo,
+            dto.thumbnail
+        )
+    }
 }
 
 export class ERC20Metadata {

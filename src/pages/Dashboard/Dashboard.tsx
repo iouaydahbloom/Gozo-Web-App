@@ -10,7 +10,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { AssetMode } from '../../constants/assetsMode';
 import styles from './dashboard.module.scss'
 import useOnBoardingPreview from '../../hooks/useOnBoardingPreview';
-import useERC20Assets from '../../hooks/useERC20Assets';
+import useCryptoAssets from '../../hooks/useCryptoAssets';
 import { currencySettingsContext } from '../../providers/CurrencySettingsProvider/currencySettingsContext';
 import { useMoralis } from 'react-moralis';
 import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
     const { hide: hideOnboarding } = useOnBoardingPreview();
     const { fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms } = useLoyaltyPrograms();
     const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
-    const { assets, fetchERC20Assets, isLoadingAssets } = useERC20Assets();
+    const { assets, fetchCryptoAssets, isLoadingAssets } = useCryptoAssets();
     const {
         gozoToken,
         gozoLoyaltyMembership,
@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
             getPrograms(),
-            fetchERC20Assets(),
+            fetchCryptoAssets(),
             handleHighlightedAssetMetadata()
         ])
     }, [])
@@ -102,7 +102,7 @@ const Dashboard: React.FC = () => {
                             isLoading={isLoadingAssets}
                             assets={assets}
                             refreshDefaultToken={fetchToken}
-                            getAssets={fetchERC20Assets} />
+                            getAssets={fetchCryptoAssets} />
                     </TabPanel>
                 </Tabs>
             </PrimaryContainer>

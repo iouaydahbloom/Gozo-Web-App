@@ -8,6 +8,7 @@ import PrimaryTypography from "../../../components/typography/PrimaryTypography/
 import { AssetMode } from "../../../constants/assetsMode";
 import usePrimarySheet from "../../../hooks/usePrimarySheet";
 import { ERC20Asset } from "../../../models/assets/ERC20Asset";
+import { NativeAsset } from "../../../models/assets/NativeAsset";
 import ReceiveCrypto from "../../ReceiveCrypto/ReceiveCrypto";
 import SendCrypto from "../../SendCrypto/SendCrypto";
 import Swap from "../../Swap/Swap";
@@ -15,8 +16,8 @@ import CryptoTokenItem from "./CryptoTokenItem/CryptoTokenItem";
 import styles from './cryptoTokens.module.scss';
 
 interface Props {
-    assets?: ERC20Asset[],
-    getAssets: () => Promise<ERC20Asset[]>,
+    assets?: (ERC20Asset | NativeAsset)[],
+    getAssets: () => Promise<(ERC20Asset | NativeAsset)[]>,
     refreshDefaultToken: () => Promise<any>,
     isLoading: boolean
 }
@@ -51,7 +52,7 @@ const CryptoTokens: React.FC<Props> = ({ assets = [], getAssets, refreshDefaultT
         id: 'receciveCryptoModal'
     });
 
-    const renderItem = useCallback((item: ERC20Asset, index: number) => {
+    const renderItem = useCallback((item: ERC20Asset | NativeAsset, index: number) => {
         return (
             <div key={`token_${index}`}>
                 <CryptoTokenItem

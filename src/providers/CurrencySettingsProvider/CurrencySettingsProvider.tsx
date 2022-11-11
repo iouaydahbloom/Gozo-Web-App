@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useAuthentication from "../../hooks/useAuthentication";
-import useERC20Assets from "../../hooks/useERC20Assets";
+import useCryptoAssets from "../../hooks/useCryptoAssets";
 import useLoyaltyPrograms from "../../hooks/useLoyaltyPrograms";
 import useMemberShip from "../../hooks/useMembership";
 import { UserLoyaltyProgram } from "../../models/loyaltyProgram";
@@ -10,14 +10,12 @@ const CurrencySettingsProvider: React.FC = ({ children }) => {
 
     const [gozoLoyalty, setGozoLoyalty] = useState<UserLoyaltyProgram | null>(null);
     const { membership, fetchMembership } = useMemberShip('GZL_LVXMS');
-    const { defaultAsset, fetchERC20Assets } = useERC20Assets();
+    const { defaultERC20Asset, fetchCryptoAssets } = useCryptoAssets();
     const { isAuthenticated } = useAuthentication();
-    const {fetchDefaultCurrency} = useLoyaltyPrograms();
+    const { fetchDefaultCurrency } = useLoyaltyPrograms();
 
     useEffect(() => {
         if (isAuthenticated) {
-            fetchERC20Assets();
-            fetchMembership();
             fetchDefaultCurrency().then((res) => {
                 setGozoLoyalty(res)
             })
@@ -29,8 +27,8 @@ const CurrencySettingsProvider: React.FC = ({ children }) => {
             gozoLoyalty: gozoLoyalty,
             gozoLoyaltyMembership: membership,
             fetchGozoLoyaltyMembership: fetchMembership,
-            gozoToken: defaultAsset,
-            fetchToken: fetchERC20Assets
+            gozoToken: defaultERC20Asset,
+            fetchToken: fetchCryptoAssets
         }}>
             {children}
         </currencySettingsContext.Provider>

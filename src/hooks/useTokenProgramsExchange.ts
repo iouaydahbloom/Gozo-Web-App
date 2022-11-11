@@ -7,7 +7,7 @@ import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import { useDapp } from "../providers/DappProvider/DappProvider";
 import useBlockchainContractExecution from "./useBlockchainContractExecution";
 import useCloud from "./useCloud";
-import useERC20Assets from "./useERC20Assets";
+import useCryptoAssets from "./useCryptoAssets";
 import useLoyaltyPrograms from "./useLoyaltyPrograms";
 import useMemberShip from "./useMembership";
 import useToast from "./useToast";
@@ -21,7 +21,7 @@ const useTokenProgramsExchange = () => {
     const [programOptions, setProgramOptions] = useState<UserLoyaltyProgram[]>([]);
     const { run } = useCloud();
     const { defaultProgram } = useLoyaltyPrograms();
-    const { defaultAsset } = useERC20Assets();
+    const { defaultERC20Asset } = useCryptoAssets();
     const { presentFailure, presentSuccess } = useToast();
     const { Moralis } = useMoralis();
     const { walletAddress, tokenContractAddress, tokenContractAbi } = useDapp();
@@ -147,9 +147,9 @@ const useTokenProgramsExchange = () => {
      */
 
     useEffect(() => {
-        setTokenOptions(defaultAsset ? [defaultAsset] : []);
+        setTokenOptions(defaultERC20Asset ? [defaultERC20Asset] : []);
         setProgramOptions(defaultProgram ? [defaultProgram] : []);
-    }, [defaultAsset, defaultProgram])
+    }, [defaultERC20Asset, defaultProgram])
 
     useEffect(() => {
         if (direction == 't2p') {
@@ -188,7 +188,7 @@ const useTokenProgramsExchange = () => {
         exchange: direction == 't2p' ? executeT2PExchange : executeP2TExchange,
         tokenOptions: tokenOptions,
         programOptions: programOptions,
-        token: defaultAsset,
+        token: defaultERC20Asset,
         tokenQuantity: tokenQuantity,
         setTokenQuantity: setTokenQuantity,
         program: defaultProgram,
@@ -203,7 +203,7 @@ const useTokenProgramsExchange = () => {
         isDisabled,
         toggleDirection: () => setDirection(prev => prev == 't2p' ? 'p2t' : 't2p'),
         pointsBalance: membership?.balance,
-        tokensBalance: defaultAsset ? parseFloat(Moralis.Units.FromWei(defaultAsset?.balance, 18)) : 0
+        tokensBalance: defaultERC20Asset ? parseFloat(Moralis.Units.FromWei(defaultERC20Asset?.balance, 18)) : 0
     }
 }
 

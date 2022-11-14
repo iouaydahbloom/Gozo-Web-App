@@ -26,7 +26,7 @@ const LoyaltyProgramsManager: React.FC = () => {
     const renderLoyaltyProgramItem = useCallback((lp: LoyaltyProgram, index: number) => {
         return <LoyaltyProgramManageItem
             item={lp}
-            key={index}
+            key={lp.partnerId}
             fetchMyPrograms={() => getMyLoyaltyProgram()}
             myProgram={getMyProgram(lp.partnerId)} />
     }, [programs, myPrograms, searchKey])

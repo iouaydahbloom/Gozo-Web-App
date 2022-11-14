@@ -2,6 +2,7 @@ import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { ERC20Asset } from "../models/assets/ERC20Asset";
+import { NativeAsset } from "../models/assets/NativeAsset";
 import { UserLoyaltyProgram } from "../models/loyaltyProgram";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import { useDapp } from "../providers/DappProvider/DappProvider";
@@ -12,24 +13,37 @@ import useLoyaltyPrograms from "./useLoyaltyPrograms";
 import useMemberShip from "./useMembership";
 import useToast from "./useToast";
 
-const useTokenProgramsExchange = () => {
+export enum SwapPartyType {
+    loyaltyProgram,
+    nativeCryptoCurrency
+}
+
+export const NATIVE_CRYPTO_IDENTIFIER = 'native-crypto-ID';
+
+interface OtherSwapParty {
+    id: string,
+    quantity?: number,
+    type: SwapPartyType
+}
+
+const useTokenToOthersExchange = () => {
     const [tokenQuantity, setTokenQuantity] = useState<number | undefined>(0);
-    const [programQuantity, setProgramQuantity] = useState<number>();
+    const [selectedOthers, setSelectedOthers] = useState<OtherSwapParty>({ id: '', quantity: 0, type: SwapPartyType.loyaltyProgram });
     const [exchanging, setExchanging] = useState(false);
     const [simulating, setSimulating] = useState(false);
     const [tokenOptions, setTokenOptions] = useState<ERC20Asset[]>([]);
-    const [programOptions, setProgramOptions] = useState<UserLoyaltyProgram[]>([]);
-    const { run } = useCloud();
+    const [othersOptions, setOthersOptions] = useState<(UserLoyaltyProgram | NativeAsset)[]>([]);
     const { defaultProgram } = useLoyaltyPrograms();
-    const { defaultERC20Asset } = useCryptoAssets();
-    const { presentFailure, presentSuccess } = useToast();
-    const { Moralis } = useMoralis();
+    const { defaultERC20Asset, defaultNativeAsset, fetchCryptoAssets } = useCryptoAssets();
     const { walletAddress, tokenContractAddress, tokenContractAbi } = useDapp();
     const [minimumValue, setMinimumValue] = useState<number>();
     const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
     const [isEstimatingGasFee, setIsEstimatingGasFee] = useState(false);
-    const [direction, setDirection] = useState<'t2p' | 'p2t'>('t2p');
+    const [direction, setDirection] = useState<'t2o' | 'o2t'>('t2o');
     const { membership } = useMemberShip(defaultProgram?.currency.loyaltyCurrency);
+    const { Moralis } = useMoralis();
+    const { run } = useCloud();
+    const { presentFailure, presentSuccess } = useToast();
 
     const tokenQuantityInWei = useMemo(() => {
         return Moralis.Units.Token(tokenQuantity ?? 0, 18);
@@ -40,26 +54,32 @@ const useTokenProgramsExchange = () => {
     /**
      * Token to points exchange logic
      */
-
-    const executeT2PExchange = useCallback(async () => {
+    const executeT2OExchange = useCallback(async () => {
         if (tokenQuantity && tokenQuantity <= 0) return;
+
         return transferTokens(
             tokenContractAddress,
             tokenContractAbi,
             'transferToOwner',
-            [tokenQuantityInWei],
+            [tokenQuantityInWei, selectedOthers.type],
             () => presentSuccess('Exchanged successfully'),
             (error) => presentFailure(error.message)
         );
-    }, [tokenQuantity])
+    }, [tokenQuantity, selectedOthers.type])
 
-    const simulateT2PExchange = useCallback(debounce((amount: number, onSuccess: (result: number) => void) => {
-        if (!amount) {
-            onSuccess(0);
-            return;
-        }
+    const simulateTokenToOthersExchange = useCallback(debounce((amount: number, onSuccess: (result: number) => void) => {
+        if (!amount || !selectedOthers) { onSuccess(0); return; }
         setSimulating(true);
-        run(cloudFunctionName.simulateT2PExchange, { amount: amount }, (result: any) => result as number, true)
+        const fn = selectedOthers.type == SwapPartyType.loyaltyProgram ?
+            cloudFunctionName.simulateT2PExchange :
+            cloudFunctionName.simulateT2NativeExchange;
+
+        run(
+            fn,
+            { amount: amount },
+            (result: any) => result as number,
+            true
+        )
             .then(result => {
                 if (result.isSuccess) onSuccess(result.data);
                 else {
@@ -67,10 +87,15 @@ const useTokenProgramsExchange = () => {
                 }
             })
             .finally(() => setSimulating(false))
-    }, 1000), [])
+    }, 1000), [selectedOthers.type])
 
-    const minimumT2PExchange = useCallback(() => {
-        run(cloudFunctionName.minimumT2Pexchange, null, (result: any) => result as number, true)
+    const minimumTokenToOthersExchange = useCallback(() => {
+        run(
+            cloudFunctionName.minimumT2Pexchange,
+            null,
+            (result: any) => result as number,
+            true
+        )
             .then(result => {
                 if (result.isSuccess) setMinimumValue(result.data);
             })
@@ -83,7 +108,7 @@ const useTokenProgramsExchange = () => {
                 tokenContractAddress,
                 tokenContractAbi,
                 'transferToOwner',
-                [0]
+                [0, SwapPartyType.loyaltyProgram]
             );
             setEstimatedGasFee(estimatedGasFee);
         }
@@ -98,25 +123,31 @@ const useTokenProgramsExchange = () => {
     /**
     * Points to Tokens exchange logic
     */
-
     const executeP2TExchange = useCallback(async () => {
-        if (programQuantity && programQuantity <= 0) return;
+        if (selectedOthers && selectedOthers.quantity && selectedOthers.quantity <= 0) return;
         setExchanging(true);
-        run(cloudFunctionName.executeP2Texchange, { recipient: walletAddress, amount: programQuantity }, (result: any) => result as number, true)
+        run(
+            cloudFunctionName.executeP2Texchange,
+            { recipient: walletAddress, amount: selectedOthers?.quantity },
+            (result: any) => result as number,
+            true
+        )
             .then(result => {
                 if (result.isSuccess) presentSuccess('Exchanged successfully');
                 else presentFailure(result.errors?.errors[0].message ?? result.message);
             })
             .finally(() => setExchanging(false))
-    }, [programQuantity])
+    }, [selectedOthers])
 
     const simulateP2TExchange = useCallback(debounce((amount: number, onSuccess: (result: number) => void) => {
-        if (!amount) {
-            onSuccess(0);
-            return;
-        }
+        if (!amount) { onSuccess(0); return; }
+
         setSimulating(true);
-        run(cloudFunctionName.simulateP2TExchange, { amount: amount }, (result: any) => result as number)
+        run(
+            cloudFunctionName.simulateP2TExchange,
+            { amount: amount },
+            (result: any) => result as number
+        )
             .then(result => {
                 if (result.isSuccess) onSuccess(result.data);
                 else {
@@ -127,57 +158,84 @@ const useTokenProgramsExchange = () => {
     }, 1000), [])
 
     const minimumP2TExchange = useCallback(() => {
-        run(cloudFunctionName.minimumP2Texchange, null, (result: any) => result as number, true)
+        run(
+            cloudFunctionName.minimumP2Texchange,
+            null,
+            (result: any) => result as number,
+            true
+        )
             .then(result => {
                 if (result.isSuccess) setMinimumValue(result.data);
             })
     }, [])
 
     const isDisabled = useMemo(() => {
-        if (!tokenQuantity) return true;
-
-        if (direction == 't2p') {
+        if (direction == 't2o') {
+            if (!tokenQuantity) return true;
             return (minimumValue && (tokenQuantity! < minimumValue)) || !tokenQuantity || tokenQuantity == 0;
         }
-        return (minimumValue && (programQuantity! < minimumValue)) || !programQuantity || programQuantity == 0;
-    }, [tokenQuantity, programQuantity, minimumValue])
+        return (minimumValue && (selectedOthers?.quantity! < minimumValue)) || !selectedOthers?.quantity;
+    }, [tokenQuantity, selectedOthers, minimumValue])
 
     /**
      * Lifecycles events
      */
+    useEffect(() => {
+        fetchCryptoAssets();
+    }, [])
 
     useEffect(() => {
         setTokenOptions(defaultERC20Asset ? [defaultERC20Asset] : []);
-        setProgramOptions(defaultProgram ? [defaultProgram] : []);
-    }, [defaultERC20Asset, defaultProgram])
+    }, [defaultERC20Asset])
 
     useEffect(() => {
-        if (direction == 't2p') {
-            simulateT2PExchange(
+        if (direction == 't2o' && defaultProgram && defaultNativeAsset) {
+            setOthersOptions([defaultProgram, defaultNativeAsset]);
+            //Set default others
+            setSelectedOthers({
+                id: defaultProgram.currency.loyaltyCurrency,
+                quantity: 0,
+                type: SwapPartyType.loyaltyProgram
+            });
+        }
+        else if (defaultProgram) {
+            setOthersOptions([defaultProgram]);
+            //Set default others
+            setSelectedOthers({
+                id: defaultProgram.currency.loyaltyCurrency,
+                quantity: 0,
+                type: SwapPartyType.loyaltyProgram
+            });
+        }
+    }, [defaultNativeAsset, defaultProgram, direction])
+
+    useEffect(() => {
+        if (direction == 't2o') {
+            simulateTokenToOthersExchange(
                 tokenQuantity ?? 0,
                 (result) => {
-                    setProgramQuantity(result);
+                    if (selectedOthers.id) setSelectedOthers({ ...selectedOthers, quantity: result });
                 })
         }
-    }, [tokenQuantity, direction])
+    }, [tokenQuantity, direction, selectedOthers.id])
 
     useEffect(() => {
-        if (direction == 'p2t') {
+        if (direction == 'o2t') {
             simulateP2TExchange(
-                programQuantity ?? 0,
+                selectedOthers?.quantity ?? 0,
                 (result) => {
                     setTokenQuantity(result);
                 })
         }
-    }, [programQuantity, direction])
+    }, [selectedOthers?.quantity, direction])
 
     useEffect(() => {
         setExchanging(executing);
     }, [executing])
 
     useEffect(() => {
-        if (direction == 't2p') {
-            minimumT2PExchange();
+        if (direction == 't2o') {
+            minimumTokenToOthersExchange();
             estimateTokenTransferFee();
         } else {
             minimumP2TExchange();
@@ -185,15 +243,12 @@ const useTokenProgramsExchange = () => {
     }, [direction])
 
     return {
-        exchange: direction == 't2p' ? executeT2PExchange : executeP2TExchange,
         tokenOptions: tokenOptions,
-        programOptions: programOptions,
+        othersOptions: othersOptions,
         token: defaultERC20Asset,
         tokenQuantity: tokenQuantity,
-        setTokenQuantity: setTokenQuantity,
         program: defaultProgram,
-        programQuantity: programQuantity,
-        setProgramQuantity: setProgramQuantity,
+        selectedOthers,
         exchanging: exchanging,
         simulating,
         direction: direction,
@@ -201,10 +256,13 @@ const useTokenProgramsExchange = () => {
         estimatedGasFee,
         isEstimatingGasFee,
         isDisabled,
-        toggleDirection: () => setDirection(prev => prev == 't2p' ? 'p2t' : 't2p'),
         pointsBalance: membership?.balance,
-        tokensBalance: defaultERC20Asset ? parseFloat(Moralis.Units.FromWei(defaultERC20Asset?.balance, 18)) : 0
+        tokensBalance: defaultERC20Asset ? parseFloat(Moralis.Units.FromWei(defaultERC20Asset?.balance, 18)) : 0,
+        setSelectedOthers,
+        setTokenQuantity: setTokenQuantity,
+        toggleDirection: () => setDirection(prev => prev == 't2o' ? 'o2t' : 't2o'),
+        exchange: direction == 't2o' ? executeT2OExchange : executeP2TExchange,
     }
 }
 
-export default useTokenProgramsExchange;
+export default useTokenToOthersExchange;

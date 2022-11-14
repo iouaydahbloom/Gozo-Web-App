@@ -78,12 +78,15 @@ const useCryptoAssets = () => {
         defaultTokenMetadata.thumbnail) : null;
   }, [defaultTokenMetadata, assets])
 
+  const defaultNativeAsset = useMemo(() => {
+    return assets.find(asset => asset instanceof NativeAsset) as NativeAsset | null
+  }, [assets])
+
   return {
     fetchCryptoAssets,
-    fetchERC20Assets,
-    fetchNativeAsset,
     assets,
     defaultERC20Asset,
+    defaultNativeAsset,
     isLoadingAssets
   }
 }

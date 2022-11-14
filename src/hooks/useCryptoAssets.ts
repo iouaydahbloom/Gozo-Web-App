@@ -55,7 +55,6 @@ const useCryptoAssets = () => {
   }, [walletAddress])
 
   const defaultERC20Asset = useMemo(() => {
-    console.log('assets are ', assets)
     const defaultBalancedAsset = assets ?
       assets
         .find(

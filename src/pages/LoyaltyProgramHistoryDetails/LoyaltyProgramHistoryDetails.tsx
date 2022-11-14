@@ -6,6 +6,7 @@ import useSearchParams from "../../hooks/useSearchParams"
 import useProgramsTransactionHistory from "../../hooks/useProgramsTransactionHistory"
 import { LoyaltyMemberHistory } from "../../models/loyaltyMember"
 import DetailItem from "../Common/DetailItem/DetailItem"
+import { isBalanceSubtracted } from "../Common/helper"
 
 
 const LoyaltyProgramHistoryDetails: React.FC = () => {
@@ -25,8 +26,6 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
     { key: 'type', label: 'Type' },
   ]
 
-
-
   return (
     <IonPage>
       <SecondaryHeader
@@ -36,14 +35,11 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
           historyField &&
           Object.keys(historyField).filter((item) => keys.some(event => event.key === item)).map((key, index) => {
             const keyObj = keys.find((item) => item.key === key)
-            console.log("historyField['subType']", historyField['sub_type'])
             return <DetailItem
               key={index}
               header={keyObj?.label ?? ''}
               text={key === 'amount' ?
-                historyField['type'] === 'redemption' ||
-                  (historyField['type'] === 'member_exchange' &&
-                    historyField['sub_type'] === 'out') ?
+                isBalanceSubtracted(historyField) ?
                   `- ${historyField[key as keyof LoyaltyMemberHistory]}`
                   :
                   `+ ${historyField[key as keyof LoyaltyMemberHistory]}`
@@ -51,12 +47,7 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
                 historyField[key as keyof LoyaltyMemberHistory]
               }
               textColor={key === 'amount' ?
-                historyField['type'] === 'redemption' ||
-                  (historyField['type'] === 'member_exchange' &&
-                    historyField['sub_type'] === 'out') ?
-                  'danger'
-                  :
-                  'success'
+                isBalanceSubtracted(historyField) ? 'danger' : 'success'
                 :
                 undefined}
             />

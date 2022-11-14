@@ -18,7 +18,7 @@ const useLoyaltyPrograms = () => {
 
     async function fetchDefaultCurrency() {
         return run(cloudFunctionName.defaultCurrency,
-            {},
+            null,
             (result: DefaultCurrencyDTO) => UserLoyaltyProgram.getFromDefaultCurrencyDTO(result),
             true)
             .then(result => {

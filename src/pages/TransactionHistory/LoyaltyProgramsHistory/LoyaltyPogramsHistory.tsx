@@ -6,10 +6,15 @@ import { AppRoutes } from '../../../constants/appRoutes';
 import useProgramsTransactionHistory from '../../../hooks/useProgramsTransactionHistory';
 import PageLoader from '../../../components/loaders/PageLoader/PageLoader';
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
+import { useEffect } from 'react';
 
 const LoyaltyPogramsHistory = () => {
     const { push } = useHistory();
-    const { isLoadingHistory, historyFields } = useProgramsTransactionHistory()
+    const { isLoadingHistory, historyFields, getTransactions } = useProgramsTransactionHistory()
+
+    useEffect(() => {
+        getTransactions()
+    }, [])
 
     return (
         <div className={styles.container}>
@@ -20,7 +25,9 @@ const LoyaltyPogramsHistory = () => {
                         {
                             date: formatDate(hf.completed_at ?? ''),
                             reason: hf.reason,
-                            amount: hf.type === "redemption" ?
+                            amount: hf.type === "redemption" ||
+                                (hf.type === 'member_exchange' &&
+                                    hf.sub_type === 'out') ?
                                 <PrimaryTypography color='danger'>
                                     {`- ${hf.amount}`}
                                 </PrimaryTypography>

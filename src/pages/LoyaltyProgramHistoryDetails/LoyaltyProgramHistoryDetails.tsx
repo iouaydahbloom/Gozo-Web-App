@@ -14,15 +14,15 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
   const { historyField, isLoadingHistory } = useProgramsTransactionHistory(id ?? '')
 
   const keys = [
-    {key: 'amount', label: 'Amount'},
-    {key: 'completed_at', label: 'Completed At'},
-    {key: 'created_at', label: 'Created At'},
-    {key: 'id', label: 'Id'},
-    {key: 'loyalty_currency', label: 'Loyalty Currency'},
-    {key: 'reason', label: 'Reason'},
-    {key: 'status', label: 'Status'},
-    {key: 'sub_type', label: 'Sub Type'},
-    {key: 'type', label: 'Type'},
+    { key: 'amount', label: 'Amount' },
+    { key: 'completed_at', label: 'Completed At' },
+    { key: 'created_at', label: 'Created At' },
+    { key: 'id', label: 'Id' },
+    { key: 'loyalty_currency', label: 'Loyalty Currency' },
+    { key: 'reason', label: 'Reason' },
+    { key: 'status', label: 'Status' },
+    { key: 'sub_type', label: 'Sub Type' },
+    { key: 'type', label: 'Type' },
   ]
 
 
@@ -36,18 +36,30 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
           historyField &&
           Object.keys(historyField).filter((item) => keys.some(event => event.key === item)).map((key, index) => {
             const keyObj = keys.find((item) => item.key === key)
-            return <DetailItem 
-              key={index} 
-              header={keyObj?.label ?? ''} 
-              text={key === 'amount' ? historyField['type'] === 'redemption' ? 
-              `- ${historyField[key as keyof LoyaltyMemberHistory]}` 
-              :
-              `+ ${historyField[key as keyof LoyaltyMemberHistory]}`
-              : 
-              historyField[key as keyof LoyaltyMemberHistory]
+            console.log("historyField['subType']", historyField['sub_type'])
+            return <DetailItem
+              key={index}
+              header={keyObj?.label ?? ''}
+              text={key === 'amount' ?
+                historyField['type'] === 'redemption' ||
+                  (historyField['type'] === 'member_exchange' &&
+                    historyField['sub_type'] === 'out') ?
+                  `- ${historyField[key as keyof LoyaltyMemberHistory]}`
+                  :
+                  `+ ${historyField[key as keyof LoyaltyMemberHistory]}`
+                :
+                historyField[key as keyof LoyaltyMemberHistory]
               }
-              textColor={key === 'amount' ? historyField['type'] === 'redemption' ? 'danger' : 'success' : undefined} 
-              />
+              textColor={key === 'amount' ?
+                historyField['type'] === 'redemption' ||
+                  (historyField['type'] === 'member_exchange' &&
+                    historyField['sub_type'] === 'out') ?
+                  'danger'
+                  :
+                  'success'
+                :
+                undefined}
+            />
           })
           :
           <PageLoader />

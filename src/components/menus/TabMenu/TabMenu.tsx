@@ -12,6 +12,7 @@ import Dashboard from '../../../pages/Dashboard/Dashboard';
 import Landing from '../../../pages/Landing/Landing';
 import LoyaltyProgramHistoryDetails from '../../../pages/LoyaltyProgramHistoryDetails/LoyaltyProgramHistoryDetails';
 import OnBoarding from '../../../pages/OnBoarding/OnBoarding';
+import Profile from '../../../pages/Profile/Profile';
 import Rewards from '../../../pages/Reward/Reward';
 import Spinner from '../../../pages/Spinner/Spinner';
 import TokenHistoryDetails from '../../../pages/TokenHistoryDetails/TokenHistoryDetails';
@@ -73,6 +74,9 @@ const TabMenu: React.FC = () => {
             </Route>
             <Route exact path={AppRoutes.account}>
                 <Account />
+            </Route>
+            <Route exact path={AppRoutes.profile}>
+                <Profile />
             </Route>
             <Route exact path={AppRoutes.transactionHistory}>
                 <TransactionHistory />

@@ -1,0 +1,11 @@
+.label {
+    padding-bottom: 10px;
+}
+
+.footer {
+    padding: 20px 20px 40px 20px;
+    .submitButton {
+        --background: linear-gradient(115.93deg, var(--ion-color-primary) 22.75%, var(--ion-color-quaternary) 84.05%);
+        --border-radius: 15px;
+    }
+}

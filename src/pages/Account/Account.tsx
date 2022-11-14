@@ -47,8 +47,7 @@ const Account: React.FC = () => {
                     <AccountItem
                         icon={<ProfileIcon />}
                         text='Profile Details'
-                        onClick={() => { }}
-                        isDisabled
+                        onClick={() => push(AppRoutes.profile)}
                     />
                     <AccountItem
                         icon={<TransactionHistoryIcon />}

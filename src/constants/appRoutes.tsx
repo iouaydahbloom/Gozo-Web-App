@@ -4,6 +4,7 @@ export const AppRoutes = {
     onBoarding: '/onboarding',
     home: '/home',
     account: '/account',
+    profile: '/profile',
     transactionHistory: '/transactionHistory',
     loyaltyProgramHistoryDetails: '/transactionHistory/loyaltyDetails',
     tokenHistoryDetails: '/transactionHistory/tokenDetails',

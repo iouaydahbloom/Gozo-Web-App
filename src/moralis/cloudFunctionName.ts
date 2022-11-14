@@ -23,6 +23,8 @@ export const cloudFunctionName = {
     disconnectPrograms: 'disconnect_programs',
     groupedPrize: 'grouped_prize',
     reward: 'reward',
+    profileDetails: 'user_info',
+    updateProfileDetails: 'update_user_info',
     playWithSuperPoints: 'play_with_super_points',
     minimumT2Pexchange: 'minimum_t2p_exchange',
     minimumP2Texchange: 'minimum_p2t_exchange',

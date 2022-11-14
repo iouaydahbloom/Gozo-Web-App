@@ -1,0 +1,12 @@
+.input {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    color: var(--ion-color-light);
+    font-size: 14px;
+    border-radius: 5px;
+    background: var(--ion-color-dark);
+    border: 1px solid var(--ion-color-medium-tint);
+    box-shadow: inset 0px 2px 3px var(--ion-color-dark);
+}

@@ -1,8 +1,9 @@
 import styles from './fortuneWheel.module.scss';
 import { WheelSegment } from '../../../models/wheelSegment';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Winwheel } from '../WinWheelLibrary/Winwheel';
 import { ellipsisTruncate } from '../../../helpers/managment/string';
+import { WheelSettingsContext } from '../../../providers/WheelSettingsProvider/wheelSettingsContext';
 
 interface Props {
   data: WheelSegment[],
@@ -19,9 +20,11 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
   // const [isSpinning, setIsSpinning] = useState(false)
   // const spinner = useRef<Winwheel>();
 
+  const { isMuted } = useContext(WheelSettingsContext);
+
   useEffect(() => {
 
-
+    console.log("isMuted", isMuted)
     myWheel = new Winwheel({
 
       'drawText': true,              // Code drawn text can be used with segment images.
@@ -82,7 +85,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
       // }
     });
 
-  }, [data])
+  }, [data, isMuted])
 
 
   function getOptimizeData() {
@@ -136,6 +139,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
 
   // This function is called when the sound is to be played.
   function playSound() {
+    audio.muted = isMuted;
     // Stop and rewind the sound if it already happens to be playing.
     audio.pause();
     audio.currentTime = 0;

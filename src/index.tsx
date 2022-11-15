@@ -11,6 +11,7 @@ import SessionProvider from './providers/SessionProvider/SessionProvider';
 import { DappProvider } from './providers/DappProvider/DappProvider';
 import OnBoardingPreviewProvider from './providers/OnBoardingPreviewProvider/OnBoardingPreviewProvider';
 import NetworkProvider from './providers/networkProvider/NetworkProvider';
+import WheelSettingsProvider from './providers/WheelSettingsProvider/WheelSettingsProvider';
 require('dotenv').config();
 
 ReactDOM.render(
@@ -24,7 +25,9 @@ ReactDOM.render(
             <SessionProvider>
               <DappProvider>
                 <CurrencySettingsProvider>
-                  <App />
+                  <WheelSettingsProvider>
+                    <App />
+                  </WheelSettingsProvider>
                 </CurrencySettingsProvider>
               </DappProvider>
             </SessionProvider>

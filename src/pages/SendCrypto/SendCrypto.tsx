@@ -14,13 +14,13 @@ const SendCrypto: React.FC = () => {
 
     const [receiver, setReceiver] = useState('');
     const [amount, setAmount] = useState('');
-    const { transfer, transferFee, isEstimatingTransferFee, executing } = useBlockchainTransfer(receiver, amount);
+    const { transfer, transferFee, isEstimatingTransferFee, executing } = useBlockchainTransfer();
     const { presentFailure } = useToast();
     const { scan } = useBarcodeScanner();
 
     async function handleTransfer() {
         if (receiver && amount) {
-            await transfer();
+            await transfer(receiver, amount);
         } else {
             presentFailure('You are missing some required fields')
         }

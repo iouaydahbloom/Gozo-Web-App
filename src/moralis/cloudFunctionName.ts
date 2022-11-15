@@ -18,6 +18,8 @@ export const cloudFunctionName = {
     executeT2Pexchange: 'execute_t2p_exchange',
     simulateT2PExchange: 'simulate_t2p_exchange',
     simulateT2NativeExchange: 'simulate_token_to_native_exchange',
+    simulateNative2TExchange: 'simulate_native_to_token_exchange',
+    handleNativeExchange: 'handle_native_exchange',
     activateLoyaltyMember: 'activate_loyalty_member',
     connectProgram: 'connect_program',
     disconnectProgram: 'disconnect_program',

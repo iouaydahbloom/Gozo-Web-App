@@ -134,7 +134,8 @@ const useBlockchainContractExecution = () => {
         execute,
         estimate,
         executing,
-        addListener
+        addListener,
+        signer: getProviderSigner()
     }
 }
 

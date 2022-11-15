@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import { SelectOption } from '../SwapSelect/SwapSelect';
 import TransactionDetails from '../../../components/TransactionDetails/TransactionDetails';
@@ -14,7 +14,19 @@ const SwapTokens: React.FC = () => {
     const { tokenOptions, othersOptions, token, tokenQuantity, setTokenQuantity, program,
         selectedOthers, setSelectedOthers, exchanging, exchange, toggleDirection, direction,
         minimumValue, estimatedGasFee, isEstimatingGasFee, isDisabled, simulating, pointsBalance,
-        tokensBalance } = useTokenToOthersExchange();
+        tokensBalance, nativeBalance } = useTokenToOthersExchange();
+
+    const balance = useMemo(() => {
+        if (direction == 't2o') {
+            return tokensBalance
+        }
+
+        if (selectedOthers.type == SwapPartyType.loyaltyProgram) {
+            return pointsBalance;
+        }
+
+        return nativeBalance;
+    }, [direction, selectedOthers.type])
 
     const renderTokensField = useCallback((
         label: string,
@@ -90,8 +102,8 @@ const SwapTokens: React.FC = () => {
             <div className={styles.swapControl}>
                 {
                     direction == 't2o' ?
-                        renderTokensField('From', false, true, tokensBalance, !isDisabled) :
-                        renderOthersField('From', false, true, pointsBalance, !isDisabled)
+                        renderTokensField('From', false, true, balance, !isDisabled) :
+                        renderOthersField('From', false, true, balance, !isDisabled)
                 }
                 <SwapDirection doubleDirection onClick={toggleDirection} />
                 {
@@ -102,7 +114,7 @@ const SwapTokens: React.FC = () => {
             </div>
 
             <TransactionDetails
-                hasMinimumValue={true}
+                hasMinimumValue={selectedOthers.type == SwapPartyType.loyaltyProgram}
                 minimumValue={minimumValue}
                 showFeeEstimation={direction == "t2o"}
                 isEstimatingFee={isEstimatingGasFee}

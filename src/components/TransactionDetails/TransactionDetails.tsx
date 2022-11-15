@@ -23,36 +23,35 @@ const TransactionDetails: React.FC<Props> = ({
     notification
 }) => {
     return (
-        <div className={styles.cryptoTransactionDetails}>
+        <>
             {
-                showFeeEstimation && <div className={styles.gasFeeContainer}>
-                    <PrimaryTypography customClassName={styles.gasFeeTitle} isBold>Gas Fee</PrimaryTypography>
-                    <PrimaryTypography customClassName={styles.gasFeeValue} isBold>
-                        {isEstimatingFee ?
-                            <IonSpinner color='light' className={styles.spinner} /> :
-                            estimatedFee} {estimatedFeeUnit}
-                    </PrimaryTypography>
+                (showFeeEstimation || hasMinimumValue || notification) &&
+                <div className={styles.cryptoTransactionDetails}>
+                    {showFeeEstimation && <div className={styles.gasFeeContainer}>
+                        <PrimaryTypography customClassName={styles.gasFeeTitle} isBold>Gas Fee</PrimaryTypography>
+                        <PrimaryTypography customClassName={styles.gasFeeValue} isBold>
+                            {isEstimatingFee ?
+                                <IonSpinner color='light' className={styles.spinner} /> :
+                                estimatedFee} {estimatedFeeUnit}
+                        </PrimaryTypography>
+                    </div>}
+                    {hasMinimumValue && showFeeEstimation && <div className={styles.seperator} />}
+                    {hasMinimumValue && <>
+                        <PrimaryTypography isBold customClassName={styles.title}>Minimum Value</PrimaryTypography>
+                        <PrimaryTypography>
+                            Make sure to that you enter an amount higher than <strong>{minimumValue}</strong>
+                        </PrimaryTypography>
+                    </>}
+                    {notification && (hasMinimumValue || showFeeEstimation) && <div className={styles.seperator} />}
+                    {notification && <>
+                        <PrimaryTypography isBold customClassName={styles.title}>Notification</PrimaryTypography>
+                        <PrimaryTypography>
+                            {notification}
+                        </PrimaryTypography>
+                    </>}
                 </div>
             }
-            {hasMinimumValue && showFeeEstimation && <div className={styles.seperator} />}
-            {
-                hasMinimumValue && <>
-                    <PrimaryTypography isBold customClassName={styles.title}>Minimum Value</PrimaryTypography>
-                    <PrimaryTypography>
-                        Make sure to that you enter an amount higher than <strong>{minimumValue}</strong>
-                    </PrimaryTypography>
-                </>
-            }
-            {notification && (hasMinimumValue || showFeeEstimation) && <div className={styles.seperator} />}
-            {
-                notification && <>
-                    <PrimaryTypography isBold customClassName={styles.title}>Notification</PrimaryTypography>
-                    <PrimaryTypography>
-                        {notification}
-                    </PrimaryTypography>
-                </>
-            }
-        </div>
+        </>
     )
 }
 

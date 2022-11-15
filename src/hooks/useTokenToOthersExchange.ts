@@ -7,6 +7,7 @@ import { UserLoyaltyProgram } from "../models/loyaltyProgram";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import { useDapp } from "../providers/DappProvider/DappProvider";
 import useBlockchainContractExecution from "./useBlockchainContractExecution";
+import useBlockchainTransfer from "./useBlockchainTransfer";
 import useCloud from "./useCloud";
 import useCryptoAssets from "./useCryptoAssets";
 import useLoyaltyPrograms from "./useLoyaltyPrograms";
@@ -35,7 +36,7 @@ const useTokenToOthersExchange = () => {
     const [othersOptions, setOthersOptions] = useState<(UserLoyaltyProgram | NativeAsset)[]>([]);
     const { defaultProgram } = useLoyaltyPrograms();
     const { defaultERC20Asset, defaultNativeAsset, fetchCryptoAssets } = useCryptoAssets();
-    const { walletAddress, tokenContractAddress, tokenContractAbi } = useDapp();
+    const { walletAddress, tokenContractAddress, tokenContractAbi, botWalletAddress } = useDapp();
     const [minimumValue, setMinimumValue] = useState<number>();
     const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
     const [isEstimatingGasFee, setIsEstimatingGasFee] = useState(false);
@@ -50,11 +51,11 @@ const useTokenToOthersExchange = () => {
     }, [tokenQuantity])
 
     const { execute: transferTokens, estimate, executing } = useBlockchainContractExecution();
-
+    const { transferNative } = useBlockchainTransfer();
     /**
-     * Token to points exchange logic
+     * Token to others exchange logic
      */
-    const executeT2OExchange = useCallback(async () => {
+    const executeTokenToOthersExchange = useCallback(async () => {
         if (tokenQuantity && tokenQuantity <= 0) return;
 
         return transferTokens(
@@ -67,7 +68,10 @@ const useTokenToOthersExchange = () => {
         );
     }, [tokenQuantity, selectedOthers.type])
 
-    const simulateTokenToOthersExchange = useCallback(debounce((amount: number, onSuccess: (result: number) => void) => {
+    const simulateTokenToOthersExchange = useCallback(debounce((
+        amount: number,
+        onSuccess: (result: number) => void
+    ) => {
         if (!amount || !selectedOthers) { onSuccess(0); return; }
         setSimulating(true);
         const fn = selectedOthers.type == SwapPartyType.loyaltyProgram ?
@@ -89,7 +93,7 @@ const useTokenToOthersExchange = () => {
             .finally(() => setSimulating(false))
     }, 1000), [selectedOthers.type])
 
-    const minimumTokenToOthersExchange = useCallback(() => {
+    const getMinTokenToPointsExchange = useCallback(() => {
         run(
             cloudFunctionName.minimumT2Pexchange,
             null,
@@ -121,30 +125,36 @@ const useTokenToOthersExchange = () => {
     }, [])
 
     /**
-    * Points to Tokens exchange logic
+    * Others to Tokens exchange logic
     */
-    const executeP2TExchange = useCallback(async () => {
+    const executeOthersToTokenExchange = useCallback(async () => {
         if (selectedOthers && selectedOthers.quantity && selectedOthers.quantity <= 0) return;
         setExchanging(true);
-        run(
-            cloudFunctionName.executeP2Texchange,
-            { recipient: walletAddress, amount: selectedOthers?.quantity },
-            (result: any) => result as number,
-            true
-        )
-            .then(result => {
-                if (result.isSuccess) presentSuccess('Exchanged successfully');
-                else presentFailure(result.errors?.errors[0].message ?? result.message);
-            })
-            .finally(() => setExchanging(false))
-    }, [selectedOthers])
 
-    const simulateP2TExchange = useCallback(debounce((amount: number, onSuccess: (result: number) => void) => {
+        if (selectedOthers.type == SwapPartyType.loyaltyProgram) {
+            await executePointsToTokenExchange()
+                .finally(() => setExchanging(false));
+            return;
+        }
+
+        await executeNativeToTokenExchange()
+            .finally(() => setExchanging(false));;
+
+    }, [selectedOthers.quantity, selectedOthers.type])
+
+    const simulateOthersToTokenExchange = useCallback(debounce((
+        amount: number,
+        onSuccess: (result: number) => void
+    ) => {
         if (!amount) { onSuccess(0); return; }
 
+        const fn = selectedOthers.type == SwapPartyType.loyaltyProgram ?
+            cloudFunctionName.simulateP2TExchange :
+            cloudFunctionName.simulateNative2TExchange;
         setSimulating(true);
+
         run(
-            cloudFunctionName.simulateP2TExchange,
+            fn,
             { amount: amount },
             (result: any) => result as number
         )
@@ -155,9 +165,9 @@ const useTokenToOthersExchange = () => {
                 }
             })
             .finally(() => setSimulating(false))
-    }, 1000), [])
+    }, 1000), [selectedOthers.type])
 
-    const minimumP2TExchange = useCallback(() => {
+    const getMinPointsToTokenExchange = useCallback(() => {
         run(
             cloudFunctionName.minimumP2Texchange,
             null,
@@ -169,11 +179,45 @@ const useTokenToOthersExchange = () => {
             })
     }, [])
 
+    async function executeNativeToTokenExchange() {
+        return transferNative(botWalletAddress, selectedOthers.quantity!)
+            .then(success => {
+                debugger
+                if (!success) return;
+                return run(
+                    cloudFunctionName.handleNativeExchange,
+                    { recipient: walletAddress, amount: selectedOthers.quantity },
+                    (result: any) => result as number,
+                    true
+                )
+                    .then(result => {
+                        if (result.isSuccess) presentSuccess('Exchanged successfully');
+                        else presentFailure(result.message);
+                    })
+            });
+    }
+
+    async function executePointsToTokenExchange() {
+        return run(
+            cloudFunctionName.executeP2Texchange,
+            { recipient: walletAddress, amount: selectedOthers?.quantity },
+            (result: any) => result as number,
+            true
+        )
+            .then(result => {
+                if (result.isSuccess) presentSuccess('Exchanged successfully');
+                else presentFailure(result.errors?.errors[0].message ?? result.message);
+            })
+    }
+
     const isDisabled = useMemo(() => {
         if (direction == 't2o') {
             if (!tokenQuantity) return true;
-            return (minimumValue && (tokenQuantity! < minimumValue)) || !tokenQuantity || tokenQuantity == 0;
+            if (selectedOthers.type == SwapPartyType.nativeCryptoCurrency) return false;
+            return (minimumValue && (tokenQuantity! < minimumValue)) || !tokenQuantity;
         }
+
+        if (selectedOthers.type == SwapPartyType.nativeCryptoCurrency) return !selectedOthers.quantity;
         return (minimumValue && (selectedOthers?.quantity! < minimumValue)) || !selectedOthers?.quantity;
     }, [tokenQuantity, selectedOthers, minimumValue])
 
@@ -189,25 +233,14 @@ const useTokenToOthersExchange = () => {
     }, [defaultERC20Asset])
 
     useEffect(() => {
-        if (direction == 't2o' && defaultProgram && defaultNativeAsset) {
-            setOthersOptions([defaultProgram, defaultNativeAsset]);
-            //Set default others
-            setSelectedOthers({
-                id: defaultProgram.currency.loyaltyCurrency,
-                quantity: 0,
-                type: SwapPartyType.loyaltyProgram
-            });
-        }
-        else if (defaultProgram) {
-            setOthersOptions([defaultProgram]);
-            //Set default others
-            setSelectedOthers({
-                id: defaultProgram.currency.loyaltyCurrency,
-                quantity: 0,
-                type: SwapPartyType.loyaltyProgram
-            });
-        }
-    }, [defaultNativeAsset, defaultProgram, direction])
+        if (!defaultProgram || !defaultNativeAsset) return;
+        setOthersOptions([defaultProgram, defaultNativeAsset]);
+        setSelectedOthers({
+            id: defaultProgram.currency.loyaltyCurrency,
+            quantity: 0,
+            type: SwapPartyType.loyaltyProgram
+        });
+    }, [defaultNativeAsset, defaultProgram])
 
     useEffect(() => {
         if (direction == 't2o') {
@@ -221,13 +254,13 @@ const useTokenToOthersExchange = () => {
 
     useEffect(() => {
         if (direction == 'o2t') {
-            simulateP2TExchange(
+            simulateOthersToTokenExchange(
                 selectedOthers?.quantity ?? 0,
                 (result) => {
                     setTokenQuantity(result);
                 })
         }
-    }, [selectedOthers?.quantity, direction])
+    }, [selectedOthers?.quantity, direction, selectedOthers.id])
 
     useEffect(() => {
         setExchanging(executing);
@@ -235,11 +268,12 @@ const useTokenToOthersExchange = () => {
 
     useEffect(() => {
         if (direction == 't2o') {
-            minimumTokenToOthersExchange();
+            getMinTokenToPointsExchange();
             estimateTokenTransferFee();
-        } else {
-            minimumP2TExchange();
+            return;
         }
+
+        getMinPointsToTokenExchange();
     }, [direction])
 
     return {
@@ -258,10 +292,13 @@ const useTokenToOthersExchange = () => {
         isDisabled,
         pointsBalance: membership?.balance,
         tokensBalance: defaultERC20Asset ? parseFloat(Moralis.Units.FromWei(defaultERC20Asset?.balance, 18)) : 0,
+        nativeBalance: defaultNativeAsset ? parseFloat(Moralis.Units.FromWei(defaultNativeAsset?.balance, 18)) : 0,
         setSelectedOthers,
         setTokenQuantity: setTokenQuantity,
         toggleDirection: () => setDirection(prev => prev == 't2o' ? 'o2t' : 't2o'),
-        exchange: direction == 't2o' ? executeT2OExchange : executeP2TExchange,
+        exchange: direction == 't2o' ?
+            executeTokenToOthersExchange :
+            executeOthersToTokenExchange
     }
 }
 

@@ -12,7 +12,6 @@ import { useFormik } from "formik";
 import InputError from '../../components/inputs/InputError/InputError';
 import styles from './profile.module.scss'
 import useToast from '../../hooks/useToast';
-import PrimaryFooter from '../../components/layout/PrimaryFooter/PrimaryFooter';
 import useTabMenuHidder from '../../hooks/useTabMenuHidder';
 import SecondaryInput from '../../components/inputs/SecondaryInput/SecondaryInput';
 import { Keyboard } from '@capacitor/keyboard';
@@ -55,84 +54,85 @@ const Profile: React.FC = () => {
         <IonPage>
             <SecondaryHeader
                 title='Profile Details' />
-            <PrimaryContainer>
+            <PrimaryContainer className={styles.container}>
                 {!isLoading ?
-                    <form
-                        className='ion-padding'
-                        onSubmit={formManager.handleSubmit}
-                        onKeyDown={(event) =>
-                            FormHelper.handleKeyDown(event, formManager.handleSubmit)
-                        }
-                    >
-                        <FormField>
-                            <PrimaryTypography size='m' customClassName={styles.label}>Name</PrimaryTypography>
-                            <SecondaryInput
-                                placeholder='Please enter your name'
-                                name="name"
-                                onChange={formManager.handleChange}
-                                value={formManager.values.name}
-                            />
-                            {formManager.touched.name && formManager.errors.name ? (
-                                <InputError error={formManager.errors.name} />
-                            ) : null}
-                        </FormField>
+                        <form
 
-                        <FormField>
-                            <PrimaryTypography size='m' customClassName={styles.label}>Address</PrimaryTypography>
-                            <SecondaryInput
-                                placeholder='Please enter your address'
-                                name="address"
-                                onChange={formManager.handleChange}
-                                value={formManager.values.address}
-                            />
-                            {formManager.touched.address && formManager.errors.address ? (
-                                <InputError error={formManager.errors.address} />
-                            ) : null}
-                        </FormField>
+                            className={`${styles.form} ion-padding`}
+                            onSubmit={formManager.handleSubmit}
+                            onKeyDown={(event) =>
+                                FormHelper.handleKeyDown(event, formManager.handleSubmit)
+                            }
+                        >
+                            <FormField>
+                                <PrimaryTypography size='m' customClassName={styles.label}>Name</PrimaryTypography>
+                                <SecondaryInput
+                                    placeholder='Please enter your name'
+                                    name="name"
+                                    onChange={formManager.handleChange}
+                                    value={formManager.values.name}
+                                />
+                                {formManager.touched.name && formManager.errors.name ? (
+                                    <InputError error={formManager.errors.name} />
+                                ) : null}
+                            </FormField>
 
-                        <FormField>
-                            <PrimaryTypography size='m' customClassName={styles.label}>Email</PrimaryTypography>
-                            <SecondaryInput
-                                placeholder='Email'
-                                name="email"
-                                onChange={formManager.handleChange}
-                                value={formManager.values.email ?? ''}
-                                disabled
-                            />
-                            {formManager.touched.email && formManager.errors.email ? (
-                                <InputError error={formManager.errors.email} />
-                            ) : null}
-                        </FormField>
+                            <FormField>
+                                <PrimaryTypography size='m' customClassName={styles.label}>Address</PrimaryTypography>
+                                <SecondaryInput
+                                    placeholder='Please enter your address'
+                                    name="address"
+                                    onChange={formManager.handleChange}
+                                    value={formManager.values.address}
+                                />
+                                {formManager.touched.address && formManager.errors.address ? (
+                                    <InputError error={formManager.errors.address} />
+                                ) : null}
+                            </FormField>
 
-                        <FormField>
-                            <PrimaryTypography size='m' customClassName={styles.label}>Wallet Address</PrimaryTypography>
-                            <SecondaryInput
-                                placeholder='Wallet address'
-                                name="walletAddress"
-                                onChange={formManager.handleChange}
-                                value={formManager.values.walletAddress ?? ''}
-                                disabled
-                            />
-                            {formManager.touched.walletAddress && formManager.errors.walletAddress ? (
-                                <InputError error={formManager.errors.walletAddress} />
-                            ) : null}
-                        </FormField>
-                    </form>
+                            <FormField>
+                                <PrimaryTypography size='m' customClassName={styles.label}>Email</PrimaryTypography>
+                                <SecondaryInput
+                                    placeholder='Email'
+                                    name="email"
+                                    onChange={formManager.handleChange}
+                                    value={formManager.values.email ?? ''}
+                                    disabled
+                                />
+                                {formManager.touched.email && formManager.errors.email ? (
+                                    <InputError error={formManager.errors.email} />
+                                ) : null}
+                            </FormField>
+
+                            <FormField className={styles.fieldWrapper}>
+                                <PrimaryTypography size='m' customClassName={styles.label}>Wallet Address</PrimaryTypography>
+                                <SecondaryInput
+                                    placeholder='Wallet address'
+                                    name="walletAddress"
+                                    onChange={formManager.handleChange}
+                                    value={formManager.values.walletAddress ?? ''}
+                                    disabled
+                                />
+                                {formManager.touched.walletAddress && formManager.errors.walletAddress ? (
+                                    <InputError error={formManager.errors.walletAddress} />
+                                ) : null}
+                            </FormField>
+                            <div className={styles.buttonWrapper}>
+                                <PrimaryButton
+                                    size='m'
+                                    expand='block'
+                                    onClick={() => {
+                                        formManager.submitForm();
+                                    }}
+                                    loading={isLoading}
+                                >
+                                    Save
+                                </PrimaryButton>
+                            </div>
+                        </form>
                     :
                     <PageLoader />}
             </PrimaryContainer>
-            <PrimaryFooter className={styles.footer}>
-                <PrimaryButton
-                    size='m'
-                    expand='block'
-                    onClick={() => {
-                        formManager.submitForm();
-                    }}
-                    loading={isLoading}
-                >
-                    Save
-                </PrimaryButton>
-            </PrimaryFooter>
         </IonPage>
     )
 }

@@ -1,11 +1,28 @@
-.label {
-    padding-bottom: 10px;
+.container {
+    position: relative;
+
 }
 
-.footer {
-    padding: 20px 20px 40px 20px;
-    .submitButton {
-        --background: linear-gradient(115.93deg, var(--ion-color-primary) 22.75%, var(--ion-color-quaternary) 84.05%);
-        --border-radius: 15px;
+.form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .fieldWrapper {
+        position: relative;
+    }
+
+    .label {
+        padding-bottom: 10px;
+    }
+    .stackedIcon {
+        position: absolute;
+        right: 0; 
+    }
+
+    .buttonWrapper {
+        margin-top: auto;
+        padding-bottom: 24px;
     }
 }
+

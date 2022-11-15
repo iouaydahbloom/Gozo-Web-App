@@ -125,7 +125,7 @@ const Spinner: React.FC = () => {
                     setPrizesExpired(false)
                     // wait for 3 minutes
                     setTimeout(() => setPrizesExpired(true), 180000);
-                    presentInfo(prizeInfo)
+                    // presentInfo(prizeInfo)
                 }
             })
     }

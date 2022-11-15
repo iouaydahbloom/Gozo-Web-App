@@ -30,7 +30,7 @@ const useMagicAuth = () => {
     }
 
     function getProviderSigner() {
-        const provider = new ethers.providers.Web3Provider(magic?.rpcProvider as any);
+        const provider = getProvider();
         return provider.getSigner();
     }
 

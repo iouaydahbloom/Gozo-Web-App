@@ -49,8 +49,9 @@ const SwapField: React.FC<Props> = ({
                         value={quantity}
                         disabled={isPassive}
                         type='number'
+                        min={0}
                         onIonChange={(event) => {
-                            onQuantityChange && onQuantityChange(event.detail.value ? parseInt(event.detail.value) : undefined)
+                            onQuantityChange && onQuantityChange(event.detail.value ? parseFloat(event.detail.value) : undefined)
                         }} />
 
                     {isPassive && isLoadingQuantity && <IonSpinner color='light' className={styles.spinner} />}

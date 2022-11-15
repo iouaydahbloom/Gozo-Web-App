@@ -16,7 +16,8 @@ export interface ContractsMetadata {
     forwarderContractAddress: string,
     tokenContractAbi: any[],
     gameContractAbi: any[],
-    forwarderContractAbi: any[]
+    forwarderContractAbi: any[],
+    botWalletAddress: string
 }
 
 const dapContext = React.createContext<Prop>({
@@ -30,7 +31,8 @@ const dapContext = React.createContext<Prop>({
     forwarderContractAddress: '',
     tokenContractAbi: [],
     gameContractAbi: [],
-    forwarderContractAbi: []
+    forwarderContractAbi: [],
+    botWalletAddress: ''
 });
 
 export default dapContext;

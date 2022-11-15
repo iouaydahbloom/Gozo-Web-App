@@ -22,7 +22,8 @@ const DappProvider: React.FC = ({ children }) => {
     forwarderContractAddress: '',
     tokenContractAbi: [],
     gameContractAbi: [],
-    forwarderContractAbi: []
+    forwarderContractAbi: [],
+    botWalletAddress: ''
   })
   const { run } = useCloud();
 
@@ -85,7 +86,8 @@ const DappProvider: React.FC = ({ children }) => {
         forwarderContractAddress: contractsMetadata.forwarderContractAddress,
         tokenContractAbi: contractsMetadata.tokenContractAbi,
         gameContractAbi: contractsMetadata.gameContractAbi,
-        forwarderContractAbi: contractsMetadata.forwarderContractAbi
+        forwarderContractAbi: contractsMetadata.forwarderContractAbi,
+        botWalletAddress: contractsMetadata.botWalletAddress
       }}>
       {children}
     </dapContext.Provider>

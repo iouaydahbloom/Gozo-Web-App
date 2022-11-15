@@ -90,7 +90,6 @@ const useBlockchainContractExecution = () => {
     ) {
         try {
             setExecuting(true);
-            presentInfo('Estimating transaction Fee ...');
             const fees = await estimate(contractAddress, abi, fn, params);
             confirm({
                 title: 'Confirmation',
@@ -135,7 +134,8 @@ const useBlockchainContractExecution = () => {
         execute,
         estimate,
         executing,
-        addListener
+        addListener,
+        signer: getProviderSigner()
     }
 }
 

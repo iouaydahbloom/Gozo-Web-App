@@ -22,13 +22,8 @@ const Dashboard: React.FC = () => {
     const { hide: hideOnboarding } = useOnBoardingPreview();
     const { fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms } = useLoyaltyPrograms();
     const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
-    const { assets, fetchCryptoAssets, isLoadingAssets } = useCryptoAssets();
-    const {
-        gozoToken,
-        gozoLoyaltyMembership,
-        fetchToken,
-        fetchGozoLoyaltyMembership
-    } = useContext(currencySettingsContext);
+    const { assets: cryptoAssets, fetchCryptoAssets, defaultERC20Asset, isLoadingAssets } = useCryptoAssets();
+    const { gozoLoyaltyMembership, fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [highlightedAsset, setHighlightedAsset] = useState<HighlightedBalanceAsset>();
     const { Moralis } = useMoralis();
 
@@ -43,7 +38,7 @@ const Dashboard: React.FC = () => {
     }, [])
 
     const handleHighlightedAssetMetadata = useCallback(() => {
-        mode == AssetMode.loyaltyPoint ? fetchGozoLoyaltyMembership() : fetchToken();
+        mode == AssetMode.loyaltyPoint ? fetchGozoLoyaltyMembership() : fetchCryptoAssets();
     }, [mode])
 
     const onRefresh = useCallback((): Promise<any> => {
@@ -61,11 +56,13 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         if (mode == AssetMode.token) {
             setHighlightedAsset({
-                balance: gozoToken ? parseFloat(Moralis.Units.FromWei(gozoToken.balance, parseInt(gozoToken.decimals))) : 0,
+                balance: defaultERC20Asset ?
+                    parseInt(Moralis.Units.FromWei(defaultERC20Asset.balance, parseInt(defaultERC20Asset.decimals))) :
+                    0,
                 description: 'Gozo Tokens'
             });
         }
-    }, [gozoToken])
+    }, [defaultERC20Asset])
 
     useEffect(() => {
         if (mode == AssetMode.loyaltyPoint) {
@@ -100,8 +97,8 @@ const Dashboard: React.FC = () => {
                     <TabPanel>
                         <CryptoTokens
                             isLoading={isLoadingAssets}
-                            assets={assets}
-                            refreshDefaultToken={fetchToken}
+                            assets={cryptoAssets}
+                            refreshDefaultToken={fetchCryptoAssets}
                             getAssets={fetchCryptoAssets} />
                     </TabPanel>
                 </Tabs>

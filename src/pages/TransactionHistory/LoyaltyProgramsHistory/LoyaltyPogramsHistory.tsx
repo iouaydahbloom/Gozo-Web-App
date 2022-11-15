@@ -7,7 +7,7 @@ import useProgramsTransactionHistory from '../../../hooks/useProgramsTransaction
 import PageLoader from '../../../components/loaders/PageLoader/PageLoader';
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
 import { useEffect } from 'react';
-import { isBalanceSubtracted } from '../../Common/helper';
+import { LoyaltyMemberHistory } from '../../../models/loyaltyMember';
 
 const LoyaltyPogramsHistory = () => {
     const { push } = useHistory();
@@ -26,7 +26,7 @@ const LoyaltyPogramsHistory = () => {
                         {
                             date: formatDate(hf.completed_at ?? ''),
                             reason: hf.reason,
-                            amount: isBalanceSubtracted(hf) ?
+                            amount: LoyaltyMemberHistory.isBalanceSubtracted(hf) ?
                                 <PrimaryTypography color='danger'>
                                     {`- ${hf.amount}`}
                                 </PrimaryTypography>

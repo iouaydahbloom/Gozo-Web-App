@@ -5,8 +5,7 @@ import PageLoader from "../../components/loaders/PageLoader/PageLoader"
 import useSearchParams from "../../hooks/useSearchParams"
 import useProgramsTransactionHistory from "../../hooks/useProgramsTransactionHistory"
 import { LoyaltyMemberHistory } from "../../models/loyaltyMember"
-import DetailItem from "../Common/DetailItem/DetailItem"
-import { isBalanceSubtracted } from "../Common/helper"
+import TransactionDetailItem from "../Common/TransactionDetailItem/TransactionDetailItem"
 
 
 const LoyaltyProgramHistoryDetails: React.FC = () => {
@@ -35,11 +34,12 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
           historyField &&
           Object.keys(historyField).filter((item) => keys.some(event => event.key === item)).map((key, index) => {
             const keyObj = keys.find((item) => item.key === key)
-            return <DetailItem
+            if(key === 'amount') console.log("tttteetstssar", historyField.type,  LoyaltyMemberHistory.isBalanceSubtracted(historyField))
+            return <TransactionDetailItem
               key={index}
               header={keyObj?.label ?? ''}
               text={key === 'amount' ?
-                isBalanceSubtracted(historyField) ?
+                LoyaltyMemberHistory.isBalanceSubtracted(historyField) ?
                   `- ${historyField[key as keyof LoyaltyMemberHistory]}`
                   :
                   `+ ${historyField[key as keyof LoyaltyMemberHistory]}`
@@ -47,7 +47,7 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
                 historyField[key as keyof LoyaltyMemberHistory]
               }
               textColor={key === 'amount' ?
-                isBalanceSubtracted(historyField) ? 'danger' : 'success'
+                LoyaltyMemberHistory.isBalanceSubtracted(historyField) ? 'danger' : 'success'
                 :
                 undefined}
             />

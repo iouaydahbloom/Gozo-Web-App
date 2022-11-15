@@ -6,7 +6,7 @@ import PrimaryContainer from "../../components/layout/PrimaryContainer/PrimaryCo
 import PageLoader from "../../components/loaders/PageLoader/PageLoader"
 import { ERC20Transfer } from "../../models/assets/ERC20Transfer"
 import { useDapp } from "../../providers/DappProvider/DappProvider"
-import DetailItem from "../Common/DetailItem/DetailItem"
+import TransactionDetailItem from "../Common/TransactionDetailItem/TransactionDetailItem"
 
 
 const TokenHistoryDetails: React.FC = () => {
@@ -46,7 +46,7 @@ const TokenHistoryDetails: React.FC = () => {
           historyField &&
           Object.keys(historyField).filter((item) => keys.some(event => event.key === item)).map((key, index) => {
             const keyObj = keys.find((item) => item.key === key)
-            return <DetailItem 
+            return <TransactionDetailItem
               key={index} 
               header={keyObj?.label ?? ''} 
               text={historyField[key as keyof ERC20Transfer]} 

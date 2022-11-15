@@ -45,11 +45,7 @@ const useProgramsTransactionHistory = (transaction_id?: string) => {
     }
 
     useEffect(() => {
-        getTransactions()
-    }, [gozoLoyalty])
-
-    useEffect(() => {
-        getTransaction()
+        if(transaction_id) getTransaction()
     }, [transaction_id])
 
     return {
@@ -57,7 +53,7 @@ const useProgramsTransactionHistory = (transaction_id?: string) => {
         getTransaction,
         isLoadingHistory: isLoading,
         historyFields,
-        historyField
+        historyField,
     }
 }
 

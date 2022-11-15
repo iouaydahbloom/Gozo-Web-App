@@ -94,4 +94,9 @@ export class LoyaltyMemberHistory implements AppModel {
     }
 
     toDTO() { }
+
+    static isBalanceSubtracted(historyField: LoyaltyMemberHistory) {
+        return historyField.type === 'redemption' ||
+            (historyField.type === 'member_exchange' && historyField.sub_type === 'out')
+    }
 }

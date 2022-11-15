@@ -13,7 +13,7 @@ const TransactionHistory: React.FC = () => {
         <IonPage>
             <SecondaryHeader
                 title='Transaction History' />
-            <PrimaryContainer scrollXAxis={true}>
+            <PrimaryContainer>
                 <Tabs>
                     <TabList>
                         <Tab>Loyalty Programs</Tab>

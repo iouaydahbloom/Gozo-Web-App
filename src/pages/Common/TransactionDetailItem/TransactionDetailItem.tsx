@@ -1,7 +1,7 @@
 import PrimaryTag from '../../../components/tags/PrimaryTag/PrimaryTag'
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography'
 import { defaultColorType } from '../../../types/defaultColorType'
-import styles from './detailItem.module.scss'
+import styles from './transactionDetailItem.module.scss'
 
 interface Props {
   header: string,
@@ -9,7 +9,7 @@ interface Props {
   textColor?: defaultColorType
 }
 
-const DetailItem: React.FC<Props> = ({ header, text, textColor = 'light' }) => {
+const TransactionDetailItem: React.FC<Props> = ({ header, text, textColor = 'light' }) => {
   return (
     <div className={styles.container}>
       <PrimaryTag className={styles.tag}>
@@ -22,4 +22,4 @@ const DetailItem: React.FC<Props> = ({ header, text, textColor = 'light' }) => {
   )
 }
 
-export default DetailItem
+export default TransactionDetailItem

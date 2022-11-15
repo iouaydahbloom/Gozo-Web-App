@@ -36,6 +36,7 @@
     "cordova-plugin-inappbrowser": "^5.0.0",
     "dotenv": "^16.0.1",
     "ethers": "^5.7.1",
+    "formik": "^2.2.9",
     "gsap": "^3.11.1",
     "ionicons": "^5.4.0",
     "magic-sdk": "^9.0.0",

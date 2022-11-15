@@ -1,5 +1,5 @@
 import { IonPage, IonToggle } from '@ionic/react';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router';
 import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
@@ -19,12 +19,14 @@ import LightDarkIcon from '../../components/icons/LightDarkIcon/LightDarkIcon';
 import HelpCenterIcon from '../../components/icons/HelpCenterIcon/HelpCenterIcon';
 import LogoutIcon from '../../components/icons/LogoutIcon/LogoutIcon';
 import useConfirmation from '../../hooks/useConfirmation';
+import { WheelSettingsContext } from '../../providers/WheelSettingsProvider/wheelSettingsContext';
 
 const Account: React.FC = () => {
     const { push } = useHistory();
     const { logout } = useAuthentication();
     const { appVersion } = useAppDetails();
     const { confirm } = useConfirmation();
+    const { isMuted, toggle } = useContext(WheelSettingsContext);
 
     function handleLogout() {
         confirm({
@@ -47,8 +49,7 @@ const Account: React.FC = () => {
                     <AccountItem
                         icon={<ProfileIcon />}
                         text='Profile Details'
-                        onClick={() => { }}
-                        isDisabled
+                        onClick={() => push(AppRoutes.profile)}
                     />
                     <AccountItem
                         icon={<TransactionHistoryIcon />}
@@ -67,9 +68,8 @@ const Account: React.FC = () => {
                     <br />
                     <AccountItem
                         icon={<EnableSoundsIcon />}
-                        text='Enable Sounds'
-                        customEndSlot={<IonToggle disabled checked={false}></IonToggle>}
-                        isDisabled
+                        text='Disable Wheel Sound'
+                        customEndSlot={<IonToggle checked={isMuted} onIonChange={(value) => toggle(value.detail.checked)}></IonToggle>}
                     />
                     <AccountItem
                         icon={<PushNotificationsIcon />}

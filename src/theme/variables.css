@@ -85,7 +85,7 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-tint: #f5f6f9;
 
   /** Quaternary **/
-  --ion-color-quaternary: #76F4C3
+  --ion-color-quaternary: #76F4C3;
 }
 
 .ion-color-quaternary {

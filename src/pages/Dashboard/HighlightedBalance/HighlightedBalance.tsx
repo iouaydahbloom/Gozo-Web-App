@@ -8,12 +8,13 @@ export interface HighlightedBalanceAsset {
 }
 
 interface Props {
-    asset?: HighlightedBalanceAsset
+    asset?: HighlightedBalanceAsset,
+    className?: string
 }
 
-const HighlightedBalance: React.FC<Props> = ({ asset }) => {
+const HighlightedBalance: React.FC<Props> = ({ asset, className }) => {
     return (
-        <div className={styles.container} >
+        <div className={`${styles.container} ${className}`} >
             <img src='/assets/image/gozo-element.png' className={styles.img} />
             <div className={styles.innerContainer}>
                 <IonBadge className={styles.badge}>

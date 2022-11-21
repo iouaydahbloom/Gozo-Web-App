@@ -51,7 +51,7 @@ const ProgramSelection: React.FC<Props> = ({ options, selectedValue, selectedBal
     return (
         <div className={`${styles.select} ${className}`} onClick={showSelect} >
             <PrimaryTypography size='m' isBlock={false}>
-              {selectedBalance} {selectedValue}
+              {selectedValue}
             </PrimaryTypography>
             <IonIcon size='large' color='light' icon={chevronDownOutline} />
         </div>

@@ -99,6 +99,12 @@ ion-page {
   }
 }
 
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 //Pull to refresh styles
 .lds-ellipsis div {
   background: var(--ion-color-light) !important;
@@ -112,3 +118,7 @@ ion-page {
 //         }
 //     }
 // }
+
+.scrollable {
+  overflow: hidden;
+}

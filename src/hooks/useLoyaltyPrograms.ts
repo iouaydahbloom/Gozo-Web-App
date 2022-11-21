@@ -8,6 +8,7 @@ import useCloud from "./useCloud";
 import { ProgramFilter } from "../models/data/filter";
 import { PartnershipType } from "../types/exchangeType";
 import { DefaultCurrencyDTO } from "../dto/defaultCurrencyDTO";
+import useToast from "./useToast";
 
 const useLoyaltyPrograms = () => {
     const [loadingMyPrograms, setLoadingMyPrograms] = useState(false);
@@ -15,6 +16,7 @@ const useLoyaltyPrograms = () => {
     const [isUpdating, setIsUpdating] = useState(false);
     const { gozoLoyalty } = useContext(currencySettingsContext);
     const { run } = useCloud();
+    const { presentFailure } = useToast();
 
     async function fetchDefaultCurrency() {
         return run(cloudFunctionName.defaultCurrency,
@@ -39,7 +41,15 @@ const useLoyaltyPrograms = () => {
                     }));
             })
             .then(result => {
-                return result.isSuccess ? result.data : null
+                if (!result.isSuccess) {
+                    presentFailure(result.message);
+                    return new Pagination(0,
+                        '',
+                        '',
+                        []);
+                }
+
+                return result.data;
             })
     }
 

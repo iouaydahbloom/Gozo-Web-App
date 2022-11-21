@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { useMoralis } from "react-moralis";
+import { http } from "../helpers/http/http-config";
 import { sessionContext } from "../providers/SessionProvider/sessionContext";
 
 export class CloudResponse<T> {
@@ -14,13 +14,8 @@ interface SuccessResponse<T> {
     message: string
 }
 
-interface ErrorResponse {
-    message: string,
-    errors: any
-}
-
 const useCloud = () => {
-    const { Moralis } = useMoralis();
+
     const { session } = useContext(sessionContext);
 
     const resolveParams = useCallback((params: any, isPrivate: boolean) => {
@@ -32,24 +27,26 @@ const useCloud = () => {
         return updatedParams;
     }, [session?.user.accessToken])
 
-    const run = useCallback(async <T, Y>(functionName: string, params: any, mapper?: (args: Y) => T, isPrivate: boolean = false): Promise<CloudResponse<T>> => {
-        return Moralis.Cloud
-            .run(functionName, resolveParams(params, isPrivate))
-            .then((result: SuccessResponse<Y>) => {
+    const run = useCallback(async <T, Y>(
+        functionName: string,
+        params: any,
+        mapper?: (args: Y) => T,
+        isPrivate: boolean = false
+    ): Promise<CloudResponse<T>> => {
+        return http.post<SuccessResponse<Y>>(`/functions/${functionName}`, resolveParams(params, isPrivate))
+            .then((result: any) => {
                 console.log(`Cloud result for ${functionName} is `, result);
                 const data = mapper ? mapper(result.data) : result.data as any as T;
                 return new CloudResponse<T>(result.message, null, data, true);
             })
             .catch((error) => {
                 console.log(`Cloud error for ${functionName} is `, error);
-                const message = typeof error.message == 'string' ? error.message : '';
-                const errors = typeof error.message == 'object' ? error.message : null;
-                return new CloudResponse<T>(message, errors, {} as any, false)
+                return new CloudResponse<T>(error.message, error.errors, {} as any, false)
             })
-    }, [session?.user.accessToken, Moralis.Cloud])
+    }, [session?.user.accessToken])
 
     return {
-        run: run
+        run
     }
 }
 

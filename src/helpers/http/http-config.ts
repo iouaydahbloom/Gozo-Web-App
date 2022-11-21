@@ -30,7 +30,7 @@ http.interceptors.response.use(
     (response) => response.data.result,
     async (error) => {
         const errorResponse = error.response;
-        if (!errorResponse) return Promise.reject(new HttpError(TIME_OUT_CODE, error.message, null));
+        if (!errorResponse) return Promise.reject(new HttpError(error.code, error.message, null));
         const message = typeof errorResponse.data.error == 'string' ? errorResponse.data.error : '';
         const errors = typeof errorResponse.data.error == 'object' ? errorResponse.data.error : null;
         return Promise.reject(new HttpError(errorResponse.status, message, errors));

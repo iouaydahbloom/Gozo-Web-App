@@ -22,16 +22,16 @@ const LoyaltyProgramOptionItem: React.FC<Props> = ({ name, currency, icon, isAct
                 <img src={icon} />
             </IonAvatar>
             <IonLabel className={styles.info}>
-                <IonLabel>
-                    <PrimaryTypography size='m'>
+                <IonLabel color='light'>
+                    <PrimaryTypography size='m' isBlock={false}>
                         {name}
                     </PrimaryTypography>
                 </IonLabel>
                 <IonLabel className={styles.balanceWrapper}>
                     <PrimaryTypography customClassName={styles.balance} isBlock={false} size='m'>
-                        Balance: 
+                        Bal. 
                     </PrimaryTypography>
-                    <PrimaryTypography isBlock={false} size='m'>
+                    <PrimaryTypography customClassName="ellipsis" isBlock={false} size='m'>
                         {membership?.balance} Units
                     </PrimaryTypography>
                 </IonLabel>

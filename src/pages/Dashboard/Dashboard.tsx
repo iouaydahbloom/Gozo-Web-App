@@ -81,11 +81,11 @@ const Dashboard: React.FC = () => {
     return (
         <IonPage>
             <PrimaryContainer isRefreshable onRefresh={onRefresh}>
-                <HighlightedBalance asset={highlightedAsset} />
+                <HighlightedBalance  asset={highlightedAsset} />
                 <Tabs onSelect={onSelect}>
-                    <TabList className={styles.tabList}>
-                        <Tab className={styles.tab}>Loyalty Programs</Tab>
-                        <Tab className={styles.tab}>Tokens</Tab>
+                    <TabList >
+                        <Tab >Loyalty Programs</Tab>
+                        <Tab >Tokens</Tab>
                     </TabList>
 
                     <TabPanel>

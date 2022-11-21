@@ -23,8 +23,6 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
   const { isMuted } = useContext(WheelSettingsContext);
 
   useEffect(() => {
-
-    console.log("isMuted", isMuted)
     myWheel = new Winwheel({
 
       'drawText': true,              // Code drawn text can be used with segment images.

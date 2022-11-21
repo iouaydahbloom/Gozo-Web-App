@@ -36,49 +36,63 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSe
                         }} />
                     </div>
                 }
-                <IonItem>
-                    <IonAvatar slot="start">
-                        <img className={styles.logo} src={loyaltyProgram.currency.programLogo ? loyaltyProgram.currency.programLogo : "assets/image/image-placeholder.svg"} />
-                    </IonAvatar>
-                    <IonLabel>
-                        <IonLabel >
-                            <PrimaryTypography color='light' isBold size='m'>{loyaltyProgram.currency.loyaltyCurrencyName}</PrimaryTypography>
+                <div className={`ellipsis ${styles.startSlot}`}>
+                    <IonItem lines='none'>
+                        <IonAvatar slot="start">
+                            <img className={styles.logo} src={loyaltyProgram.currency.programLogo ? loyaltyProgram.currency.programLogo : "assets/image/image-placeholder.svg"} />
+                        </IonAvatar>
+                        <IonLabel>
+                            <IonLabel color='light'>
+                                <PrimaryTypography color='light' isBlock={false} isBold size='m'>{loyaltyProgram.currency.loyaltyCurrencyName}</PrimaryTypography>
+                            </IonLabel>
+                            <IonLabel className={styles.status}>
+                                {membership ?
+                                    <>
+                                        <IonIcon icon={ellipse} color="success" />
+                                        <PrimaryTypography color='success' customClassName='ellipsis' size='m'>Connected</PrimaryTypography>
+                                    </>
+                                    :
+                                    <>
+                                        <IonIcon icon={ellipse} color="danger" />
+                                        <PrimaryTypography color='danger' customClassName='ellipsis' size='m'>Disconnected</PrimaryTypography>
+                                    </>
+                                }
+                            </IonLabel>
+
                         </IonLabel>
+
+                    </IonItem >
+                    <div className={styles.detailWrapper}>
                         <IonLabel className={styles.balanceRow}>
-                            <IonText color='medium-light'>Balance:</IonText>
-                            <PrimaryTypography color='light' size='m'>{membership?.balance} Miles</PrimaryTypography>
+                            <IonText color='medium-light'>Bal.</IonText>
+                            <PrimaryTypography color='light' customClassName='ellipsis' size='m'>{membership?.balance} Miles</PrimaryTypography>
                         </IonLabel>
                         <IonLabel className={styles.costRow}>
                             <IonText color='medium-light'>Cost to Spin:</IonText>
-                            <PrimaryTypography color='light' size='m'>{loyaltyProgram.redemption?.spinCost ? loyaltyProgram.redemption?.spinCost : 0} Units</PrimaryTypography>
+                            <PrimaryTypography color='light' customClassName='ellipsis' size='m'>{loyaltyProgram.redemption?.spinCost ? loyaltyProgram.redemption?.spinCost : 0} Units</PrimaryTypography>
                         </IonLabel>
-                        <IonLabel className={styles.status}>
-                            {membership ?
+                    </div>
+                </div>
+
+
+                <div>
+                    <div className={styles.spinAction} onClick={loyaltyProgram.redemption?.isSufficient ? spin : () => {}}>
+                        <div className={styles.actionItem}>
+                            {loyaltyProgram.redemption?.isSufficient ?
                                 <>
-                                    <IonIcon icon={ellipse} color="success" />
-                                    <PrimaryTypography color='success' size='m'>Connected</PrimaryTypography>
+                                    <IonIcon color="light" size="large" icon='assets/icon/Spin1.svg' />
+                                    <PrimaryTypography color='light'>Spin</PrimaryTypography>
                                 </>
                                 :
                                 <>
-                                    <IonIcon icon={ellipse} color="danger" />
-                                    <PrimaryTypography color='danger' size='m'>Disconnected</PrimaryTypography>
+                                    <IonIcon color="slightly-light" size="large" icon='assets/icon/no-credit-icon.svg' />
+                                    <PrimaryTypography isBlock={false} color='slightly-light'>Not enough credits</PrimaryTypography>
                                 </>
-
                             }
-
-                        </IonLabel>
-                    </IonLabel>
-                </IonItem >
-                {loyaltyProgram.redemption?.isSufficient &&
-                    <div>
-                        <div className={styles.spinAction} onClick={spin}>
-                            <div className={styles.spinIcon}>
-                                <IonIcon color="light" size="large" icon='assets/icon/Spin1.svg' />
-                                <PrimaryTypography color='light'>Spin</PrimaryTypography>
-                            </div>
                         </div>
                     </div>
-                }
+                </div>
+
             </div>
         </div>
     )

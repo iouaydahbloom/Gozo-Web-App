@@ -1,11 +1,11 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import SectionLoader from '../../../components/loaders/section-loader/SectionLoader';
 import SectionPlaceholder from '../../../components/sections/SectionPlaceholder/SectionPlaceholder';
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
 import { AppRoutes } from '../../../constants/appRoutes';
-import useElementsHeight from '../../../hooks/useElementsHeight';
+import { TabHeightContext } from '../../../providers/TabHeightProvider/tabHeightContext';
 import RewardListing from '../RewardListing/RewardListing';
 import styles from './rewardGrid.module.scss';
 
@@ -17,12 +17,8 @@ interface Props {
 
 const RewardGrid: React.FC<Props> = ({ headers = [], data = [], isLoading = true }) => {
     const { push } = useHistory()
-    const { internalTabHeight, getInternalTabHeight } = useElementsHeight()
-    console.log("internalTabHeight", internalTabHeight)
+    const {tabHeight} = useContext(TabHeightContext)
 
-    useLayoutEffect(() => {
-        getInternalTabHeight()
-    })
     return (
         <div className={styles.container}>
             {(!isLoading && data.length === 0) ?
@@ -35,7 +31,7 @@ const RewardGrid: React.FC<Props> = ({ headers = [], data = [], isLoading = true
                 <div className={styles.grid}>
                     <div 
                         className={styles.headerWrapper}
-                        style={{ top: internalTabHeight }}
+                        style={{ top: tabHeight }}
                         >
                         <div className={styles.header}>
                             {

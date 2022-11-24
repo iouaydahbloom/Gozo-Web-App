@@ -15,6 +15,7 @@ import { currencySettingsContext } from '../../providers/CurrencySettingsProvide
 import { useMoralis } from 'react-moralis';
 import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
 import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
+import { TabHeightContext } from '../../providers/TabHeightProvider/tabHeightContext';
 
 const Dashboard: React.FC = () => {
 
@@ -26,6 +27,8 @@ const Dashboard: React.FC = () => {
     const { gozoLoyaltyMembership, fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [highlightedAsset, setHighlightedAsset] = useState<HighlightedBalanceAsset>();
     const { Moralis } = useMoralis();
+    const { setTabHeight } = useContext(TabHeightContext)
+    const [tabRef, setTabRef] = useState<any>()
 
     const onSelect = useCallback((tabIndex: number) => {
         setMode(tabIndex == 0 ? AssetMode.loyaltyPoint : AssetMode.token);
@@ -78,11 +81,17 @@ const Dashboard: React.FC = () => {
         onRefresh();
     })
 
+    useEffect(() => {
+        if (tabRef) {
+            setTabHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
+        }
+    }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
+
     return (
         <IonPage>
             <PrimaryContainer isRefreshable onRefresh={onRefresh}>
                 <HighlightedBalance  asset={highlightedAsset} />
-                <Tabs onSelect={onSelect}>
+                <Tabs domRef={(node: any) => setTabRef(node)} onSelect={onSelect}>
                     <TabList >
                         <Tab >Loyalty Programs</Tab>
                         <Tab >Tokens</Tab>

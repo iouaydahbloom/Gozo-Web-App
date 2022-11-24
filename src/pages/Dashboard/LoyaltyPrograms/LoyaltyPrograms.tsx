@@ -18,6 +18,7 @@ import { currencySettingsContext } from '../../../providers/CurrencySettingsProv
 import usePrimarySheet from '../../../hooks/usePrimarySheet';
 import SecondaryButtonsGroup from '../../../components/buttons/SecondaryButtonsGroup/SecondaryButtonsGroup';
 import SectionLoader from '../../../components/loaders/section-loader/SectionLoader';
+import { TabHeightContext } from '../../../providers/TabHeightProvider/tabHeightContext';
 
 interface Props {
     programs: UserLoyaltyProgram[],
@@ -29,6 +30,7 @@ const LoyaltyPrograms: React.FC<Props> = ({ programs, getPrograms, isLoading }) 
     const { fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [selectedUserCurrencyIds, setSelectedUserCurrencyIds] = useState<string[]>([]);
     const [isRemoving, setIsRemoving] = useState(false);
+    const {tabHeight} = useContext(TabHeightContext)
 
     const { showModal: showManager } = usePrimarySheet({
         title: 'Partners',
@@ -96,7 +98,7 @@ const LoyaltyPrograms: React.FC<Props> = ({ programs, getPrograms, isLoading }) 
                     <SectionLoader /> :
                     programs.length > 0 ?
                         <>
-                            <div className={styles.actions}>
+                            <div className={styles.actions} style={{top: tabHeight}}>
                                 {isRemoving ?
                                     <SecondaryButtonsGroup
                                         buttons={[

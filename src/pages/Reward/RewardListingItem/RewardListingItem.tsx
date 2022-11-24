@@ -26,7 +26,13 @@ const RewardListingItem: React.FC<Props> = ({ reward }) => {
           <PrimaryTypography color="medium-light">
             Date:
           </PrimaryTypography>
-          <PrimaryTypography color="dark">{formatDate(reward.date)}</PrimaryTypography>
+          <PrimaryTypography color="dark">{formatDate(reward.date, 'ddd Do MMM, YYYY')}</PrimaryTypography>
+        </div>
+        <div className={styles.popoverRow}>
+          <PrimaryTypography color="medium-light">
+            Time:
+          </PrimaryTypography>
+          <PrimaryTypography color="dark">{formatDate(reward.date, 'h:mm a')}</PrimaryTypography>
         </div>
       </div>
   })
@@ -46,8 +52,9 @@ const RewardListingItem: React.FC<Props> = ({ reward }) => {
         </IonButton>
       </IonButtons>
       <PrimaryTypography
-        customClassName={styles.dateWrapper}>
-        {formatDate(reward.date)}
+        color="success"
+        customClassName={styles.endSlot}>
+        Claimed
       </PrimaryTypography>
     </div>
   )

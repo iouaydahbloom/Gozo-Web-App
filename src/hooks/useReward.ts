@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import useCloud from "./useCloud";
 import { Reward } from "../models/reward";
 import { RewardDTO } from "../dto/RewardDTO";
 
 const useReward = () => {
+    const [ rewards, setRewards ] = useState<Reward[]>([])
     const [ isLoadingRewards, setIsLoadingRewards ] = useState(false);
     const { run } = useCloud();
 
@@ -20,8 +21,19 @@ const useReward = () => {
             .finally(() => setIsLoadingRewards(false))
     }
 
+    function getRewards() {
+        fetchRewards().then(rewards => {
+            if (rewards) setRewards(rewards)
+        })
+    }
+
+    useEffect(() => {
+        getRewards()
+    }, [])
+
 
     return {
+        rewards,
         fetchRewards,
         isLoadingRewards
     }

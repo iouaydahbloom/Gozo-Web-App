@@ -1,6 +1,6 @@
 import { IonIcon } from '@ionic/react';
 import { scanOutline } from 'ionicons/icons';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../components/inputs/PrimaryInput/PrimaryInput';
 import TransactionDetails from '../../components/TransactionDetails/TransactionDetails';
@@ -14,13 +14,13 @@ const SendCrypto: React.FC = () => {
 
     const [receiver, setReceiver] = useState('');
     const [amount, setAmount] = useState('');
-    const { transfer, transferFee, isEstimatingTransferFee, executing } = useBlockchainTransfer();
+    const { transferToken, transferFee, isEstimatingTransferFee, executing, error } = useBlockchainTransfer();
     const { presentFailure } = useToast();
     const { scan } = useBarcodeScanner();
 
     async function handleTransfer() {
         if (receiver && amount) {
-            await transfer(receiver, amount);
+            await transferToken(receiver, amount);
         } else {
             presentFailure('You are missing some required fields')
         }
@@ -30,6 +30,12 @@ const SendCrypto: React.FC = () => {
         const result = await scan();
         setReceiver(result?.text);
     }
+
+    useEffect(() => {
+        if (!isEstimatingTransferFee && !executing && error) {
+            presentFailure(error.message);
+        }
+    }, [isEstimatingTransferFee, executing, error])
 
     return (
         <div>

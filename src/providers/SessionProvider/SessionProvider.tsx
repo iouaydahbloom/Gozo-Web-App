@@ -5,19 +5,23 @@ import { sessionContext } from "./sessionContext";
 const SessionProvider: React.FC = ({ children }) => {
 
     const [session, setSession] = useState<any>();
-    const [isSessionReady, setIsSessionReady] = useState(false);
+    const [isReady, setIsReady] = useState(false);
 
     function clear() {
         setSession(null);
     }
 
-    useEffect(() => {
-        InternalStorage
+    async function initSession() {
+        return InternalStorage
             .getFromStorage('authSession')
             .then(session => {
                 setSession(session);
-                setIsSessionReady(true);
+                setIsReady(true);
             })
+    }
+
+    useEffect(() => {
+        initSession();
     }, [])
 
     useEffect(() => {
@@ -26,7 +30,13 @@ const SessionProvider: React.FC = ({ children }) => {
     }, [session])
 
     return (
-        <sessionContext.Provider value={{ session, setSession, clear, isSessionReady }}>
+        <sessionContext.Provider value={{
+            session,
+            setSession,
+            clear,
+            isReady,
+            refresh: initSession
+        }}>
             {children}
         </sessionContext.Provider>
     )

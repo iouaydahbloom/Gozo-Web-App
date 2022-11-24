@@ -1,16 +1,19 @@
 import React from 'react';
 import { AuthUser } from '../../models/authUser';
+import { WaitableContextProp } from '../waitableContextProp';
 
-const sessionContext = React.createContext<{
+interface Props extends WaitableContextProp {
     session: { user: AuthUser } | null,
-    isSessionReady: boolean,
     setSession: (session: { user: AuthUser }) => void,
     clear: () => void
-}>({
+}
+
+const sessionContext = React.createContext<Props>({
     session: null,
-    isSessionReady: false,
     setSession: () => null,
-    clear: () => null
+    clear: () => null,
+    isReady: false,
+    refresh: () => Promise.resolve()
 })
 
 export { sessionContext }

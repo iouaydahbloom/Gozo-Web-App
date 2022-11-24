@@ -8,7 +8,7 @@ interface PresentingOptions {
     dismiss: () => Promise<void>
 }
 
-const appToasterClass = 'app-toaster';
+const appToastClass = 'app-toaster';
 
 function useToast(duration?: number): PresentingOptions {
 
@@ -19,21 +19,21 @@ function useToast(duration?: number): PresentingOptions {
         duration: duration ? duration : 3000
     }
 
-    const toaster: PresentingOptions = {
+    const toast: PresentingOptions = {
         presentInfo: (message: string) => {
-            options.cssClass = [appToasterClass, 'info'];
+            options.cssClass = [appToastClass, 'info'];
             options.message = message;
             options.icon = informationCircleOutline;
             return present(options)
         },
         presentSuccess: (message: string) => {
-            options.cssClass = [appToasterClass, 'success'];
+            options.cssClass = [appToastClass, 'success'];
             options.message = message;
             options.icon = checkmarkCircleOutline;
             return present(options)
         },
         presentFailure: (message: string) => {
-            options.cssClass = [appToasterClass, 'failure'];
+            options.cssClass = [appToastClass, 'failure'];
             options.message = message;
             options.icon = closeCircleOutline;
             return present(options)
@@ -41,7 +41,7 @@ function useToast(duration?: number): PresentingOptions {
         dismiss
     }
 
-    return toaster;
+    return toast;
 }
 
 export default useToast;

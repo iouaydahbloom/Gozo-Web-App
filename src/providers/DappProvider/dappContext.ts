@@ -24,7 +24,6 @@ const dapContext = React.createContext<Prop>({
     chainId: chainHex.Fuji,
     defaultTokenMetadata: null,
     walletAddress: null,
-    isReady: false,
     tokenContractAddress: '',
     gameContractAddress: '',
     relayerContractAddress: '',
@@ -32,7 +31,9 @@ const dapContext = React.createContext<Prop>({
     tokenContractAbi: [],
     gameContractAbi: [],
     forwarderContractAbi: [],
-    botWalletAddress: ''
+    botWalletAddress: '',
+    isReady: false,
+    refresh: () => Promise.resolve()
 });
 
 export default dapContext;

@@ -50,15 +50,15 @@ const useTokenToOthersExchange = () => {
         return Moralis.Units.Token(tokenQuantity ?? 0, 18);
     }, [tokenQuantity])
 
-    const { execute: transferTokens, estimate, executing } = useBlockchainContractExecution();
-    const { transferNative } = useBlockchainTransfer();
+    const { execute: transferToOwner, estimate, executing } = useBlockchainContractExecution();
+    const { transferNative, executing: executingNativeTransfer, error } = useBlockchainTransfer();
     /**
      * Token to others exchange logic
      */
     const executeTokenToOthersExchange = useCallback(async () => {
         if (tokenQuantity && tokenQuantity <= 0) return;
 
-        return transferTokens(
+        return transferToOwner(
             tokenContractAddress,
             tokenContractAbi,
             'transferToOwner',
@@ -182,7 +182,6 @@ const useTokenToOthersExchange = () => {
     async function executeNativeToTokenExchange() {
         return transferNative(botWalletAddress, selectedOthers.quantity!)
             .then(success => {
-                debugger
                 if (!success) return;
                 return run(
                     cloudFunctionName.handleNativeExchange,
@@ -220,6 +219,22 @@ const useTokenToOthersExchange = () => {
         if (selectedOthers.type == SwapPartyType.nativeCryptoCurrency) return !selectedOthers.quantity;
         return (minimumValue && (selectedOthers?.quantity! < minimumValue)) || !selectedOthers?.quantity;
     }, [tokenQuantity, selectedOthers, minimumValue])
+
+    const tokensBalance = defaultERC20Asset ? parseFloat(Moralis.Units.FromWei(defaultERC20Asset?.balance, 18)) : 0;
+    const pointsBalance = membership?.balance;
+    const nativeBalance = defaultNativeAsset ? parseFloat(Moralis.Units.FromWei(defaultNativeAsset?.balance, 18)) : 0;
+
+    const displayedBalance = useMemo(() => {
+        if (direction == 't2o') {
+            return tokensBalance
+        }
+
+        if (selectedOthers.type == SwapPartyType.loyaltyProgram) {
+            return pointsBalance;
+        }
+
+        return nativeBalance;
+    }, [direction, selectedOthers.type, defaultNativeAsset?.balance, defaultERC20Asset?.balance, membership?.balance])
 
     /**
      * Lifecycles events
@@ -276,6 +291,12 @@ const useTokenToOthersExchange = () => {
         getMinPointsToTokenExchange();
     }, [direction])
 
+    useEffect(() => {
+        if (!executingNativeTransfer && error) {
+            presentFailure(error.message);
+        }
+    }, [executingNativeTransfer, error])
+
     return {
         tokenOptions: tokenOptions,
         othersOptions: othersOptions,
@@ -290,9 +311,7 @@ const useTokenToOthersExchange = () => {
         estimatedGasFee,
         isEstimatingGasFee,
         isDisabled,
-        pointsBalance: membership?.balance,
-        tokensBalance: defaultERC20Asset ? parseFloat(Moralis.Units.FromWei(defaultERC20Asset?.balance, 18)) : 0,
-        nativeBalance: defaultNativeAsset ? parseFloat(Moralis.Units.FromWei(defaultNativeAsset?.balance, 18)) : 0,
+        displayedBalance,
         setSelectedOthers,
         setTokenQuantity: setTokenQuantity,
         toggleDirection: () => setDirection(prev => prev == 't2o' ? 'o2t' : 't2o'),

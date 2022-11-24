@@ -8,7 +8,6 @@ import useCloud from "./useCloud";
 import { ProgramFilter } from "../models/data/filter";
 import { PartnershipType } from "../types/exchangeType";
 import { DefaultCurrencyDTO } from "../dto/defaultCurrencyDTO";
-import useToast from "./useToast";
 
 const useLoyaltyPrograms = () => {
     const [loadingMyPrograms, setLoadingMyPrograms] = useState(false);
@@ -16,7 +15,7 @@ const useLoyaltyPrograms = () => {
     const [isUpdating, setIsUpdating] = useState(false);
     const { gozoLoyalty } = useContext(currencySettingsContext);
     const { run } = useCloud();
-    const { presentFailure } = useToast();
+    const [error, setError] = useState<Error>();
 
     async function fetchDefaultCurrency() {
         return run(cloudFunctionName.defaultCurrency,
@@ -24,7 +23,12 @@ const useLoyaltyPrograms = () => {
             (result: DefaultCurrencyDTO) => UserLoyaltyProgram.getFromDefaultCurrencyDTO(result),
             true)
             .then(result => {
-                return result.isSuccess ? result.data : null
+                if (!result.isSuccess) {
+                    setError(new Error(result.message));
+                    return null;
+                }
+
+                return result.data;
             })
     }
 
@@ -42,7 +46,7 @@ const useLoyaltyPrograms = () => {
             })
             .then(result => {
                 if (!result.isSuccess) {
-                    presentFailure(result.message);
+                    setError(new Error(result.message));
                     return new Pagination(0,
                         '',
                         '',
@@ -61,7 +65,12 @@ const useLoyaltyPrograms = () => {
                 return result.results.length > 0 ? LoyaltyProgram.getFromDTO(result.results[0]) : null
             })
             .then(result => {
-                return result.isSuccess ? result.data : null
+                if (!result.isSuccess) {
+                    setError(new Error(result.message));
+                    return null;
+                }
+
+                return result.data;
             })
     }
 
@@ -74,7 +83,12 @@ const useLoyaltyPrograms = () => {
                 return LoyaltyProgram.getFromDTO(result)
             })
             .then(result => {
-                return result.isSuccess ? result.data : null
+                if (!result.isSuccess) {
+                    setError(new Error(result.message));
+                    return null;
+                }
+
+                return result.data;
             })
             .finally(() => setLoadingProgram(false))
     }
@@ -90,7 +104,12 @@ const useLoyaltyPrograms = () => {
             },
             true)
             .then(result => {
-                return result.isSuccess ? result.data : []
+                if (!result.isSuccess) {
+                    setError(new Error(result.message));
+                    return [];
+                }
+
+                return result.data;
             })
             .finally(() => setLoadingMyPrograms(false))
     }
@@ -105,6 +124,10 @@ const useLoyaltyPrograms = () => {
                 return UserLoyaltyProgram.getFromDTO(parsedResult);
             },
             true)
+            .then(result => {
+                if (!result.isSuccess) setError(new Error(result.message));
+                return result;
+            })
             .finally(() => setIsUpdating(false))
     }
 
@@ -115,7 +138,12 @@ const useLoyaltyPrograms = () => {
             () => true,
             true)
             .then(result => {
-                return result.isSuccess
+                if (!result.isSuccess) {
+                    setError(new Error(result.message));
+                    return false;
+                }
+
+                return true;
             })
             .finally(() => setIsUpdating(false))
     }
@@ -127,7 +155,12 @@ const useLoyaltyPrograms = () => {
             () => true,
             true)
             .then(result => {
-                return result.isSuccess
+                if (!result.isSuccess) {
+                    setError(new Error(result.message));
+                    return false;
+                }
+
+                return true;
             })
             .finally(() => setIsUpdating(false))
     }
@@ -144,7 +177,8 @@ const useLoyaltyPrograms = () => {
         connectProgram,
         disconnectProgram,
         disconnectPrograms,
-        isUpdating
+        isUpdating,
+        error
     }
 }
 

@@ -18,7 +18,7 @@ class HttpError extends Error {
 
 const http = axios.create({
     baseURL: appConfig.moralisServerUrl,
-    timeout: 100,
+    timeout: 15000,
     timeoutErrorMessage: 'Network Connection Issue'
 });
 

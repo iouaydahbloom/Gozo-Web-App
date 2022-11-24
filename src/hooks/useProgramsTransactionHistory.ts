@@ -10,12 +10,13 @@ const useProgramsTransactionHistory = (transaction_id?: string) => {
     const { run } = useCloud();
     const { gozoLoyalty } = useContext(currencySettingsContext);
     const [historyFields, setHistoryFields] = useState<LoyaltyMemberHistory[]>([]);
+    const [ pagination, setPagination ] = useState<Pagination<LoyaltyMemberHistory>>()
     const [historyField, setHistoryField] = useState<LoyaltyMemberHistory>();
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     async function getTransactions() {
-        setIsLoading(true)
-        return run(cloudFunctionName.transactionHistory,
+        if(!pagination?.next) setIsLoading(true)
+        return run(`${cloudFunctionName.transactionHistory}${pagination?.next ? pagination?.next : ''}`,
             { ca_loyalty_currency: gozoLoyalty?.currency.loyaltyCurrency },
             (result: Pagination<LoyaltyMemberHistoryDTO>) => {
                 return new Pagination(result.count, result.next, result.previous, result.results.map(res => {
@@ -24,7 +25,12 @@ const useProgramsTransactionHistory = (transaction_id?: string) => {
             },
             true)
             .then(result => {
-                if (result.isSuccess) setHistoryFields(result.data.results);
+                if (result.isSuccess) {
+                    setPagination(result.data)
+                    var historyFieldsRef = [...historyFields]
+                    const historyFieldsList = historyFieldsRef.concat(result.data.results)
+                    setHistoryFields(historyFieldsList);
+                }
             })
             .finally(() => setIsLoading(false))
     }
@@ -50,6 +56,7 @@ const useProgramsTransactionHistory = (transaction_id?: string) => {
 
     return {
         getTransactions,
+        transactionCount: pagination?.count,
         getTransaction,
         isLoadingHistory: isLoading,
         historyFields,

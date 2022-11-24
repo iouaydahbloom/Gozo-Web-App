@@ -1,10 +1,5 @@
 import { IonInfiniteScroll, IonInfiniteScrollContent } from "@ionic/react"
 
-// interface Props {
-//     loadMore: (ev: any) => void,
-//     isInfiniteDisabled: boolean
-// }
-
 export const InfiniteScrollPagination = (loadMore: (ev: any) => void, isInfiniteDisabled: boolean) => {
     return (
         <IonInfiniteScroll

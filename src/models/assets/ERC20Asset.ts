@@ -14,7 +14,7 @@ export class ERC20Asset extends CryptoAsset {
 
     static fromDto(dto: ERC20AssetDTO): ERC20Asset {
         return new ERC20Asset(
-            dto.token_address,
+            dto.contractAddress,
             dto.name,
             dto.symbol,
             dto.decimals,

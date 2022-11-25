@@ -1,7 +1,9 @@
 import { useCallback, useContext } from "react";
+import { appConfig } from "../constants/appConfig";
 import { http } from "../helpers/http";
 import { errorHandlerContext } from "../providers/ErrorHandlerProvider/errorHandlerContext";
 import { sessionContext } from "../providers/SessionProvider/sessionContext";
+import useMagicAuth from "./useMagicAuth";
 
 export class CloudResponse<T> {
     constructor(public message: string,
@@ -17,17 +19,25 @@ interface SuccessResponse<T> {
 
 const useCloud = () => {
 
-    const { session } = useContext(sessionContext);
+    const { session, clear: clearSession } = useContext(sessionContext);
+    const { disconnect: disconnectMagicAuth } = useMagicAuth();
     const { setGlobalError } = useContext(errorHandlerContext);
 
-    const resolveParams = useCallback((params: any, isPrivate: boolean) => {
-        let updatedParams = params;
+    function resolveParams(params: any, isPrivate: boolean) {
+        let updatedParams = { ...params, _ApplicationId: appConfig.moralisAppId };
         if (isPrivate) {
             if (updatedParams) updatedParams.token = session?.user?.accessToken;
             else updatedParams = { token: session?.user?.accessToken };
         }
         return updatedParams;
-    }, [session?.user.accessToken])
+    }
+
+    async function handleUnauthorizedResponse(error: Error) {
+        if (error.message == 'unauthorized') {
+            clearSession();
+            await disconnectMagicAuth();
+        }
+    }
 
     const run = useCallback(async <T, Y>(
         functionName: string,
@@ -41,9 +51,10 @@ const useCloud = () => {
                 const data = mapper ? mapper(result.data) : result.data as any as T;
                 return new CloudResponse<T>(result.message, null, data, true);
             })
-            .catch((error) => {
+            .catch(async (error) => {
                 console.log(`Cloud error for ${functionName} is `, error);
                 setGlobalError(error);
+                await handleUnauthorizedResponse(error);
                 return new CloudResponse<T>(error.message, error.errors, {} as any, false)
             })
     }, [session?.user.accessToken])

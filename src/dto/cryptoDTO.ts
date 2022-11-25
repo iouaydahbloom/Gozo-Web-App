@@ -1,5 +1,5 @@
 export interface ERC20AssetDTO extends CryptoAssetDTO {
-    token_address: string
+    contractAddress: string
 }
 
 export interface NativeAssetDTO extends CryptoAssetDTO { }

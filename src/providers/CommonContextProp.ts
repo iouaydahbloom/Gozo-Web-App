@@ -1,4 +1,4 @@
-export interface WaitableContextProp {
+export interface CommonContextProp {
     isReady: boolean,
     refresh: () => Promise<void>
 }

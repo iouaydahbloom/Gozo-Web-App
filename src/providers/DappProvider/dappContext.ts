@@ -1,9 +1,9 @@
 import React from "react";
 import { chainHex } from "../../helpers/networks";
 import { ERC20Metadata } from "../../models/assets/ERC20Asset";
-import { WaitableContextProp } from "../waitableContextProp";
+import { CommonContextProp } from "../CommonContextProp";
 
-interface Prop extends WaitableContextProp, ContractsMetadata {
+interface Prop extends CommonContextProp, ContractsMetadata {
     walletAddress: string | null,
     chainId: string,
     defaultTokenMetadata: ERC20Metadata | null,

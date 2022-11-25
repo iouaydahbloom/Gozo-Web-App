@@ -1,5 +1,5 @@
 import { useCallback, useContext } from "react";
-import { http } from "../helpers/http/http-config";
+import { http } from "../helpers/http";
 import { errorHandlerContext } from "../providers/ErrorHandlerProvider/errorHandlerContext";
 import { sessionContext } from "../providers/SessionProvider/sessionContext";
 
@@ -18,7 +18,7 @@ interface SuccessResponse<T> {
 const useCloud = () => {
 
     const { session } = useContext(sessionContext);
-    const { setError } = useContext(errorHandlerContext);
+    const { setGlobalError } = useContext(errorHandlerContext);
 
     const resolveParams = useCallback((params: any, isPrivate: boolean) => {
         let updatedParams = params;
@@ -43,7 +43,7 @@ const useCloud = () => {
             })
             .catch((error) => {
                 console.log(`Cloud error for ${functionName} is `, error);
-                setError(error);
+                setGlobalError(error);
                 return new CloudResponse<T>(error.message, error.errors, {} as any, false)
             })
     }, [session?.user.accessToken])

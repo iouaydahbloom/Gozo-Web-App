@@ -1,7 +1,7 @@
 import { createContext } from "react";
-import { WaitableContextProp } from "../waitableContextProp";
+import { CommonContextProp } from "../CommonContextProp";
 
-export interface IOnBoardingPreviewState extends WaitableContextProp {
+export interface IOnBoardingPreviewState extends CommonContextProp {
     isHidden: boolean,
     hide: () => void
 }

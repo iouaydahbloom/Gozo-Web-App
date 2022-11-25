@@ -1,8 +1,7 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
-import { appConfig } from '../../constants/appConfig';
-
-export const TIME_OUT_CODE = 'ECONNABORTED';
+import { appConfig } from '../constants/appConfig';
+import { networkResponseCode } from '../constants/networkResponseCode';
 
 class HttpError extends Error {
     constructor(
@@ -11,7 +10,6 @@ class HttpError extends Error {
         public errors: any
     ) {
         super(message);
-        // 👇️ because we are extending a built-in class
         Object.setPrototypeOf(this, HttpError.prototype);
     }
 }
@@ -26,7 +24,7 @@ axiosRetry(http, {
     retries: 1,
     shouldResetTimeout: true,
     retryCondition: (error) => {
-        return error.code === TIME_OUT_CODE;
+        return error.code === networkResponseCode.timeOut;
     }
 });
 

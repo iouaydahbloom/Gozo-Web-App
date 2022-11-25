@@ -15,7 +15,6 @@ const useLoyaltyPrograms = () => {
     const [isUpdating, setIsUpdating] = useState(false);
     const { gozoLoyalty } = useContext(currencySettingsContext);
     const { run } = useCloud();
-    const [error, setError] = useState<Error>();
 
     async function fetchDefaultCurrency() {
         return run(cloudFunctionName.defaultCurrency,
@@ -24,8 +23,7 @@ const useLoyaltyPrograms = () => {
             true)
             .then(result => {
                 if (!result.isSuccess) {
-                    setError(new Error(result.message));
-                    return null;
+                    throw (new Error(result.message));
                 }
 
                 return result.data;
@@ -46,7 +44,6 @@ const useLoyaltyPrograms = () => {
             })
             .then(result => {
                 if (!result.isSuccess) {
-                    setError(new Error(result.message));
                     return new Pagination(0,
                         '',
                         '',
@@ -66,8 +63,7 @@ const useLoyaltyPrograms = () => {
             })
             .then(result => {
                 if (!result.isSuccess) {
-                    setError(new Error(result.message));
-                    return null;
+                    throw (new Error(result.message));
                 }
 
                 return result.data;
@@ -84,7 +80,7 @@ const useLoyaltyPrograms = () => {
             })
             .then(result => {
                 if (!result.isSuccess) {
-                    setError(new Error(result.message));
+                    throw (new Error(result.message));
                     return null;
                 }
 
@@ -105,8 +101,7 @@ const useLoyaltyPrograms = () => {
             true)
             .then(result => {
                 if (!result.isSuccess) {
-                    setError(new Error(result.message));
-                    return [];
+                    throw (new Error(result.message));
                 }
 
                 return result.data;
@@ -125,7 +120,7 @@ const useLoyaltyPrograms = () => {
             },
             true)
             .then(result => {
-                if (!result.isSuccess) setError(new Error(result.message));
+                if (!result.isSuccess) throw (new Error(result.message));
                 return result;
             })
             .finally(() => setIsUpdating(false))
@@ -139,8 +134,7 @@ const useLoyaltyPrograms = () => {
             true)
             .then(result => {
                 if (!result.isSuccess) {
-                    setError(new Error(result.message));
-                    return false;
+                    throw (new Error(result.message));
                 }
 
                 return true;
@@ -156,8 +150,7 @@ const useLoyaltyPrograms = () => {
             true)
             .then(result => {
                 if (!result.isSuccess) {
-                    setError(new Error(result.message));
-                    return false;
+                    throw (new Error(result.message));
                 }
 
                 return true;
@@ -177,8 +170,7 @@ const useLoyaltyPrograms = () => {
         connectProgram,
         disconnectProgram,
         disconnectPrograms,
-        isUpdating,
-        error
+        isUpdating
     }
 }
 

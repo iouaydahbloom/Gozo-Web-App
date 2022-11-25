@@ -1,8 +1,8 @@
 import React from 'react';
 import { AuthUser } from '../../models/authUser';
-import { WaitableContextProp } from '../waitableContextProp';
+import { CommonContextProp } from '../CommonContextProp';
 
-interface Props extends WaitableContextProp {
+interface Props extends CommonContextProp {
     session: { user: AuthUser } | null,
     setSession: (session: { user: AuthUser }) => void,
     clear: () => void

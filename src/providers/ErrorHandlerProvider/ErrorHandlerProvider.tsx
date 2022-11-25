@@ -1,25 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
-import { TIME_OUT_CODE } from '../../helpers/http/http-config';
+import { networkResponseCode } from '../../constants/networkResponseCode';
 import useToast from '../../hooks/useToast';
 import { errorHandlerContext } from './errorHandlerContext';
 
 const ErrorHandlerProvider: React.FC = ({ children }) => {
 
-    const [error, setError] = useState<any>();
+    const [globalError, setGlobalError] = useState<any>();
     const { presentFailure } = useToast();
 
     const handleError = useCallback(() => {
-        if (error?.code == TIME_OUT_CODE) {
+        if (globalError?.code == networkResponseCode.timeOut) {
             presentFailure('Network Connection Issue, Please try again!');
         }
-    }, [error])
+    }, [globalError])
 
     useEffect(() => {
         handleError();
-    }, [error])
+    }, [globalError])
 
     return (
-        <errorHandlerContext.Provider value={{ error, setError }}>
+        <errorHandlerContext.Provider value={{ globalError, setGlobalError }}>
             {children}
         </errorHandlerContext.Provider>
     )

@@ -1,16 +1,16 @@
 import PrimaryAccordion, { AccordionItemData } from '../../../components/accordions/PrimaryAccordion/PrimaryAccordion'
-import styles from './earnTab.module.scss'
+import styles from './earnReward.module.scss'
 
 interface Props {
     earnData: AccordionItemData[]
 }
 
-const EarnTab: React.FC<Props> = ({earnData}) => {
+const EarnReward: React.FC<Props> = ({earnData}) => {
   return (
     <div>
-        <PrimaryAccordion accordionItemData={earnData} className={styles.earnTab}/>
+        <PrimaryAccordion accordionItemData={earnData} className={styles.EarnReward}/>
     </div>
   )
 }
 
-export default EarnTab
+export default EarnReward

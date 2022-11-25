@@ -22,11 +22,7 @@ const useLoyaltyPrograms = () => {
             (result: DefaultCurrencyDTO) => UserLoyaltyProgram.getFromDefaultCurrencyDTO(result),
             true)
             .then(result => {
-                if (!result.isSuccess) {
-                    throw (new Error(result.message));
-                }
-
-                return result.data;
+                return result.isSuccess ? result.data : null
             })
     }
 
@@ -62,11 +58,7 @@ const useLoyaltyPrograms = () => {
                 return result.results.length > 0 ? LoyaltyProgram.getFromDTO(result.results[0]) : null
             })
             .then(result => {
-                if (!result.isSuccess) {
-                    throw (new Error(result.message));
-                }
-
-                return result.data;
+                return result.isSuccess ? result.data : null
             })
     }
 
@@ -79,12 +71,7 @@ const useLoyaltyPrograms = () => {
                 return LoyaltyProgram.getFromDTO(result)
             })
             .then(result => {
-                if (!result.isSuccess) {
-                    throw (new Error(result.message));
-                    return null;
-                }
-
-                return result.data;
+                return result.isSuccess ? result.data : null
             })
             .finally(() => setLoadingProgram(false))
     }
@@ -100,11 +87,7 @@ const useLoyaltyPrograms = () => {
             },
             true)
             .then(result => {
-                if (!result.isSuccess) {
-                    throw (new Error(result.message));
-                }
-
-                return result.data;
+                return result.isSuccess ? result.data : []
             })
             .finally(() => setLoadingMyPrograms(false))
     }
@@ -119,10 +102,6 @@ const useLoyaltyPrograms = () => {
                 return UserLoyaltyProgram.getFromDTO(parsedResult);
             },
             true)
-            .then(result => {
-                if (!result.isSuccess) throw (new Error(result.message));
-                return result;
-            })
             .finally(() => setIsUpdating(false))
     }
 
@@ -133,11 +112,7 @@ const useLoyaltyPrograms = () => {
             () => true,
             true)
             .then(result => {
-                if (!result.isSuccess) {
-                    throw (new Error(result.message));
-                }
-
-                return true;
+                return result.isSuccess
             })
             .finally(() => setIsUpdating(false))
     }
@@ -149,11 +124,7 @@ const useLoyaltyPrograms = () => {
             () => true,
             true)
             .then(result => {
-                if (!result.isSuccess) {
-                    throw (new Error(result.message));
-                }
-
-                return true;
+                return result.isSuccess
             })
             .finally(() => setIsUpdating(false))
     }

@@ -5,7 +5,7 @@ import SectionLoader from '../../../components/loaders/section-loader/SectionLoa
 import SectionPlaceholder from '../../../components/sections/SectionPlaceholder/SectionPlaceholder';
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
 import { AppRoutes } from '../../../constants/appRoutes';
-import { TabHeightContext } from '../../../providers/TabHeightProvider/tabHeightContext';
+import { TabHeaderHeightContext } from '../../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 import RewardListing from '../RewardListing/RewardListing';
 import styles from './rewardGrid.module.scss';
 
@@ -17,7 +17,7 @@ interface Props {
 
 const RewardGrid: React.FC<Props> = ({ headers = [], data = [], isLoading = true }) => {
     const { push } = useHistory()
-    const {tabHeight} = useContext(TabHeightContext)
+    const {tabHeaderHeight} = useContext(TabHeaderHeightContext)
 
     return (
         <div className={styles.container}>
@@ -31,7 +31,7 @@ const RewardGrid: React.FC<Props> = ({ headers = [], data = [], isLoading = true
                 <div className={styles.grid}>
                     <div 
                         className={styles.headerWrapper}
-                        style={{ top: tabHeight }}
+                        style={{ top: tabHeaderHeight }}
                         >
                         <div className={styles.header}>
                             {

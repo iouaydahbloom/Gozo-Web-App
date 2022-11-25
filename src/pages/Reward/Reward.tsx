@@ -5,10 +5,10 @@ import ReferralBanner from './ReferralBanner/ReferralBanner';
 //@ts-ignore
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import RewardHistory from './RewardHistory/RewardHistory';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import useReward from '../../hooks/useReward';
-import { TabHeightContext } from '../../providers/TabHeightProvider/tabHeightContext';
-import EarnTab from './EarnTab/EarnTab';
+import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
+import EarnReward from './EarnReward/EarnReward';
 import { AccordionItemData } from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
 
 const earnData: AccordionItemData[] = [
@@ -19,8 +19,7 @@ const earnData: AccordionItemData[] = [
 
 const Rewards: React.FC = () => {
     const { fetchRewards, isLoadingRewards, rewards } = useReward()
-    const { setTabHeight } = useContext(TabHeightContext)
-    const [ tabRef, setTabRef ] = useState<any>()
+    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
 
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
@@ -34,7 +33,7 @@ const Rewards: React.FC = () => {
 
     useEffect(() => {
         if (tabRef) {
-            setTabHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
+            setTabHeaderHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
         }
     }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
 
@@ -56,7 +55,7 @@ const Rewards: React.FC = () => {
                         />
                     </TabPanel>
                     <TabPanel>
-                        <EarnTab earnData={earnData}/>
+                        <EarnReward earnData={earnData} />
                     </TabPanel>
                 </Tabs>
             </PrimaryContainer>

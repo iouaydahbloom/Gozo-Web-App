@@ -15,7 +15,7 @@ import { currencySettingsContext } from '../../providers/CurrencySettingsProvide
 import { useMoralis } from 'react-moralis';
 import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
 import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
-import { TabHeightContext } from '../../providers/TabHeightProvider/tabHeightContext';
+import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 
 const Dashboard: React.FC = () => {
 
@@ -27,9 +27,7 @@ const Dashboard: React.FC = () => {
     const { gozoLoyaltyMembership, fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [highlightedAsset, setHighlightedAsset] = useState<HighlightedBalanceAsset>();
     const { Moralis } = useMoralis();
-    const { setTabHeight } = useContext(TabHeightContext)
-    const [tabRef, setTabRef] = useState<any>()
-
+    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
     const onSelect = useCallback((tabIndex: number) => {
         setMode(tabIndex == 0 ? AssetMode.loyaltyPoint : AssetMode.token);
     }, [])
@@ -83,7 +81,7 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         if (tabRef) {
-            setTabHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
+            setTabHeaderHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
         }
     }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
 

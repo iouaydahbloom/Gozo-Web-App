@@ -17,7 +17,7 @@ import Rewards from '../../../pages/Reward/Reward';
 import Spinner from '../../../pages/Spinner/Spinner';
 import TokenHistoryDetails from '../../../pages/TokenHistoryDetails/TokenHistoryDetails';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
-import TabHeightProvider from '../../../providers/TabHeightProvider/TabHeightProvider';
+import TabHeaderHeightProvider from '../../../providers/TabHeaderHeightProvider/TabHeaderHeightProvider';
 import AccountIcon from '../../icons/AccountIcon/AccountIcon';
 import BuyIcon from '../../icons/BuyIcon/BuyIcon';
 import DashboardIcon from '../../icons/DashboardIcon/DashboardIcon';
@@ -68,9 +68,9 @@ const TabMenu: React.FC = () => {
     const routes = useMemo(() => (
         <IonRouterOutlet>
             <Route exact path={AppRoutes.dashboard}>
-                <TabHeightProvider>
+                <TabHeaderHeightProvider>
                     <Dashboard />
-                </TabHeightProvider>
+                </TabHeaderHeightProvider>
             </Route>
             <Route exact path={AppRoutes.onBoarding}>
                 <OnBoarding />
@@ -82,9 +82,9 @@ const TabMenu: React.FC = () => {
                 <Profile />
             </Route>
             <Route exact path={AppRoutes.transactionHistory}>
-                <TabHeightProvider>
+                <TabHeaderHeightProvider>
                     <TransactionHistory />
-                </TabHeightProvider>
+                </TabHeaderHeightProvider>
             </Route>
             <Route exact path={AppRoutes.loyaltyProgramHistoryDetails}>
                 <LoyaltyProgramHistoryDetails />
@@ -93,9 +93,9 @@ const TabMenu: React.FC = () => {
                 <TokenHistoryDetails />
             </Route>
             <Route exact path={AppRoutes.reward}>
-                <TabHeightProvider>
+                <TabHeaderHeightProvider>
                     <Rewards />
-                </TabHeightProvider>
+                </TabHeaderHeightProvider>
             </Route>
             <Route exact path={AppRoutes.spinner}>
                 <Spinner />

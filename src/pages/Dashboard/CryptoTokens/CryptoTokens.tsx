@@ -9,7 +9,7 @@ import { AssetMode } from "../../../constants/assetsMode";
 import usePrimarySheet from "../../../hooks/usePrimarySheet";
 import { ERC20Asset } from "../../../models/assets/ERC20Asset";
 import { NativeAsset } from "../../../models/assets/NativeAsset";
-import { TabHeightContext } from "../../../providers/TabHeightProvider/tabHeightContext";
+import { TabHeaderHeightContext } from "../../../providers/TabHeaderHeightProvider/tabHeaderHeightContext";
 import ReceiveCrypto from "../../ReceiveCrypto/ReceiveCrypto";
 import SendCrypto from "../../SendCrypto/SendCrypto";
 import Swap from "../../Swap/Swap";
@@ -26,7 +26,7 @@ interface Props {
 const CryptoTokens: React.FC<Props> = ({ assets = [], getAssets, refreshDefaultToken, isLoading }) => {
 
     const { Moralis } = useMoralis();
-    const {tabHeight} = useContext(TabHeightContext)
+    const {tabHeaderHeight} = useContext(TabHeaderHeightContext)
     const { showModal: showSwap } = usePrimarySheet({
         title: 'Swap',
         component: Swap,
@@ -69,7 +69,7 @@ const CryptoTokens: React.FC<Props> = ({ assets = [], getAssets, refreshDefaultT
 
     return (
         <div className={styles.container}>
-            <div className={styles.actions} style={{top: tabHeight}}>
+            <div className={styles.actions} style={{top: tabHeaderHeight}}>
                 <PrimaryButtonsGroup
                     buttons={[
                         { title: 'Send', icon: <IonIcon icon={arrowUpOutline} />, onClick: showSendToken },

@@ -9,10 +9,11 @@ const useBlockchainTransfer = () => {
 
     const { Moralis } = useMoralis();
     const { execute, estimate, executing, signer } = useBlockchainContractExecution();
-    const { presentSuccess, presentFailure } = useToast();
+    const { presentSuccess } = useToast();
     const [transferFee, setTransferFee] = useState<number>();
     const [isEstimatingTransferFee, setIsEstimatingTransferFee] = useState(false);
     const { walletAddress, tokenContractAddress, tokenContractAbi } = useDapp();
+    const [error, setError] = useState<Error>();
 
     const transferNative = useCallback(async (recipient: string, amount: number) => {
         try {
@@ -27,10 +28,19 @@ const useBlockchainTransfer = () => {
         }
         catch (error: any) {
             console.log('Native transfer error is ', error);
-            presentFailure('Insufficent funds or transaction inner failure');
+            setError(new Error('Insufficent funds or transaction inner failure'));
             return false;
         }
     }, [])
+
+    const transferToken = useCallback((receiver: string, amount: string | number) => execute(
+        tokenContractAddress,
+        tokenContractAbi,
+        'transfer',
+        [receiver, amount != "" ? Moralis.Units.Token(amount) : 0],
+        () => presentSuccess('Successfully Transfered'),
+        (error) => setError(error.message)
+    ), [])
 
     useEffect(() => {
         setIsEstimatingTransferFee(true);
@@ -44,7 +54,7 @@ const useBlockchainTransfer = () => {
                 setTransferFee(fee);
             })
             .catch(error => {
-                presentFailure(error.message);
+                setError(error.message);
             })
             .finally(() => {
                 setIsEstimatingTransferFee(false);
@@ -52,18 +62,12 @@ const useBlockchainTransfer = () => {
     }, [])
 
     return {
-        transfer: (receiver: string, amount: string | number) => execute(
-            tokenContractAddress,
-            tokenContractAbi,
-            'transfer',
-            [receiver, amount != "" ? Moralis.Units.Token(amount) : 0],
-            () => presentSuccess('Successfully Transfered'),
-            (error) => presentFailure(error.message)
-        ),
+        transferToken,
         transferNative,
         isEstimatingTransferFee,
         transferFee,
-        executing
+        executing,
+        error
     }
 }
 

@@ -1,9 +1,9 @@
 import React from "react";
 import { chainHex } from "../../helpers/networks";
 import { ERC20Metadata } from "../../models/assets/ERC20Asset";
-import { WaitableContextProp } from "../waitableContextProp";
+import { CommonContextProp } from "../CommonContextProp";
 
-interface Prop extends WaitableContextProp, ContractsMetadata {
+interface Prop extends CommonContextProp, ContractsMetadata {
     walletAddress: string | null,
     chainId: string,
     defaultTokenMetadata: ERC20Metadata | null,
@@ -24,7 +24,6 @@ const dapContext = React.createContext<Prop>({
     chainId: chainHex.Fuji,
     defaultTokenMetadata: null,
     walletAddress: null,
-    isReady: false,
     tokenContractAddress: '',
     gameContractAddress: '',
     relayerContractAddress: '',
@@ -32,7 +31,9 @@ const dapContext = React.createContext<Prop>({
     tokenContractAbi: [],
     gameContractAbi: [],
     forwarderContractAbi: [],
-    botWalletAddress: ''
+    botWalletAddress: '',
+    isReady: false,
+    refresh: () => Promise.resolve()
 });
 
 export default dapContext;

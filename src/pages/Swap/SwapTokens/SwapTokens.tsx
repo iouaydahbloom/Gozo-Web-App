@@ -11,22 +11,9 @@ import { NativeAsset } from '../../../models/assets/NativeAsset';
 
 const SwapTokens: React.FC = () => {
 
-    const { tokenOptions, othersOptions, token, tokenQuantity, setTokenQuantity, program,
-        selectedOthers, setSelectedOthers, exchanging, exchange, toggleDirection, direction,
-        minimumValue, estimatedGasFee, isEstimatingGasFee, isDisabled, simulating, pointsBalance,
-        tokensBalance, nativeBalance } = useTokenToOthersExchange();
-
-    const balance = useMemo(() => {
-        if (direction == 't2o') {
-            return tokensBalance
-        }
-
-        if (selectedOthers.type == SwapPartyType.loyaltyProgram) {
-            return pointsBalance;
-        }
-
-        return nativeBalance;
-    }, [direction, selectedOthers.type])
+    const { tokenOptions, othersOptions, token, tokenQuantity, setTokenQuantity, selectedOthers,
+        setSelectedOthers, exchanging, exchange, toggleDirection, direction,
+        minimumValue, estimatedGasFee, isEstimatingGasFee, isDisabled, simulating, displayedBalance } = useTokenToOthersExchange();
 
     const renderTokensField = useCallback((
         label: string,
@@ -102,8 +89,8 @@ const SwapTokens: React.FC = () => {
             <div className={styles.swapControl}>
                 {
                     direction == 't2o' ?
-                        renderTokensField('From', false, true, balance, !isDisabled) :
-                        renderOthersField('From', false, true, balance, !isDisabled)
+                        renderTokensField('From', false, true, displayedBalance, !isDisabled) :
+                        renderOthersField('From', false, true, displayedBalance, !isDisabled)
                 }
                 <SwapDirection doubleDirection onClick={toggleDirection} />
                 {

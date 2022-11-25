@@ -54,10 +54,8 @@ const DappProvider: React.FC = ({ children }) => {
     return web3DependenciesResult.data;
   }, [])
 
-  useEffect(() => {
-    if (!isInitialized) return;
-
-    getAppContractsMetadata()
+  const initDapp = useCallback(async () => {
+    return getAppContractsMetadata()
       .then(data => {
         return data ?
           getDefaultTokenMetadata(data.tokenContractAddress)
@@ -67,6 +65,12 @@ const DappProvider: React.FC = ({ children }) => {
       .then(success => {
         setIsReady(success);
       })
+  }, [])
+
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    initDapp();
   }, [isInitialized])
 
   useEffect(() => {
@@ -79,7 +83,6 @@ const DappProvider: React.FC = ({ children }) => {
         walletAddress,
         chainId: chainHex.Fuji,
         defaultTokenMetadata: defaultTokenMetadata,
-        isReady,
         tokenContractAddress: contractsMetadata.tokenContractAddress,
         gameContractAddress: contractsMetadata.gameContractAddress,
         relayerContractAddress: contractsMetadata.relayerContractAddress,
@@ -87,7 +90,9 @@ const DappProvider: React.FC = ({ children }) => {
         tokenContractAbi: contractsMetadata.tokenContractAbi,
         gameContractAbi: contractsMetadata.gameContractAbi,
         forwarderContractAbi: contractsMetadata.forwarderContractAbi,
-        botWalletAddress: contractsMetadata.botWalletAddress
+        botWalletAddress: contractsMetadata.botWalletAddress,
+        isReady,
+        refresh: initDapp
       }}>
       {children}
     </dapContext.Provider>

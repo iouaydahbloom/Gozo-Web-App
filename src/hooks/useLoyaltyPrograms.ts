@@ -39,7 +39,14 @@ const useLoyaltyPrograms = () => {
                     }));
             })
             .then(result => {
-                return result.isSuccess ? result.data : null
+                if (!result.isSuccess) {
+                    return new Pagination(0,
+                        '',
+                        '',
+                        []);
+                }
+
+                return result.data;
             })
     }
 

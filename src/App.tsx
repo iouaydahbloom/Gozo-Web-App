@@ -1,4 +1,4 @@
-import { IonApp, setupIonicReact } from '@ionic/react';
+import { IonApp, IonPage, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -21,35 +21,61 @@ import './theme/variables.css';
 import './theme/main.scss';
 import './theme/toast.scss';
 import TabMenu from './components/menus/TabMenu/TabMenu';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { sessionContext } from './providers/SessionProvider/sessionContext';
 import { SplashScreen } from '@capacitor/splash-screen';
 import useOnBoardingPreview from './hooks/useOnBoardingPreview';
 import { useDapp } from './providers/DappProvider/DappProvider';
+import PrimaryContainer from './components/layout/PrimaryContainer/PrimaryContainer';
+import PrimaryButton from './components/buttons/PrimaryButton/PrimaryButton';
+import SectionPlaceholder from './components/sections/SectionPlaceholder/SectionPlaceholder';
 
 setupIonicReact();
 
 const App: React.FC = () => {
 
-  const { isSessionReady } = useContext(sessionContext);
-  const { isReady: isOnboardingStateReady } = useOnBoardingPreview();
-  const { isReady: isDappReady } = useDapp();
+  const { isReady: isSessionReady, refresh: refreshSession } = useContext(sessionContext);
+  const { isReady: isOnboardingStateReady, refresh: refreshOnboardingPreview } = useOnBoardingPreview();
+  const { isReady: isDappReady, refresh: refreshDapp } = useDapp();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
+  async function onRefresh() {
+    setIsRefreshing(true);
+    Promise.all([
+      refreshSession(),
+      refreshOnboardingPreview(),
+      refreshDapp()
+    ])
+      .finally(() => setIsRefreshing(false))
+  }
 
   useEffect(() => {
-    if (isSessionReady) SplashScreen.hide({
-      fadeOutDuration: 600
-    });
-  }, [isSessionReady])
+    if (!isSessionReady || !isOnboardingStateReady || !isDappReady) return;
+    SplashScreen.hide({ fadeOutDuration: 600 });
+  }, [isSessionReady, isOnboardingStateReady, isDappReady])
 
   return (
-    <>
-      {(isSessionReady && isOnboardingStateReady && isDappReady) && <IonApp>
-        <IonReactRouter>
-          <TabMenu />
-        </IonReactRouter>
-      </IonApp>}
-    </>
+    <IonApp>
+      {
+        (isSessionReady && isOnboardingStateReady && isDappReady) ?
+          <IonReactRouter>
+            <TabMenu />
+          </IonReactRouter>
+          :
+          <IonPage>
+            <PrimaryContainer isRefreshable onRefresh={onRefresh}>
+              <SectionPlaceholder
+                logoUrl='assets/image/surprise.svg'
+                title='OOPS'
+                description='Unable to start app, Please try again'
+                renderActions={() => (
+                  <PrimaryButton onClick={onRefresh} loading={isRefreshing}>Retry</PrimaryButton>
+                )}
+              />
+            </PrimaryContainer>
+          </IonPage>
+      }
+    </IonApp>
   )
 }
 

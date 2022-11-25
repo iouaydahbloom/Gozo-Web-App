@@ -12,29 +12,32 @@ import { DappProvider } from './providers/DappProvider/DappProvider';
 import OnBoardingPreviewProvider from './providers/OnBoardingPreviewProvider/OnBoardingPreviewProvider';
 import NetworkProvider from './providers/networkProvider/NetworkProvider';
 import WheelSettingsProvider from './providers/WheelSettingsProvider/WheelSettingsProvider';
+import { ErrorHandlerProvider } from './providers/ErrorHandlerProvider/ErrorHandlerProvider';
 require('dotenv').config();
 
 ReactDOM.render(
   <React.StrictMode>
-    <NetworkProvider>
-      <OnBoardingPreviewProvider>
-        <MoralisProvider
-          appId={appConfig.moralisAppId}
-          serverUrl={appConfig.moralisServerUrl}>
-          <MagicAuthProvider>
-            <SessionProvider>
-              <DappProvider>
-                <CurrencySettingsProvider>
-                  <WheelSettingsProvider>
-                    <App />
-                  </WheelSettingsProvider>
-                </CurrencySettingsProvider>
-              </DappProvider>
-            </SessionProvider>
-          </MagicAuthProvider>
-        </MoralisProvider>
-      </OnBoardingPreviewProvider>
-    </NetworkProvider>
+    <ErrorHandlerProvider>
+      <NetworkProvider>
+        <OnBoardingPreviewProvider>
+          <MoralisProvider
+            appId={appConfig.moralisAppId}
+            serverUrl={appConfig.moralisServerUrl}>
+            <MagicAuthProvider>
+              <SessionProvider>
+                <DappProvider>
+                  <CurrencySettingsProvider>
+                    <WheelSettingsProvider>
+                      <App />
+                    </WheelSettingsProvider>
+                  </CurrencySettingsProvider>
+                </DappProvider>
+              </SessionProvider>
+            </MagicAuthProvider>
+          </MoralisProvider>
+        </OnBoardingPreviewProvider>
+      </NetworkProvider>
+    </ErrorHandlerProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )

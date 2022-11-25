@@ -1,13 +1,14 @@
 import { createContext } from "react";
+import { CommonContextProp } from "../CommonContextProp";
 
-export interface IOnBoardingPreviewState {
+export interface IOnBoardingPreviewState extends CommonContextProp {
     isHidden: boolean,
-    hide: () => void,
-    isReady: boolean
+    hide: () => void
 }
 
 export const OnBoardingPreviewContext = createContext<IOnBoardingPreviewState>({
     isHidden: false,
     hide: () => null,
-    isReady: false
+    isReady: false,
+    refresh: () => Promise.resolve()
 });

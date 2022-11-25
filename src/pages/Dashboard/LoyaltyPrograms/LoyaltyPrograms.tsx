@@ -8,7 +8,7 @@ import PrimaryButtonsGroup from '../../../components/buttons/PrimaryButtonsGroup
 import { addOutline, swapHorizontalOutline, trashOutline } from "ionicons/icons";
 import styles from './loyaltyPrograms.module.scss';
 import LoyaltyProgramItem from './LoyaltyProgramItem/LoyaltyProgramItem';
-import collectionManipulationHelper from '../../../utils/collectionManipulationHelper';
+import collectionManipulationHelper from '../../../helpers/collectionManipulationHelper';
 import useLoyaltyPrograms from '../../../hooks/useLoyaltyPrograms';
 import useToast from '../../../hooks/useToast';
 import useConfirmation from '../../../hooks/useConfirmation';

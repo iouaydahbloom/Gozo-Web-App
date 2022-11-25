@@ -34,7 +34,6 @@ export const cloudFunctionName = {
     web3Dependencies: 'web3_dependencies',
     nativeCurrency: 'native_currency',
     tokenBalances: 'token_balances',
-    getTokenMetadata: 'getTokenMetadata',
-    getTokenBalances: 'getTokenBalances',
+    tokenDefaultMetadata: 'default_token_metadata',
     getTokenTransfers: 'getTokenTransfers'
 }

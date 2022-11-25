@@ -9,42 +9,30 @@ import LoyaltyPogramsHistory from './LoyaltyProgramsHistory/LoyaltyPogramsHistor
 import CryptoHistory from './CryptoHistory/CryptoHistory';
 import useProgramsTransactionHistory from '../../hooks/useProgramsTransactionHistory';
 import useERC20Transfers from '../../hooks/useERC20Transfers';
-import { TabHeightContext } from '../../providers/TabHeightProvider/tabHeightContext';
+import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 import { Virtuoso } from 'react-virtuoso';
 import { InfiniteScrollPagination } from '../../components/InfiniteScrollPagination/InfiniteScrollPagination';
+import useServerPagination from '../../hooks/useServerPagination';
+import { LoyaltyMemberHistory } from '../../models/loyaltyMember';
+import { Filter } from '../../models/data/filter';
 
-interface ITab {
-    value: string,
-    isScrollDisabled: boolean
-}
 
 const TransactionHistory: React.FC = () => {
-    const { isLoadingHistory, historyFields, getTransactions, transactionCount } = useProgramsTransactionHistory()
+    const { getTransactions } = useProgramsTransactionHistory()
+
+    const { data: historyFields, isLoading: isLoadingHistory, hasMore, loadMore } = useServerPagination<LoyaltyMemberHistory, any>({
+        getData: getTransactions as any
+    })
     const { eRC20Transfers, isLoadingTransfers, fetchERC20Transfers } = useERC20Transfers();
-    const { setTabHeight } = useContext(TabHeightContext)
-    const [tabRef, setTabRef] = useState<any>()
+    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
     const [selectedTabIndex, setSelectedTabIndex] = useState(0)
-    const [tabs, setTabs] = useState<ITab[]>([
-        { value: 'points', isScrollDisabled: false },
-        { value: 'tokens', isScrollDisabled: false }
-    ])
 
     const loadMoreTransactions = (ev: any) => {
-        console.log("entered")
         setTimeout(() => {
             ev.target.complete();
             switch (selectedTabIndex) {
                 case 0:
-                    getTransactions();
-                    if (historyFields.length === transactionCount) {
-                        setTabs(tabs.map((item, index) => {
-                            if (index === selectedTabIndex) {
-                                return { ...item, isScrollDisabled: true };
-                            } else {
-                                return item;
-                            }
-                        }));
-                    }
+                    loadMore();
                     break;
                 case 1:
                     // to be specified once pagination is implemented 
@@ -54,9 +42,22 @@ const TransactionHistory: React.FC = () => {
         }, 500);
     }
 
+    const disableScroll = useCallback(() => {
+        var isDisabled = false
+        switch (selectedTabIndex) {
+            case 0:
+                isDisabled = hasMore
+                break;
+            case 1:
+                // to be specified once pagination is implemented 
+                break;
+        }
+        return isDisabled
+    }, [selectedTabIndex])
+
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
-            getTransactions(),
+            getTransactions(new Filter(1, 10)),
             fetchERC20Transfers()
         ])
     }, [])
@@ -67,7 +68,7 @@ const TransactionHistory: React.FC = () => {
 
     useEffect(() => {
         if (tabRef) {
-            setTabHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
+            setTabHeaderHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
         }
     }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
 
@@ -106,7 +107,7 @@ const TransactionHistory: React.FC = () => {
                     }
                     }
                     components={{
-                        Footer: () => InfiniteScrollPagination(loadMoreTransactions, tabs[selectedTabIndex].isScrollDisabled)
+                        Footer: () => InfiniteScrollPagination(loadMoreTransactions, disableScroll())
                     }}
                 >
 

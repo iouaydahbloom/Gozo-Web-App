@@ -6,12 +6,13 @@ import useSearchParams from "../../hooks/useSearchParams"
 import useProgramsTransactionHistory from "../../hooks/useProgramsTransactionHistory"
 import { LoyaltyMemberHistory } from "../../models/loyaltyMember"
 import TransactionDetailItem from "../Common/TransactionDetailItem/TransactionDetailItem"
+import { useEffect } from "react"
 
 
 const LoyaltyProgramHistoryDetails: React.FC = () => {
   const search = useSearchParams();
   const id = search.get('transaction_id')
-  const { historyField, isLoadingHistory } = useProgramsTransactionHistory(id ?? '')
+  const { historyField, isLoadingHistory, getTransaction } = useProgramsTransactionHistory()
 
   const keys = [
     { key: 'amount', label: 'Amount' },
@@ -25,6 +26,11 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
     { key: 'type', label: 'Type' },
   ]
 
+  useEffect(() => {
+    if(id) getTransaction(id)
+  }, [id])
+  
+
   return (
     <IonPage>
       <SecondaryHeader
@@ -34,7 +40,6 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
           historyField &&
           Object.keys(historyField).filter((item) => keys.some(event => event.key === item)).map((key, index) => {
             const keyObj = keys.find((item) => item.key === key)
-            if(key === 'amount') console.log("tttteetstssar", historyField.type,  LoyaltyMemberHistory.isBalanceSubtracted(historyField))
             return <TransactionDetailItem
               key={index}
               header={keyObj?.label ?? ''}

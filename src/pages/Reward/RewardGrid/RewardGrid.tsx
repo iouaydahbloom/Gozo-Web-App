@@ -1,10 +1,6 @@
 import React, { useContext } from 'react';
-import { useHistory } from 'react-router';
-import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import SectionLoader from '../../../components/loaders/section-loader/SectionLoader';
-import SectionPlaceholder from '../../../components/sections/SectionPlaceholder/SectionPlaceholder';
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
-import { AppRoutes } from '../../../constants/appRoutes';
 import { TabHeaderHeightContext } from '../../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 import RewardListing from '../RewardListing/RewardListing';
 import styles from './rewardGrid.module.scss';
@@ -12,21 +8,17 @@ import styles from './rewardGrid.module.scss';
 interface Props {
     headers: any[],
     data?: any[],
-    isLoading?: boolean
+    isLoading?: boolean,
+    placeholder?: JSX.Element
 }
 
-const RewardGrid: React.FC<Props> = ({ headers = [], data = [], isLoading = true }) => {
-    const { push } = useHistory()
+const RewardGrid: React.FC<Props> = ({ headers = [], data = [], isLoading = true, placeholder }) => {
     const {tabHeaderHeight} = useContext(TabHeaderHeightContext)
 
     return (
         <div className={styles.container}>
             {(!isLoading && data.length === 0) ?
-                <SectionPlaceholder
-                    description='You have no rewards available yet'
-                    logoUrl='assets/image/no-rewards.svg'
-                    renderActions={() => <PrimaryButton onClick={() => push(AppRoutes.spinner)}>play now</PrimaryButton>}
-                />
+                placeholder
                 :
                 <div className={styles.grid}>
                     <div 

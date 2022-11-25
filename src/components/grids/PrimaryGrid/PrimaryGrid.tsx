@@ -1,38 +1,30 @@
 import { IonIcon } from '@ionic/react';
 import { chevronForwardOutline } from 'ionicons/icons';
 import React, { useContext } from 'react';
-import { useHistory } from 'react-router';
-import { AppRoutes } from '../../../constants/appRoutes';
-import PrimaryButton from '../../buttons/PrimaryButton/PrimaryButton';
 import SectionLoader from '../../loaders/section-loader/SectionLoader';
-import SectionPlaceholder from '../../sections/SectionPlaceholder/SectionPlaceholder';
 import PrimaryTypography from '../../typography/PrimaryTypography/PrimaryTypography';
 import styles from './primaryGrid.module.scss';
-import { TabHeightContext } from '../../../providers/TabHeightProvider/tabHeightContext';
+import { TabHeaderHeightContext } from '../../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 
 interface Props {
     headers: string[],
     data?: any[],
-    isLoading?: boolean
+    isLoading?: boolean, 
+    placeholder?: JSX.Element
 }
 
-const PrimaryGrid: React.FC<Props> = ({ headers = [], data = [], isLoading }) => {
-    const { push } = useHistory()
-    const { tabHeight } = useContext(TabHeightContext)
+const PrimaryGrid: React.FC<Props> = ({ headers = [], data = [], isLoading, placeholder }) => {
+    const { tabHeaderHeight } = useContext(TabHeaderHeightContext)
 
     return (
         <div className={styles.container}>
             {(!isLoading && data.length === 0) ?
-                <SectionPlaceholder
-                    description='You have no past transaction details here yet'
-                    logoUrl='assets/image/no-transactions.svg'
-                    renderActions={() => <PrimaryButton onClick={() => push(AppRoutes.spinner)}>play now</PrimaryButton>}
-                />
+                placeholder
                 :
                 <div className={styles.grid}>
                     <div
                         className={styles.headerWrapper}
-                        style={{ top: tabHeight }}
+                        style={{ top: tabHeaderHeight }}
                     >
                         <div className={styles.header}>
                             {

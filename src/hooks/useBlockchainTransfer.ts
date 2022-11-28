@@ -20,6 +20,7 @@ const useBlockchainTransfer = () => {
             const tx = await signer.sendTransaction({
                 to: recipient,
                 value: ethers.utils.parseEther(amount.toString()),
+                gasPrice: 26000000000,
                 gasLimit: 21000
             });
             const receipt = await tx.wait();

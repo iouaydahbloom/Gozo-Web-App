@@ -7,18 +7,18 @@ import useCloud from "./useCloud";
 
 const useProfile = () => {
     const [profileDetails, setProfileDetails] = useState<ProfileDetails>()
-    const [ isLoading, setIsLoading ] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const { user } = useAuthentication();
     const { run } = useCloud();
 
     async function fetchProfileDetails() {
         setIsLoading(true)
-        return run(cloudFunctionName.profileDetails,
-            {
-                id: user?.id
-            },
+        return run(
+            cloudFunctionName.profileDetails,
+            null,
             (result: ProfileDetailsDTO) => ProfileDetails.getFromDTO(result),
-            true)
+            true
+        )
             .then(result => {
                 if (result.isSuccess) return result.data
             })
@@ -27,12 +27,14 @@ const useProfile = () => {
 
     async function updateProfileDetails(user: ProfileDetails) {
         setIsLoading(true)
-        return run(cloudFunctionName.updateProfileDetails,
+        return run(
+            cloudFunctionName.updateProfileDetails,
             {
                 user: user.toDTO()
             },
             (result: ProfileDetailsDTO) => ProfileDetails.getFromDTO(result),
-            true)
+            true
+        )
             .then(result => {
                 return result
             })
@@ -44,7 +46,6 @@ const useProfile = () => {
             if (details) setProfileDetails(details)
         })
     }, [])
-
 
     return {
         fetchProfileDetails,

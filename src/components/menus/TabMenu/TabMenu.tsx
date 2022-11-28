@@ -17,6 +17,7 @@ import Rewards from '../../../pages/Reward/Reward';
 import Spinner from '../../../pages/Spinner/Spinner';
 import TokenHistoryDetails from '../../../pages/TokenHistoryDetails/TokenHistoryDetails';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
+import TabHeaderHeightProvider from '../../../providers/TabHeaderHeightProvider/TabHeaderHeightProvider';
 import AccountIcon from '../../icons/AccountIcon/AccountIcon';
 import BuyIcon from '../../icons/BuyIcon/BuyIcon';
 import DashboardIcon from '../../icons/DashboardIcon/DashboardIcon';
@@ -67,7 +68,9 @@ const TabMenu: React.FC = () => {
     const routes = useMemo(() => (
         <IonRouterOutlet>
             <Route exact path={AppRoutes.dashboard}>
-                <Dashboard />
+                <TabHeaderHeightProvider>
+                    <Dashboard />
+                </TabHeaderHeightProvider>
             </Route>
             <Route exact path={AppRoutes.onBoarding}>
                 <OnBoarding />
@@ -79,7 +82,9 @@ const TabMenu: React.FC = () => {
                 <Profile />
             </Route>
             <Route exact path={AppRoutes.transactionHistory}>
-                <TransactionHistory />
+                <TabHeaderHeightProvider>
+                    <TransactionHistory />
+                </TabHeaderHeightProvider>
             </Route>
             <Route exact path={AppRoutes.loyaltyProgramHistoryDetails}>
                 <LoyaltyProgramHistoryDetails />
@@ -88,7 +93,9 @@ const TabMenu: React.FC = () => {
                 <TokenHistoryDetails />
             </Route>
             <Route exact path={AppRoutes.reward}>
-                <Rewards />
+                <TabHeaderHeightProvider>
+                    <Rewards />
+                </TabHeaderHeightProvider>
             </Route>
             <Route exact path={AppRoutes.spinner}>
                 <Spinner />

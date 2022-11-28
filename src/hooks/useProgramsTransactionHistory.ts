@@ -1,22 +1,21 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { LoyaltyMemberHistoryDTO } from "../dto/loyaltyMemberDTO";
+import { Filter } from "../models/data/filter";
 import { Pagination } from "../models/data/pagination";
 import { LoyaltyMemberHistory } from "../models/loyaltyMember";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import { currencySettingsContext } from "../providers/CurrencySettingsProvider/currencySettingsContext";
 import useCloud from "./useCloud";
 
-const useProgramsTransactionHistory = (transaction_id?: string) => {
+const useProgramsTransactionHistory = () => {
     const { run } = useCloud();
     const { gozoLoyalty } = useContext(currencySettingsContext);
-    const [historyFields, setHistoryFields] = useState<LoyaltyMemberHistory[]>([]);
     const [historyField, setHistoryField] = useState<LoyaltyMemberHistory>();
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    async function getTransactions() {
-        setIsLoading(true)
+    async function getTransactions(filter: Filter) {
         return run(cloudFunctionName.transactionHistory,
-            { ca_loyalty_currency: gozoLoyalty?.currency.loyaltyCurrency },
+            { ...filter, ca_loyalty_currency: gozoLoyalty?.currency.loyaltyCurrency },
             (result: Pagination<LoyaltyMemberHistoryDTO>) => {
                 return new Pagination(result.count, result.next, result.previous, result.results.map(res => {
                     return LoyaltyMemberHistory.getFromDTO(res)
@@ -24,15 +23,15 @@ const useProgramsTransactionHistory = (transaction_id?: string) => {
             },
             true)
             .then(result => {
-                if (result.isSuccess) setHistoryFields(result.data.results);
+                return result.isSuccess ? result.data : null
             })
             .finally(() => setIsLoading(false))
     }
 
-    async function getTransaction() {
+    async function getTransaction(transactionId: string) {
         setIsLoading(true)
         return run(cloudFunctionName.transactionDetails,
-            { transaction_id: transaction_id },
+            { transaction_id: transactionId },
             (result: LoyaltyMemberHistoryDTO) => {
                 return LoyaltyMemberHistory.getFromDTO(result)
             }
@@ -44,15 +43,11 @@ const useProgramsTransactionHistory = (transaction_id?: string) => {
             .finally(() => setIsLoading(false))
     }
 
-    useEffect(() => {
-        if(transaction_id) getTransaction()
-    }, [transaction_id])
 
     return {
         getTransactions,
         getTransaction,
         isLoadingHistory: isLoading,
-        historyFields,
         historyField,
     }
 }

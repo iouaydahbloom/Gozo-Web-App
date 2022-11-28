@@ -39,7 +39,6 @@ const useServerPagination = <T, F extends Filter>({
     function loadMore() {
         if (!metadata || !metadata.next) return;
 
-        setIsLoading(true);
         getData(getFilterFromParamProp(metadata.next))
             .then(result => {
                 setMetadata({

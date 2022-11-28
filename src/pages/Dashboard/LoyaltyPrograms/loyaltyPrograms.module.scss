@@ -6,7 +6,11 @@
     }
 
     .actions {
-        margin-bottom: 20px;
+        background: var(--ion-color-dark);
+        border: solid 1px var(--ion-color-dark);
+        padding-bottom: 16px;
+        position: sticky;
+        z-index: 1000;
     }
 
     .noDataContainer {

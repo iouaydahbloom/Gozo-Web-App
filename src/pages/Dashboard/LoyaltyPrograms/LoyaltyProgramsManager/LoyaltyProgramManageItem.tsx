@@ -131,7 +131,6 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
                                             placeholder={`Enter your ${field.name}`}
                                             value={myUpdatedProgram.memberFields[index]?.value}
                                             onChange={(value) => {
-                                                // debugger
                                                 if (myUpdatedProgram.memberFields[index]) {
                                                     myUpdatedProgram.memberFields[index].value = value;
                                                     setMyUpdatedProgram(myUpdatedProgram);

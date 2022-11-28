@@ -1,5 +1,5 @@
 import { IonButton, IonButtons, IonHeader, IonIcon, IonPage, IonToolbar, useIonViewWillEnter, useIonViewWillLeave } from '@ionic/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import { WheelSegment } from '../../models/wheelSegment';
@@ -244,6 +244,13 @@ const Spinner: React.FC = () => {
         getLoyaltyProgram()
     }, [loyaltyProgramId])
 
+    const onRefresh = useCallback((): Promise<any> => {
+        return Promise.all([
+            getLoyaltyProgram(),
+            defaultProgram && getMyPrograms(),
+        ])
+    }, [])
+
     return (
         <IonPage>
             <IonHeader className='ion-no-border'>
@@ -264,7 +271,7 @@ const Spinner: React.FC = () => {
                     </div>
                 </IonToolbar>
             </IonHeader>
-            <PrimaryContainer className={styles.accordionContent}>
+            <PrimaryContainer className={styles.accordionContent} isRefreshable onRefresh={onRefresh}>
                 {(!loadingProgram && !isLoadingPrizes && !loadingMyLoyaltyPrograms) ?
                     <>
                         <div className={`${styles.wheelWrapper}`}>

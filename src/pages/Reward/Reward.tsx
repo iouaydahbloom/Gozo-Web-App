@@ -1,50 +1,63 @@
 import { IonPage, useIonViewWillEnter } from '@ionic/react'
-import { useState } from 'react';
 import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer'
-import PageLoader from '../../components/loaders/PageLoader/PageLoader';
-import useReward from '../../hooks/useReward';
-import { Reward } from '../../models/reward';
-import PrimaryRewardGrid from './PrimaryRewardGrid/PrimaryRewardGrid';
 import ReferralBanner from './ReferralBanner/ReferralBanner';
+//@ts-ignore
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import RewardHistory from './RewardHistory/RewardHistory';
+import { useCallback, useContext, useEffect } from 'react';
+import useReward from '../../hooks/useReward';
+import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
+import EarnReward from './EarnReward/EarnReward';
+import { AccordionItemData } from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
+
+const earnData: AccordionItemData[] = [
+    new AccordionItemData('0', 'Fill that survey and earn 1000 Superpoints', 'www.addbloom.com', 'assets/icon/transaction-history.svg'),
+    new AccordionItemData('1', 'Fill that survey and earn 1000 Superpoints', 'www.addbloom.com', 'assets/icon/transaction-history.svg'),
+    new AccordionItemData('2', 'Fill that survey and earn 1000 Superpoints', 'www.addbloom.com', 'assets/icon/transaction-history.svg')
+]
 
 const Rewards: React.FC = () => {
-    const [rewards, setRewards] = useState<Reward[]>([])
-    const { fetchRewards, isLoadingRewards } = useReward()
+    const { fetchRewards, isLoadingRewards, rewards } = useReward()
+    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
 
-    function getRewards() {
-        fetchRewards().then(rewards => {
-            if (rewards) setRewards(rewards)
-        })
-    }
+    const onRefresh = useCallback((): Promise<any> => {
+        return Promise.all([
+            fetchRewards()
+        ])
+    }, [])
 
     useIonViewWillEnter(() => {
-        getRewards()
-    }, [])
+        onRefresh();
+    })
+
+    useEffect(() => {
+        if (tabRef) {
+            setTabHeaderHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
+        }
+    }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
+
     return (
         <IonPage>
             <TertiaryHeader title='Rewards' className='ion-text-center' />
-            <PrimaryContainer className='ion-text-center'>
+            <PrimaryContainer isRefreshable onRefresh={onRefresh}>
                 <ReferralBanner />
-                {!isLoadingRewards ?
-                    <PrimaryRewardGrid
-                        headers={[
-                            {
-                                text: 'Reward',
-                                style: {flex: 0.3}
-                            },
-                            {
-                                text: 'Description'
-                            },
-                            {
-                                text: 'Date',
-                                style: { flex: 0.7,}
-                            }
-                        ]}
-                        data={rewards}
-                    />
-                    :
-                    <PageLoader />}
+                <Tabs domRef={(node: any) => setTabRef(node)}>
+                    <TabList>
+                        <Tab>History</Tab>
+                        <Tab>Earn</Tab>
+                    </TabList>
+
+                    <TabPanel>
+                        <RewardHistory
+                            isLoading={isLoadingRewards}
+                            rewards={rewards}
+                        />
+                    </TabPanel>
+                    <TabPanel>
+                        <EarnReward earnData={earnData} />
+                    </TabPanel>
+                </Tabs>
             </PrimaryContainer>
         </IonPage>
     )

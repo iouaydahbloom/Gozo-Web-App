@@ -222,22 +222,11 @@ const useTokenToOthersExchange = () => {
             })
     }
 
-    const isDisabled = useMemo(() => {
-        if (direction === 't2o') {
-            if (!tokenQuantity) return true;
-            if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return false;
-            return (minimumValue && (tokenQuantity! < minimumValue)) || !tokenQuantity;
-        }
-
-        if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return !selectedOthers.quantity;
-        return (minimumValue && (selectedOthers?.quantity! < minimumValue)) || !selectedOthers?.quantity;
-    }, [tokenQuantity, selectedOthers, minimumValue])
-
     const tokensBalance = defaultERC20Asset ? parseFloat(Moralis.Units.FromWei(defaultERC20Asset?.balance, 18)) : 0;
-    const pointsBalance = membership?.balance;
+    const pointsBalance = membership?.balance ?? 0;
     const nativeBalance = defaultNativeAsset ? parseFloat(Moralis.Units.FromWei(defaultNativeAsset?.balance, 18)) : 0;
 
-    const displayedBalance = useMemo(() => {
+    const originBalance = useMemo(() => {
         if (direction === 't2o') {
             return tokensBalance
         }
@@ -248,6 +237,18 @@ const useTokenToOthersExchange = () => {
 
         return nativeBalance;
     }, [direction, selectedOthers.type, defaultNativeAsset?.balance, defaultERC20Asset?.balance, membership?.balance])
+
+    const isDisabled = useMemo(() => {
+        if (direction === 't2o') {
+            if (!tokenQuantity || tokenQuantity > originBalance) return true;
+            if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return false;
+            return (minimumValue && (tokenQuantity! < minimumValue)) || !tokenQuantity;
+        }
+
+        if (selectedOthers.quantity && selectedOthers.quantity > originBalance) return true;
+        if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return !selectedOthers.quantity;
+        return (minimumValue && (selectedOthers?.quantity! < minimumValue)) || !selectedOthers?.quantity;
+    }, [tokenQuantity, selectedOthers, minimumValue, originBalance])
 
     /**
      * Lifecycles events
@@ -328,7 +329,7 @@ const useTokenToOthersExchange = () => {
         estimatedGasFee,
         isEstimatingGasFee,
         isDisabled,
-        displayedBalance,
+        originBalance,
         setSelectedOthers,
         setTokenQuantity: setTokenQuantity,
         toggleDirection: () => setDirection(prev => prev === 't2o' ? 'o2t' : 't2o'),

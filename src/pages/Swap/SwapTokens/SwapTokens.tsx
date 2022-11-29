@@ -13,7 +13,7 @@ const SwapTokens: React.FC = () => {
 
     const { tokenOptions, othersOptions, token, tokenQuantity, setTokenQuantity, selectedOthers,
         setSelectedOthers, exchanging, exchange, toggleDirection, direction,
-        minimumValue, estimatedGasFee, isEstimatingGasFee, isDisabled, simulating, displayedBalance } = useTokenToOthersExchange();
+        minimumValue, estimatedGasFee, isEstimatingGasFee, isDisabled, simulating, originBalance } = useTokenToOthersExchange();
 
     const renderTokensField = useCallback((
         label: string,
@@ -89,8 +89,8 @@ const SwapTokens: React.FC = () => {
             <div className={styles.swapControl}>
                 {
                     direction === 't2o' ?
-                        renderTokensField('From', false, true, displayedBalance, !isDisabled) :
-                        renderOthersField('From', false, true, displayedBalance, !isDisabled)
+                        renderTokensField('From', false, true, originBalance, !isDisabled) :
+                        renderOthersField('From', false, true, originBalance, !isDisabled)
                 }
                 <SwapDirection doubleDirection onClick={toggleDirection} />
                 {

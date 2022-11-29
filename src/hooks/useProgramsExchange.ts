@@ -84,6 +84,14 @@ const useProgramsExchange = () => {
             exchangeOutOptions.length > 0 && (exchangeInOptions.length > 0 || !!defaultProgram)
     }
 
+    const originBalance = useMemo(() => {
+        return membership?.balance ?? 0
+    }, [membership?.balance])
+
+    const isDisabled = useMemo(() => {
+        return !originProgram.quantity || originProgram.quantity === 0 || originProgram.quantity > originBalance
+    }, [originProgram.quantity, originBalance])
+
     useEffect(() => {
         setDefaultExchangeOptions(defaultProgram ? [defaultProgram] : []);
 
@@ -126,9 +134,9 @@ const useProgramsExchange = () => {
         exchanging: exchanging,
         simulating,
         direction: direction,
-        isDisabled: !originProgram.quantity || originProgram.quantity === 0,
+        isDisabled,
         toggleDirection: () => setDirection(prev => prev === 's2p' ? 'p2s' : 's2p'),
-        originBalance: useMemo(() => membership?.balance, [membership?.balance])
+        originBalance
     }
 }
 

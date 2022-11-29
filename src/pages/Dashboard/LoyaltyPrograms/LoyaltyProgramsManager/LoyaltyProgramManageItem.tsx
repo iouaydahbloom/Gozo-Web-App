@@ -97,7 +97,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
     }, [isSelected])
 
     useEffect(() => {
-        if(!myProgram && partnershipMetadata) initMyProgram()
+        if (!myProgram && partnershipMetadata) initMyProgram()
     }, [partnershipMetadata])
 
 
@@ -112,13 +112,13 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
     }, [myProgram])
 
     useEffect(() => {
-      return () => {
-        setPartnershipMetadata(null)
-        setMyUpdatedProgram(null)
-      }
+        return () => {
+            setPartnershipMetadata(null)
+            setMyUpdatedProgram(null)
+        }
     }, [])
-    
-    
+
+
     const LoyaltyProgramPartnership = () => {
         return (
             <>
@@ -138,6 +138,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
                                             key={`field-${index}`}
                                             placeholder={`Enter your ${field.name}`}
                                             value={myUpdatedProgram.memberFields[index]?.value}
+                                            disabled={isConnected}
                                             onChange={(value) => {
                                                 if (myUpdatedProgram.memberFields[index]) {
                                                     myUpdatedProgram.memberFields[index].value = value;

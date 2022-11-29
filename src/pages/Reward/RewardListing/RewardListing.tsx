@@ -1,4 +1,3 @@
-import { IonList } from "@ionic/react"
 import { Reward } from "../../../models/reward"
 import RewardListingItem from "../RewardListingItem/RewardListingItem"
 import styles from "./rewardListing.module.scss"

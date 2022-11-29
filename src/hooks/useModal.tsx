@@ -1,6 +1,6 @@
 import { modalController, OverlayEventDetail } from "@ionic/core";
 import { useIonModal } from "@ionic/react";
-import React, { ReactElement, useMemo } from "react";
+import React, { ReactElement } from "react";
 
 interface Options {
     id: string,

@@ -74,7 +74,7 @@ const SendCrypto: React.FC = () => {
             <PrimaryButton
                 expand='block'
                 onClick={handleTransfer}
-                disabled={!amount || parseInt(amount) == 0 || !receiver}
+                disabled={!amount || parseInt(amount) === 0 || !receiver}
                 loading={executing}>
                 send
             </PrimaryButton>

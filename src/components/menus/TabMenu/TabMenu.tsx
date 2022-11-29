@@ -35,12 +35,12 @@ const TabMenu: React.FC = () => {
     useNetwork();
 
     const handleRoutesProtections = useCallback(() => {
-        if (pathname == AppRoutes.landing && isAuthenticated && isOnboardingHidden) {
+        if (pathname === AppRoutes.landing && isAuthenticated && isOnboardingHidden) {
             setTimeout(() => {
                 push(AppRoutes.dashboard)
             }, 1000);
         }
-        else if (pathname == AppRoutes.landing && isAuthenticated) {
+        else if (pathname === AppRoutes.landing && isAuthenticated) {
             setTimeout(() => {
                 push(AppRoutes.onBoarding)
             }, 1000);
@@ -61,7 +61,7 @@ const TabMenu: React.FC = () => {
             id='fab-button'
             className={styles.floatingButton}
             onClick={() => spinnerBtnRef.current.handleIonTabButtonClick()}>
-            <SpinIcon size='large' isFilled={pathname == AppRoutes.spinner} />
+            <SpinIcon size='large' isFilled={pathname === AppRoutes.spinner} />
         </div>
     ), [spinnerBtnRef, pathname])
 
@@ -122,12 +122,12 @@ const TabMenu: React.FC = () => {
                     slot="bottom"
                     className={styles.tabBar}>
                     <IonTabButton tab="dashboard" href={AppRoutes.dashboard}>
-                        <DashboardIcon isFilled={pathname == AppRoutes.dashboard} />
+                        <DashboardIcon isFilled={pathname === AppRoutes.dashboard} />
                         <IonLabel>Dashboard</IonLabel>
                     </IonTabButton>
 
                     <IonTabButton tab="reward" href={AppRoutes.reward}>
-                        <RewardIcon isFilled={pathname == AppRoutes.reward} />
+                        <RewardIcon isFilled={pathname === AppRoutes.reward} />
                         <IonLabel>Rewards</IonLabel>
                     </IonTabButton>
 
@@ -136,12 +136,12 @@ const TabMenu: React.FC = () => {
                     </IonTabButton>
 
                     <IonTabButton tab="buy" href={AppRoutes.buy}>
-                        <BuyIcon isFilled={pathname == AppRoutes.buy} />
+                        <BuyIcon isFilled={pathname === AppRoutes.buy} />
                         <IonLabel>Buy</IonLabel>
                     </IonTabButton>
 
                     <IonTabButton tab="account" href={AppRoutes.account}>
-                        <AccountIcon isFilled={pathname == AppRoutes.account} />
+                        <AccountIcon isFilled={pathname === AppRoutes.account} />
                         <IonLabel>Account</IonLabel>
                     </IonTabButton>
                 </IonTabBar>

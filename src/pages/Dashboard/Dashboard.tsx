@@ -8,7 +8,6 @@ import CryptoTokens from './CryptoTokens/CryptoTokens';
 import '../../theme/primaryTabs.scss';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { AssetMode } from '../../constants/assetsMode';
-import styles from './dashboard.module.scss'
 import useOnBoardingPreview from '../../hooks/useOnBoardingPreview';
 import useCryptoAssets from '../../hooks/useCryptoAssets';
 import { currencySettingsContext } from '../../providers/CurrencySettingsProvider/currencySettingsContext';
@@ -29,7 +28,7 @@ const Dashboard: React.FC = () => {
     const { Moralis } = useMoralis();
     const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
     const onSelect = useCallback((tabIndex: number) => {
-        setMode(tabIndex == 0 ? AssetMode.loyaltyPoint : AssetMode.token);
+        setMode(tabIndex === 0 ? AssetMode.loyaltyPoint : AssetMode.token);
     }, [])
 
     const getPrograms = useCallback(async () => {
@@ -39,7 +38,7 @@ const Dashboard: React.FC = () => {
     }, [])
 
     const handleHighlightedAssetMetadata = useCallback(() => {
-        mode == AssetMode.loyaltyPoint ? fetchGozoLoyaltyMembership() : fetchCryptoAssets();
+        mode === AssetMode.loyaltyPoint ? fetchGozoLoyaltyMembership() : fetchCryptoAssets();
     }, [mode])
 
     const onRefresh = useCallback((): Promise<any> => {
@@ -55,7 +54,7 @@ const Dashboard: React.FC = () => {
     }, [mode])
 
     useEffect(() => {
-        if (mode == AssetMode.token) {
+        if (mode === AssetMode.token) {
             setHighlightedAsset({
                 balance: defaultERC20Asset ?
                     parseInt(Moralis.Units.FromWei(defaultERC20Asset.balance, parseInt(defaultERC20Asset.decimals))) :
@@ -66,7 +65,7 @@ const Dashboard: React.FC = () => {
     }, [defaultERC20Asset])
 
     useEffect(() => {
-        if (mode == AssetMode.loyaltyPoint) {
+        if (mode === AssetMode.loyaltyPoint) {
             setHighlightedAsset({
                 balance: gozoLoyaltyMembership ? gozoLoyaltyMembership.balance : 0,
                 description: 'Super Points'

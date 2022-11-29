@@ -29,7 +29,7 @@ export class FormValidator {
     }
 
     public static doesMatch(firstValue: string, secondValue: string): boolean {
-        return !!firstValue && !!secondValue && firstValue == secondValue
+        return !!firstValue && !!secondValue && firstValue === secondValue
     }
 
     public static handleServerErrors(errors: any) {

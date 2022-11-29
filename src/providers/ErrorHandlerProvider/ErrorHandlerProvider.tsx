@@ -9,7 +9,7 @@ const ErrorHandlerProvider: React.FC = ({ children }) => {
     const { presentFailure } = useToast();
 
     const handleError = useCallback(() => {
-        if (globalError?.code == networkResponseCode.timeOut) {
+        if (globalError?.code === networkResponseCode.timeOut) {
             presentFailure('Network Connection Issue, Please try again!');
         }
     }, [globalError])

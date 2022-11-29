@@ -16,7 +16,7 @@ const SwapPoints: React.FC = () => {
         <>
             <div className={styles.swapControl}>
                 {
-                    direction == 'p2s' ?
+                    direction === 'p2s' ?
                         <SwapField
                             label='From'
                             options={exchangeInOptions.map((opt) => (
@@ -45,7 +45,7 @@ const SwapPoints: React.FC = () => {
                 }
                 <SwapDirection doubleDirection onClick={toggleDirection} />
                 {
-                    direction == 's2p' ?
+                    direction === 's2p' ?
                         <SwapField
                             label='To'
                             options={exchangeOutOptions.map((opt) => (

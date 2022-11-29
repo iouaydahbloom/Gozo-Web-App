@@ -54,7 +54,7 @@ const useBlockchainContractExecution = () => {
         })
             .then(result => result.json())
             .then(response => {
-                if (response.status == 'error') {
+                if (response.status === 'error') {
                     throw new Error(response.message);
                 }
                 return JSON.parse(response.result);
@@ -121,7 +121,7 @@ const useBlockchainContractExecution = () => {
     }
 
     async function addListener(contractAddress: string, abi: any[], eventName: string, callBack: (...args: any[]) => void) {
-        let contract = contracts?.find(ctrct => ctrct.address.toLocaleLowerCase() == contractAddress.toLocaleLowerCase());
+        let contract = contracts?.find(ctrct => ctrct.address.toLocaleLowerCase() === contractAddress.toLocaleLowerCase());
         if (!contract) {
             contract = new ethers.Contract(contractAddress, abi, getProviderSigner());
             setContracts([...contracts, contract]);

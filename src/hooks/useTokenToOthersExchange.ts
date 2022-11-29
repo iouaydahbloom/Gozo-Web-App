@@ -74,7 +74,7 @@ const useTokenToOthersExchange = () => {
     ) => {
         if (!amount || !selectedOthers) { onSuccess(0); return; }
         setSimulating(true);
-        const fn = selectedOthers.type == SwapPartyType.loyaltyProgram ?
+        const fn = selectedOthers.type === SwapPartyType.loyaltyProgram ?
             cloudFunctionName.simulateT2PExchange :
             cloudFunctionName.simulateT2NativeExchange;
 
@@ -131,7 +131,7 @@ const useTokenToOthersExchange = () => {
         if (selectedOthers && selectedOthers.quantity && selectedOthers.quantity <= 0) return;
         setExchanging(true);
 
-        if (selectedOthers.type == SwapPartyType.loyaltyProgram) {
+        if (selectedOthers.type === SwapPartyType.loyaltyProgram) {
             await executePointsToTokenExchange()
                 .finally(() => setExchanging(false));
             return;
@@ -148,7 +148,7 @@ const useTokenToOthersExchange = () => {
     ) => {
         if (!amount) { onSuccess(0); return; }
 
-        const fn = selectedOthers.type == SwapPartyType.loyaltyProgram ?
+        const fn = selectedOthers.type === SwapPartyType.loyaltyProgram ?
             cloudFunctionName.simulateP2TExchange :
             cloudFunctionName.simulateNative2TExchange;
         setSimulating(true);
@@ -210,13 +210,13 @@ const useTokenToOthersExchange = () => {
     }
 
     const isDisabled = useMemo(() => {
-        if (direction == 't2o') {
+        if (direction === 't2o') {
             if (!tokenQuantity) return true;
-            if (selectedOthers.type == SwapPartyType.nativeCryptoCurrency) return false;
+            if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return false;
             return (minimumValue && (tokenQuantity! < minimumValue)) || !tokenQuantity;
         }
 
-        if (selectedOthers.type == SwapPartyType.nativeCryptoCurrency) return !selectedOthers.quantity;
+        if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return !selectedOthers.quantity;
         return (minimumValue && (selectedOthers?.quantity! < minimumValue)) || !selectedOthers?.quantity;
     }, [tokenQuantity, selectedOthers, minimumValue])
 
@@ -225,11 +225,11 @@ const useTokenToOthersExchange = () => {
     const nativeBalance = defaultNativeAsset ? parseFloat(Moralis.Units.FromWei(defaultNativeAsset?.balance, 18)) : 0;
 
     const displayedBalance = useMemo(() => {
-        if (direction == 't2o') {
+        if (direction === 't2o') {
             return tokensBalance
         }
 
-        if (selectedOthers.type == SwapPartyType.loyaltyProgram) {
+        if (selectedOthers.type === SwapPartyType.loyaltyProgram) {
             return pointsBalance;
         }
 
@@ -258,7 +258,7 @@ const useTokenToOthersExchange = () => {
     }, [defaultNativeAsset, defaultProgram])
 
     useEffect(() => {
-        if (direction == 't2o') {
+        if (direction === 't2o') {
             simulateTokenToOthersExchange(
                 tokenQuantity ?? 0,
                 (result) => {
@@ -268,7 +268,7 @@ const useTokenToOthersExchange = () => {
     }, [tokenQuantity, direction, selectedOthers.id])
 
     useEffect(() => {
-        if (direction == 'o2t') {
+        if (direction === 'o2t') {
             simulateOthersToTokenExchange(
                 selectedOthers?.quantity ?? 0,
                 (result) => {
@@ -282,7 +282,7 @@ const useTokenToOthersExchange = () => {
     }, [executing])
 
     useEffect(() => {
-        if (direction == 't2o') {
+        if (direction === 't2o') {
             getMinTokenToPointsExchange();
             estimateTokenTransferFee();
             return;
@@ -314,8 +314,8 @@ const useTokenToOthersExchange = () => {
         displayedBalance,
         setSelectedOthers,
         setTokenQuantity: setTokenQuantity,
-        toggleDirection: () => setDirection(prev => prev == 't2o' ? 'o2t' : 't2o'),
-        exchange: direction == 't2o' ?
+        toggleDirection: () => setDirection(prev => prev === 't2o' ? 'o2t' : 't2o'),
+        exchange: direction === 't2o' ?
             executeTokenToOthersExchange :
             executeOthersToTokenExchange
     }

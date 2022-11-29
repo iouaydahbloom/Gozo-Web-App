@@ -1,5 +1,5 @@
 import { debounce } from "lodash";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { UserLoyaltyProgram } from "../models/loyaltyProgram";
 import { cloudFunctionName } from "../moralis/cloudFunctionName";
 import useCloud from "./useCloud";
@@ -24,22 +24,28 @@ const useProgramsExchange = () => {
     const { fetchMyLoyaltyPrograms, defaultProgram } = useLoyaltyPrograms();
     const { presentFailure, presentSuccess } = useToast();
     const [direction, setDirection] = useState<'p2s' | 's2p'>('p2s');
-    const { membership } = useMemberShip(originProgram.loyaltyCurrency);
+    const { membership, fetchMembership } = useMemberShip(originProgram.loyaltyCurrency);
 
     const executeP2PExchange = useCallback(async (from: string, to: string, amount: number) => {
         if (amount <= 0) return;
         setExchanging(true);
-        return run(cloudFunctionName.executeP2PExchange,
+        return run(
+            cloudFunctionName.executeP2PExchange,
             { origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount },
             () => true,
-            true)
-            .then(result => {
-                result.isSuccess ?
-                    presentSuccess('Swapped successfully') :
-                    presentFailure(result.errors?.errors[0].message ?? result.message);
+            true
+        )
+            .then(async result => {
+                if (result.isSuccess) {
+                    fetchMembership();
+                    presentSuccess('Swapped successfully');
+                    return;
+                }
+
+                presentFailure(result.errors?.errors[0].message ?? result.message);
             })
             .finally(() => setExchanging(false))
-    }, [])
+    }, [originProgram.loyaltyCurrency])
 
     const simulateP2PExchange = useCallback(debounce(
         (from: string, to: string, amount: number, onSuccess: (result: number) => void) => {
@@ -122,7 +128,7 @@ const useProgramsExchange = () => {
         direction: direction,
         isDisabled: !originProgram.quantity || originProgram.quantity === 0,
         toggleDirection: () => setDirection(prev => prev === 's2p' ? 'p2s' : 's2p'),
-        originBalance: membership?.balance
+        originBalance: useMemo(() => membership?.balance, [membership?.balance])
     }
 }
 

@@ -28,7 +28,7 @@ const Landing: React.FC = () => {
                     <PrimaryCheckbox value={accepted} onChange={setAccepted} />
                 </div>
                 <PrimaryTypography customClassName={styles.textField}>
-                    I’ve read and accepted the <a>Terms of Service</a> and <a>Privacy Policy</a>
+                    I’ve read and accepted the <a href=''>Terms of Service</a> and <a href=''>Privacy Policy</a>
                 </PrimaryTypography>
             </div>
         )

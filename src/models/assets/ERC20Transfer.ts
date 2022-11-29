@@ -1,10 +1,10 @@
 export class ERC20Transfer {
-    constructor(public transaction_hash: string,
+    constructor(public transactionHash: string,
         public address: string,
-        public block_timestamp: string,
-        public block_number: string,
-        public block_hash: string,
-        public to_address: string,
-        public from_address: string,
+        public blockTimestamp: string,
+        public blockNumber: string,
+        public blockHash: string,
+        public toAddress: string,
+        public fromAddress: string,
         public value: string) { }
 }

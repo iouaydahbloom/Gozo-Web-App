@@ -7,7 +7,7 @@ import useCloud from "./useCloud";
 
 const useERC20Transfers = () => {
 
-  const { walletAddress, chainId } = useDapp();
+  const { walletAddress } = useDapp();
   const { isInitialized } = useMoralis();
   const [eRC20Transfers, setERC20Transfers] = useState<ERC20Transfer[]>();
   const [isLoading, setIsLoading] = useState<boolean>()
@@ -25,7 +25,12 @@ const useERC20Transfers = () => {
 
   const fetchERC20Transfers = async () => {
     setIsLoading(true);
-    return run(cloudFunctionName.getTokenTransfers, { address: walletAddress ?? '', chain: chainId as any })
+    return run(
+      cloudFunctionName.getTokenTransfers,
+      { address: walletAddress ?? '' },
+      res => res,
+      true
+    )
       .then(result => {
         //@ts-ignore
         return result.isSuccess ? result.result : []

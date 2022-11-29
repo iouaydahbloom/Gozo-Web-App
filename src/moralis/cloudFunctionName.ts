@@ -35,5 +35,5 @@ export const cloudFunctionName = {
     nativeCurrency: 'native_currency',
     tokenBalances: 'token_balances',
     tokenDefaultMetadata: 'default_token_metadata',
-    getTokenTransfers: 'getTokenTransfers'
+    getTokenTransfers: 'token_transfers'
 }

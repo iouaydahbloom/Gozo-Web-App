@@ -41,7 +41,7 @@ const useTokenToOthersExchange = () => {
     const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
     const [isEstimatingGasFee, setIsEstimatingGasFee] = useState(false);
     const [direction, setDirection] = useState<'t2o' | 'o2t'>('t2o');
-    const { membership } = useMemberShip(defaultProgram?.currency.loyaltyCurrency);
+    const { membership, fetchMembership } = useMemberShip(defaultProgram?.currency.loyaltyCurrency);
     const { Moralis } = useMoralis();
     const { run } = useCloud();
     const { presentFailure, presentSuccess } = useToast();
@@ -63,7 +63,10 @@ const useTokenToOthersExchange = () => {
             tokenContractAbi,
             'transferToOwner',
             [tokenQuantityInWei, selectedOthers.type],
-            () => presentSuccess('Exchanged successfully'),
+            () => {
+                fetchCryptoAssets();
+                presentSuccess('Exchanged successfully');
+            },
             (error) => presentFailure(error.message)
         );
     }, [tokenQuantity, selectedOthers.type])
@@ -190,8 +193,13 @@ const useTokenToOthersExchange = () => {
                     true
                 )
                     .then(result => {
-                        if (result.isSuccess) presentSuccess('Exchanged successfully');
-                        else presentFailure(result.message);
+                        if (result.isSuccess) {
+                            fetchCryptoAssets();
+                            presentSuccess('Exchanged successfully');
+                            return;
+                        }
+
+                        presentFailure(result.message);
                     })
             });
     }
@@ -204,8 +212,13 @@ const useTokenToOthersExchange = () => {
             true
         )
             .then(result => {
-                if (result.isSuccess) presentSuccess('Exchanged successfully');
-                else presentFailure(result.errors?.errors[0].message ?? result.message);
+                if (result.isSuccess) {
+                    fetchMembership();
+                    presentSuccess('Exchanged successfully');
+                    return;
+                }
+
+                presentFailure(result.errors?.errors[0].message ?? result.message);
             })
     }
 
@@ -250,11 +263,15 @@ const useTokenToOthersExchange = () => {
     useEffect(() => {
         if (!defaultProgram || !defaultNativeAsset) return;
         setOthersOptions([defaultProgram, defaultNativeAsset]);
-        setSelectedOthers({
-            id: defaultProgram.currency.loyaltyCurrency,
-            quantity: 0,
-            type: SwapPartyType.loyaltyProgram
-        });
+
+        if (!selectedOthers.id) {
+            setSelectedOthers({
+                id: defaultProgram.currency.loyaltyCurrency,
+                quantity: 0,
+                type: SwapPartyType.loyaltyProgram
+            });
+        }
+
     }, [defaultNativeAsset, defaultProgram])
 
     useEffect(() => {

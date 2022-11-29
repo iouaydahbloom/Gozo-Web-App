@@ -28,12 +28,11 @@ const useERC20Transfers = () => {
     return run(
       cloudFunctionName.getTokenTransfers,
       { address: walletAddress ?? '' },
-      res => res,
+      (res: ERC20Transfer[]) => res,
       true
     )
       .then(result => {
-        //@ts-ignore
-        return result.isSuccess ? result.result : []
+        return result.isSuccess ? result.data : []
       })
       .finally(() => setIsLoading(false))
   }

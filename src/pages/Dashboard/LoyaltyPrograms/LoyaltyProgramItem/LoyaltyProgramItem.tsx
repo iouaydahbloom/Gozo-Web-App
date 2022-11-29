@@ -67,30 +67,43 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSe
                             <IonText color='medium-light'>Bal.</IonText>
                             <PrimaryTypography color='light' customClassName='ellipsis' size='m'>{membership?.balance} Miles</PrimaryTypography>
                         </IonLabel>
-                        <IonLabel className={styles.costRow}>
-                            <IonText color='medium-light'>Cost to Spin:</IonText>
-                            <PrimaryTypography color='light' customClassName='ellipsis' size='m'>{loyaltyProgram.redemption?.spinCost ? loyaltyProgram.redemption?.spinCost : 0} Units</PrimaryTypography>
+                        <IonLabel className={styles.spinInfoRow}>
+                            {
+                                loyaltyProgram.redemption ?
+                                    <>
+                                        <IonText color='medium-light'>Cost to Spin:</IonText>
+                                        <PrimaryTypography color='light' customClassName='ellipsis' size='m'>
+                                            {loyaltyProgram.redemption?.spinCost ? loyaltyProgram.redemption?.spinCost : 0} Units
+                                        </PrimaryTypography>
+                                    </>
+                                    :
+                                    <PrimaryTypography color='medium-light' customClassName='ellipsis' size='m'>
+                                        *This program does not offer spinning
+                                    </PrimaryTypography>
+                            }
                         </IonLabel>
                     </div>
                 </div>
 
-
                 <div>
-                    <div className={styles.spinAction} onClick={loyaltyProgram.redemption?.isSufficient ? spin : () => {}}>
-                        <div className={styles.actionItem}>
-                            {loyaltyProgram.redemption?.isSufficient ?
-                                <>
-                                    <IonIcon color="light" size="large" icon='assets/icon/Spin1.svg' />
-                                    <PrimaryTypography color='light'>Spin</PrimaryTypography>
-                                </>
-                                :
-                                <>
-                                    <IonIcon color="slightly-light" size="large" icon='assets/icon/no-credit-icon.svg' />
-                                    <PrimaryTypography isBlock={false} color='slightly-light'>Not enough credits</PrimaryTypography>
-                                </>
-                            }
+                    {
+                        loyaltyProgram.redemption &&
+                        <div className={styles.spinAction} onClick={loyaltyProgram.redemption?.isSufficient ? spin : () => { }}>
+                            <div className={styles.actionItem}>
+                                {loyaltyProgram.redemption?.isSufficient ?
+                                    <>
+                                        <IonIcon color="light" size="large" icon='assets/icon/Spin1.svg' />
+                                        <PrimaryTypography color='light'>Spin</PrimaryTypography>
+                                    </>
+                                    :
+                                    <>
+                                        <IonIcon color="slightly-light" size="large" icon='assets/icon/no-credit-icon.svg' />
+                                        <PrimaryTypography isBlock={false} color='slightly-light'>Not enough credits</PrimaryTypography>
+                                    </>
+                                }
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
 
             </div>

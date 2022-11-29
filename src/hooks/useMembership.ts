@@ -26,6 +26,8 @@ const useMemberShip = (loyaltyCurrency?: string) => {
     useEffect(() => {
         if (isInitialized && isAuthenticated) {
             fetchMembership();
+        } return () => {
+            setMembership(null)
         }
     }, [loyaltyCurrency, isInitialized])
 

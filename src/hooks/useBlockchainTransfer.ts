@@ -37,7 +37,7 @@ const useBlockchainTransfer = () => {
         tokenContractAddress,
         tokenContractAbi,
         'transfer',
-        [receiver, amount != "" ? Moralis.Units.Token(amount) : 0],
+        [receiver, amount !== "" ? Moralis.Units.Token(amount) : 0],
         () => presentSuccess('Successfully Transfered'),
         (error) => setError(error.message)
     ), [])
@@ -60,6 +60,14 @@ const useBlockchainTransfer = () => {
                 setIsEstimatingTransferFee(false);
             });
     }, [])
+
+    useEffect(() => {
+        return () => {
+            setTransferFee(undefined);
+            setIsEstimatingTransferFee(false);
+        }
+    }, [])
+
 
     return {
         transferToken,

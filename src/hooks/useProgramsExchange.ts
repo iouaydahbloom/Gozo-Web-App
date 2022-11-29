@@ -62,7 +62,7 @@ const useProgramsExchange = () => {
     function updateSelections() {
         if (!checkShufflingEnable()) return;
 
-        if (direction == 'p2s') {
+        if (direction === 'p2s') {
             setOriginProgram({ loyaltyCurrency: exchangeInOptions[0].currency.loyaltyCurrency!, quantity: 0 })
             setDestinationProgram({ loyaltyCurrency: defaultProgram!.currency.loyaltyCurrency!, quantity: 0 })
         }
@@ -73,7 +73,7 @@ const useProgramsExchange = () => {
     }
 
     function checkShufflingEnable() {
-        return direction == 'p2s' ?
+        return direction === 'p2s' ?
             exchangeInOptions.length > 0 && (exchangeOutOptions.length > 0 || !!defaultProgram) :
             exchangeOutOptions.length > 0 && (exchangeInOptions.length > 0 || !!defaultProgram)
     }
@@ -86,6 +86,11 @@ const useProgramsExchange = () => {
                 setExchangeInOptions(programs.filter(prog => prog.currency.isRedemption));
                 setExchangeOutOptions(programs.filter(prog => prog.currency.isExchangeIn));
             })
+
+        return () => {
+            setExchangeInOptions([])
+            setExchangeOutOptions([])
+        }
     }, [])
 
     useEffect(() => {
@@ -115,8 +120,8 @@ const useProgramsExchange = () => {
         exchanging: exchanging,
         simulating,
         direction: direction,
-        isDisabled: !originProgram.quantity || originProgram.quantity == 0,
-        toggleDirection: () => setDirection(prev => prev == 's2p' ? 'p2s' : 's2p'),
+        isDisabled: !originProgram.quantity || originProgram.quantity === 0,
+        toggleDirection: () => setDirection(prev => prev === 's2p' ? 'p2s' : 's2p'),
         originBalance: membership?.balance
     }
 }

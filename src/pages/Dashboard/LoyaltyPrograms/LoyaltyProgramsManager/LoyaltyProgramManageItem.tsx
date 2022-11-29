@@ -110,6 +110,14 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
             initMyProgram()
         }
     }, [myProgram])
+
+    useEffect(() => {
+      return () => {
+        setPartnershipMetadata(null)
+        setMyUpdatedProgram(null)
+      }
+    }, [])
+    
     
     const LoyaltyProgramPartnership = () => {
         return (
@@ -160,7 +168,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
             <div className={styles.togglerContainer}
                 onClick={() => setIsSelected(!isSelected)}>
                 <div className={styles.id}>
-                    <img src={item.logo} className={styles.logo} />
+                    <img alt='' src={item.logo} className={styles.logo} />
                     <div className={styles.text}>
                         <PrimaryTypography isBold>{item.companyName}</PrimaryTypography>
                         <PrimaryTypography size='s'>1 program</PrimaryTypography>

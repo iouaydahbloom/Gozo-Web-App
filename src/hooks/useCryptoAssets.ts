@@ -60,7 +60,7 @@ const useCryptoAssets = () => {
         .find(
           asset =>
             asset instanceof ERC20Asset &&
-            asset.tokenAddress.toLowerCase() == tokenContractAddress?.toLowerCase()
+            asset.tokenAddress.toLowerCase() === tokenContractAddress?.toLowerCase()
         ) as ERC20Asset
       : null;
 

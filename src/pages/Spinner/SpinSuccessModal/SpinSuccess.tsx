@@ -18,7 +18,7 @@ const SpinSuccess: React.FC<Props> = ({ dismiss, prize = '' }) => {
                         <IonIcon slot="icon-only" icon={closeOutline} color='light' size="large" />
                     </IonButton>
                 </IonButtons>
-                <img src={'assets/image/confetti.svg'} />
+                <img alt='' src={'assets/image/confetti.svg'} />
 
                 <PrimaryTypography
                     customClassName={styles.text}

@@ -1,5 +1,4 @@
-import { IonBackButton, IonHeader, IonIcon, IonToolbar } from '@ionic/react';
-import { arrowBackOutline } from 'ionicons/icons';
+import { IonHeader } from '@ionic/react';
 import React from 'react';
 import { useHistory } from 'react-router';
 import PrimaryTypography from '../../typography/PrimaryTypography/PrimaryTypography';
@@ -17,8 +16,7 @@ const SecondaryHeader: React.FC<Props> = ({ title }) => {
         <IonHeader className={styles.header}>
             <div className={styles.toolbar}>
                 <div className={styles.icon}>
-                    {/* <IonIcon color='light' size='large' icon={arrowBackOutline} onClick={goBack}/> */}
-                    <img src='assets/icon/header-back.svg' onClick={goBack} />
+                    <img src='assets/icon/header-back.svg' alt='' onClick={goBack} />
                 </div>
                 <div className={styles.text}>
                     <PrimaryTypography size='l'>{title}</PrimaryTypography>

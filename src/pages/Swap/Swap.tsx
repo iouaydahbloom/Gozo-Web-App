@@ -10,7 +10,7 @@ interface Props {
 const Swap: React.FC<Props> = ({ mode }) => {
     return (
         <>
-            {mode == AssetMode.loyaltyPoint ? <SwapPoints /> : <SwapTokens />}
+            {mode === AssetMode.loyaltyPoint ? <SwapPoints /> : <SwapTokens />}
         </>
     )
 }

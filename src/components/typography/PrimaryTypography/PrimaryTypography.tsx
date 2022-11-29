@@ -1,6 +1,5 @@
 import { IonText } from '@ionic/react';
-import { StyleReactProps } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
-import React, { CSSProperties, ReactNode, useCallback, useMemo } from 'react';
+import React, { CSSProperties, ReactNode, useMemo } from 'react';
 import { defaultColorType } from '../../../types/defaultColorType';
 import styles from './primaryTypography.module.scss';
 

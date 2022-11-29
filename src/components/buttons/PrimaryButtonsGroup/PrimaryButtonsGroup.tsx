@@ -1,4 +1,3 @@
-import { IonButtons } from '@ionic/react';
 import React, { ReactNode } from 'react'
 import PrimaryTypography from '../../typography/PrimaryTypography/PrimaryTypography';
 import PrimaryButton from '../PrimaryButton/PrimaryButton';

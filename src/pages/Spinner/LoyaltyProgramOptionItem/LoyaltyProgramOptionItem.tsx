@@ -19,7 +19,7 @@ const LoyaltyProgramOptionItem: React.FC<Props> = ({ name, currency, icon, isAct
         <IonItem lines='none' className={`${styles.container} ${isActive ? styles.active : ''}`} onClick={() => onClick(name)}>
             <IonRadio value={name} className={styles.selector}></IonRadio>
             <IonAvatar>
-                <img src={icon} />
+                <img alt='' src={icon} />
             </IonAvatar>
             <IonLabel className={styles.info}>
                 <IonLabel color='light'>

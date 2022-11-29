@@ -12,7 +12,7 @@ interface Props {
 const SectionPlaceholder: React.FC<Props> = ({ title, description, logoUrl, renderActions }) => {
     return (
         <div className={styles.containerContent}>
-            {logoUrl && <img src={logoUrl} />}
+            {logoUrl && <img src={logoUrl} alt=''/>}
             {title && <PrimaryTypography size='xxl'>
                 {title}
             </PrimaryTypography>

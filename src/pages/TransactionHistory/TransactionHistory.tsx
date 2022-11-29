@@ -14,13 +14,12 @@ import { Virtuoso } from 'react-virtuoso';
 import { InfiniteScrollPagination } from '../../components/InfiniteScrollPagination/InfiniteScrollPagination';
 import useServerPagination from '../../hooks/useServerPagination';
 import { LoyaltyMemberHistory } from '../../models/loyaltyMember';
-import { Filter } from '../../models/data/filter';
 
 
 const TransactionHistory: React.FC = () => {
     const { getTransactions } = useProgramsTransactionHistory()
 
-    const { data: historyFields, isLoading: isLoadingHistory, hasMore, loadMore } = useServerPagination<LoyaltyMemberHistory, any>({
+    const { data: historyFields, isLoading: isLoadingHistory, hasMore, loadMore, fetchData } = useServerPagination<LoyaltyMemberHistory, any>({
         getData: getTransactions as any
     })
     const { eRC20Transfers, isLoadingTransfers, fetchERC20Transfers } = useERC20Transfers();
@@ -42,22 +41,23 @@ const TransactionHistory: React.FC = () => {
         }, 500);
     }
 
-    const disableScroll = useCallback(() => {
+    const isScrollDisabled = useCallback(() => {
         var isDisabled = false
         switch (selectedTabIndex) {
             case 0:
-                isDisabled = hasMore
+                if(!hasMore) isDisabled = true
                 break;
             case 1:
+                isDisabled = true
                 // to be specified once pagination is implemented 
                 break;
         }
         return isDisabled
-    }, [selectedTabIndex])
+    }, [selectedTabIndex, hasMore])
 
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
-            getTransactions(new Filter(1, 10)),
+            fetchData(),
             fetchERC20Transfers()
         ])
     }, [])
@@ -107,7 +107,7 @@ const TransactionHistory: React.FC = () => {
                     }
                     }
                     components={{
-                        Footer: () => InfiniteScrollPagination(loadMoreTransactions, disableScroll())
+                        Footer: () => InfiniteScrollPagination(loadMoreTransactions, isScrollDisabled())
                     }}
                 >
 

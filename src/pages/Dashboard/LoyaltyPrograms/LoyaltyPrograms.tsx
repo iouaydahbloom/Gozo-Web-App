@@ -57,7 +57,7 @@ const LoyaltyPrograms: React.FC<Props> = ({ programs, getPrograms, isLoading }) 
     }
 
     function disconnectSelected() {
-        if (selectedUserCurrencyIds.length == 0) {
+        if (selectedUserCurrencyIds.length === 0) {
             presentInfo('Select at least one Program');
             return
         }
@@ -92,7 +92,7 @@ const LoyaltyPrograms: React.FC<Props> = ({ programs, getPrograms, isLoading }) 
     }
 
     return (
-        <div className={`${styles.container} ${programs.length == 0 ? styles.empty : ''}`}>
+        <div className={`${styles.container} ${programs.length === 0 ? styles.empty : ''}`}>
             {
                 isLoading ?
                     <SectionLoader /> :
@@ -125,7 +125,7 @@ const LoyaltyPrograms: React.FC<Props> = ({ programs, getPrograms, isLoading }) 
                                         if (selected) {
                                             setSelectedUserCurrencyIds([...selectedUserCurrencyIds, program.userCurrencyId]);
                                         } else {
-                                            const index = selectedUserCurrencyIds.findIndex(sp => sp == program.userCurrencyId);
+                                            const index = selectedUserCurrencyIds.findIndex(sp => sp === program.userCurrencyId);
                                             const updated = collectionManipulationHelper.removeAtIndex(selectedUserCurrencyIds, index);
                                             setSelectedUserCurrencyIds(updated);
                                         }

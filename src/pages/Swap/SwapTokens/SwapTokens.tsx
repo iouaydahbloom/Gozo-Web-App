@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import { SelectOption } from '../SwapSelect/SwapSelect';
 import TransactionDetails from '../../../components/TransactionDetails/TransactionDetails';
@@ -55,7 +55,7 @@ const SwapTokens: React.FC = () => {
                 setSelectedOthers({
                     ...selectedOthers,
                     id: value,
-                    type: value == NATIVE_CRYPTO_IDENTIFIER ?
+                    type: value === NATIVE_CRYPTO_IDENTIFIER ?
                         SwapPartyType.nativeCryptoCurrency :
                         SwapPartyType.loyaltyProgram
                 })
@@ -88,26 +88,26 @@ const SwapTokens: React.FC = () => {
         <div className={styles.swapContainer}>
             <div className={styles.swapControl}>
                 {
-                    direction == 't2o' ?
+                    direction === 't2o' ?
                         renderTokensField('From', false, true, displayedBalance, !isDisabled) :
                         renderOthersField('From', false, true, displayedBalance, !isDisabled)
                 }
                 <SwapDirection doubleDirection onClick={toggleDirection} />
                 {
-                    direction == 'o2t' ?
+                    direction === 'o2t' ?
                         renderTokensField('To', true, false) :
                         renderOthersField('To', true, false)
                 }
             </div>
 
             <TransactionDetails
-                hasMinimumValue={selectedOthers.type == SwapPartyType.loyaltyProgram}
+                hasMinimumValue={selectedOthers.type === SwapPartyType.loyaltyProgram}
                 minimumValue={minimumValue}
-                showFeeEstimation={direction == "t2o"}
+                showFeeEstimation={direction === "t2o"}
                 isEstimatingFee={isEstimatingGasFee}
                 estimatedFee={estimatedGasFee}
                 estimatedFeeUnit='GZT'
-                notification={direction == "t2o" ? 'Transaction might take around 1 min' : ''}
+                notification={direction === "t2o" ? 'Transaction might take around 1 min' : ''}
             />
 
             <br />

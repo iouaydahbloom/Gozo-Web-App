@@ -39,7 +39,7 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSe
                 <div className={`ellipsis ${styles.startSlot}`}>
                     <IonItem lines='none'>
                         <IonAvatar slot="start">
-                            <img className={styles.logo} src={loyaltyProgram.currency.programLogo ? loyaltyProgram.currency.programLogo : "assets/image/image-placeholder.svg"} />
+                            <img alt='' className={styles.logo} src={loyaltyProgram.currency.programLogo ? loyaltyProgram.currency.programLogo : "assets/image/image-placeholder.svg"} />
                         </IonAvatar>
                         <IonLabel>
                             <IonLabel color='light'>

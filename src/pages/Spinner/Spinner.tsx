@@ -132,7 +132,7 @@ const Spinner: React.FC = () => {
 
     function listenerCallBack(id: any, amount: any, playerAddress: string, gameToken: string) {
         console.log("listening to event prizeSelected with id:", id)
-        if (playerAddress.toLocaleLowerCase() == walletAddress?.toLocaleLowerCase()) {
+        if (playerAddress.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
             const prize: IPrize = {
                 prizeId: id,
                 gameToken: gameToken

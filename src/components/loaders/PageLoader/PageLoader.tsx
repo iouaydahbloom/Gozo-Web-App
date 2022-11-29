@@ -1,5 +1,4 @@
 import SectionLoader from "../section-loader/SectionLoader";
-import styles from './pageLoader.module.scss';
 
 interface IProps {
     text?: string

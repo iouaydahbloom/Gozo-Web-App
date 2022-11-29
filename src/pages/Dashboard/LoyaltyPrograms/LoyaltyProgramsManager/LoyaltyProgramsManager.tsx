@@ -15,12 +15,12 @@ const LoyaltyProgramsManager: React.FC = () => {
     const [searchKey, setSearchKey] = useState<string>('');
     const { fetchAllPrograms, fetchMyLoyaltyPrograms } = useLoyaltyPrograms();
 
-    const { data: programs, isLoading } = useServerPagination<LoyaltyProgram, ProgramFilter>({
+    const { data: programs, isLoading, fetchData } = useServerPagination<LoyaltyProgram, ProgramFilter>({
         getData: fetchAllPrograms as any
     })
 
     function getMyProgram(programId?: string): UserLoyaltyProgram | null {
-        return myPrograms.find(pf => pf.currency?.programId == programId) ?? null
+        return myPrograms.find(pf => pf.currency?.programId === programId) ?? null
     }
 
     const renderLoyaltyProgramItem = useCallback((lp: LoyaltyProgram, index: number) => {
@@ -40,9 +40,15 @@ const LoyaltyProgramsManager: React.FC = () => {
         })
         .finally(() => setIsLoadingMyPrograms(false))
     }
+
     useEffect(() => {
+        fetchData()
         setIsLoadingMyPrograms(true)
         getMyLoyaltyProgram()
+
+        return () => {
+            setIsLoadingMyPrograms(false)
+        }
     }, [])
 
     return (

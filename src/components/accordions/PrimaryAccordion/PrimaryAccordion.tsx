@@ -36,7 +36,7 @@ const PrimaryAccordion: React.FC<Props> = ({ accordionItemData, className }) => 
       {accordionItemData && accordionItemData.map((item, key) => {
         return <IonAccordion key={key} value={item.value}>
           <IonItem slot="header">
-            <img src={item.icon} className={styles.prizeImage} />
+            <img src={item.icon} alt='' className={styles.prizeImage} />
             <IonLabel className={`${value === item.value ? styles.active : ''} ion-padding`}>{item.label}</IonLabel>
           </IonItem>
           <div className="ion-padding" slot="content">

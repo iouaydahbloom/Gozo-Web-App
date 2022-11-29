@@ -40,7 +40,7 @@ const RewardListingItem: React.FC<Props> = ({ reward }) => {
   return (
     <div className={`${styles.rewardListingItem} ion-text-center ion-padding-horizontal`}>
       <div className={styles.imageWrapper}>
-        <img src={reward.icon} className={styles.prizeImage} />
+        <img alt='' src={reward.icon} className={styles.prizeImage} />
       </div>
       <PrimaryTypography
         customClassName={styles.textWrapper}>

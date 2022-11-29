@@ -63,6 +63,7 @@ const SwapSelect: React.FC<Props> = ({ label, value, onChange, options = [], cla
                 {icon &&
                     <IonAvatar>
                         <img
+                            alt=''
                             src={icon}
                         />
                     </IonAvatar>
@@ -79,7 +80,7 @@ const SwapSelect: React.FC<Props> = ({ label, value, onChange, options = [], cla
             {label && <IonLabel color='light' className={styles.inputLabel}>{label}</IonLabel>}
             <Select
                 styles={customStyles}
-                value={options.find(opt => opt.value == value)}
+                value={options.find(opt => opt.value === value)}
                 onChange={(event: any) => onChange && onChange(event.value ?? '')}
                 options={options as any}
                 className={className}

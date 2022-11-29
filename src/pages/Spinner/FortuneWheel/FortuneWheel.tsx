@@ -240,6 +240,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     >
       {logoAtCenter &&
         <img
+          alt=''
           className={styles.logo}
           src={logoAtCenter}
           width="70"
@@ -249,6 +250,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
       <img
         // className={`${styles.iconPin} ${isSpinning ? styles.pinShaking : ''}`}
         className={`${styles.iconPin}`}
+        alt=''
         src="assets/image/wheel-marker.svg"
         width="50"
         height="50"

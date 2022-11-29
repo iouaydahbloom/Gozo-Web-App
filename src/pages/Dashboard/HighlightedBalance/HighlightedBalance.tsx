@@ -15,7 +15,7 @@ interface Props {
 const HighlightedBalance: React.FC<Props> = ({ asset, className }) => {
     return (
         <div className={`${styles.container} ${className}`} >
-            <img src='/assets/image/gozo-element.png' className={styles.img} />
+            <img src='/assets/image/gozo-element.png' alt='' className={styles.img} />
             <div className={styles.innerContainer}>
                 <IonBadge className={styles.badge}>
                     <PrimaryTypography size='xxxl'> {asset ? asset.balance : 0}</PrimaryTypography>

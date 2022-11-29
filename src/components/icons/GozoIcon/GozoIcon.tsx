@@ -2,7 +2,7 @@ import { memo } from "react";
 
 const GozoIconComponent: React.FC = () => {
     return (
-        <img src='assets/icon/Gozo logo.svg' />
+        <img alt='' src='assets/icon/Gozo logo.svg' />
     )
 }
 

@@ -22,7 +22,7 @@ const OnBoarding: React.FC = () => {
     const OnBoardingSlide = ({ image, title, description }: SlideProps) => {
         return (
             <div>
-                <img src={image} />
+                <img src={image} alt=''/>
                 <PrimaryTypography isBold size='xxl' customClassName={styles.title}>
                     {title}
                 </PrimaryTypography>

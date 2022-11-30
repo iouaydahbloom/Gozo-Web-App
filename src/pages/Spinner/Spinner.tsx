@@ -117,6 +117,7 @@ const Spinner: React.FC = () => {
     }
 
     function getPrizes() {
+
         if (!loyaltyProgram) return
         fetchPrizes(loyaltyProgram.brand?.key ?? '')
             .then(prizes => {

@@ -18,13 +18,13 @@ const TokenHistoryDetails: React.FC = () => {
 
   const keys = [
     {key: 'address', label: 'Address'},
-    {key: 'block_hash', label: 'Block Hash'},
-    {key: 'block_number', label: 'Block Number'},
-    {key: 'block_timestamp', label: 'Block Timestamp'},
-    {key: 'from_address', label: 'From Address'},
-    {key: 'from_address', label: 'From Address'},
-    {key: 'to_address', label: 'To Address'},
-    {key: 'transaction_hash', label: 'Transaction Hash'},
+    {key: 'blockHash', label: 'Block Hash'},
+    {key: 'blockNumber', label: 'Block Number'},
+    {key: 'blockTimestamp', label: 'Block Timestamp'},
+    {key: 'fromAddress', label: 'From Address'},
+    {key: 'fromAddress', label: 'From Address'},
+    {key: 'toAddress', label: 'To Address'},
+    {key: 'transactionHash', label: 'Transaction Hash'},
     {key: 'value', label: 'amount'},
   ]
 

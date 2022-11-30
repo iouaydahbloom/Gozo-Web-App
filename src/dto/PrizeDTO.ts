@@ -1,6 +1,6 @@
 export interface PrizeDTO {
     name: string,
-    objectId: string,
+    _id: string,
     description: string,
     label: string,
     caLoyaltyCurrency: string,

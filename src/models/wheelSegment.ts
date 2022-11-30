@@ -13,7 +13,7 @@ export class WheelSegment implements AppModel {
         ) { }
 
     static getFromDTO(dto: PrizeDTO[]): WheelSegment[] {
-        return dto.map(item => (new WheelSegment(item.name, item.objectId, item.description, item.label, item.logoUrl)))
+        return dto.map(item => (new WheelSegment(item.name, item._id, item.description, item.label, item.logoUrl)))
     }
 
     toDTO() {}

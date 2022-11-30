@@ -55,7 +55,7 @@ const TransactionHistory: React.FC = () => {
                     break;
             }
 
-        }, 500);
+        }, 1000);
     }
 
     const isScrollDisabled = useCallback(() => {

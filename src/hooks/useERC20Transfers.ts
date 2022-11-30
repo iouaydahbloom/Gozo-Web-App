@@ -13,17 +13,7 @@ const useERC20Transfers = () => {
   const [isLoading, setIsLoading] = useState<boolean>()
   const { run } = useCloud();
 
-  useEffect(() => {
-    if (isInitialized)
-      fetchERC20Transfers()
-        .then((balance) => {
-          if (balance) setERC20Transfers(balance)
-        })
-        .catch((e) => console.log(e.message));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isInitialized, walletAddress]);
-
-  const fetchERC20Transfers = async () => {
+  const getERC20Transfers = async () => {
     setIsLoading(true);
     return run(
       cloudFunctionName.getTokenTransfers,
@@ -36,6 +26,16 @@ const useERC20Transfers = () => {
       })
       .finally(() => setIsLoading(false))
   }
+
+  function fetchERC20Transfers() {
+    if (isInitialized)
+      getERC20Transfers()
+        .then((balance) => {
+          if (balance) setERC20Transfers(balance)
+        })
+        .catch((e) => console.log(e.message));
+  }
+
   return {
     fetchERC20Transfers,
     eRC20Transfers,

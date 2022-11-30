@@ -25,7 +25,6 @@ const CryptoHistory: React.FC<Props> = ({ isLoading, eRC20Transfers }) => {
             <SectionPlaceholder
                 description='You have no past transaction details here yet'
                 logoUrl='assets/image/no-transactions.svg'
-                renderActions={() => <PrimaryButton onClick={() => push(AppRoutes.spinner)}>play now</PrimaryButton>}
             />
         )
     }

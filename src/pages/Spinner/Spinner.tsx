@@ -233,7 +233,7 @@ const Spinner: React.FC = () => {
         setIsPlaying(false)
     })
 
-    useEffect(() => {
+    useIonViewWillEnter(() => {
         if (defaultProgram) getMyPrograms();
     }, [defaultProgram])
 

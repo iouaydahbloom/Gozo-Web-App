@@ -11,7 +11,7 @@ export class Reward implements AppModel {
         ) { }
 
     static getFromDTO(dto: RewardDTO[]): Reward[] {
-        return dto.map(item => (new Reward(item.objectId, item.description, item.date, item.logoUrl)))
+        return dto.map(item => (new Reward(item._id, item.description, item.date, item.logoUrl)))
     }
 
     toDTO() { }

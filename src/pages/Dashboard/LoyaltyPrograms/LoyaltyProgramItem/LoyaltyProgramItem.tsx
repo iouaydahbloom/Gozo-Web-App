@@ -65,7 +65,7 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSe
                     <div className={styles.detailWrapper}>
                         <IonLabel className={styles.balanceRow}>
                             <IonText color='medium-light'>Bal.</IonText>
-                            <PrimaryTypography color='light' customClassName='ellipsis' size='m'>{membership?.balance} Miles</PrimaryTypography>
+                            <PrimaryTypography color='light' customClassName='ellipsis' size='m'>{membership?.balance} Units</PrimaryTypography>
                         </IonLabel>
                         <IonLabel className={styles.spinInfoRow}>
                             {

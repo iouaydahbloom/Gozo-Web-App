@@ -1,7 +1,7 @@
 import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { UserLoyaltyProgram } from "../models/loyaltyProgram";
-import { cloudFunctionName } from "../moralis/cloudFunctionName";
+import { cloudFunctionName } from "../constants/cloudFunctionName";
 import useCloud from "./useCloud";
 import useLoyaltyPrograms from "./useLoyaltyPrograms";
 import useMemberShip from "./useMembership";

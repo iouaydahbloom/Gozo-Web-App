@@ -24,7 +24,7 @@ const useCloud = () => {
     const { setGlobalError } = useContext(errorHandlerContext);
 
     function resolveParams(params: any, isPrivate: boolean) {
-        let updatedParams = { ...params, _ApplicationId: appConfig.moralisAppId };
+        let updatedParams = { ...params, _ApplicationId: appConfig.serverAppId };
         if (isPrivate) {
             if (updatedParams) updatedParams.token = session?.user?.accessToken;
             else updatedParams = { token: session?.user?.accessToken };

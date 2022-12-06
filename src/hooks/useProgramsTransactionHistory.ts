@@ -3,7 +3,7 @@ import { LoyaltyMemberHistoryDTO } from "../dto/loyaltyMemberDTO";
 import { Filter } from "../models/data/filter";
 import { Pagination } from "../models/data/pagination";
 import { LoyaltyMemberHistory } from "../models/loyaltyMember";
-import { cloudFunctionName } from "../moralis/cloudFunctionName";
+import { cloudFunctionName } from "../constants/cloudFunctionName";
 import { currencySettingsContext } from "../providers/CurrencySettingsProvider/currencySettingsContext";
 import useCloud from "./useCloud";
 

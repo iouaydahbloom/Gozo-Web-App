@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
-import { useMoralis } from "react-moralis";
+import { useState } from "react";
 import { ERC20Transfer } from "../models/assets/ERC20Transfer";
-import { cloudFunctionName } from "../moralis/cloudFunctionName";
+import { cloudFunctionName } from "../constants/cloudFunctionName";
 import { useDapp } from "../providers/DappProvider/DappProvider";
 import useCloud from "./useCloud";
 
 const useERC20Transfers = () => {
 
   const { walletAddress } = useDapp();
-  const { isInitialized } = useMoralis();
   const [eRC20Transfers, setERC20Transfers] = useState<ERC20Transfer[]>();
   const [isLoading, setIsLoading] = useState<boolean>()
   const { run } = useCloud();
@@ -28,12 +26,11 @@ const useERC20Transfers = () => {
   }
 
   function fetchERC20Transfers() {
-    if (isInitialized)
-      getERC20Transfers()
-        .then((balance) => {
-          if (balance) setERC20Transfers(balance)
-        })
-        .catch((e) => console.log(e.message));
+    getERC20Transfers()
+      .then((balance) => {
+        if (balance) setERC20Transfers(balance)
+      })
+      .catch((e) => console.log(e.message));
   }
 
   return {

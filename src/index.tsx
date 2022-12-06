@@ -3,9 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
-import { MoralisProvider } from "react-moralis";
 import CurrencySettingsProvider from './providers/CurrencySettingsProvider/CurrencySettingsProvider';
-import { appConfig } from './constants/appConfig';
 import MagicAuthProvider from './providers/MagicAuthProvider/MagicAuthProvider';
 import SessionProvider from './providers/SessionProvider/SessionProvider';
 import { DappProvider } from './providers/DappProvider/DappProvider';
@@ -20,21 +18,17 @@ ReactDOM.render(
     <ErrorHandlerProvider>
       <NetworkProvider>
         <OnBoardingPreviewProvider>
-          <MoralisProvider
-            appId={appConfig.moralisAppId}
-            serverUrl={appConfig.moralisServerUrl}>
-            <MagicAuthProvider>
-              <SessionProvider>
-                <DappProvider>
-                  <CurrencySettingsProvider>
-                    <WheelSettingsProvider>
-                      <App />
-                    </WheelSettingsProvider>
-                  </CurrencySettingsProvider>
-                </DappProvider>
-              </SessionProvider>
-            </MagicAuthProvider>
-          </MoralisProvider>
+          <MagicAuthProvider>
+            <SessionProvider>
+              <DappProvider>
+                <CurrencySettingsProvider>
+                  <WheelSettingsProvider>
+                    <App />
+                  </WheelSettingsProvider>
+                </CurrencySettingsProvider>
+              </DappProvider>
+            </SessionProvider>
+          </MagicAuthProvider>
         </OnBoardingPreviewProvider>
       </NetworkProvider>
     </ErrorHandlerProvider>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ProfileDetailsDTO } from "../dto/ProfileDetailsDTO";
 import { ProfileDetails } from "../models/profileDetails";
-import { cloudFunctionName } from "../moralis/cloudFunctionName";
+import { cloudFunctionName } from "../constants/cloudFunctionName";
 import useCloud from "./useCloud";
 
 const useProfile = () => {

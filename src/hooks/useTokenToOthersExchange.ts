@@ -1,10 +1,9 @@
 import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useMoralis } from "react-moralis";
 import { ERC20Asset } from "../models/assets/ERC20Asset";
 import { NativeAsset } from "../models/assets/NativeAsset";
 import { UserLoyaltyProgram } from "../models/loyaltyProgram";
-import { cloudFunctionName } from "../moralis/cloudFunctionName";
+import { cloudFunctionName } from "../constants/cloudFunctionName";
 import { useDapp } from "../providers/DappProvider/DappProvider";
 import useBlockchainContractExecution from "./useBlockchainContractExecution";
 import useBlockchainTransfer from "./useBlockchainTransfer";
@@ -13,6 +12,7 @@ import useCryptoAssets from "./useCryptoAssets";
 import useLoyaltyPrograms from "./useLoyaltyPrograms";
 import useMemberShip from "./useMembership";
 import useToast from "./useToast";
+import { parseNumber, parseBlockchainValue } from "../helpers/blockchainHelper";
 
 export enum SwapPartyType {
     loyaltyProgram,
@@ -42,12 +42,11 @@ const useTokenToOthersExchange = () => {
     const [isEstimatingGasFee, setIsEstimatingGasFee] = useState(false);
     const [direction, setDirection] = useState<'t2o' | 'o2t'>('t2o');
     const { membership, fetchMembership } = useMemberShip(defaultProgram?.currency.loyaltyCurrency);
-    const { Moralis } = useMoralis();
     const { run } = useCloud();
     const { presentFailure, presentSuccess } = useToast();
 
     const tokenQuantityInWei = useMemo(() => {
-        return Moralis.Units.Token(tokenQuantity ?? 0, 18);
+        return parseBlockchainValue(tokenQuantity ?? 0);
     }, [tokenQuantity])
 
     const { execute: transferToOwner, estimate, executing } = useBlockchainContractExecution();
@@ -222,9 +221,9 @@ const useTokenToOthersExchange = () => {
             })
     }
 
-    const tokensBalance = defaultERC20Asset ? parseFloat(Moralis.Units.FromWei(defaultERC20Asset?.balance, 18)) : 0;
+    const tokensBalance = defaultERC20Asset ? parseFloat(parseNumber(defaultERC20Asset?.balance)) : 0;
     const pointsBalance = membership?.balance ?? 0;
-    const nativeBalance = defaultNativeAsset ? parseFloat(Moralis.Units.FromWei(defaultNativeAsset?.balance, 18)) : 0;
+    const nativeBalance = defaultNativeAsset ? parseFloat(parseNumber(defaultNativeAsset?.balance)) : 0;
 
     const originBalance = useMemo(() => {
         if (direction === 't2o') {

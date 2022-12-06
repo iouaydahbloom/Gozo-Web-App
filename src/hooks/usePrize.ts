@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { cloudFunctionName } from "../moralis/cloudFunctionName";
+import { cloudFunctionName } from "../constants/cloudFunctionName";
 import useCloud from "./useCloud";
 import { PrizeDTO } from "../dto/PrizeDTO";
 import { WheelSegment } from "../models/wheelSegment";

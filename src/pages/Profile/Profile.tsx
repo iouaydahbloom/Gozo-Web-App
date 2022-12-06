@@ -15,6 +15,7 @@ import useToast from '../../hooks/useToast';
 import useTabMenuHidder from '../../hooks/useTabMenuHidder';
 import SecondaryInput from '../../components/inputs/SecondaryInput/SecondaryInput';
 import { Keyboard } from '@capacitor/keyboard';
+import PrimaryAccordion from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
 
 const Profile: React.FC = () => {
 
@@ -123,34 +124,42 @@ const Profile: React.FC = () => {
                             ) : null}
                         </FormField>
 
-                        {
-                            formManager.values.socialAccounts?.map((sa, index) => (
-                                <div>
-                                    <FormField className={styles.fieldWrapper}>
-                                        <PrimaryTypography size='m' customClassName={styles.label}>Username</PrimaryTypography>
-                                        <SecondaryInput
-                                            placeholder='Username'
-                                            name={`socialAccounts[${index}].username`}
-                                            onChange={formManager.handleChange}
-                                            value={sa.username ?? ''}
-                                            disabled
-                                        />
-                                    </FormField>
+                        <PrimaryAccordion
+                            type='primary'
+                            accordionItemData={formManager.values.socialAccounts ?
+                                formManager.values.socialAccounts.map((sa, index) => {
+                                    return {
+                                        icon: 'assets/icon/transaction-history.svg',
+                                        value: index.toString(),
+                                        label: 'Facebook',
+                                        content: (
+                                            <>
+                                                <FormField className={styles.fieldWrapper}>
+                                                    <PrimaryTypography size='m' customClassName={styles.label}>Username</PrimaryTypography>
+                                                    <SecondaryInput
+                                                        placeholder='Username'
+                                                        name={`socialAccounts[${index}].username`}
+                                                        onChange={formManager.handleChange}
+                                                        value={sa.username ?? ''}
+                                                        disabled
+                                                    />
+                                                </FormField>
 
-                                    <FormField className={styles.fieldWrapper}>
-                                        <PrimaryTypography size='m' customClassName={styles.label}>Profile Url</PrimaryTypography>
-                                        <SecondaryInput
-                                            placeholder='Profile Url'
-                                            name={`socialAccounts[${index}].profileUrl`}
-                                            onChange={formManager.handleChange}
-                                            value={sa.profileUrl ?? ''}
-                                            disabled
-                                        />
-                                    </FormField>
-                                </div>
-                            ))
-                        }
-
+                                                <FormField className={styles.fieldWrapper}>
+                                                    <PrimaryTypography size='m' customClassName={styles.label}>Username</PrimaryTypography>
+                                                    <SecondaryInput
+                                                        placeholder='Username'
+                                                        name={`socialAccounts[${index}].username`}
+                                                        onChange={formManager.handleChange}
+                                                        value={sa.username ?? ''}
+                                                        disabled
+                                                    />
+                                                </FormField>
+                                            </>
+                                        )
+                                    }
+                                }) : []}
+                        />
                         <div className={styles.buttonWrapper}>
                             <PrimaryButton
                                 size='m'

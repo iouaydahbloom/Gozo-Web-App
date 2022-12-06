@@ -28,6 +28,7 @@ const SwapPoints: React.FC = () => {
                             onSelectionChange={(value) => setOriginProgram({ ...originProgram, loyaltyCurrency: value })}
                             withAvailability
                             availability={originBalance}
+                            acceptedValue={!isDisabled}
                         />
                         :
                         <SwapField
@@ -41,6 +42,7 @@ const SwapPoints: React.FC = () => {
                             onSelectionChange={(value) => setOriginProgram({ ...originProgram, loyaltyCurrency: value })}
                             withAvailability
                             availability={originBalance}
+                            acceptedValue={!isDisabled}
                         />
                 }
                 <SwapDirection doubleDirection onClick={toggleDirection} />

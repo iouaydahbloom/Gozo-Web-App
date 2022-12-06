@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useMoralis, useMoralisWeb3Api } from 'react-moralis';
+import { useMoralis } from 'react-moralis';
 import { chainHex } from '../../helpers/networks';
 import MoralisDappContext, { ContractsMetadata } from './dappContext';
 import { ERC20Metadata } from '../../models/assets/ERC20Asset';
@@ -13,7 +13,6 @@ const DappProvider: React.FC = ({ children }) => {
   const { user } = useAuthentication();
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [defaultTokenMetadata, setDefaultTokenMetadata] = useState<ERC20Metadata | null>(null);
-  const Web3Api = useMoralisWeb3Api();
   const [isReady, setIsReady] = useState(false);
   const [contractsMetadata, setContractsMetadata] = useState<ContractsMetadata>({
     tokenContractAddress: '',
@@ -27,24 +26,14 @@ const DappProvider: React.FC = ({ children }) => {
   })
   const { run } = useCloud();
 
-  const getDefaultTokenMetadata = useCallback(async (tokenAddress: string) => {
-    const options = {
-      chain: chainHex.Fuji,
-      addresses: tokenAddress
-    };
-    return Web3Api.token
-      .getTokenMetadata(options as any)
-      .then(tokens => {
-        if (tokens && tokens[0]) {
-          setDefaultTokenMetadata(tokens[0]);
-          return tokens[0]
-        }
-
-        return null
-      })
-      .catch(error => {
-        console.log('Error: get default token metadata ', error);
-      })
+  const getDefaultTokenMetadata = useCallback(async () => {
+    return run(cloudFunctionName.tokenDefaultMetadata, null)
+      .then(result => {
+        if (!result.isSuccess) return null;
+        //@ts-ignore
+        setDefaultTokenMetadata(result.data);
+        return result.data;
+      });
   }, [])
 
   const getAppContractsMetadata = useCallback(async () => {
@@ -55,21 +44,19 @@ const DappProvider: React.FC = ({ children }) => {
   }, [])
 
   const initDapp = useCallback(async () => {
-    return getAppContractsMetadata()
-      .then(data => {
-        return data ?
-          getDefaultTokenMetadata(data.tokenContractAddress)
-            .then(() => true) :
-          false;
-      })
-      .then(success => {
-        setIsReady(success);
+    return Promise.all([
+      getDefaultTokenMetadata(),
+      getAppContractsMetadata()
+    ])
+      .then(result => {
+        if (result[0] && result[1]) {
+          setIsReady(true);
+        }
       })
   }, [])
 
   useEffect(() => {
     if (!isInitialized) return;
-
     initDapp();
   }, [isInitialized])
 

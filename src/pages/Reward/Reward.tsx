@@ -18,12 +18,12 @@ const earnData: AccordionItemData[] = [
 ]
 
 const Rewards: React.FC = () => {
-    const { fetchRewards, isLoadingRewards, rewards } = useReward()
+    const { getRewards, isLoadingRewards, rewards } = useReward()
     const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
 
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
-            fetchRewards()
+            getRewards()
         ])
     }, [])
 
@@ -42,7 +42,8 @@ const Rewards: React.FC = () => {
             <TertiaryHeader title='Rewards' className='ion-text-center' />
             <PrimaryContainer isRefreshable onRefresh={onRefresh}>
                 <ReferralBanner />
-                <Tabs domRef={(node: any) => setTabRef(node)}>
+                <Tabs
+                    domRef={(node: any) => setTabRef(node)}>
                     <TabList>
                         <Tab>History</Tab>
                         <Tab>Earn</Tab>

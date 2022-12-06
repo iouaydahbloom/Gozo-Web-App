@@ -9,7 +9,7 @@ interface Props<T, F extends Filter> {
 
 const useServerPagination = <T, F extends Filter>({
     getData,
-    intialFilters = new Filter(1, 100) as any
+    intialFilters = new Filter(1, 10) as any
 }: Props<T, F>) => {
 
     const [metadata, setMetadata] = useState<{ count: number, next: string, previous: string } | null>(null);

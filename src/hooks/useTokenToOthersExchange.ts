@@ -41,7 +41,7 @@ const useTokenToOthersExchange = () => {
     const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
     const [isEstimatingGasFee, setIsEstimatingGasFee] = useState(false);
     const [direction, setDirection] = useState<'t2o' | 'o2t'>('t2o');
-    const { membership } = useMemberShip(defaultProgram?.currency.loyaltyCurrency);
+    const { membership, fetchMembership } = useMemberShip(defaultProgram?.currency.loyaltyCurrency);
     const { Moralis } = useMoralis();
     const { run } = useCloud();
     const { presentFailure, presentSuccess } = useToast();
@@ -63,7 +63,10 @@ const useTokenToOthersExchange = () => {
             tokenContractAbi,
             'transferToOwner',
             [tokenQuantityInWei, selectedOthers.type],
-            () => presentSuccess('Exchanged successfully'),
+            () => {
+                fetchCryptoAssets();
+                presentSuccess('Exchanged successfully');
+            },
             (error) => presentFailure(error.message)
         );
     }, [tokenQuantity, selectedOthers.type])
@@ -190,8 +193,13 @@ const useTokenToOthersExchange = () => {
                     true
                 )
                     .then(result => {
-                        if (result.isSuccess) presentSuccess('Exchanged successfully');
-                        else presentFailure(result.message);
+                        if (result.isSuccess) {
+                            fetchCryptoAssets();
+                            presentSuccess('Exchanged successfully');
+                            return;
+                        }
+
+                        presentFailure(result.message);
                     })
             });
     }
@@ -204,27 +212,21 @@ const useTokenToOthersExchange = () => {
             true
         )
             .then(result => {
-                if (result.isSuccess) presentSuccess('Exchanged successfully');
-                else presentFailure(result.errors?.errors[0].message ?? result.message);
+                if (result.isSuccess) {
+                    fetchMembership();
+                    presentSuccess('Exchanged successfully');
+                    return;
+                }
+
+                presentFailure(result.errors?.errors[0].message ?? result.message);
             })
     }
 
-    const isDisabled = useMemo(() => {
-        if (direction === 't2o') {
-            if (!tokenQuantity) return true;
-            if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return false;
-            return (minimumValue && (tokenQuantity! < minimumValue)) || !tokenQuantity;
-        }
-
-        if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return !selectedOthers.quantity;
-        return (minimumValue && (selectedOthers?.quantity! < minimumValue)) || !selectedOthers?.quantity;
-    }, [tokenQuantity, selectedOthers, minimumValue])
-
     const tokensBalance = defaultERC20Asset ? parseFloat(Moralis.Units.FromWei(defaultERC20Asset?.balance, 18)) : 0;
-    const pointsBalance = membership?.balance;
+    const pointsBalance = membership?.balance ?? 0;
     const nativeBalance = defaultNativeAsset ? parseFloat(Moralis.Units.FromWei(defaultNativeAsset?.balance, 18)) : 0;
 
-    const displayedBalance = useMemo(() => {
+    const originBalance = useMemo(() => {
         if (direction === 't2o') {
             return tokensBalance
         }
@@ -235,6 +237,18 @@ const useTokenToOthersExchange = () => {
 
         return nativeBalance;
     }, [direction, selectedOthers.type, defaultNativeAsset?.balance, defaultERC20Asset?.balance, membership?.balance])
+
+    const isDisabled = useMemo(() => {
+        if (direction === 't2o') {
+            if (!tokenQuantity || tokenQuantity > originBalance) return true;
+            if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return false;
+            return (minimumValue && (tokenQuantity! < minimumValue)) || !tokenQuantity;
+        }
+
+        if (selectedOthers.quantity && selectedOthers.quantity > originBalance) return true;
+        if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return !selectedOthers.quantity;
+        return (minimumValue && (selectedOthers?.quantity! < minimumValue)) || !selectedOthers?.quantity;
+    }, [tokenQuantity, selectedOthers, minimumValue, originBalance])
 
     /**
      * Lifecycles events
@@ -250,11 +264,15 @@ const useTokenToOthersExchange = () => {
     useEffect(() => {
         if (!defaultProgram || !defaultNativeAsset) return;
         setOthersOptions([defaultProgram, defaultNativeAsset]);
-        setSelectedOthers({
-            id: defaultProgram.currency.loyaltyCurrency,
-            quantity: 0,
-            type: SwapPartyType.loyaltyProgram
-        });
+
+        if (!selectedOthers.id) {
+            setSelectedOthers({
+                id: defaultProgram.currency.loyaltyCurrency,
+                quantity: 0,
+                type: SwapPartyType.loyaltyProgram
+            });
+        }
+
     }, [defaultNativeAsset, defaultProgram])
 
     useEffect(() => {
@@ -311,7 +329,7 @@ const useTokenToOthersExchange = () => {
         estimatedGasFee,
         isEstimatingGasFee,
         isDisabled,
-        displayedBalance,
+        originBalance,
         setSelectedOthers,
         setTokenQuantity: setTokenQuantity,
         toggleDirection: () => setDirection(prev => prev === 't2o' ? 'o2t' : 't2o'),

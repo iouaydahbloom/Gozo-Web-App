@@ -33,5 +33,7 @@ export const cloudFunctionName = {
     minimumP2Texchange: 'minimum_p2t_exchange',
     web3Dependencies: 'web3_dependencies',
     nativeCurrency: 'native_currency',
-    tokenBalances: 'token_balances'
+    tokenBalances: 'token_balances',
+    tokenDefaultMetadata: 'default_token_metadata',
+    getTokenTransfers: 'token_transfers'
 }

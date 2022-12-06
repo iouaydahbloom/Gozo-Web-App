@@ -34,7 +34,7 @@ const useReward = () => {
 
     return {
         rewards,
-        fetchRewards,
+        getRewards,
         isLoadingRewards
     }
 }

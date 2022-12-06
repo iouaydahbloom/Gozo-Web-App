@@ -7,6 +7,7 @@ import useProgramsTransactionHistory from "../../hooks/useProgramsTransactionHis
 import { LoyaltyMemberHistory } from "../../models/loyaltyMember"
 import TransactionDetailItem from "../Common/TransactionDetailItem/TransactionDetailItem"
 import { useEffect } from "react"
+import { formatDate } from "../../helpers/dateManagment"
 
 
 const LoyaltyProgramHistoryDetails: React.FC = () => {
@@ -26,6 +27,19 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
     { key: 'type', label: 'Type' },
   ]
 
+  const transformData = (key: string, historyField: LoyaltyMemberHistory) => {
+    return key === 'amount' ?
+    LoyaltyMemberHistory.isBalanceSubtracted(historyField) ?
+      `- ${historyField[key as keyof LoyaltyMemberHistory]}`
+      :
+      `+ ${historyField[key as keyof LoyaltyMemberHistory]}`
+    :
+    (key === 'completed_at' || key === 'created_at') ?
+    formatDate(historyField[key as keyof LoyaltyMemberHistory], 'ddd Do MMM, YYYY h:mm a')
+    :
+    historyField[key as keyof LoyaltyMemberHistory]
+  }
+
   useEffect(() => {
     if(id) getTransaction(id)
   }, [id])
@@ -43,14 +57,7 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
             return <TransactionDetailItem
               key={index}
               header={keyObj?.label ?? ''}
-              text={key === 'amount' ?
-                LoyaltyMemberHistory.isBalanceSubtracted(historyField) ?
-                  `- ${historyField[key as keyof LoyaltyMemberHistory]}`
-                  :
-                  `+ ${historyField[key as keyof LoyaltyMemberHistory]}`
-                :
-                historyField[key as keyof LoyaltyMemberHistory]
-              }
+              text={transformData(key, historyField)}
               textColor={key === 'amount' ?
                 LoyaltyMemberHistory.isBalanceSubtracted(historyField) ? 'danger' : 'success'
                 :

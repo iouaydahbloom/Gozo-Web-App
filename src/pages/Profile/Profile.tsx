@@ -1,4 +1,4 @@
-import { IonPage } from '@ionic/react'
+import { IonPage, isPlatform } from '@ionic/react'
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import { FormField } from '../../components/forms/FormField/FormField';
 import SecondaryHeader from '../../components/headers/SecondaryHeader/SecondaryHeader';
@@ -39,6 +39,7 @@ const Profile: React.FC = () => {
         },
         onSubmit: (values) => {
             submitProfileDetails(new ProfileDetails(values.name, values.address))
+            if (isPlatform('mobileweb') || isPlatform('pwa')) return
             Keyboard.hide();
         }
     });

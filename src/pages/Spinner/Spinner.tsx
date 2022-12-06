@@ -26,6 +26,7 @@ import { informationCircleOutline } from 'ionicons/icons';
 import PrimaryPopover from '../../components/popovers/PrimaryPopover/PrimaryPopover';
 import { useDapp } from '../../providers/DappProvider/DappProvider';
 import useMessagesInterval from '../../hooks/useMessagesInterval';
+import { useHistory } from 'react-router';
 
 interface IPrize {
     prizeId: string,
@@ -33,6 +34,7 @@ interface IPrize {
 }
 
 const Spinner: React.FC = () => {
+    const history = useHistory()
     const search = useSearchParams();
     const {
         fetchProgram,
@@ -43,7 +45,8 @@ const Spinner: React.FC = () => {
     } = useLoyaltyPrograms();
     const { play, setIsPlaying, gameId, isPlaying } = usePlayGame();
     const { fetchPrizes, isLoadingPrizes } = usePrize();
-    const id = search.get('program_id')
+    var id = search ? search.get('program_id') : ''
+
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
     const [selectedPrizeId, setSelectedPrizeId] = useState<string>('')
     const [returnedPrize, setReturnedPrize] = useState<IPrize>()
@@ -117,6 +120,7 @@ const Spinner: React.FC = () => {
     }
 
     function getPrizes() {
+
         if (!loyaltyProgram) return
         fetchPrizes(loyaltyProgram.brand?.key ?? '')
             .then(prizes => {
@@ -196,7 +200,10 @@ const Spinner: React.FC = () => {
 
     const handleSelectedValue = (name: string) => {
         const lp = myLoyaltyPrograms.find(item => item?.currency?.loyaltyCurrencyName === name)
-        if (lp) setLoyaltyProgramId(lp?.currency?.programId)
+        if (lp) {
+            history.replace({search: (new URLSearchParams({program_id : lp?.currency?.programId})).toString()});
+            setLoyaltyProgramId(lp?.currency?.programId)
+        }
     }
 
     useEffect(() => {
@@ -232,7 +239,7 @@ const Spinner: React.FC = () => {
         setIsPlaying(false)
     })
 
-    useEffect(() => {
+    useIonViewWillEnter(() => {
         if (defaultProgram) getMyPrograms();
     }, [defaultProgram])
 

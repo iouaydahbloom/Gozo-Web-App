@@ -1,5 +1,5 @@
 export interface BrandDTO {
-        key: string,
+        brandKey: string,
         name: string,
         logoUrl: string,
         color: string,

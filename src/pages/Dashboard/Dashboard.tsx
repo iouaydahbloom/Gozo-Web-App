@@ -32,6 +32,7 @@ const Dashboard: React.FC = () => {
     }, [])
 
     const getPrograms = useCallback(async () => {
+        setLoyaltyPrograms([])
         const programs = await fetchMyLoyaltyPrograms();
         setLoyaltyPrograms(programs);
         return programs;

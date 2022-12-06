@@ -25,7 +25,6 @@ const CryptoHistory: React.FC<Props> = ({ isLoading, eRC20Transfers }) => {
             <SectionPlaceholder
                 description='You have no past transaction details here yet'
                 logoUrl='assets/image/no-transactions.svg'
-                renderActions={() => <PrimaryButton onClick={() => push(AppRoutes.spinner)}>play now</PrimaryButton>}
             />
         )
     }
@@ -37,25 +36,25 @@ const CryptoHistory: React.FC<Props> = ({ isLoading, eRC20Transfers }) => {
                 data={eRC20Transfers?.map(transfer => {
                     transfer = { ...transfer, value: Moralis.Units.FromWei(transfer.value, 18) }
                     return {
-                        date: formatDate(transfer.block_timestamp),
-                        from: walletAddress === transfer.from_address ?
+                        date: formatDate(transfer.blockTimestamp),
+                        from: walletAddress === transfer.fromAddress ?
                             <PrimaryTypography color='danger'>
-                                {transfer.from_address}
+                                {transfer.fromAddress}
                             </PrimaryTypography>
                             :
-                            transfer.from_address,
-                        to: walletAddress === transfer.to_address ?
+                            transfer.fromAddress,
+                        to: walletAddress === transfer.toAddress ?
                             <PrimaryTypography color='success'>
-                                {transfer.to_address}
+                                {transfer.toAddress}
                             </PrimaryTypography>
                             :
-                            transfer.to_address,
+                            transfer.toAddress,
                         amount: transfer.value,
                         onClick: () => push(AppRoutes.tokenHistoryDetails, transfer)
                     }
                 })}
                 isLoading={isLoading}
-                placeholder={<Placeholder/>}
+                placeholder={<Placeholder />}
             />
         </div>
     )

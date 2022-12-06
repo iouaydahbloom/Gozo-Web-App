@@ -4,6 +4,7 @@ import { useLocation } from "react-router"
 import SecondaryHeader from "../../components/headers/SecondaryHeader/SecondaryHeader"
 import PrimaryContainer from "../../components/layout/PrimaryContainer/PrimaryContainer"
 import PageLoader from "../../components/loaders/PageLoader/PageLoader"
+import { formatDate } from "../../helpers/dateManagment"
 import { ERC20Transfer } from "../../models/assets/ERC20Transfer"
 import { useDapp } from "../../providers/DappProvider/DappProvider"
 import TransactionDetailItem from "../Common/TransactionDetailItem/TransactionDetailItem"
@@ -18,15 +19,22 @@ const TokenHistoryDetails: React.FC = () => {
 
   const keys = [
     {key: 'address', label: 'Address'},
-    {key: 'block_hash', label: 'Block Hash'},
-    {key: 'block_number', label: 'Block Number'},
-    {key: 'block_timestamp', label: 'Block Timestamp'},
-    {key: 'from_address', label: 'From Address'},
-    {key: 'from_address', label: 'From Address'},
-    {key: 'to_address', label: 'To Address'},
-    {key: 'transaction_hash', label: 'Transaction Hash'},
+    {key: 'blockHash', label: 'Block Hash'},
+    {key: 'blockNumber', label: 'Block Number'},
+    {key: 'blockTimestamp', label: 'Block Timestamp'},
+    {key: 'fromAddress', label: 'From Address'},
+    {key: 'fromAddress', label: 'From Address'},
+    {key: 'toAddress', label: 'To Address'},
+    {key: 'transactionHash', label: 'Transaction Hash'},
     {key: 'value', label: 'amount'},
   ]
+
+  const transformData = (key: string, historyField: ERC20Transfer) => {
+    return key === 'blockTimestamp' ?
+    formatDate(historyField[key as keyof ERC20Transfer], 'ddd Do MMM, YYYY h:mm a')
+    :
+    historyField[key as keyof ERC20Transfer]
+  }
 
   useIonViewWillEnter(() => {
     setHistoryField(transaction)
@@ -49,7 +57,7 @@ const TokenHistoryDetails: React.FC = () => {
             return <TransactionDetailItem
               key={index} 
               header={keyObj?.label ?? ''} 
-              text={historyField[key as keyof ERC20Transfer]} 
+              text={transformData(key, historyField)} 
               textColor={
                 (key === 'from_address' && walletAddress === historyField[key as keyof ERC20Transfer]) ?
                 'danger'

@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { ProfileDetailsDTO } from "../dto/ProfileDetailsDTO";
-import { ProfileDetails } from "../models/profileDetails";
+import { ProfileDetails, ProfileSocialAccount } from "../models/profileDetails";
 import { cloudFunctionName } from "../constants/cloudFunctionName";
+import { SocialAccountTypeDTO } from "../dto/socialAccountTypeDTO";
+import { SocialAccountType } from "../models/socialAccountType";
 import useCloud from "./useCloud";
 
 const useProfile = () => {
-    const [profileDetails, setProfileDetails] = useState<ProfileDetails>()
+
+    const [profileDetails, setProfileDetails] = useState<ProfileDetails>();
     const [isLoading, setIsLoading] = useState(false);
     const { run } = useCloud();
 
-    async function fetchProfileDetails() {
-        setIsLoading(true)
+    async function getProfileDetails() {
         return run(
             cloudFunctionName.profileDetails,
             null,
@@ -20,33 +22,62 @@ const useProfile = () => {
             .then(result => {
                 if (result.isSuccess) return result.data
             })
-            .finally(() => setIsLoading(false))
+    }
+
+    async function getSocialAccountTypes() {
+        return run(
+            cloudFunctionName.socialAccountTypes,
+            null,
+            (res: SocialAccountTypeDTO[]) => res.map(sat => SocialAccountType.getFromDTO(sat))
+        )
+            .then(result => {
+                if (result.isSuccess) return result.data
+            })
     }
 
     async function updateProfileDetails(user: ProfileDetails) {
         setIsLoading(true)
         return run(
             cloudFunctionName.updateProfileDetails,
-            {
-                user: user.toDTO()
-            },
+            { user: user.toDTO() },
             (result: ProfileDetailsDTO) => ProfileDetails.getFromDTO(result),
             true
         )
-            .then(result => {
-                return result
-            })
             .finally(() => setIsLoading(false))
     }
 
+    function buildProfileWithSocialAccounts(profileInfo?: ProfileDetails, socialAccountTypes?: SocialAccountType[]) {
+        if (profileInfo && socialAccountTypes) {
+            const socialAccounts = socialAccountTypes.map(sat => {
+                const socialAccount = profileInfo?.socialAccounts?.find(sa => sa.type == sat.key);
+                if (socialAccount) return socialAccount;
+
+                return ProfileSocialAccount.init(sat);
+            })
+
+            profileInfo.socialAccounts = socialAccounts;
+        }
+
+        return profileInfo;
+    }
+
     useEffect(() => {
-        fetchProfileDetails().then(details => {
-            if (details) setProfileDetails(details)
-        })
+        setIsLoading(true);
+        Promise.all([
+            getProfileDetails(),
+            getSocialAccountTypes()
+        ])
+            .then(result => {
+                let profile = result[0];
+                const socialAccountTypes = result[1];
+                profile = buildProfileWithSocialAccounts(profile, socialAccountTypes);
+                setProfileDetails(profile);
+            })
+            .finally(() => setIsLoading(false));
     }, [])
 
     return {
-        fetchProfileDetails,
+        fetchProfileDetails: getProfileDetails,
         updateProfileDetails,
         profileDetails,
         isLoading

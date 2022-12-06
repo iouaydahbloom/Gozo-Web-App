@@ -18,12 +18,17 @@ import { Keyboard } from '@capacitor/keyboard';
 
 const Profile: React.FC = () => {
 
-    const { profileDetails, updateProfileDetails, isLoading } = useProfile()
-    const { presentSuccess, presentFailure } = useToast()
+    const { profileDetails, updateProfileDetails, isLoading } = useProfile();
+    const { presentSuccess, presentFailure } = useToast();
     useTabMenuHidder();
 
     const formManager = useFormik({
-        initialValues: new ProfileDetails(profileDetails?.name ?? '', profileDetails?.address ?? '', profileDetails?.email, profileDetails?.walletAddress),
+        initialValues: new ProfileDetails(
+            profileDetails?.name ?? '',
+            profileDetails?.address ?? '',
+            profileDetails?.email,
+            profileDetails?.walletAddress,
+            profileDetails?.socialAccounts),
         enableReinitialize: true,
         validate: (values) => {
             const errors: any = {};
@@ -57,80 +62,110 @@ const Profile: React.FC = () => {
                 title='Profile Details' />
             <PrimaryContainer className={styles.container}>
                 {!isLoading ?
-                        <form
+                    <form
+                        className={`${styles.form} ion-padding`}
+                        onSubmit={formManager.handleSubmit}
+                        onKeyDown={(event) =>
+                            FormHelper.handleKeyDown(event, formManager.handleSubmit)
+                        }>
+                        <FormField>
+                            <PrimaryTypography size='m' customClassName={styles.label}>Name</PrimaryTypography>
+                            <SecondaryInput
+                                placeholder='Please enter your name'
+                                name="name"
+                                onChange={formManager.handleChange}
+                                value={formManager.values.name}
+                            />
+                            {formManager.touched.name && formManager.errors.name ? (
+                                <InputError error={formManager.errors.name} />
+                            ) : null}
+                        </FormField>
 
-                            className={`${styles.form} ion-padding`}
-                            onSubmit={formManager.handleSubmit}
-                            onKeyDown={(event) =>
-                                FormHelper.handleKeyDown(event, formManager.handleSubmit)
-                            }
-                        >
-                            <FormField>
-                                <PrimaryTypography size='m' customClassName={styles.label}>Name</PrimaryTypography>
-                                <SecondaryInput
-                                    placeholder='Please enter your name'
-                                    name="name"
-                                    onChange={formManager.handleChange}
-                                    value={formManager.values.name}
-                                />
-                                {formManager.touched.name && formManager.errors.name ? (
-                                    <InputError error={formManager.errors.name} />
-                                ) : null}
-                            </FormField>
+                        <FormField>
+                            <PrimaryTypography size='m' customClassName={styles.label}>Address</PrimaryTypography>
+                            <SecondaryInput
+                                placeholder='Please enter your address'
+                                name="address"
+                                onChange={formManager.handleChange}
+                                value={formManager.values.address}
+                            />
+                            {formManager.touched.address && formManager.errors.address ? (
+                                <InputError error={formManager.errors.address} />
+                            ) : null}
+                        </FormField>
 
-                            <FormField>
-                                <PrimaryTypography size='m' customClassName={styles.label}>Address</PrimaryTypography>
-                                <SecondaryInput
-                                    placeholder='Please enter your address'
-                                    name="address"
-                                    onChange={formManager.handleChange}
-                                    value={formManager.values.address}
-                                />
-                                {formManager.touched.address && formManager.errors.address ? (
-                                    <InputError error={formManager.errors.address} />
-                                ) : null}
-                            </FormField>
+                        <FormField>
+                            <PrimaryTypography size='m' customClassName={styles.label}>Email</PrimaryTypography>
+                            <SecondaryInput
+                                placeholder='Email'
+                                name="email"
+                                onChange={formManager.handleChange}
+                                value={formManager.values.email ?? ''}
+                                disabled
+                            />
+                            {formManager.touched.email && formManager.errors.email ? (
+                                <InputError error={formManager.errors.email} />
+                            ) : null}
+                        </FormField>
 
-                            <FormField>
-                                <PrimaryTypography size='m' customClassName={styles.label}>Email</PrimaryTypography>
-                                <SecondaryInput
-                                    placeholder='Email'
-                                    name="email"
-                                    onChange={formManager.handleChange}
-                                    value={formManager.values.email ?? ''}
-                                    disabled
-                                />
-                                {formManager.touched.email && formManager.errors.email ? (
-                                    <InputError error={formManager.errors.email} />
-                                ) : null}
-                            </FormField>
+                        <FormField className={styles.fieldWrapper}>
+                            <PrimaryTypography size='m' customClassName={styles.label}>Wallet Address</PrimaryTypography>
+                            <SecondaryInput
+                                placeholder='Wallet address'
+                                name="walletAddress"
+                                onChange={formManager.handleChange}
+                                value={formManager.values.walletAddress ?? ''}
+                                disabled
+                            />
+                            {formManager.touched.walletAddress && formManager.errors.walletAddress ? (
+                                <InputError error={formManager.errors.walletAddress} />
+                            ) : null}
+                        </FormField>
 
-                            <FormField className={styles.fieldWrapper}>
-                                <PrimaryTypography size='m' customClassName={styles.label}>Wallet Address</PrimaryTypography>
-                                <SecondaryInput
-                                    placeholder='Wallet address'
-                                    name="walletAddress"
-                                    onChange={formManager.handleChange}
-                                    value={formManager.values.walletAddress ?? ''}
-                                    disabled
-                                />
-                                {formManager.touched.walletAddress && formManager.errors.walletAddress ? (
-                                    <InputError error={formManager.errors.walletAddress} />
-                                ) : null}
-                            </FormField>
-                            <div className={styles.buttonWrapper}>
-                                <PrimaryButton
-                                    size='m'
-                                    expand='block'
-                                    onClick={() => {
-                                        formManager.submitForm();
-                                    }}
-                                    loading={isLoading}
-                                >
-                                    Save
-                                </PrimaryButton>
-                            </div>
-                        </form>
+                        {
+                            formManager.values.socialAccounts?.map((sa, index) => (
+                                <div>
+                                    <FormField className={styles.fieldWrapper}>
+                                        <PrimaryTypography size='m' customClassName={styles.label}>Username</PrimaryTypography>
+                                        <SecondaryInput
+                                            placeholder='Username'
+                                            name={`socialAccounts[${index}].username`}
+                                            onChange={formManager.handleChange}
+                                            value={sa.username ?? ''}
+                                            disabled
+                                        />
+                                        {formManager.touched.socialAccounts && formManager.errors.socialAccounts ? (
+                                            <InputError error={formManager.errors.socialAccounts} />
+                                        ) : null}
+                                    </FormField>
+
+                                    <FormField className={styles.fieldWrapper}>
+                                        <PrimaryTypography size='m' customClassName={styles.label}>Profile Url</PrimaryTypography>
+                                        <SecondaryInput
+                                            placeholder='Profile Url'
+                                            name={`socialAccounts[${index}].profileUrl`}
+                                            onChange={formManager.handleChange}
+                                            value={sa.profileUrl ?? ''}
+                                            disabled
+                                        />
+                                        {formManager.touched.socialAccounts && formManager.errors.socialAccounts ? (
+                                            <InputError error={formManager.errors.socialAccounts} />
+                                        ) : null}
+                                    </FormField>
+                                </div>
+                            ))
+                        }
+
+                        <div className={styles.buttonWrapper}>
+                            <PrimaryButton
+                                size='m'
+                                expand='block'
+                                onClick={() => formManager.submitForm()}
+                                loading={isLoading}>
+                                Save
+                            </PrimaryButton>
+                        </div>
+                    </form>
                     :
                     <PageLoader />}
             </PrimaryContainer>

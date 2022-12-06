@@ -48,11 +48,11 @@ const useProfile = () => {
 
     function buildProfileWithSocialAccounts(profileInfo?: ProfileDetails, socialAccountTypes?: SocialAccountType[]) {
         if (profileInfo && socialAccountTypes) {
-            const socialAccounts = socialAccountTypes.map(sat => {
-                const socialAccount = profileInfo?.socialAccounts?.find(sa => sa.type == sat.key);
+            const socialAccounts = socialAccountTypes.map(socialAccountType => {
+                const socialAccount = profileInfo?.socialAccounts?.find(socialAccount => socialAccount.type === socialAccountType.key);
                 if (socialAccount) return socialAccount;
 
-                return ProfileSocialAccount.init(sat);
+                return ProfileSocialAccount.init(socialAccountType);
             })
 
             profileInfo.socialAccounts = socialAccounts;

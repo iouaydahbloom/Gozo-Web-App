@@ -26,8 +26,6 @@ export class ProfileDetails implements AppModel {
         return {
             name: this.name,
             address: this.address,
-            email: this.email,
-            ethAddress: this.walletAddress,
             socialAccounts: this.socialAccounts?.map(sa => sa.toDTO())
         }
     }

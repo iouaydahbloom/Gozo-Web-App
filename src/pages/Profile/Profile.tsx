@@ -36,6 +36,7 @@ const Profile: React.FC = () => {
             if (!FormValidator.hasValue(values.address)) {
                 errors.address = "Address is required";
             }
+
             if (!FormValidator.hasValue(values.name)) {
                 errors.name = "Name is required";
             }
@@ -134,9 +135,6 @@ const Profile: React.FC = () => {
                                             value={sa.username ?? ''}
                                             disabled
                                         />
-                                        {formManager.touched.socialAccounts && formManager.errors.socialAccounts ? (
-                                            <InputError error={formManager.errors.socialAccounts} />
-                                        ) : null}
                                     </FormField>
 
                                     <FormField className={styles.fieldWrapper}>
@@ -148,9 +146,6 @@ const Profile: React.FC = () => {
                                             value={sa.profileUrl ?? ''}
                                             disabled
                                         />
-                                        {formManager.touched.socialAccounts && formManager.errors.socialAccounts ? (
-                                            <InputError error={formManager.errors.socialAccounts} />
-                                        ) : null}
                                     </FormField>
                                 </div>
                             ))

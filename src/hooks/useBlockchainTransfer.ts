@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useMoralis } from 'react-moralis';
 import { useDapp } from '../providers/DappProvider/DappProvider';
 import useBlockchainContractExecution from './useBlockchainContractExecution';
 import useToast from './useToast';
 import { ethers } from 'ethers';
+import { parseBlockchainValue } from '../helpers/blockchainHelper';
 
 const useBlockchainTransfer = () => {
 
-    const { Moralis } = useMoralis();
     const { execute, estimate, executing, signer } = useBlockchainContractExecution();
     const { presentSuccess } = useToast();
     const [transferFee, setTransferFee] = useState<number>();
@@ -38,7 +37,7 @@ const useBlockchainTransfer = () => {
         tokenContractAddress,
         tokenContractAbi,
         'transfer',
-        [receiver, amount !== "" ? Moralis.Units.Token(amount) : 0],
+        [receiver, amount !== "" ? parseBlockchainValue(amount) : 0],
         () => presentSuccess('Successfully Transfered'),
         (error) => setError(error.message)
     ), [])

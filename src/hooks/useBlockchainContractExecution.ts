@@ -4,10 +4,10 @@ import { useState } from "react";
 import { appConfig } from "../constants/appConfig";
 import { useIonViewDidLeave } from "@ionic/react";
 import { useDapp } from "../providers/DappProvider/DappProvider";
-import { useMoralis } from "react-moralis";
 import useConfirmation from "./useConfirmation";
 import useToast from "./useToast";
 import useMetaTransactions from "./useMetaTransactions";
+import { parseBlockchainValue } from "../helpers/blockchainHelper";
 
 const useBlockchainContractExecution = () => {
 
@@ -15,7 +15,6 @@ const useBlockchainContractExecution = () => {
     const { rpcProvider, getProviderSigner } = useMagicAuth();
     const [executing, setExecuting] = useState(false);
     const [contracts, setContracts] = useState<ethers.Contract[]>([]);
-    const { Moralis } = useMoralis();
     const { confirm } = useConfirmation();
     const { presentInfo } = useToast();
     const { signMetaTxRequest } = useMetaTransactions();
@@ -74,7 +73,7 @@ const useBlockchainContractExecution = () => {
             tokenContractAddress,
             tokenContractAbi,
             'approve',
-            [relayerContractAddress, Moralis.Units.Token(fees, 18)],
+            [relayerContractAddress, parseBlockchainValue(fees)],
             false,
             true
         );

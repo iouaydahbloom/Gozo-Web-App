@@ -20,7 +20,7 @@ export interface ContractsMetadata {
     botWalletAddress: string
 }
 
-const dapContext = React.createContext<Prop>({
+const dappContext = React.createContext<Prop>({
     chainId: chainHex.Fuji,
     defaultTokenMetadata: null,
     walletAddress: null,
@@ -36,4 +36,4 @@ const dapContext = React.createContext<Prop>({
     refresh: () => Promise.resolve()
 });
 
-export default dapContext;
+export default dappContext;

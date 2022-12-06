@@ -1,11 +1,11 @@
 import { IonIcon } from "@ionic/react";
 import { arrowDownOutline, arrowUpOutline, swapHorizontalOutline } from "ionicons/icons";
 import { useCallback, useContext } from "react";
-import { useMoralis } from "react-moralis";
 import PrimaryButtonsGroup from "../../../components/buttons/PrimaryButtonsGroup/PrimaryButtonsGroup";
 import SectionLoader from "../../../components/loaders/section-loader/SectionLoader";
 import PrimaryTypography from "../../../components/typography/PrimaryTypography/PrimaryTypography";
 import { AssetMode } from "../../../constants/assetsMode";
+import { parseNumber } from "../../../helpers/blockchainHelper";
 import usePrimarySheet from "../../../hooks/usePrimarySheet";
 import { ERC20Asset } from "../../../models/assets/ERC20Asset";
 import { NativeAsset } from "../../../models/assets/NativeAsset";
@@ -25,8 +25,7 @@ interface Props {
 
 const CryptoTokens: React.FC<Props> = ({ assets = [], getAssets, refreshDefaultToken, isLoading }) => {
 
-    const { Moralis } = useMoralis();
-    const {tabHeaderHeight} = useContext(TabHeaderHeightContext)
+    const { tabHeaderHeight } = useContext(TabHeaderHeightContext)
     const { showModal: showSwap } = usePrimarySheet({
         title: 'Swap',
         component: Swap,
@@ -60,7 +59,7 @@ const CryptoTokens: React.FC<Props> = ({ assets = [], getAssets, refreshDefaultT
                 <CryptoTokenItem
                     name={item.name}
                     logo={item.logo ?? ''}
-                    balance={parseFloat(Moralis.Units.FromWei(item.balance, parseInt(item.decimals)))}
+                    balance={parseFloat(parseNumber(item.balance))}
                     symbol={item.symbol}
                 />
             </div>
@@ -69,7 +68,7 @@ const CryptoTokens: React.FC<Props> = ({ assets = [], getAssets, refreshDefaultT
 
     return (
         <div className={styles.container}>
-            <div className={styles.actions} style={{top: tabHeaderHeight}}>
+            <div className={styles.actions} style={{ top: tabHeaderHeight }}>
                 <PrimaryButtonsGroup
                     buttons={[
                         { title: 'Send', icon: <IonIcon icon={arrowUpOutline} />, onClick: showSendToken },

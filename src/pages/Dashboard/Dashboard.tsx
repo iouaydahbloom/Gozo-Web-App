@@ -11,10 +11,10 @@ import { AssetMode } from '../../constants/assetsMode';
 import useOnBoardingPreview from '../../hooks/useOnBoardingPreview';
 import useCryptoAssets from '../../hooks/useCryptoAssets';
 import { currencySettingsContext } from '../../providers/CurrencySettingsProvider/currencySettingsContext';
-import { useMoralis } from 'react-moralis';
 import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
 import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
 import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
+import { parseNumber } from '../../helpers/blockchainHelper';
 
 const Dashboard: React.FC = () => {
 
@@ -25,7 +25,6 @@ const Dashboard: React.FC = () => {
     const { assets: cryptoAssets, fetchCryptoAssets, defaultERC20Asset, isLoadingAssets } = useCryptoAssets();
     const { gozoLoyaltyMembership, fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [highlightedAsset, setHighlightedAsset] = useState<HighlightedBalanceAsset>();
-    const { Moralis } = useMoralis();
     const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
     const onSelect = useCallback((tabIndex: number) => {
         setMode(tabIndex === 0 ? AssetMode.loyaltyPoint : AssetMode.token);
@@ -58,7 +57,7 @@ const Dashboard: React.FC = () => {
         if (mode === AssetMode.token) {
             setHighlightedAsset({
                 balance: defaultERC20Asset ?
-                    parseInt(Moralis.Units.FromWei(defaultERC20Asset.balance, parseInt(defaultERC20Asset.decimals))) :
+                    parseInt(parseNumber(defaultERC20Asset.balance)) :
                     0,
                 description: 'Gozo Tokens'
             });
@@ -88,7 +87,7 @@ const Dashboard: React.FC = () => {
     return (
         <IonPage>
             <PrimaryContainer isRefreshable onRefresh={onRefresh}>
-                <HighlightedBalance  asset={highlightedAsset} />
+                <HighlightedBalance asset={highlightedAsset} />
                 <Tabs domRef={(node: any) => setTabRef(node)} onSelect={onSelect}>
                     <TabList >
                         <Tab >Loyalty Programs</Tab>

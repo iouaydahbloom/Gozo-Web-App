@@ -1,10 +1,9 @@
-import { useMoralis } from "react-moralis";
 import { useHistory } from "react-router";
-import PrimaryButton from "../../../components/buttons/PrimaryButton/PrimaryButton";
 import PrimaryGrid from "../../../components/grids/PrimaryGrid/PrimaryGrid";
 import SectionPlaceholder from "../../../components/sections/SectionPlaceholder/SectionPlaceholder";
 import PrimaryTypography from "../../../components/typography/PrimaryTypography/PrimaryTypography";
 import { AppRoutes } from "../../../constants/appRoutes";
+import { parseNumber } from "../../../helpers/blockchainHelper";
 import { formatDate } from "../../../helpers/dateManagment";
 import { ERC20Transfer } from "../../../models/assets/ERC20Transfer";
 import { useDapp } from "../../../providers/DappProvider/DappProvider";
@@ -16,7 +15,7 @@ interface Props {
 }
 
 const CryptoHistory: React.FC<Props> = ({ isLoading, eRC20Transfers }) => {
-    const { Moralis } = useMoralis();
+
     const { push } = useHistory();
     const { walletAddress } = useDapp();
 
@@ -34,7 +33,7 @@ const CryptoHistory: React.FC<Props> = ({ isLoading, eRC20Transfers }) => {
             <PrimaryGrid
                 headers={['Date', 'From', 'To', 'Amount']}
                 data={eRC20Transfers?.map(transfer => {
-                    transfer = { ...transfer, value: Moralis.Units.FromWei(transfer.value, 18) }
+                    transfer = { ...transfer, value: parseNumber(transfer.value) }
                     return {
                         date: formatDate(transfer.blockTimestamp),
                         from: walletAddress === transfer.fromAddress ?

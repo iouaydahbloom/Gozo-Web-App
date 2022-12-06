@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { ERC20AssetDTO, NativeAssetDTO } from "../dto/cryptoDTO";
 import { ERC20Asset } from "../models/assets/ERC20Asset";
 import { NativeAsset } from "../models/assets/NativeAsset";
-import { cloudFunctionName } from "../moralis/cloudFunctionName";
+import { cloudFunctionName } from "../constants/cloudFunctionName";
 import { useDapp } from "../providers/DappProvider/DappProvider";
 import useCloud from "./useCloud";
 

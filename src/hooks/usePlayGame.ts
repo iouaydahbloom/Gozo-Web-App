@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { cloudFunctionName } from "../moralis/cloudFunctionName";
+import { cloudFunctionName } from "../constants/cloudFunctionName";
 import useCloud from "./useCloud";
 import { useDapp } from "../providers/DappProvider/DappProvider";
 import useToast from "./useToast";

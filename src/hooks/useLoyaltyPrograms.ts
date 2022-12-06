@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { LoyaltyProgramDTO, UserLoyaltyProgramDTO } from "../dto/loyaltyProgramDTO";
 import { LoyaltyProgram, UserLoyaltyProgram } from "../models/loyaltyProgram";
 import { Pagination } from "../models/data/pagination";
-import { cloudFunctionName } from "../moralis/cloudFunctionName";
+import { cloudFunctionName } from "../constants/cloudFunctionName";
 import { currencySettingsContext } from "../providers/CurrencySettingsProvider/currencySettingsContext";
 import useCloud from "./useCloud";
 import { ProgramFilter } from "../models/data/filter";

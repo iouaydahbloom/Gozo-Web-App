@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { cloudFunctionName } from "../moralis/cloudFunctionName";
+import { cloudFunctionName } from "../constants/cloudFunctionName";
 import useCloud from "./useCloud";
 import { Reward } from "../models/reward";
 import { RewardDTO } from "../dto/RewardDTO";

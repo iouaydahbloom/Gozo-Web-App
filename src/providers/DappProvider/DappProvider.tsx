@@ -1,15 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useMoralis } from 'react-moralis';
 import { chainHex } from '../../helpers/networks';
-import MoralisDappContext, { ContractsMetadata } from './dappContext';
+import dappContext, { ContractsMetadata } from './dappContext';
 import { ERC20Metadata } from '../../models/assets/ERC20Asset';
 import useAuthentication from '../../hooks/useAuthentication';
-import dapContext from './dappContext';
 import useCloud from '../../hooks/useCloud';
-import { cloudFunctionName } from '../../moralis/cloudFunctionName';
+import { cloudFunctionName } from '../../constants/cloudFunctionName';
 
 const DappProvider: React.FC = ({ children }) => {
-  const { isInitialized } = useMoralis();
   const { user } = useAuthentication();
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [defaultTokenMetadata, setDefaultTokenMetadata] = useState<ERC20Metadata | null>(null);
@@ -56,16 +53,15 @@ const DappProvider: React.FC = ({ children }) => {
   }, [])
 
   useEffect(() => {
-    if (!isInitialized) return;
     initDapp();
-  }, [isInitialized])
+  }, [])
 
   useEffect(() => {
     setWalletAddress(user?.walletAddress ?? null)
   }, [user?.walletAddress])
 
   return (
-    <dapContext.Provider
+    <dappContext.Provider
       value={{
         walletAddress,
         chainId: chainHex.Fuji,
@@ -82,12 +78,12 @@ const DappProvider: React.FC = ({ children }) => {
         refresh: initDapp
       }}>
       {children}
-    </dapContext.Provider>
+    </dappContext.Provider>
   )
 }
 
 function useDapp() {
-  const context = React.useContext(MoralisDappContext);
+  const context = React.useContext(dappContext);
   if (context === undefined) {
     throw new Error('useDapp must be used within a DappProvider');
   }

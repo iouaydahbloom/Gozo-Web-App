@@ -1,5 +1,5 @@
-import { useMoralis } from 'react-moralis';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
+import { parseNumber } from '../../../../helpers/blockchainHelper';
 import { getEllipsisTxt } from '../../../../helpers/formatters';
 import styles from './cryptoHistoryItem.module.scss';
 
@@ -9,8 +9,6 @@ interface Props {
 }
 
 const CryptoHistoryItem: React.FC<Props> = ({ amount, transactionHash }) => {
-
-    const { Moralis } = useMoralis();
 
     return (
         <div className={styles.itemContainer}>
@@ -25,7 +23,7 @@ const CryptoHistoryItem: React.FC<Props> = ({ amount, transactionHash }) => {
                 <div
                     style={{ flex: 1, justifyContent: "center", alignItems: "flex-end" }}>
                     <PrimaryTypography>
-                        {parseFloat(Moralis.Units.FromWei(amount, 18)).toFixed(3)}
+                        {parseFloat(parseNumber(amount)).toFixed(3)}
                     </PrimaryTypography>
                 </div>
             </div>

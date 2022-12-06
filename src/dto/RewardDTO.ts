@@ -1,9 +1,10 @@
+import { PrizeDTO } from "./PrizeDTO";
+
 export interface RewardDTO {
-    name: string,
-    description: string,
     _id: string,
-    date: string,
-    logoUrl: string
-}
+    createdAt: string,
+    status: string,
+    prize: PrizeDTO
+} 
 
 

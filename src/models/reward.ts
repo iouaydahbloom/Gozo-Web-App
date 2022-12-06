@@ -1,5 +1,6 @@
 import { RewardDTO } from "../dto/RewardDTO";
 import AppModel from "./appModel";
+import { Prize } from "./prize";
 
 
 export class Reward implements AppModel {
@@ -7,11 +8,13 @@ export class Reward implements AppModel {
         public id: string,
         public name: string,
         public date: string,
+        public status: string,
         public icon?: string
         ) { }
 
-    static getFromDTO(dto: RewardDTO[]): Reward[] {
-        return dto.map(item => (new Reward(item._id, item.description, item.date, item.logoUrl)))
+    static getFromDTO(dto: RewardDTO): Reward {
+        const prize = Prize.getFromDTO(dto.prize)
+        return new Reward(dto._id, prize.description, dto.createdAt, dto.status, prize.icon)
     }
 
     toDTO() { }

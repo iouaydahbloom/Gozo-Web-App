@@ -29,7 +29,7 @@ const useProfile = () => {
         return run(
             cloudFunctionName.socialAccountTypes,
             null,
-            (res: SocialAccountTypeDTO[]) => res.map(sat => SocialAccountType.getFromDTO(sat))
+            (res: SocialAccountTypeDTO[]) => res.map(socialAccountType => SocialAccountType.getFromDTO(socialAccountType))
         )
             .then(result => {
                 if (result.isSuccess) return result.data

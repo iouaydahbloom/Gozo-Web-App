@@ -125,11 +125,11 @@ const Profile: React.FC = () => {
                     <PrimaryAccordion
                         style='primary'
                         accordionItemData={formManager.values.socialAccounts ?
-                            formManager.values.socialAccounts.map((sa, index) => {
+                            formManager.values.socialAccounts.map((socialAccount, index) => {
                                 return {
-                                    icon: socialAccountTypes?.find(sat => sat.key === sa.type)!.logoUrl!,
+                                    icon: socialAccountTypes?.find(socialAccountType => socialAccountType.key === socialAccount.type)!.logoUrl!,
                                     value: index.toString(),
-                                    label: socialAccountTypes?.find(sat => sat.key === sa.type)!.name!,
+                                    label: socialAccountTypes?.find(socialAccountType => socialAccountType.key === socialAccount.type)!.name!,
                                     content: (
                                         <>
                                             <FormField className={styles.fieldWrapper}>
@@ -138,7 +138,7 @@ const Profile: React.FC = () => {
                                                     placeholder='Username'
                                                     name={`socialAccounts[${index}].username`}
                                                     onChange={formManager.handleChange}
-                                                    value={sa.username ?? ''}
+                                                    value={socialAccount.username ?? ''}
                                                 />
                                             </FormField>
 
@@ -148,7 +148,7 @@ const Profile: React.FC = () => {
                                                     placeholder='Profile Url'
                                                     name={`socialAccounts[${index}].profileUrl`}
                                                     onChange={formManager.handleChange}
-                                                    value={sa.profileUrl ?? ''}
+                                                    value={socialAccount.profileUrl ?? ''}
                                                 />
                                             </FormField>
                                         </>

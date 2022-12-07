@@ -18,7 +18,7 @@ export class ProfileDetails implements AppModel {
             dto.address,
             dto.email,
             dto.ethAddress,
-            dto.socialAccounts?.map(sa => ProfileSocialAccount.getFromDTO(sa))
+            dto.socialAccounts?.map(socialAccount => ProfileSocialAccount.getFromDTO(socialAccount))
         )
     }
 
@@ -26,7 +26,7 @@ export class ProfileDetails implements AppModel {
         return {
             name: this.name,
             address: this.address,
-            socialAccounts: this.socialAccounts?.map(sa => sa.toDTO())
+            socialAccounts: this.socialAccounts?.map(socialAccount => socialAccount.toDTO())
         }
     }
 }

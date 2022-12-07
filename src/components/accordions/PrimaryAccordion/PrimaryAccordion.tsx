@@ -20,10 +20,10 @@ export class AccordionItemData {
 interface Props {
   accordionItemData: AccordionItemData[],
   className?: string,
-  type?: 'default' | 'primary'
+  style?: 'default' | 'primary'
 }
 
-const PrimaryAccordion: React.FC<Props> = ({ accordionItemData, className, type = 'default' }) => {
+const PrimaryAccordion: React.FC<Props> = ({ accordionItemData, className, style = 'default' }) => {
   const accordionGroup = useRef<null | HTMLIonAccordionGroupElement>(null);
   const [value, setValue] = useState<string>()
 
@@ -36,7 +36,7 @@ const PrimaryAccordion: React.FC<Props> = ({ accordionItemData, className, type 
     <IonAccordionGroup
       onClick={() => handleValue()}
       ref={accordionGroup}
-      className={`${styles.primaryAccordion} ${styles[type]} ${className}`}>
+      className={`${styles.primaryAccordion} ${styles[style]} ${className}`}>
       {accordionItemData && accordionItemData.map((item, key) => {
         return <IonAccordion key={key} value={item.value}>
           <IonItem slot="header">

@@ -7,7 +7,7 @@ interface Props {
 const EarnReward: React.FC<Props> = ({ earnData }) => {
   return (
     <div>
-      <PrimaryAccordion accordionItemData={earnData} type='primary' />
+      <PrimaryAccordion accordionItemData={earnData} style='primary' />
     </div>
   )
 }

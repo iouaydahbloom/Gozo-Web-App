@@ -9,7 +9,8 @@ import useCloud from "./useCloud";
 const useProfile = () => {
 
     const [profileDetails, setProfileDetails] = useState<ProfileDetails>();
-    const [isLoading, setIsLoading] = useState(false);
+    const [socialAccountTypes, setSocialAccountTypes] = useState<SocialAccountType[]>();
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { run } = useCloud();
 
     async function getProfileDetails() {
@@ -32,18 +33,19 @@ const useProfile = () => {
         )
             .then(result => {
                 if (result.isSuccess) return result.data
+                return [];
             })
     }
 
     async function updateProfileDetails(user: ProfileDetails) {
-        setIsLoading(true)
+        setIsSubmitting(true)
         return run(
             cloudFunctionName.updateProfileDetails,
             { user: user.toDTO() },
             (result: ProfileDetailsDTO) => ProfileDetails.getFromDTO(result),
             true
         )
-            .finally(() => setIsLoading(false))
+            .finally(() => setIsSubmitting(false))
     }
 
     function buildProfileWithSocialAccounts(profileInfo?: ProfileDetails, socialAccountTypes?: SocialAccountType[]) {
@@ -62,7 +64,6 @@ const useProfile = () => {
     }
 
     useEffect(() => {
-        setIsLoading(true);
         Promise.all([
             getProfileDetails(),
             getSocialAccountTypes()
@@ -71,16 +72,17 @@ const useProfile = () => {
                 let profile = result[0];
                 const socialAccountTypes = result[1];
                 profile = buildProfileWithSocialAccounts(profile, socialAccountTypes);
+                setSocialAccountTypes(socialAccountTypes);
                 setProfileDetails(profile);
             })
-            .finally(() => setIsLoading(false));
     }, [])
 
     return {
         fetchProfileDetails: getProfileDetails,
         updateProfileDetails,
         profileDetails,
-        isLoading
+        socialAccountTypes,
+        isSubmitting
     }
 }
 

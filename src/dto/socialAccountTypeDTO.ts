@@ -1,5 +1,6 @@
 export interface SocialAccountTypeDTO {
     key: string,
     name: string,
-    logo: string
+    logo: string,
+    logoUrl: string
 }

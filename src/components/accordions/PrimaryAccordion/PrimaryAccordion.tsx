@@ -4,7 +4,7 @@ import {
   IonItem,
   IonLabel,
 } from '@ionic/react';
-import { useRef, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import PrimaryTypography from '../../typography/PrimaryTypography/PrimaryTypography';
 import styles from './primaryAccordion.module.scss'
 
@@ -12,17 +12,18 @@ export class AccordionItemData {
   constructor(
     public value: string,
     public label: string,
-    public content: string,
+    public content: ReactNode,
     public icon?: string
   ) { }
 }
 
 interface Props {
   accordionItemData: AccordionItemData[],
-  className?: string
+  className?: string,
+  style?: 'default' | 'primary'
 }
 
-const PrimaryAccordion: React.FC<Props> = ({ accordionItemData, className }) => {
+const PrimaryAccordion: React.FC<Props> = ({ accordionItemData, className, style = 'default' }) => {
   const accordionGroup = useRef<null | HTMLIonAccordionGroupElement>(null);
   const [value, setValue] = useState<string>()
 
@@ -32,7 +33,10 @@ const PrimaryAccordion: React.FC<Props> = ({ accordionItemData, className }) => 
   }
 
   return (
-    <IonAccordionGroup onClick={() => handleValue()} ref={accordionGroup} className={`${styles.primaryAccordion} ${className}`}>
+    <IonAccordionGroup
+      onClick={() => handleValue()}
+      ref={accordionGroup}
+      className={`${styles.primaryAccordion} ${styles[style]} ${className}`}>
       {accordionItemData && accordionItemData.map((item, key) => {
         return <IonAccordion key={key} value={item.value}>
           <IonItem slot="header">

@@ -4,7 +4,13 @@ export interface ProfileDetailsDTO {
     name: string,
     objectId?: string,
     username?: string,
-    address: string
+    address: string,
+    socialAccounts?: ProfileSocialAccountDTO[]
 }
 
 
+export interface ProfileSocialAccountDTO {
+    username: string,
+    profileUrl: string,
+    type: string
+}

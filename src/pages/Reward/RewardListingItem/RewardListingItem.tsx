@@ -18,7 +18,7 @@ const RewardListingItem: React.FC<Props> = ({ reward }) => {
       <div>
         <div className={styles.popoverRow}>
           <PrimaryTypography color="medium-light">
-            Spin Id:
+            Id:
           </PrimaryTypography>
           <PrimaryTypography color="dark">{reward.id}</PrimaryTypography>
         </div>
@@ -54,7 +54,7 @@ const RewardListingItem: React.FC<Props> = ({ reward }) => {
       <PrimaryTypography
         color="success"
         customClassName={styles.endSlot}>
-        Claimed
+        {reward.status}
       </PrimaryTypography>
     </div>
   )

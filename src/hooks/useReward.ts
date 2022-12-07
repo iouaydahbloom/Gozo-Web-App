@@ -13,7 +13,7 @@ const useReward = () => {
         setIsLoadingRewards(true)
         return run(cloudFunctionName.reward,
             null,
-            (result: RewardDTO[]) => Reward.getFromDTO(result),
+            (result: RewardDTO[]) => result.map(reward => Reward.getFromDTO(reward)),
             true)
             .then(result => {
                 if (result.isSuccess) return result.data

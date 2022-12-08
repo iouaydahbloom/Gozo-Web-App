@@ -53,6 +53,7 @@ const Rewards: React.FC = () => {
                         <RewardHistory
                             isLoading={isLoadingRewards}
                             rewards={rewards}
+                            reload={getRewards}
                         />
                     </TabPanel>
                     <TabPanel>

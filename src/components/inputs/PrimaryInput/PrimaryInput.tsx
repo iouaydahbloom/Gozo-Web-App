@@ -9,16 +9,18 @@ interface Props {
     name?: string,
     id?: string,
     disabled?: boolean,
-    className?: string
+    className?: string,
+    type?: any
 }
 
-const PrimaryInput: React.FC<Props> = ({ placeholder, value, onChange, name, id, disabled = false, className }) => {
+const PrimaryInput: React.FC<Props> = ({ placeholder, value, onChange, name, id, type = "text", disabled = false, className }) => {
     return (
         <IonInput
             name={name}
             className={`${styles.input} ${className}`}
             placeholder={placeholder}
             disabled={disabled}
+            type={type}
             id={id}
             value={value}
             onIonChange={(event) => onChange(event.detail.value ?? '')} />

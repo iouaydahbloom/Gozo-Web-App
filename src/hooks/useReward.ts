@@ -43,9 +43,6 @@ const useReward = () => {
             },
             (result: any) => result,
             true)
-            .then(result => {
-                return result
-            })
             .finally(() => setIsLoadingSubmission(false))
     }
 

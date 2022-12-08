@@ -26,7 +26,7 @@ const ClaimReward: React.FC<Props> = ({ prizeId, rewardId, dismiss }) => {
             if (res.isSuccess) {
                 presentSuccess("Successfully updated")
             } else if (res.errors) {
-                presentFailure(res.errors)
+                presentFailure(res.message)
             }
             dismiss()
         })

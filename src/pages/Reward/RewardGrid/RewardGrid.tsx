@@ -45,7 +45,7 @@ const RewardGrid: React.FC<Props> = ({ headers = [], data = [], isLoading = true
                         {isLoading ?
                             <SectionLoader />
                             :
-                            <RewardListing rewards={data} reload={reload ? reload : () => {}}/>
+                            <RewardListing rewards={data} reload={reload}/>
                         }
                     </div>
                 </div>

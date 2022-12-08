@@ -13,7 +13,8 @@ export class AccordionItemData {
     public value: string,
     public label: string,
     public content: ReactNode,
-    public icon?: string
+    public icon?: string,
+    public disabled?: boolean
   ) { }
 }
 
@@ -38,7 +39,7 @@ const PrimaryAccordion: React.FC<Props> = ({ accordionItemData, className, style
       ref={accordionGroup}
       className={`${styles.primaryAccordion} ${styles[style]} ${className}`}>
       {accordionItemData && accordionItemData.map((item, key) => {
-        return <IonAccordion key={key} value={item.value}>
+        return <IonAccordion key={key} value={item.value} disabled={item.disabled}>
           <IonItem slot="header">
             <img src={item.icon} alt='' className={styles.prizeImage} />
             <IonLabel className={`${value === item.value ? styles.active : ''} ion-padding`}>{item.label}</IonLabel>

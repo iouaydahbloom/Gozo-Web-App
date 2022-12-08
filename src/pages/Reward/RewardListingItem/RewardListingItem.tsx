@@ -5,7 +5,6 @@ import PrimaryTypography from "../../../components/typography/PrimaryTypography/
 import { formatDate } from "../../../helpers/dateManagment"
 import usePopover from "../../../hooks/usePopover"
 import usePrimarySheet from "../../../hooks/usePrimarySheet"
-import useReward from "../../../hooks/useReward"
 import { Reward } from "../../../models/reward"
 import ClaimReward from "../ClaimReward/ClaimReward"
 import styles from "./rewardListingItem.module.scss"
@@ -13,7 +12,7 @@ import { modalController } from '@ionic/core';
 
 interface Props {
   reward: Reward,
-  reload: () => void
+  reload?: () => void
 }
 
 const RewardListingItem: React.FC<Props> = ({ reward, reload }) => {
@@ -24,7 +23,7 @@ const RewardListingItem: React.FC<Props> = ({ reward, reload }) => {
     componentProps: {prizeId: reward.prizeId, rewardId: reward.id, dismiss: dismissModal},
     id: 'claimModal',
     onDismiss: () => {
-      reload()
+      reload && reload()
     }
   })
 

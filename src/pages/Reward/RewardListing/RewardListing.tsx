@@ -4,7 +4,7 @@ import styles from "./rewardListing.module.scss"
 
 interface Props {
     rewards: Reward[],
-    reload: () => void
+    reload?: () => void
 }
 
 const RewardListing: React.FC<Props> = ({ rewards, reload }) => {

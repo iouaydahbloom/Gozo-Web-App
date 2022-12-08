@@ -9,21 +9,16 @@ import { useCallback, useContext, useEffect } from 'react';
 import useReward from '../../hooks/useReward';
 import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 import EarnReward from './EarnReward/EarnReward';
-import { AccordionItemData } from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
-
-const earnData: AccordionItemData[] = [
-    new AccordionItemData('0', 'Fill that survey and earn 1000 Superpoints', 'www.addbloom.com', 'assets/icon/transaction-history.svg'),
-    new AccordionItemData('1', 'Fill that survey and earn 1000 Superpoints', 'www.addbloom.com', 'assets/icon/transaction-history.svg'),
-    new AccordionItemData('2', 'Fill that survey and earn 1000 Superpoints', 'www.addbloom.com', 'assets/icon/transaction-history.svg')
-]
 
 const Rewards: React.FC = () => {
-    const { getRewards, isLoadingRewards, rewards } = useReward()
+    const { getRewards, getEarningRewards, getUserEarnings, isLoadingRewards, isLoadingEarnings, earningRewards, userEarningsList, rewards } = useReward()
     const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
 
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
-            getRewards()
+            getRewards(),
+            getEarningRewards(),
+            getUserEarnings()
         ])
     }, [])
 
@@ -57,7 +52,11 @@ const Rewards: React.FC = () => {
                         />
                     </TabPanel>
                     <TabPanel>
-                        <EarnReward earnData={earnData} />
+                        <EarnReward 
+                            earnData={earningRewards} 
+                            userEarningsList={userEarningsList}
+                            isLoading={isLoadingEarnings}
+                            />
                     </TabPanel>
                 </Tabs>
             </PrimaryContainer>

@@ -1,0 +1,1 @@
+export type EarningActionType = 'not_continuous' | 'continuous'

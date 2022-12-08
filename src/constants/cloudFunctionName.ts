@@ -28,6 +28,8 @@ export const cloudFunctionName = {
     prize: 'prize',
     reward: 'reward',
     claimReward: 'claim_reward',
+    earningActions: 'earnings_actions',
+    userEarnings: 'user_earnings',
     profileDetails: 'user_info',
     updateProfileDetails: 'update_user_info',
     playWithSuperPoints: 'play_with_super_points',

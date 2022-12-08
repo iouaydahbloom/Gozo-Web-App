@@ -8,22 +8,23 @@ import { ReactNode, useRef, useState } from 'react';
 import PrimaryTypography from '../../typography/PrimaryTypography/PrimaryTypography';
 import styles from './primaryAccordion.module.scss'
 
-export class AccordionItemData {
+export class AccordionItem {
   constructor(
     public value: string,
     public label: string,
     public content: ReactNode,
-    public icon?: string
+    public icon?: string,
+    public disabled?: boolean
   ) { }
 }
 
 interface Props {
-  accordionItemData: AccordionItemData[],
+  accordionItem: AccordionItem[],
   className?: string,
   style?: 'default' | 'primary'
 }
 
-const PrimaryAccordion: React.FC<Props> = ({ accordionItemData, className, style = 'default' }) => {
+const PrimaryAccordion: React.FC<Props> = ({ accordionItem, className, style = 'default' }) => {
   const accordionGroup = useRef<null | HTMLIonAccordionGroupElement>(null);
   const [value, setValue] = useState<string>()
 
@@ -37,8 +38,8 @@ const PrimaryAccordion: React.FC<Props> = ({ accordionItemData, className, style
       onClick={() => handleValue()}
       ref={accordionGroup}
       className={`${styles.primaryAccordion} ${styles[style]} ${className}`}>
-      {accordionItemData && accordionItemData.map((item, key) => {
-        return <IonAccordion key={key} value={item.value}>
+      {accordionItem && accordionItem.map((item, key) => {
+        return <IonAccordion key={key} value={item.value} disabled={item.disabled}>
           <IonItem slot="header">
             <img src={item.icon} alt='' className={styles.prizeImage} />
             <IonLabel className={`${value === item.value ? styles.active : ''} ion-padding`}>{item.label}</IonLabel>

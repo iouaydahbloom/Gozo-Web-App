@@ -124,7 +124,7 @@ const Profile: React.FC = () => {
 
                     <PrimaryAccordion
                         style='primary'
-                        accordionItemData={formManager.values.socialAccounts ?
+                        accordionItem={formManager.values.socialAccounts ?
                             formManager.values.socialAccounts.map((socialAccount, index) => {
                                 return {
                                     icon: socialAccountTypes?.find(socialAccountType => socialAccountType.key === socialAccount.type)!.logoUrl!,

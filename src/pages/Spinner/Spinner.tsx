@@ -15,7 +15,7 @@ import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
 import usePlayGame from '../../hooks/usePlayGame';
 import usePrize from '../../hooks/usePrize';
 import useDialog from '../../hooks/useDialog';
-import PrimaryAccordion, { AccordionItemData } from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
+import PrimaryAccordion, { AccordionItem } from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
 import ProgramSelection, { ProgramSelectOption } from './ProgramSelection/ProgramSelection';
 import useMemberShip from '../../hooks/useMembership';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
@@ -175,7 +175,7 @@ const Spinner: React.FC = () => {
     const prizesOpts = useMemo(() => {
         if (wheelSegments.length !== 0) {
             return wheelSegments.map((item) => {
-                return new AccordionItemData(item.id, item.description, item.description, item.image as string)
+                return new AccordionItem(item.id, item.description, item.description, item.image as string)
             })
         }
         return []
@@ -318,7 +318,7 @@ const Spinner: React.FC = () => {
                             </IonButtons>
                             <PrimaryPopover id="hover-trigger" content={prizeInfo} />
                         </div>
-                        <PrimaryAccordion accordionItemData={prizesOpts} />
+                        <PrimaryAccordion accordionItem={prizesOpts} />
                     </>
                     : <PageLoader />
                 }

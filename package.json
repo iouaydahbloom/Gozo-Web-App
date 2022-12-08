@@ -37,6 +37,7 @@
     "cordova-clipboard": "^1.3.0",
     "cordova-plugin-inappbrowser": "^5.0.0",
     "dotenv": "^16.0.1",
+    "env-cmd": "^10.1.0",
     "ethers": "^5.7.1",
     "formik": "^2.2.9",
     "gsap": "^3.11.1",
@@ -75,6 +76,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build-android": "env-cmd -f .env.development react-scripts build && NODE_ENV=dev npx cap run android",
+    "build-android:demo": "env-cmd -f .env.demo react-scripts build && NODE_ENV=demo npx cap run android",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
     "eject": "react-scripts eject"
   },

@@ -33,6 +33,7 @@ android {
     productFlavors {
         dev {
             dimension 'environment'
+            applicationIdSuffix '.dev'
             manifestPlaceholders = [displayName:'GOZO - DEV']
             versionCode = 1
             versionName '1.86 beta'

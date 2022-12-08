@@ -1,3 +1,5 @@
+import { RewardRequiredDataDTO } from "./rewardRequiredDataDTO";
+
 export interface PrizeDTO {
     name: string,
     _id: string,
@@ -5,4 +7,5 @@ export interface PrizeDTO {
     label: string,
     caLoyaltyCurrency: string,
     logoUrl: string,
+    required_data: RewardRequiredDataDTO[]
 }

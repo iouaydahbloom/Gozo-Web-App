@@ -8,10 +8,11 @@ import RewardGrid from '../RewardGrid/RewardGrid'
 
 interface Props {
     rewards: Reward[],
-    isLoading: boolean
+    isLoading: boolean,
+    reload: () => void
 }
 
-const RewardHistory: React.FC<Props> = ({rewards, isLoading}) => {
+const RewardHistory: React.FC<Props> = ({rewards, isLoading, reload}) => {
     const { push } = useHistory()
 
     const Placeholder = () => {
@@ -42,6 +43,7 @@ const RewardHistory: React.FC<Props> = ({rewards, isLoading}) => {
             data={rewards}
             isLoading={isLoading}
             placeholder={<Placeholder/>}
+            reload={reload}
         />
     )
 }

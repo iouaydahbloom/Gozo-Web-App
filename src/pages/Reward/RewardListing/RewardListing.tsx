@@ -3,10 +3,11 @@ import RewardListingItem from "../RewardListingItem/RewardListingItem"
 import styles from "./rewardListing.module.scss"
 
 interface Props {
-    rewards: Reward[]
+    rewards: Reward[],
+    reload: () => void
 }
 
-const RewardListing: React.FC<Props> = ({ rewards }) => {
+const RewardListing: React.FC<Props> = ({ rewards, reload }) => {
     return (
         <div className={`${styles.rewardListing}`}>
             {rewards.length !== 0 &&
@@ -14,6 +15,7 @@ const RewardListing: React.FC<Props> = ({ rewards }) => {
                     <RewardListingItem 
                         key={index} 
                         reward={reward} 
+                        reload={reload}
                         />
                 ))
             }

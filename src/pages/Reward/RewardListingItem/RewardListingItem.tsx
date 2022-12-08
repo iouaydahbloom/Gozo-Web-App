@@ -1,16 +1,36 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react"
 import { informationCircleOutline } from "ionicons/icons"
+import PrimaryButton from "../../../components/buttons/PrimaryButton/PrimaryButton"
 import PrimaryTypography from "../../../components/typography/PrimaryTypography/PrimaryTypography"
 import { formatDate } from "../../../helpers/dateManagment"
 import usePopover from "../../../hooks/usePopover"
+import usePrimarySheet from "../../../hooks/usePrimarySheet"
+import useReward from "../../../hooks/useReward"
 import { Reward } from "../../../models/reward"
+import ClaimReward from "../ClaimReward/ClaimReward"
 import styles from "./rewardListingItem.module.scss"
+import { modalController } from '@ionic/core';
 
 interface Props {
   reward: Reward,
+  reload: () => void
 }
 
-const RewardListingItem: React.FC<Props> = ({ reward }) => {
+const RewardListingItem: React.FC<Props> = ({ reward, reload }) => {
+
+  const { showModal: showClaimReward } = usePrimarySheet({
+    title: 'Claim Details',
+    component: ClaimReward,
+    componentProps: {prizeId: reward.prizeId, rewardId: reward.id, dismiss: dismissModal},
+    id: 'claimModal',
+    onDismiss: () => {
+      reload()
+    }
+  })
+
+  function dismissModal() {
+    modalController.dismiss(null, undefined, "claimModal");
+}
 
   const { showPopover } = usePopover({
     id: reward.id,
@@ -54,7 +74,11 @@ const RewardListingItem: React.FC<Props> = ({ reward }) => {
       <PrimaryTypography
         color="success"
         customClassName={styles.endSlot}>
-        {reward.status}
+        {reward.status === 'pending' ?
+          <PrimaryButton size="s" onClick={showClaimReward}>claim</PrimaryButton>
+          :
+          reward.status
+        }
       </PrimaryTypography>
     </div>
   )

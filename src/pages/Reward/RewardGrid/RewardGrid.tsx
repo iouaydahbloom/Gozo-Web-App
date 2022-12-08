@@ -9,10 +9,11 @@ interface Props {
     headers: any[],
     data?: any[],
     isLoading?: boolean,
-    placeholder?: JSX.Element
+    placeholder?: JSX.Element,
+    reload?: () => void
 }
 
-const RewardGrid: React.FC<Props> = ({ headers = [], data = [], isLoading = true, placeholder }) => {
+const RewardGrid: React.FC<Props> = ({ headers = [], data = [], isLoading = true, placeholder, reload }) => {
     const {tabHeaderHeight} = useContext(TabHeaderHeightContext)
 
     return (
@@ -44,7 +45,7 @@ const RewardGrid: React.FC<Props> = ({ headers = [], data = [], isLoading = true
                         {isLoading ?
                             <SectionLoader />
                             :
-                            <RewardListing rewards={data} />
+                            <RewardListing rewards={data} reload={reload ? reload : () => {}}/>
                         }
                     </div>
                 </div>

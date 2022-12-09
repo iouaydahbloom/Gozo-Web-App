@@ -29,7 +29,7 @@ import { useDapp } from './providers/DappProvider/DappProvider';
 import PrimaryContainer from './components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryButton from './components/buttons/PrimaryButton/PrimaryButton';
 import SectionPlaceholder from './components/sections/SectionPlaceholder/SectionPlaceholder';
-import { initAppCrashHandler } from './helpers/appCrashHandler';
+import { enableCrashAnalytics } from './helpers/appCrashAnalytics';
 
 setupIonicReact();
 
@@ -56,7 +56,7 @@ const App: React.FC = () => {
   }, [isSessionReady, isOnboardingStateReady, isDappReady])
 
   useEffect(() => {
-    initAppCrashHandler();
+    enableCrashAnalytics();
   }, [])
 
   return (

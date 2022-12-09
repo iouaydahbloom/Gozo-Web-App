@@ -36,7 +36,7 @@ android {
             applicationIdSuffix '.dev'
             manifestPlaceholders = [displayName:'GOZO - DEV']
             versionCode = 1
-            versionName '1.86 beta'
+            versionName '1.87 beta'
         }
         demo {
             dimension 'environment'

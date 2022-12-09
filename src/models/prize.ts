@@ -9,12 +9,13 @@ export class Prize implements AppModel {
         public name: string,
         public description: string,
         public requiredData?: RewardRequiredData[],
-        public icon?: string
+        public icon?: string,
+        public label?: string
         ) { }
 
     static getFromDTO(dto: PrizeDTO): Prize {
         const requiredData = dto.required_data && dto.required_data.map(data => RewardRequiredData.getFromDTO(data)) 
-        return new Prize(dto._id, dto.name, dto.description, requiredData , dto.logoUrl)
+        return new Prize(dto._id, dto.name, dto.description, requiredData , dto.logoUrl, dto.label)
     }
 
     toDTO() { }

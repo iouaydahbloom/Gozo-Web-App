@@ -43,11 +43,12 @@ const Spinner: React.FC = () => {
         loadingMyLoyaltyPrograms,
         fetchMyLoyaltyPrograms
     } = useLoyaltyPrograms();
-    const { play, setIsPlaying, gameId, isPlaying } = usePlayGame();
-    const { fetchPrizes, isLoadingPrizes } = usePrize();
+    const { play, setIsPlaying, isPlaying } = usePlayGame();
+    const { fetchPrizes, unReservePrizes, isLoadingPrizes } = usePrize();
     var id = search ? search.get('program_id') : ''
 
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
+    const [gameToken, setGameToken] = useState('')
     const [selectedPrizeId, setSelectedPrizeId] = useState<string>('')
     const [returnedPrize, setReturnedPrize] = useState<IPrize>()
     const [loyaltyProgramId, setLoyaltyProgramId] = useState<string>('')
@@ -120,12 +121,14 @@ const Spinner: React.FC = () => {
     }
 
     function getPrizes() {
-
         if (!loyaltyProgram) return
+        setWheelSegments([])
         fetchPrizes(loyaltyProgram.brand?.key ?? '')
-            .then(prizes => {
-                if (prizes) {
-                    setWheelSegments(prizes)
+            .then(groupedPrizes => {
+                if (groupedPrizes) {
+                    const segments = WheelSegment.toWheelSegment(groupedPrizes.prizes)
+                    setWheelSegments(segments)
+                    setGameToken(groupedPrizes.gameToken)
                     setPrizesExpired(false)
                     // wait for 3 minutes
                     setTimeout(() => setPrizesExpired(true), 180000);
@@ -157,7 +160,7 @@ const Spinner: React.FC = () => {
     async function handlePlaying() {
         start()
         if (prizesExpired) await getPrizes()
-        await play(loyaltyProgram?.brand?.key ?? '', loyaltyProgram?.partnerId ?? '');
+        await play(loyaltyProgram?.brand?.key ?? '', loyaltyProgram?.partnerId ?? '', gameToken);
     }
 
     const programsOpts: ProgramSelectOption[] = useMemo(() => {
@@ -207,7 +210,9 @@ const Spinner: React.FC = () => {
     }
 
     useEffect(() => {
-        if (returnedPrize && returnedPrize.gameToken === gameId) setSelectedPrizeId(returnedPrize.prizeId)
+        if (returnedPrize && returnedPrize.gameToken === gameToken) {
+            setSelectedPrizeId(returnedPrize.prizeId)
+        }
     }, [returnedPrize])
 
 
@@ -239,11 +244,16 @@ const Spinner: React.FC = () => {
         setIsPlaying(false)
     })
 
+    useIonViewWillLeave(() => {
+        unReservePrizes(gameToken)
+    }, [gameToken])
+
     useIonViewWillEnter(() => {
         if (defaultProgram) getMyPrograms();
     }, [defaultProgram])
 
     useEffect(() => {
+        if(gameToken) unReservePrizes(gameToken)
         getPrizes()
     }, [loyaltyProgram])
 

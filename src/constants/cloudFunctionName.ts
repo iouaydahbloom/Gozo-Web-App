@@ -25,6 +25,7 @@ export const cloudFunctionName = {
     disconnectProgram: 'disconnect_program',
     disconnectPrograms: 'disconnect_programs',
     groupedPrize: 'grouped_prize',
+    unreservePrizes: 'unreserve_prizes',
     prize: 'prize',
     reward: 'reward',
     claimReward: 'claim_reward',

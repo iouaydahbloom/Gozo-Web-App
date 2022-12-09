@@ -7,7 +7,6 @@ import { PlayGame } from "../models/playGame";
 import { PlayGameDTO } from "../dto/PlayGameDTO";
 
 const usePlayGame = () => {
-    const [gameToken, setGameToken] = useState<string>('')
     const [isPlaying, setIsPlaying] = useState(false);
     const [error, setError] = useState<string>();
     const { presentFailure } = useToast();
@@ -15,7 +14,7 @@ const usePlayGame = () => {
     const { run } = useCloud();
 
 
-    async function play(brand: string, partner_id: string) {
+    async function play(brand: string, partner_id: string, gameToken?: string) {
         if (!brand && !walletAddress) return;
         setIsPlaying(true);
         let params: any = {
@@ -23,6 +22,7 @@ const usePlayGame = () => {
             player_address: walletAddress
         }
         if (partner_id) params['partner_id'] = partner_id;
+        if (gameToken) params['game_token'] = gameToken
         return run(cloudFunctionName.playWithSuperPoints,
             params
             ,
@@ -33,9 +33,7 @@ const usePlayGame = () => {
                     else setError('Server is busy, try again later')
                     setIsPlaying(false);
                     return;
-                } else {
-                    setGameToken(result.data.gameToken)
-                }
+                } 
             })
     }
 
@@ -52,7 +50,6 @@ const usePlayGame = () => {
         play,
         isPlaying,
         setIsPlaying,
-        gameId: gameToken,
         error,
         setError
     }

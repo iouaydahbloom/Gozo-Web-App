@@ -18,7 +18,7 @@ const useAuthentication = () => {
         try {
             setIsAuthenticating(true);
             await initNewSession();
-            const magicResult = await handleMagicAuth(email);
+            const magicResult = await handleMagicAuth(email.trim());
             if (magicResult) {
                 const userMetadata = (await magicUser?.getMetadata());
                 await handleServerAuth(userMetadata?.email!, userMetadata?.publicAddress!, magicResult);

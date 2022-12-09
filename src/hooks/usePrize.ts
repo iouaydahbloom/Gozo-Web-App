@@ -2,8 +2,9 @@ import { useState } from "react";
 import { cloudFunctionName } from "../constants/cloudFunctionName";
 import useCloud from "./useCloud";
 import { PrizeDTO } from "../dto/PrizeDTO";
-import { WheelSegment } from "../models/wheelSegment";
 import { Prize } from "../models/prize";
+import { ReservedPrizesDTO } from "../dto/reservedPrizesDTO";
+import { ReservedPrizes } from "../models/reservedPrizes";
 
 const usePrize = () => {
     const [isLoadingPrizes, setIsLoadingPrizes] = useState(false);
@@ -15,13 +16,24 @@ const usePrize = () => {
         if (!loyaltyCurrency) return;
         setIsLoadingPrizes(true);
         return run(cloudFunctionName.groupedPrize,
-            { brand: loyaltyCurrency },
-            (result: PrizeDTO[]) => WheelSegment.getFromDTO(result),
+            {
+                brand: loyaltyCurrency,
+                reserve_prizes: true
+            },
+            (result: ReservedPrizesDTO) => ReservedPrizes.getFromDTO(result),
             true)
             .then(result => {
                 return result.isSuccess ? result.data : null
             })
             .finally(() => setIsLoadingPrizes(false))
+    }
+
+    async function unReservePrizes(gameToken: string) {
+        if (!gameToken) return;
+        return run(cloudFunctionName.unreservePrizes,
+            { game_token: gameToken },
+            (result: any) => result,
+            true)
     }
 
     async function fetchPrize(prizeId: string) {
@@ -41,6 +53,7 @@ const usePrize = () => {
     return {
         fetchPrizes,
         fetchPrize,
+        unReservePrizes,
         isLoadingPrizes,
         prize,
         isLoadingPrize

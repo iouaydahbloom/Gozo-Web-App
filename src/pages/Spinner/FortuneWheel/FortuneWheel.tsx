@@ -98,7 +98,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     // // x0,y0,r0,x1,y1,r1
     // let radGradient = ctx && ctx.createRadialGradient(canvasCenter, canvasCenter, 35, canvasCenter, canvasCenter, 170);
 
-    let trasformedData: WheelSegment[] = structuredClone(data)
+    let trasformedData: WheelSegment[] = data.map(a => ({...a} as WheelSegment))
     trasformedData = trasformedData.map((item: WheelSegment) => {
       // // Add the colour stops - 0.0 should be the first, 1.0 the last, others in between.
       // radGradient && radGradient.addColorStop(0, item.fillStyle ?? '');

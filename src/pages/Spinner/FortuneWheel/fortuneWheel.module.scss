@@ -22,6 +22,7 @@
         position: absolute;
         left: 50%;
         top: 2px;
+        z-index: 100;
         margin-left: calc(-50px / 2);
         transform-origin: 50% 31%;
     }

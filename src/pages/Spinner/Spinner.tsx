@@ -250,7 +250,8 @@ const Spinner: React.FC = () => {
 
     useIonViewWillEnter(() => {
         if (defaultProgram) getMyPrograms();
-    }, [defaultProgram])
+        if (loyaltyProgram) getPrizes();
+    }, [defaultProgram, loyaltyProgram])
 
     useEffect(() => {
         if(gameToken) unReservePrizes(gameToken)

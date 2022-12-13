@@ -8,9 +8,7 @@ interface Props {
 const PrimaryBarcode: React.FC<Props> = ({ data }) => {
     return (
         <div className={styles.container}>
-            <iframe
-                className={styles.barcode}
-                src={`https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${data}&choe=UTF-8`} />
+            <img alt='' src={`https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${data}&choe=UTF-8`} />
         </div>
     )
 }

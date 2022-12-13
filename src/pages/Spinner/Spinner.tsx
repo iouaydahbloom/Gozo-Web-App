@@ -130,8 +130,8 @@ const Spinner: React.FC = () => {
                     setWheelSegments(segments)
                     setGameToken(groupedPrizes.gameToken)
                     setPrizesExpired(false)
-                    // wait for 3 minutes
-                    setTimeout(() => setPrizesExpired(true), 180000);
+                    // wait for 2 minutes
+                    setTimeout(() => setPrizesExpired(true), 120000);
                     // presentInfo(prizeInfo)
                 }
             })

@@ -289,7 +289,7 @@ const Spinner: React.FC = () => {
                     </div>
                 </IonToolbar>
             </IonHeader>
-            <PrimaryContainer className={styles.accordionContent} isRefreshable onRefresh={onRefresh}>
+            <PrimaryContainer className={styles.container} isRefreshable onRefresh={onRefresh}>
                 {(!loadingProgram && !isLoadingPrizes && !loadingMyLoyaltyPrograms) ?
                     <>
                         <div className={`${styles.wheelWrapper}`}>

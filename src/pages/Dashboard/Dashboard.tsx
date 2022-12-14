@@ -15,6 +15,7 @@ import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
 import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
 import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 import { parseNumber } from '../../helpers/blockchainHelper';
+import styles from './dashboard.module.scss'
 
 const Dashboard: React.FC = () => {
 
@@ -85,7 +86,7 @@ const Dashboard: React.FC = () => {
     }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
 
     return (
-        <IonPage>
+        <IonPage className={styles.dashboard}>
             <PrimaryContainer isRefreshable onRefresh={onRefresh}>
                 <HighlightedBalance asset={highlightedAsset} />
                 <Tabs domRef={(node: any) => setTabRef(node)} onSelect={onSelect}>

@@ -1,6 +1,6 @@
-import { IonHeader } from '@ionic/react';
+import { IonBackButton, IonButtons, IonHeader, IonIcon, IonLabel, IonTitle, IonToolbar } from '@ionic/react';
 import React from 'react';
-import { useHistory } from 'react-router';
+import { AppRoutes } from '../../../constants/appRoutes';
 import PrimaryTypography from '../../typography/PrimaryTypography/PrimaryTypography';
 import styles from './secondaryHeader.module.scss';
 
@@ -10,18 +10,16 @@ interface Props {
 
 const SecondaryHeader: React.FC<Props> = ({ title }) => {
 
-    const { goBack } = useHistory();
-
     return (
         <IonHeader className={styles.header}>
-            <div className={styles.toolbar}>
-                <div className={styles.icon}>
-                    <img src='assets/icon/header-back.svg' alt='' onClick={goBack} />
-                </div>
-                <div className={styles.text}>
-                    <PrimaryTypography size='l'>{title}</PrimaryTypography>
-                </div>
-            </div>
+            <IonToolbar className={styles.toolbar} mode='ios'>
+                <IonButtons slot="start">
+                    <IonBackButton defaultHref={AppRoutes.dashboard} text="" icon="assets/icon/header-back.svg" className={styles.icon}/>
+                </IonButtons>
+                <IonTitle>
+                    <PrimaryTypography customClassName={styles.text} size='l'>{title}</PrimaryTypography>
+                </IonTitle>
+            </IonToolbar>
         </IonHeader>
     )
 }

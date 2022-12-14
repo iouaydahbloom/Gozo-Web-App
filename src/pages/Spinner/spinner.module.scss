@@ -1,6 +1,6 @@
 .headerToolbar {
     --background: var(--ion-color-dark);
-    padding: 30px 10px 10px 10px !important;
+    padding: 40px 10px 10px 10px !important;
 }
 
 .loaderWrapper {
@@ -38,9 +38,20 @@
     }
 }
 
-.accordionContent {
+.container {
     --padding-end: 24px;
     --padding-start: 24px;
+
+    div {
+        &:first-of-type {
+            div{
+                &:last-of-type {
+                    // solved the issue with the segment pin appearance on ios 
+                    -webkit-overflow-scrolling: auto !important;
+                }
+            }
+        }
+    }
 }
 
 .spinSuccessModal {

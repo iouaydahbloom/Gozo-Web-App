@@ -5,12 +5,6 @@
   font-family: 'Monda', sans-serif;
 }
 
-// Add safe area for ios
-ion-page {
-  margin-top: constant(safe-area-inset-top);
-  margin-top: env(safe-area-inset-top);
-}
-
 .primary-sheet {
   --border-radius: 50px 50px 0px 0px;
   --border-color: var(--ion-color-medium);

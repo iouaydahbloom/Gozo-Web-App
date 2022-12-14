@@ -3,6 +3,10 @@ http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
+
+  /* --ion-safe-area-top: 20px; */
+
+
   /** primary **/
   --ion-color-primary: #5465FF;
   --ion-color-primary-rgb: 56, 128, 255;

@@ -138,6 +138,7 @@ const Spinner: React.FC = () => {
     }
 
     function listenerCallBack(id: any, amount: any, playerAddress: string, gameToken: string) {
+        console.log('game token check ', gameToken);
         console.log("listening to event prizeSelected with id:", id)
         if (playerAddress.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
             const prize: IPrize = {
@@ -204,7 +205,7 @@ const Spinner: React.FC = () => {
     const handleSelectedValue = (name: string) => {
         const lp = myLoyaltyPrograms.find(item => item?.currency?.loyaltyCurrencyName === name)
         if (lp) {
-            history.replace({search: (new URLSearchParams({program_id : lp?.currency?.programId})).toString()});
+            history.replace({ search: (new URLSearchParams({ program_id: lp?.currency?.programId })).toString() });
             setLoyaltyProgramId(lp?.currency?.programId)
         }
     }
@@ -254,7 +255,7 @@ const Spinner: React.FC = () => {
     }, [defaultProgram, loyaltyProgram])
 
     useEffect(() => {
-        if(gameToken) unReservePrizes(gameToken)
+        if (gameToken) unReservePrizes(gameToken)
         getPrizes()
     }, [loyaltyProgram])
 

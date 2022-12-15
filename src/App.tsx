@@ -29,7 +29,6 @@ import { useDapp } from './providers/DappProvider/DappProvider';
 import PrimaryContainer from './components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryButton from './components/buttons/PrimaryButton/PrimaryButton';
 import SectionPlaceholder from './components/sections/SectionPlaceholder/SectionPlaceholder';
-import { enableCrashAnalytics } from './helpers/appCrashAnalytics';
 
 setupIonicReact();
 
@@ -54,10 +53,6 @@ const App: React.FC = () => {
     if (!isSessionReady || !isOnboardingStateReady || !isDappReady) return;
     SplashScreen.hide({ fadeOutDuration: 600 });
   }, [isSessionReady, isOnboardingStateReady, isDappReady])
-
-  useEffect(() => {
-    enableCrashAnalytics();
-  }, [])
 
   return (
     <IonApp>

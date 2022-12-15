@@ -1,8 +1,12 @@
 import { FirebaseCrashlytics } from '@capacitor-community/firebase-crashlytics';
 
 async function enableCrashAnalytics() {
-    if (await FirebaseCrashlytics.isEnabled()) return;
-    await FirebaseCrashlytics.setEnabled({ enabled: true });
+    try {
+        if (await FirebaseCrashlytics.isEnabled()) return;
+        await FirebaseCrashlytics.setEnabled({ enabled: true });
+    } catch (error) {
+        console.log('Error with FirebaseCrashlytics ', error);
+    }
 }
 
 async function crashApp() {

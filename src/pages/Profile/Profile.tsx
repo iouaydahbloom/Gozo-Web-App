@@ -43,10 +43,13 @@ const Profile: React.FC = () => {
 
             return errors;
         },
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             submitProfileDetails(values);
-            if (isPlatform('mobileweb') || isPlatform('pwa')) return
-            Keyboard.hide();
+            try {
+                await Keyboard.hide();
+            } catch (error) {
+                console.log('Error in hiding keyboard ', error);
+            }
         }
     });
 

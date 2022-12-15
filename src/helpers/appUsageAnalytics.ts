@@ -6,13 +6,13 @@ async function enableAnalytics() {
     });
 }
 
-async function setUserId(id: string) {
+async function setUserForAnalytics(id: string) {
     await FirebaseAnalytics.setUserId({
         userId: id
     });
 }
 
-async function setUserProperty(key: string, value: string) {
+async function setUserPropertyForAnalytics(key: string, value: string) {
     await FirebaseAnalytics.setUserProperty({
         name: key,
         value: value
@@ -23,10 +23,23 @@ async function getAppInstanceId() {
     return FirebaseAnalytics.getAppInstanceId();
 }
 
-async function setScreenName(name: string, alias: string) {
+async function setAnalyticsScreenName(name: string) {
     await FirebaseAnalytics.setScreenName({
-        screenName: "login",
-        nameOverride: "LoginScreen",
+        screenName: name
     });
 }
 
+async function setAnalyticsSessionTimeoutDuration(duration: number = 10000) {
+    await FirebaseAnalytics.setSessionTimeoutDuration({
+        duration: 10000
+    });
+}
+
+export {
+    enableAnalytics,
+    getAppInstanceId,
+    setAnalyticsScreenName,
+    setUserForAnalytics,
+    setUserPropertyForAnalytics,
+    setAnalyticsSessionTimeoutDuration
+}

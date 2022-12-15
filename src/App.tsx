@@ -29,6 +29,7 @@ import PrimaryContainer from './components/layout/PrimaryContainer/PrimaryContai
 import PrimaryButton from './components/buttons/PrimaryButton/PrimaryButton';
 import SectionPlaceholder from './components/sections/SectionPlaceholder/SectionPlaceholder';
 import TabRoutes from './components/routes/TabRoutes/TabRoutes';
+import { addListeners, registerNotifications } from './helpers/notifications';
 
 setupIonicReact();
 
@@ -53,6 +54,11 @@ const App: React.FC = () => {
     if (!isSessionReady || !isOnboardingStateReady || !isDappReady) return;
     SplashScreen.hide({ fadeOutDuration: 600 });
   }, [isSessionReady, isOnboardingStateReady, isDappReady])
+
+  useEffect(() => {
+    registerNotifications();
+    addListeners();
+  }, [])
 
   return (
     <IonApp>

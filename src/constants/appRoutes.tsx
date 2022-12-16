@@ -11,5 +11,6 @@ export const AppRoutes = {
     authCallback: '/authCallback',
     spinner: '/spinner',
     reward: '/reward',
-    buy: '/buy'
+    buy: '/buy',
+    giftCard: '/giftCard'
 }

@@ -43,5 +43,7 @@ export const cloudFunctionName = {
     getTokenTransfers: 'token_transfers',
     socialAccountTypes: 'social_account_types',
     updateUserGeoLocation: 'update_user_geo_location',
-    updateUserFcmToken: 'update_user_fcm_token'
+    updateUserFcmToken: 'update_user_fcm_token',
+    giftCards: 'gift_card',
+    giftCardDetails: 'gift_card_details'
 }

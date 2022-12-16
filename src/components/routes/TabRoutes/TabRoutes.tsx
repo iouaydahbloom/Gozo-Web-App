@@ -10,6 +10,7 @@ import Account from '../../../pages/Account/Account';
 import AuthCallback from '../../../pages/Authentication/AuthCallback/AuthCallback';
 import Buy from '../../../pages/Buy/Buy';
 import Dashboard from '../../../pages/Dashboard/Dashboard';
+import GiftCardDetails from '../../../pages/GiftCardDetails/GiftCardDetails';
 import Landing from '../../../pages/Landing/Landing';
 import LoyaltyProgramHistoryDetails from '../../../pages/LoyaltyProgramHistoryDetails/LoyaltyProgramHistoryDetails';
 import OnBoarding from '../../../pages/OnBoarding/OnBoarding';
@@ -104,6 +105,9 @@ const TabRoutes: React.FC = () => {
             </Route>
             <Route exact path={AppRoutes.buy}>
                 <Buy />
+            </Route>
+            <Route exact path={AppRoutes.giftCard}>
+                <GiftCardDetails />
             </Route>
             <Route exact path={AppRoutes.landing}>
                 <Landing />

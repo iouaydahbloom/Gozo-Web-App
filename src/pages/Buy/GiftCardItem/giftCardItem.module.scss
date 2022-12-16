@@ -1,0 +1,18 @@
+
+.accordion {
+}
+
+.accordionContent {
+    
+    .row {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        border-bottom: 1px solid var(--ion-color-medium-light);
+        padding: 16px 0;
+    
+        .column {
+            flex: 1;
+        }
+    }
+}

@@ -2,7 +2,6 @@ import { IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, useIonRout
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Redirect, Route, useLocation } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
-import { addListeners } from '../../../helpers/notifications';
 import useAppAnalytics from '../../../hooks/useAppAnalytics';
 import useAuthentication from '../../../hooks/useAuthentication';
 import useNetwork from '../../../hooks/useNetwork';

@@ -29,7 +29,8 @@ import PrimaryContainer from './components/layout/PrimaryContainer/PrimaryContai
 import PrimaryButton from './components/buttons/PrimaryButton/PrimaryButton';
 import SectionPlaceholder from './components/sections/SectionPlaceholder/SectionPlaceholder';
 import TabRoutes from './components/routes/TabRoutes/TabRoutes';
-import { addListeners, registerNotifications } from './helpers/notifications';
+import useNotifications from './hooks/useNotifications';
+import useGeoLocation from './hooks/useGeoLocation';
 
 setupIonicReact();
 
@@ -39,6 +40,8 @@ const App: React.FC = () => {
   const { isReady: isOnboardingStateReady, refresh: refreshOnboardingPreview } = useOnBoardingPreview();
   const { isReady: isDappReady, refresh: refreshDapp } = useDapp();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  useNotifications();
+  useGeoLocation();
 
   async function onRefresh() {
     setIsRefreshing(true);
@@ -54,11 +57,6 @@ const App: React.FC = () => {
     if (!isSessionReady || !isOnboardingStateReady || !isDappReady) return;
     SplashScreen.hide({ fadeOutDuration: 600 });
   }, [isSessionReady, isOnboardingStateReady, isDappReady])
-
-  useEffect(() => {
-    registerNotifications();
-    addListeners();
-  }, [])
 
   return (
     <IonApp>

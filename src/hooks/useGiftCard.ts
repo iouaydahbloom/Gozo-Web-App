@@ -5,11 +5,14 @@ import { GiftCard } from "../models/giftCard";
 import { GiftCardDTO } from "../dto/giftCardDTO";
 import { Filter } from "../models/data/filter";
 import { Pagination } from "../models/data/pagination";
+import useConfirmation from "./useConfirmation";
 
 const useGiftCard = () => {
-    const [ giftCard, setGiftCard ] = useState<GiftCard>()
-    const [ isLoading, setIsLoading ] = useState(false);
+    const [giftCard, setGiftCard] = useState<GiftCard>()
+    const [isLoading, setIsLoading] = useState(false);
+    const [isBuying, setIsBuying] = useState(false);
     const { run } = useCloud();
+    const { confirm } = useConfirmation();
 
     async function fetchGiftCards(filter: Filter) {
         setIsLoading(true)
@@ -49,11 +52,55 @@ const useGiftCard = () => {
         })
     }
 
+    async function buyGiftCard(
+        giftCardId: string,
+        amount: string,
+        onSuccess: () => any,
+        onError: (error: any) => any) {
+        setIsBuying(true);
+        const simulationResult = await simulateBuyGiftCard(giftCardId, amount);
+        debugger
+        // confirm({
+        //     title: 'Buy',
+        //     message: 'You are buying this gift card for 10$',
+        //     onConfirmed: () =>
+        //         executeBuyGiftCard(giftCardId, amount)
+        //             .then(result => {
+        //                 if (result.isSuccess) {
+        //                     onSuccess();
+        //                 } else {
+        //                     onError(result.errors.error[0]);
+        //                 }
+        //             })
+        //             .finally(() => setIsBuying(false))
+        // })
+    }
+
+    async function simulateBuyGiftCard(giftCardId: string, amount: string) {
+        return run(
+            cloudFunctionName.simulateGiftCardExchange,
+            { gift_card_id: giftCardId, amount: amount },
+            (res) => res,
+            true
+        )
+    }
+
+    async function executeBuyGiftCard(giftCardId: string, amount: string) {
+        return run(
+            cloudFunctionName.executeGiftCardExchange,
+            { gift_card_id: giftCardId, amount: amount },
+            () => true,
+            true
+        )
+    }
+
     return {
         giftCard,
         fetchGiftCards,
         getGiftCard,
-        isLoading
+        buyGiftCard,
+        isLoading,
+        isBuying
     }
 }
 

@@ -45,5 +45,7 @@ export const cloudFunctionName = {
     updateUserGeoLocation: 'update_user_geo_location',
     updateUserFcmToken: 'update_user_fcm_token',
     giftCards: 'gift_card',
-    giftCardDetails: 'gift_card_details'
+    giftCardDetails: 'gift_card_details',
+    simulateGiftCardExchange: 'simulate_gift_card_exchange',
+    executeGiftCardExchange: 'execute_gift_card_exchange'
 }

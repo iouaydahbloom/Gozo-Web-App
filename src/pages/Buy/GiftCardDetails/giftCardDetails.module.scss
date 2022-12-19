@@ -1,6 +1,5 @@
-
-.container {
-
+.details {
+    margin-bottom: 42px;
 }
 
 .buttonContainer {
@@ -9,6 +8,7 @@
 
 .inputContainer {
     padding-bottom: 16px;
+
     .label {
         padding-bottom: 10px;
     }
@@ -23,5 +23,15 @@
 
     .column {
         flex: 1;
+        overflow: hidden;
+    }
+}
+
+.minmax {
+    margin: 20px 0;
+    padding: 10px 0;
+
+    .minmaxValue {
+        text-align: right;
     }
 }

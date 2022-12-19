@@ -16,11 +16,11 @@ const useServerPagination = <T, F extends Filter>({
     const [data, setData] = useState<T[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    function fetchData() {
+    async function fetchData() {
         setIsLoading(true);
         setMetadata(null)
         setData([])
-        getData(intialFilters)
+        return getData(intialFilters)
             .then(result => {
                 if (!result) return;
 

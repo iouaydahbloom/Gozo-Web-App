@@ -3,7 +3,7 @@ import React, { CSSProperties, ReactNode, useMemo } from 'react';
 import { defaultColorType } from '../../../types/defaultColorType';
 import styles from './primaryTypography.module.scss';
 
-interface Props {
+export interface PrimaryTypographyProps {
     children?: ReactNode,
     isBlock?: boolean,
     isBold?: boolean,
@@ -13,7 +13,7 @@ interface Props {
     style?: CSSProperties
 }
 
-const PrimaryTypography: React.FC<Props> = ({
+const PrimaryTypography: React.FC<PrimaryTypographyProps> = ({
     children,
     isBlock = true,
     isBold = false,

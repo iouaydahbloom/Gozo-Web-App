@@ -5,12 +5,16 @@ async function enableCrashAnalytics() {
         if (await FirebaseCrashlytics.isEnabled()) return;
         await FirebaseCrashlytics.setEnabled({ enabled: true });
     } catch (error) {
-        console.log('Error with FirebaseCrashlytics ', error);
+        console.log('Error with FirebaseCrashlytics enable', error);
     }
 }
 
 async function crashApp() {
-    await FirebaseCrashlytics.crash({ message: 'Just a test crash !' });
+    try {
+        await FirebaseCrashlytics.crash({ message: 'Just a test crash !' });
+    } catch (error) {
+        console.log('Error with FirebaseCrashlytics crashing test', error);
+    }
 }
 
 export {

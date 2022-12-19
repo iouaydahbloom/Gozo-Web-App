@@ -12,7 +12,7 @@ const useGeoLocation = () => {
     function updateCurrentPosition(longitude: number, latitude: number) {
         run(
             cloudFunctionName.updateUserGeoLocation,
-             { longitude, latitude },
+            { longitude, latitude },
             () => true,
             true
         )
@@ -24,6 +24,9 @@ const useGeoLocation = () => {
         getCurrentGeoPosition()
             .then(position => {
                 updateCurrentPosition(position.coords.longitude, position.coords.latitude);
+            })
+            .catch(error => {
+                console.error(error);
             });
     }, [isAuthenticated])
 }

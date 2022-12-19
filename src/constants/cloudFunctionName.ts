@@ -41,5 +41,7 @@ export const cloudFunctionName = {
     tokenBalances: 'token_balances',
     tokenDefaultMetadata: 'default_token_metadata',
     getTokenTransfers: 'token_transfers',
-    socialAccountTypes: 'social_account_types'
+    socialAccountTypes: 'social_account_types',
+    updateUserGeoLocation: 'update_user_geo_location',
+    updateUserFcmToken: 'update_user_fcm_token'
 }

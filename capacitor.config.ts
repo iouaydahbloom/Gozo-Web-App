@@ -26,6 +26,9 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       launchAutoHide: false
+    },
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert"],
     }
   },
   android: getDeviceConfig().android

@@ -2,6 +2,7 @@ import { IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, useIonRout
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Redirect, Route, useLocation } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
+import useAppAnalytics from '../../../hooks/useAppAnalytics';
 import useAuthentication from '../../../hooks/useAuthentication';
 import useNetwork from '../../../hooks/useNetwork';
 import useOnBoardingPreview from '../../../hooks/useOnBoardingPreview';
@@ -23,9 +24,9 @@ import BuyIcon from '../../icons/BuyIcon/BuyIcon';
 import DashboardIcon from '../../icons/DashboardIcon/DashboardIcon';
 import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
-import styles from './tabMenu.module.scss';
+import styles from './tabRoutes.module.scss';
 
-const TabMenu: React.FC = () => {
+const TabRoutes: React.FC = () => {
 
     const { push } = useIonRouter();
     const spinnerBtnRef = useRef<any>(null);
@@ -33,6 +34,7 @@ const TabMenu: React.FC = () => {
     const { isHidden: isOnboardingHidden } = useOnBoardingPreview();
     const { pathname } = useLocation();
     useNetwork();
+    useAppAnalytics();
 
     const handleRoutesProtections = useCallback(() => {
         if (pathname === AppRoutes.landing && isAuthenticated && isOnboardingHidden) {
@@ -158,4 +160,4 @@ const TabMenu: React.FC = () => {
     )
 }
 
-export default TabMenu;
+export default TabRoutes;

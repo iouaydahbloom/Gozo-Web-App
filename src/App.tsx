@@ -20,7 +20,6 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import './theme/main.scss';
 import './theme/toast.scss';
-import TabMenu from './components/menus/TabMenu/TabMenu';
 import { useContext, useEffect, useState } from 'react';
 import { sessionContext } from './providers/SessionProvider/sessionContext';
 import { SplashScreen } from '@capacitor/splash-screen';
@@ -29,6 +28,9 @@ import { useDapp } from './providers/DappProvider/DappProvider';
 import PrimaryContainer from './components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryButton from './components/buttons/PrimaryButton/PrimaryButton';
 import SectionPlaceholder from './components/sections/SectionPlaceholder/SectionPlaceholder';
+import TabRoutes from './components/routes/TabRoutes/TabRoutes';
+import useNotifications from './hooks/useNotifications';
+import useGeoLocation from './hooks/useGeoLocation';
 
 setupIonicReact();
 
@@ -38,6 +40,8 @@ const App: React.FC = () => {
   const { isReady: isOnboardingStateReady, refresh: refreshOnboardingPreview } = useOnBoardingPreview();
   const { isReady: isDappReady, refresh: refreshDapp } = useDapp();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  useNotifications();
+  useGeoLocation();
 
   async function onRefresh() {
     setIsRefreshing(true);
@@ -59,7 +63,7 @@ const App: React.FC = () => {
       {
         (isSessionReady && isOnboardingStateReady && isDappReady) ?
           <IonReactRouter>
-            <TabMenu />
+            <TabRoutes />
           </IonReactRouter>
           :
           <IonPage>

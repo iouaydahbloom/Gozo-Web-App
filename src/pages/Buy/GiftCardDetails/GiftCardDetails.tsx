@@ -26,8 +26,14 @@ const GiftCardDetails: React.FC = () => {
     const [isBought, setIsBought] = useState(false);
 
     async function buy(amount: string) {
-        if (!id) return;
-        await buyGiftCard(id, amount, () => setIsBought(true), presentFailure);
+        if (!giftCard) return;
+        await buyGiftCard(
+            giftCard.id,
+            giftCard.currency,
+            amount,
+            () => setIsBought(true),
+            presentFailure
+        );
     }
 
     const formManager = useFormik({

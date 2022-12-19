@@ -51,7 +51,8 @@ const Buy: React.FC = () => {
                                         giftCards.map((giftCard, index) => <GiftCardItem key={index} giftCard={giftCard} />)
                                         :
                                         <SectionPlaceholder
-                                            title='No Gift Cards Found'
+                                            logoUrl='assets/image/no-gift-card.svg'
+                                            description='There are no featured gift cards available yet'
                                         />
                                 }
                             </>

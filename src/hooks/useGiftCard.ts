@@ -6,6 +6,9 @@ import { GiftCardDTO } from "../dto/giftCardDTO";
 import { Filter } from "../models/data/filter";
 import { Pagination } from "../models/data/pagination";
 import useConfirmation from "./useConfirmation";
+import useLoyaltyPrograms from "./useLoyaltyPrograms";
+import { FiatToLoyaltyConversionDTO } from "../dto/fiatToLoyaltyConversionDTO";
+import { FiatToLoyaltyConversion } from "../models/fiatToLoyaltyConversion";
 
 const useGiftCard = () => {
     const [giftCard, setGiftCard] = useState<GiftCard>()
@@ -13,6 +16,7 @@ const useGiftCard = () => {
     const [isBuying, setIsBuying] = useState(false);
     const { run } = useCloud();
     const { confirm } = useConfirmation();
+    const { defaultProgram } = useLoyaltyPrograms();
 
     async function fetchGiftCards(filter: Filter) {
         setIsLoading(true)
@@ -54,33 +58,41 @@ const useGiftCard = () => {
 
     async function buyGiftCard(
         giftCardId: string,
+        giftCardCurrency: string,
         amount: string,
         onSuccess: () => any,
         onError: (error: any) => any) {
         setIsBuying(true);
-        const simulationResult = await simulateBuyGiftCard(giftCardId, amount);
-        debugger
-        // confirm({
-        //     title: 'Buy',
-        //     message: 'You are buying this gift card for 10$',
-        //     onConfirmed: () =>
-        //         executeBuyGiftCard(giftCardId, amount)
-        //             .then(result => {
-        //                 if (result.isSuccess) {
-        //                     onSuccess();
-        //                 } else {
-        //                     onError(result.errors.error[0]);
-        //                 }
-        //             })
-        //             .finally(() => setIsBuying(false))
-        // })
+        const simulationResult = await simulateBuyGiftCard(giftCardCurrency, amount);
+        if (!simulationResult.isSuccess) {
+            onError(simulationResult.message ?? simulationResult.errors.errors[0].message);
+            setIsBuying(false);
+            return;
+        }
+
+        confirm({
+            title: 'Buy',
+            message: `${simulationResult.data.loyaltyAmount} Super Points will be redeemed from you account, 
+            are you sure you want to continue ?`,
+            onConfirmed: () =>
+                executeBuyGiftCard(giftCardId, amount)
+                    .then(result => {
+                        if (result.isSuccess) {
+                            onSuccess();
+                        } else {
+                            onError(result.message ?? result.errors.errors[0].message);
+                        }
+                    })
+                    .finally(() => setIsBuying(false)),
+            onDeclined: () => setIsBuying(false)
+        })
     }
 
-    async function simulateBuyGiftCard(giftCardId: string, amount: string) {
+    async function simulateBuyGiftCard(giftCardCurrency: string, amount: string) {
         return run(
-            cloudFunctionName.simulateGiftCardExchange,
-            { gift_card_id: giftCardId, amount: amount },
-            (res) => res,
+            cloudFunctionName.simulateFiatConversion,
+            { amount: amount, loyalty_currency: defaultProgram?.currency.loyaltyCurrency, fiat_currency: giftCardCurrency },
+            (res: FiatToLoyaltyConversionDTO) => FiatToLoyaltyConversion.fromDTO(res),
             true
         )
     }

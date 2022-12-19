@@ -46,6 +46,6 @@ export const cloudFunctionName = {
     updateUserFcmToken: 'update_user_fcm_token',
     giftCards: 'gift_card',
     giftCardDetails: 'gift_card_details',
-    simulateGiftCardExchange: 'simulate_gift_card_exchange',
+    simulateFiatConversion: 'simulate_fiat_conversion',
     executeGiftCardExchange: 'execute_gift_card_exchange'
 }

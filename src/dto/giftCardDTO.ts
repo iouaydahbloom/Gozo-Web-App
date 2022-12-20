@@ -8,6 +8,7 @@ export interface GiftCardDTO {
     currency: string,
     maximum_value: string,
     minimum_value: string,
+    terms_and_conditions_html: string,
     terms_and_conditions_url: string,
     denomination_type: string,
     denominations: string[]

@@ -13,7 +13,8 @@ export class GiftCard implements AppModel {
         public currency: string,
         public minimumValue: string,
         public maximumValue: string,
-        public termsAndConditions: string,
+        public termsAndConditionsHtml: string,
+        public termsAndConditionsUrl: string,
     ) { }
 
     static getFromDTO(dto: GiftCardDTO): GiftCard {
@@ -28,6 +29,7 @@ export class GiftCard implements AppModel {
             dto.currency,
             dto.minimum_value,
             dto.maximum_value,
+            dto.terms_and_conditions_html,
             dto.terms_and_conditions_url
         )
     }

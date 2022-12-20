@@ -11,6 +11,7 @@ import PrimaryContainer from '../../../components/layout/PrimaryContainer/Primar
 import PageLoader from '../../../components/loaders/PageLoader/PageLoader';
 import ExtendedText from '../../../components/typography/ExtendedText/ExtendedText';
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
+import SanitizeHtml from '../../../components/typography/SanitizeHtml/SanitizeHtml';
 import { FormValidator } from '../../../helpers/forms/form.helper';
 import useGiftCard from '../../../hooks/useGiftCard';
 import useSearchParams from '../../../hooks/useSearchParams';
@@ -156,12 +157,19 @@ const GiftCardDetails: React.FC = () => {
                                     <PrimaryTypography customClassName={styles.column}>{giftCard?.currency}</PrimaryTypography>
                                 </div>
                                 <div className={styles.row}>
-                                    <PrimaryTypography customClassName={styles.column}>Terms & Conditions:</PrimaryTypography>
-                                    <PrimaryTypography customClassName={styles.column}>{giftCard?.termsAndConditions}</PrimaryTypography>
-                                </div>
-                                <div className={styles.row}>
                                     <PrimaryTypography customClassName={styles.column}>Validity Term:</PrimaryTypography>
                                     <PrimaryTypography customClassName={styles.column}>{giftCard?.validity}</PrimaryTypography>
+                                </div>
+                                <div className={styles.row}>
+                                    <PrimaryTypography customClassName={styles.column}>Terms & Conditions:</PrimaryTypography>
+                                    <PrimaryTypography customClassName={styles.column}>
+                                        {
+                                            giftCard?.termsAndConditionsUrl ?
+                                                <a href={giftCard?.termsAndConditionsUrl} target="_blank">Open terms & conditions</a>
+                                                :
+                                                <SanitizeHtml html={giftCard?.termsAndConditionsHtml} />
+                                        }
+                                    </PrimaryTypography>
                                 </div>
                             </div>
                 }

@@ -30,17 +30,17 @@ const GiftCardItem: React.FC<Props> = ({ giftCard }) => {
                                     <PrimaryTypography customClassName={styles.column}>{giftCard.description}</PrimaryTypography>
                                 </div>
                                 <div className={styles.row}>
-                                    <PrimaryTypography customClassName={styles.column}>Terms & Conditions:</PrimaryTypography>
-                                    <PrimaryTypography customClassName={styles.column}>{giftCard.termsAndConditions}</PrimaryTypography>
+                                    <PrimaryTypography customClassName={styles.column}>Fiat Currency:</PrimaryTypography>
+                                    <PrimaryTypography customClassName={styles.column}>{giftCard.currency}</PrimaryTypography>
                                 </div>
                                 <div className={styles.row}>
                                     <PrimaryTypography customClassName={styles.column}>Validity Term:</PrimaryTypography>
                                     <PrimaryTypography customClassName={styles.column}>{giftCard.validity}</PrimaryTypography>
                                 </div>
-                                <PrimaryButton 
-                                    customStyles='ion-margin-vertical' 
-                                    size="s" 
-                                    onClick={() => push({ pathname: AppRoutes.giftCard, search: `?gift_card_id=${giftCard.id}`})}
+                                <PrimaryButton
+                                    customStyles='ion-margin-vertical'
+                                    size="s"
+                                    onClick={() => push({ pathname: AppRoutes.giftCard, search: `?gift_card_id=${giftCard.id}` })}
                                 >Read more</PrimaryButton>
                             </div>
                         )

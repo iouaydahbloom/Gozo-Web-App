@@ -24,6 +24,12 @@
     .column {
         flex: 1;
         overflow: hidden;
+
+        p {
+            &:first-of-type {
+                margin: 0;
+            }
+        }
     }
 }
 

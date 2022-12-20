@@ -8,11 +8,12 @@ import { LoyaltyMemberHistory } from "../../models/loyaltyMember"
 import TransactionDetailItem from "../Common/TransactionDetailItem/TransactionDetailItem"
 import { useEffect } from "react"
 import { formatDate } from "../../helpers/dateManagment"
+import { useParams } from "react-router"
 
 
 const LoyaltyProgramHistoryDetails: React.FC = () => {
-  const search = useSearchParams();
-  const id = search.get('transaction_id')
+
+  const { transactionId } = useParams<{ transactionId: string }>();
   const { historyField, isLoadingHistory, getTransaction } = useProgramsTransactionHistory()
 
   const keys = [
@@ -29,21 +30,20 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
 
   const transformData = (key: string, historyField: LoyaltyMemberHistory) => {
     return key === 'amount' ?
-    LoyaltyMemberHistory.isBalanceSubtracted(historyField) ?
-      `- ${historyField[key as keyof LoyaltyMemberHistory]}`
+      LoyaltyMemberHistory.isBalanceSubtracted(historyField) ?
+        `- ${historyField[key as keyof LoyaltyMemberHistory]}`
+        :
+        `+ ${historyField[key as keyof LoyaltyMemberHistory]}`
       :
-      `+ ${historyField[key as keyof LoyaltyMemberHistory]}`
-    :
-    (key === 'completed_at' || key === 'created_at') ?
-    formatDate(historyField[key as keyof LoyaltyMemberHistory], 'ddd Do MMM, YYYY h:mm a')
-    :
-    historyField[key as keyof LoyaltyMemberHistory]
+      (key === 'completed_at' || key === 'created_at') ?
+        formatDate(historyField[key as keyof LoyaltyMemberHistory], 'ddd Do MMM, YYYY h:mm a')
+        :
+        historyField[key as keyof LoyaltyMemberHistory]
   }
 
   useEffect(() => {
-    if(id) getTransaction(id)
-  }, [id])
-  
+    if (transactionId) getTransaction(transactionId)
+  }, [transactionId])
 
   return (
     <IonPage>

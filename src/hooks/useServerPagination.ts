@@ -3,7 +3,7 @@ import { Filter } from "../models/data/filter";
 import { Pagination } from "../models/data/pagination";
 
 interface Props<T, F extends Filter> {
-    getData: (filter: F) => Promise<Pagination<T>>,
+    getData: (filter: F) => Promise<Pagination<T> | null>,
     intialFilters?: F
 }
 
@@ -35,9 +35,7 @@ const useServerPagination = <T, F extends Filter>({
     }
 
     function getFilterFromParamProp(param: string) {
-        const page = param.match(/\d+/g)![0];
-        const pageSize = param.match(/\d+/g)![1];
-        return new Filter(parseInt(page), parseInt(pageSize)) as any
+        return Object.fromEntries(new URLSearchParams(param)) as any;
     }
 
     function loadMore() {
@@ -63,7 +61,6 @@ const useServerPagination = <T, F extends Filter>({
             setData([])
         }
     }, [])
-
 
     return {
         data: data,

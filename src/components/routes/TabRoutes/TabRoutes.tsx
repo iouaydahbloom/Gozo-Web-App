@@ -26,6 +26,7 @@ import DashboardIcon from '../../icons/DashboardIcon/DashboardIcon';
 import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
 import styles from './tabRoutes.module.scss';
+import LoyaltyPogramHistoryData from '../../../pages/LoyaltyProgramHistoryData/LoyaltyProgramHistoryData';
 
 const TabRoutes: React.FC = () => {
 
@@ -89,7 +90,10 @@ const TabRoutes: React.FC = () => {
                     <TransactionHistory />
                 </TabHeaderHeightProvider>
             </Route>
-            <Route exact path={AppRoutes.loyaltyProgramHistoryDetails}>
+            <Route exact path={AppRoutes.loyaltyProgramTransactionHistoryData}>
+                <LoyaltyPogramHistoryData />
+            </Route>
+            <Route exact path={AppRoutes.loyaltyProgramTransactionHistoryDetails}>
                 <LoyaltyProgramHistoryDetails />
             </Route>
             <Route exact path={AppRoutes.tokenHistoryDetails}>

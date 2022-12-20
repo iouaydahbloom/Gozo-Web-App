@@ -6,11 +6,18 @@ export const AppRoutes = {
     account: '/account',
     profile: '/profile',
     transactionHistory: '/transactionHistory',
-    loyaltyProgramHistoryDetails: '/transactionHistory/loyaltyDetails',
+    loyaltyProgramTransactionHistoryData: '/transactionHistory/loyaltyPrograms/:loyaltyCurrency',
+    loyaltyProgramTransactionHistoryDetails: '/transactionHistory/loyaltyPrograms/:loyaltyCurrency/:transactionId',
     tokenHistoryDetails: '/transactionHistory/tokenDetails',
     authCallback: '/authCallback',
     spinner: '/spinner',
     reward: '/reward',
     buy: '/buy',
-    giftCard: '/giftCard'
+    giftCard: '/giftCard',
+    getLoyaltyProgramTransactionHistoryDataRoute: (loyaltyCurrency: string) => {
+        return `${AppRoutes.transactionHistory}/loyaltyPrograms/${loyaltyCurrency}`
+    },
+    getLoyaltyProgramTransactionHistoryDetailsRoute: (loyaltyCurrency: string, transactionId: string) => {
+        return `${AppRoutes.transactionHistory}/loyaltyPrograms/${loyaltyCurrency}/${transactionId}`
+    }
 }

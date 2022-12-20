@@ -1,4 +1,4 @@
-import { IonPage, useIonViewWillEnter } from '@ionic/react'
+import { IonCol, IonGrid, IonPage, IonRow, useIonViewWillEnter } from '@ionic/react'
 import { useCallback } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
@@ -48,7 +48,17 @@ const Buy: React.FC = () => {
                                     <PageLoader />
                                     :
                                     giftCards && giftCards.length !== 0 ?
-                                        giftCards.map((giftCard, index) => <GiftCardItem key={index} giftCard={giftCard} />)
+                                        <IonGrid>
+                                            <IonRow>
+                                                {
+                                                    giftCards.map((giftCard, index) =>
+                                                        <IonCol key={index} size="6">
+                                                            <GiftCardItem key={index} giftCard={giftCard} />
+                                                        </IonCol>
+                                                    )
+                                                }
+                                            </IonRow>
+                                        </IonGrid>
                                         :
                                         <SectionPlaceholder
                                             logoUrl='assets/image/no-gift-card.svg'

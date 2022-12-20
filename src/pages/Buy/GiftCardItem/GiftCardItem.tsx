@@ -11,11 +11,16 @@ interface Props {
 }
 
 const GiftCardItem: React.FC<Props> = ({ giftCard }) => {
-    const { push } = useHistory()
+    const { push } = useHistory();
+
+    function goToDetails() {
+        push(AppRoutes.getBuyGiftCardRoute(giftCard.id))
+    }
+
     return (
         <div className={styles.container}>
             <PrimaryTypography customClassName="ion-padding-vertical">{giftCard.name}</PrimaryTypography>
-            <img src={giftCard.image} alt='' />
+            <div className={styles.cover} style={{ backgroundImage: `url(${giftCard.image})` }} onClick={goToDetails} />
             <PrimaryAccordion
                 className={styles.accordion}
                 accordionItem={[
@@ -40,7 +45,7 @@ const GiftCardItem: React.FC<Props> = ({ giftCard }) => {
                                 <PrimaryButton
                                     customStyles='ion-margin-vertical'
                                     size="s"
-                                    onClick={() => push({ pathname: AppRoutes.giftCard, search: `?gift_card_id=${giftCard.id}` })}
+                                    onClick={goToDetails}
                                 >Read more</PrimaryButton>
                             </div>
                         )

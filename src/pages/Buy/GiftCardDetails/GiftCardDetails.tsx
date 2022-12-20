@@ -1,6 +1,7 @@
 import { IonCol, IonGrid, IonPage, IonRow, useIonViewWillEnter } from '@ionic/react'
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import SecondaryCard from '../../../components/cards/SecondaryCard/SecondaryCard';
 import SecondaryHeader from '../../../components/headers/SecondaryHeader/SecondaryHeader';
@@ -14,17 +15,18 @@ import PrimaryTypography from '../../../components/typography/PrimaryTypography/
 import SanitizeHtml from '../../../components/typography/SanitizeHtml/SanitizeHtml';
 import { FormValidator } from '../../../helpers/forms/form.helper';
 import useGiftCard from '../../../hooks/useGiftCard';
-import useSearchParams from '../../../hooks/useSearchParams';
+import useTabMenuHidder from '../../../hooks/useTabMenuHidder';
 import useToast from '../../../hooks/useToast';
 import GiftCardPurchaseSuccess from '../GiftCardPurchaseSuccess/GiftCardPurchaseSuccess';
 import styles from './giftCardDetails.module.scss';
 
 const GiftCardDetails: React.FC = () => {
-    const search = useSearchParams();
-    const id = search.get('gift_card_id')
-    const { getGiftCard, buyGiftCard, giftCard, isLoading, isBuying } = useGiftCard();
+    const { id } = useParams<{ id: string }>();
+    const { getGiftCard, buyGiftCard, simulateFiatToPointsConversion, giftCard, isLoading, isBuying } = useGiftCard();
     const { presentFailure } = useToast();
     const [isBought, setIsBought] = useState(false);
+    const [conversionRate, setConversionRate] = useState<number>(0);
+    useTabMenuHidder();
 
     async function buy(amount: string) {
         if (!giftCard) return;
@@ -33,7 +35,8 @@ const GiftCardDetails: React.FC = () => {
             giftCard.currency,
             amount,
             () => setIsBought(true),
-            presentFailure
+            presentFailure,
+            conversionRate
         );
     }
 
@@ -57,6 +60,14 @@ const GiftCardDetails: React.FC = () => {
     useEffect(() => {
         if (id) getGiftCard(id)
     }, [id])
+
+    useEffect(() => {
+        if (!giftCard) { return }
+        simulateFiatToPointsConversion(giftCard.currency, '1')
+            .then(result => {
+                if (result.isSuccess) setConversionRate(result.data.loyaltyAmount)
+            })
+    }, [giftCard?.currency])
 
     useIonViewWillEnter(() => {
         setIsBought(false);
@@ -137,6 +148,7 @@ const GiftCardDetails: React.FC = () => {
                                         formManager.errors.amount &&
                                         <InputError error={formManager.errors.amount} />
                                     }
+                                    <PrimaryTypography customClassName={styles.rate}>{giftCard?.currency}1.00 = {conversionRate} Super Points</PrimaryTypography>
                                 </div>
                                 <div className={styles.row}>
                                     <PrimaryTypography customClassName={styles.column}>Name:</PrimaryTypography>

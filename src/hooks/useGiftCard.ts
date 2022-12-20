@@ -61,18 +61,23 @@ const useGiftCard = () => {
         giftCardCurrency: string,
         amount: string,
         onSuccess: () => any,
-        onError: (error: any) => any) {
+        onError: (error: any) => any,
+        pointToPay?: number) {
         setIsBuying(true);
-        const simulationResult = await simulateBuyGiftCard(giftCardCurrency, amount);
-        if (!simulationResult.isSuccess) {
-            onError(simulationResult.message ?? simulationResult.errors.errors[0].message);
-            setIsBuying(false);
-            return;
+        if (!pointToPay) {
+            const simulationResult = await simulateFiatToPointsConversion(giftCardCurrency, amount);
+            if (!simulationResult.isSuccess) {
+                onError(simulationResult.message ?? simulationResult.errors.errors[0].message);
+                setIsBuying(false);
+                return;
+            }
+
+            pointToPay = simulationResult.data.loyaltyAmount;
         }
 
         confirm({
             title: 'Buy',
-            message: `${simulationResult.data.loyaltyAmount} Super Points will be redeemed from you account, 
+            message: `${pointToPay} Super Points will be redeemed from you account, 
             are you sure you want to continue ?`,
             onConfirmed: () =>
                 executeBuyGiftCard(giftCardId, amount)
@@ -88,10 +93,10 @@ const useGiftCard = () => {
         })
     }
 
-    async function simulateBuyGiftCard(giftCardCurrency: string, amount: string) {
+    async function simulateFiatToPointsConversion(fiatCurrency: string, amount: string) {
         return run(
             cloudFunctionName.simulateFiatConversion,
-            { amount: amount, loyalty_currency: defaultProgram?.currency.loyaltyCurrency, fiat_currency: giftCardCurrency },
+            { amount: amount, loyalty_currency: defaultProgram?.currency.loyaltyCurrency, fiat_currency: fiatCurrency },
             (res: FiatToLoyaltyConversionDTO) => FiatToLoyaltyConversion.fromDTO(res),
             true
         )
@@ -111,6 +116,7 @@ const useGiftCard = () => {
         fetchGiftCards,
         getGiftCard,
         buyGiftCard,
+        simulateFiatToPointsConversion,
         isLoading,
         isBuying
     }

@@ -216,7 +216,6 @@ const Spinner: React.FC = () => {
         }
     }, [returnedPrize])
 
-
     useEffect(() => {
         if (selectedPrizeId) {
             stop();
@@ -228,7 +227,6 @@ const Spinner: React.FC = () => {
             stop();
         }
     }, [isPlaying])
-
 
     useIonViewWillEnter(() => {
         addListener(
@@ -277,9 +275,8 @@ const Spinner: React.FC = () => {
                     <div className='flex-row-container ion-padding-horizontal'>
                         <ProgramSelection
                             options={programsOpts}
-                            selectedBalance={membership?.balance ?? 0}
                             selectedValue={loyaltyProgram?.loyaltyCurrency?.shortName ?? ''}
-                            setSelectedValue={handleSelectedValue} />
+                            onValueChange={handleSelectedValue} />
                         <PrimaryButton
                             customStyles='flex-row-1'
                             onClick={showSpinCondition}

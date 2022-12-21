@@ -1,6 +1,5 @@
 import { IonIcon } from "@ionic/react"
 import { chevronDownOutline } from "ionicons/icons"
-import { useEffect, useState } from "react"
 import PrimaryTypography from "../../../components/typography/PrimaryTypography/PrimaryTypography"
 import useSecondarySheet from "../../../hooks/useSecondarySheet"
 import LoyaltyProgramOptions from "../LoyaltyProgramOptions/LoyaltyProgramOptions"
@@ -11,47 +10,36 @@ export class ProgramSelectOption {
         public name: string,
         public currency: string,
         public icon: string
-        ) { }
+    ) { }
 }
- 
+
 interface Props {
     options: ProgramSelectOption[],
     selectedValue: string,
-    selectedBalance: number,
-    setSelectedValue: (name: string) => void, 
+    onValueChange: (value: string) => void,
     className?: string
 }
 
-const ProgramSelection: React.FC<Props> = ({ options, selectedValue, selectedBalance, setSelectedValue, className }) => {
-    const [value, setValue] = useState<string>('')
+const ProgramSelection: React.FC<Props> = ({ options, selectedValue, onValueChange, className }) => {
 
     const { showModal: showSelect, dismissModal: dismissSelect } = useSecondarySheet({
         title: '',
-        component: <LoyaltyProgramOptions options={options} selectedValue={value} onClick={onClickProgram} handleSubmission={handleSubmission}/>,
-        id: 'selectModal',
-        onDismiss: () => {
-            setValue(selectedValue)
-        }
+        component: <LoyaltyProgramOptions
+            options={options}
+            defaultSelected={selectedValue}
+            onSelectionChange={onSelectionChange} />,
+        id: 'selectModal'
     });
 
-    function onClickProgram(name: string) {
-        setValue(name)
+    function onSelectionChange(value: string) {
+        onValueChange(value);
+        dismissSelect();
     }
-
-    function handleSubmission() {
-        setSelectedValue(value)
-        dismissSelect()
-    }
-
-    useEffect(() => {
-       setValue(selectedValue)
-    }, [selectedValue])
-    
 
     return (
         <div className={`${styles.select} ${className}`} onClick={showSelect} >
             <PrimaryTypography size='m' isBlock={false}>
-              {selectedValue}
+                {selectedValue}
             </PrimaryTypography>
             <IonIcon size='large' color='light' icon={chevronDownOutline} />
         </div>

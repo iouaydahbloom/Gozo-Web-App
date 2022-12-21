@@ -20,7 +20,7 @@ const RewardListingItem: React.FC<Props> = ({ reward, reload }) => {
   const { showModal: showClaimReward } = usePrimarySheet({
     title: 'Claim Details',
     component: ClaimReward,
-    componentProps: {prizeId: reward.prizeId, rewardId: reward.id, dismiss: dismissModal},
+    componentProps: { prizeId: reward.prizeId, rewardId: reward.id, dismiss: dismissModal },
     id: 'claimModal',
     onDismiss: () => {
       reload && reload()
@@ -29,10 +29,9 @@ const RewardListingItem: React.FC<Props> = ({ reward, reload }) => {
 
   function dismissModal() {
     modalController.dismiss(null, undefined, "claimModal");
-}
+  }
 
   const { showPopover } = usePopover({
-    id: reward.id,
     content:
       <div>
         <div className={styles.popoverRow}>

@@ -6,13 +6,14 @@ interface Props {
     title?: string,
     description?: string,
     logoUrl?: string,
-    renderActions?: () => ReactNode
+    renderActions?: () => ReactNode,
+    className?: string
 }
 
-const SectionPlaceholder: React.FC<Props> = ({ title, description, logoUrl, renderActions }) => {
+const SectionPlaceholder: React.FC<Props> = ({ title, description, logoUrl, renderActions, className }) => {
     return (
-        <div className={styles.containerContent}>
-            {logoUrl && <img src={logoUrl} alt=''/>}
+        <div className={`${styles.containerContent} ${className}`}>
+            {logoUrl && <img src={logoUrl} alt='' />}
             {title && <PrimaryTypography size='xxl'>
                 {title}
             </PrimaryTypography>

@@ -6,11 +6,13 @@ import { InfiniteScrollPagination } from '../../components/InfiniteScrollPaginat
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer'
 import PageLoader from '../../components/loaders/PageLoader/PageLoader';
 import SectionPlaceholder from '../../components/sections/SectionPlaceholder/SectionPlaceholder';
+import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import useGiftCard from '../../hooks/useGiftCard';
 import useServerPagination from '../../hooks/useServerPagination';
 import { Filter } from '../../models/data/filter';
 import { GiftCard } from '../../models/giftCard';
 import GiftCardItem from './GiftCardItem/GiftCardItem';
+import styles from './buy.module.scss';
 
 const Buy: React.FC = () => {
 
@@ -48,7 +50,12 @@ const Buy: React.FC = () => {
                                     <PageLoader />
                                     :
                                     giftCards && giftCards.length !== 0 ?
-                                        <IonGrid>
+                                        <IonGrid className={styles.giftCards}>
+                                            <IonRow>
+                                                <IonCol>
+                                                    <PrimaryTypography size='m' isBold>GIFT CARDS</PrimaryTypography>
+                                                </IonCol>
+                                            </IonRow>
                                             <IonRow>
                                                 {
                                                     giftCards.map((giftCard, index) =>

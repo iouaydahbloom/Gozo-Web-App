@@ -41,7 +41,7 @@ const GiftCardDetails: React.FC = () => {
     }
 
     const formManager = useFormik({
-        initialValues: { amount: 0 },
+        initialValues: { amount: giftCard?.minimumValue ?? 0 },
         enableReinitialize: true,
         validate: (values) => {
             const errors: any = {};
@@ -91,7 +91,7 @@ const GiftCardDetails: React.FC = () => {
                                     </PrimaryButton>
                                 </div>
                                 <PrimaryTypography customClassName="">{giftCard?.name}</PrimaryTypography>
-                                <img src={giftCard?.image} alt='' />
+                                <img src={giftCard?.image} alt='gift-card-cover' className={styles.cover} />
 
                                 <SecondaryCard className={styles.minmax}>
                                     <IonGrid>
@@ -126,6 +126,7 @@ const GiftCardDetails: React.FC = () => {
                                     {
                                         giftCard?.hasFixedAvailabilities ?
                                             <SecondarySelect
+                                                required
                                                 placeholder='0.00'
                                                 name="amount"
                                                 onChange={formManager.handleChange}
@@ -136,7 +137,7 @@ const GiftCardDetails: React.FC = () => {
                                             />
                                             :
                                             <SecondaryInput
-                                                placeholder='$0.00'
+                                                placeholder='0.00'
                                                 name="amount"
                                                 type='number'
                                                 onChange={formManager.handleChange}

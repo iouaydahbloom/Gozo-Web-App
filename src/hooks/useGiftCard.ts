@@ -62,9 +62,9 @@ const useGiftCard = () => {
         amount: string,
         onSuccess: () => any,
         onError: (error: any) => any,
-        pointToPay?: number) {
+        pointsPerFiat?: number) {
         setIsBuying(true);
-        if (!pointToPay) {
+        if (!pointsPerFiat) {
             const simulationResult = await simulateFiatToPointsConversion(giftCardCurrency, amount);
             if (!simulationResult.isSuccess) {
                 onError(simulationResult.message ?? simulationResult.errors.errors[0].message);
@@ -72,12 +72,14 @@ const useGiftCard = () => {
                 return;
             }
 
-            pointToPay = simulationResult.data.loyaltyAmount;
+            pointsPerFiat = simulationResult.data.loyaltyAmount;
+        } else {
+            pointsPerFiat = pointsPerFiat * parseInt(amount);
         }
 
         confirm({
             title: 'Buy',
-            message: `${pointToPay} Super Points will be redeemed from you account, 
+            message: `${pointsPerFiat} Super Points will be redeemed from you account, 
             are you sure you want to continue ?`,
             onConfirmed: () =>
                 executeBuyGiftCard(giftCardId, amount)

@@ -85,11 +85,6 @@ const GiftCardDetails: React.FC = () => {
                             <PageLoader />
                             :
                             <div className={styles.details}>
-                                <div className={styles.buttonContainer}>
-                                    <PrimaryButton size='m' onClick={formManager.handleSubmit} loading={isBuying}>
-                                        Buy Now!
-                                    </PrimaryButton>
-                                </div>
                                 <PrimaryTypography customClassName="">{giftCard?.name}</PrimaryTypography>
                                 <img src={giftCard?.image} alt='gift-card-cover' className={styles.cover} />
 
@@ -151,6 +146,17 @@ const GiftCardDetails: React.FC = () => {
                                     }
                                     <PrimaryTypography customClassName={styles.rate}>{giftCard?.currency}1.00 = {conversionRate} Super Points</PrimaryTypography>
                                 </div>
+
+                                <div className={styles.buttonContainer}>
+                                    <PrimaryButton
+                                        size='m'
+                                        onClick={formManager.handleSubmit}
+                                        loading={isBuying}
+                                        expand='block'>
+                                        Buy Now!
+                                    </PrimaryButton>
+                                </div>
+
                                 <div className={styles.row}>
                                     <PrimaryTypography customClassName={styles.column}>Name:</PrimaryTypography>
                                     <PrimaryTypography customClassName={styles.column}>{giftCard?.name}</PrimaryTypography>

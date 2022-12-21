@@ -21,9 +21,7 @@ const useGiftCard = () => {
     async function fetchGiftCards(filter: Filter) {
         setIsLoading(true)
         return run(cloudFunctionName.giftCards,
-            {
-                filter
-            },
+            filter,
             (result: Pagination<GiftCardDTO>) => {
                 return new Pagination(result.count, result.next, result.previous, result.results.map(res => {
                     return GiftCard.getFromDTO(res)
@@ -31,7 +29,7 @@ const useGiftCard = () => {
             },
             true)
             .then(result => {
-                if (result.isSuccess) return result.data
+                return result.isSuccess ? result.data : null;
             })
             .finally(() => setIsLoading(false))
     }
@@ -67,7 +65,8 @@ const useGiftCard = () => {
         if (!pointsPerFiat) {
             const simulationResult = await simulateFiatToPointsConversion(giftCardCurrency, amount);
             if (!simulationResult.isSuccess) {
-                onError(simulationResult.message ?? simulationResult.errors.errors[0].message);
+                onError(simulationResult.message ?
+                    simulationResult.message : simulationResult.errors.errors[0].message);
                 setIsBuying(false);
                 return;
             }
@@ -87,7 +86,7 @@ const useGiftCard = () => {
                         if (result.isSuccess) {
                             onSuccess();
                         } else {
-                            onError(result.message ?? result.errors.errors[0].message);
+                            onError(result.message ? result.message : result.errors.errors[0].message);
                         }
                     })
                     .finally(() => setIsBuying(false)),

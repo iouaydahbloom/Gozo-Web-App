@@ -1,4 +1,4 @@
-import { IonAvatar, IonIcon, IonItem, IonLabel, IonText } from '@ionic/react';
+import { IonAvatar, IonIcon, IonItem, IonLabel, IonSpinner, IonText } from '@ionic/react';
 import { ellipse } from 'ionicons/icons';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
@@ -19,7 +19,7 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSe
     const { push } = useHistory();
 
     const [isSelected, setIsSelected] = useState(false);
-    const { membership } = useMemberShip(loyaltyProgram?.currency.loyaltyCurrency);
+    const { membership, isLoading: isLoadingMembership } = useMemberShip(loyaltyProgram?.currency.loyaltyCurrency);
 
     function spin() {
         push({ pathname: AppRoutes.spinner, search: `?program_id=${loyaltyProgram?.currency.programId}` })
@@ -37,31 +37,34 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSe
                     </div>
                 }
                 <div className={`ellipsis ${styles.startSlot}`}>
-                    <IonItem lines='none'>
-                        <IonAvatar slot="start">
-                            <img alt='' className={styles.logo} src={loyaltyProgram.currency.programLogo ? loyaltyProgram.currency.programLogo : "assets/image/image-placeholder.svg"} />
+                    <div className={styles.id}>
+                        <IonAvatar slot="start" className={styles.logo}>
+                            <img alt='' src={loyaltyProgram.currency.programLogo ? loyaltyProgram.currency.programLogo : "assets/image/image-placeholder.svg"} />
                         </IonAvatar>
-                        <IonLabel>
+                        <div className={styles.mainInfo}>
                             <IonLabel color='light'>
                                 <PrimaryTypography color='light' isBlock={false} isBold size='m'>{loyaltyProgram.currency.loyaltyCurrencyName}</PrimaryTypography>
                             </IonLabel>
                             <IonLabel className={styles.status}>
-                                {membership ?
-                                    <>
-                                        <IonIcon icon={ellipse} color="success" />
-                                        <PrimaryTypography color='success' customClassName='ellipsis' size='m'>Connected</PrimaryTypography>
-                                    </>
-                                    :
-                                    <>
-                                        <IonIcon icon={ellipse} color="danger" />
-                                        <PrimaryTypography color='danger' customClassName='ellipsis' size='m'>Disconnected</PrimaryTypography>
-                                    </>
+                                {
+                                    isLoadingMembership ?
+                                        <IonSpinner color='light' className={styles.loader}/>
+                                        :
+                                        membership ?
+                                            <>
+                                                <IonIcon icon={ellipse} color="success" />
+                                                <PrimaryTypography color='success' customClassName='ellipsis' size='m'>Connected</PrimaryTypography>
+                                            </>
+                                            :
+                                            <>
+                                                <IonIcon icon={ellipse} color="danger" />
+                                                <PrimaryTypography color='danger' customClassName='ellipsis' size='m'>Disconnected</PrimaryTypography>
+                                            </>
                                 }
                             </IonLabel>
+                        </div>
 
-                        </IonLabel>
-
-                    </IonItem >
+                    </div >
                     <div className={styles.detailWrapper}>
                         <IonLabel className={styles.balanceRow}>
                             <IonText color='medium-light'>Bal.</IonText>

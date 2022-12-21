@@ -65,7 +65,7 @@ const useServerPagination = <T, F extends Filter>({
     return {
         data: data,
         isLoading,
-        loadMore: loadMore,
+        loadMore,
         hasMore: !!metadata?.next,
         fetchData
     }

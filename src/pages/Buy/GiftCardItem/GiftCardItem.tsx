@@ -1,6 +1,4 @@
 import { useHistory } from "react-router"
-import PrimaryAccordion from "../../../components/accordions/PrimaryAccordion/PrimaryAccordion"
-import PrimaryButton from "../../../components/buttons/PrimaryButton/PrimaryButton"
 import PrimaryTypography from "../../../components/typography/PrimaryTypography/PrimaryTypography"
 import { AppRoutes } from "../../../constants/appRoutes"
 import { GiftCard } from "../../../models/giftCard"
@@ -11,42 +9,21 @@ interface Props {
 }
 
 const GiftCardItem: React.FC<Props> = ({ giftCard }) => {
-    const { push } = useHistory()
+    const { push } = useHistory();
+
+    function goToDetails() {
+        push(AppRoutes.getBuyGiftCardRoute(giftCard.id))
+    }
+
     return (
         <div className={styles.container}>
             <PrimaryTypography customClassName="ion-padding-vertical">{giftCard.name}</PrimaryTypography>
-            <img src={giftCard.image} alt='' />
-            <PrimaryAccordion
-                className={styles.accordion}
-                accordionItem={[
-                    {
-                        icon: 'assets/image/information-icon.png',
-                        value: giftCard.id,
-                        label: 'Card Details',
-                        content: (
-                            <div className={styles.accordionContent}>
-                                <div className={styles.row}>
-                                    <PrimaryTypography customClassName={styles.column}>Description:</PrimaryTypography>
-                                    <PrimaryTypography customClassName={styles.column}>{giftCard.description}</PrimaryTypography>
-                                </div>
-                                <div className={styles.row}>
-                                    <PrimaryTypography customClassName={styles.column}>Fiat Currency:</PrimaryTypography>
-                                    <PrimaryTypography customClassName={styles.column}>{giftCard.currency}</PrimaryTypography>
-                                </div>
-                                <div className={styles.row}>
-                                    <PrimaryTypography customClassName={styles.column}>Validity Term:</PrimaryTypography>
-                                    <PrimaryTypography customClassName={styles.column}>{giftCard.validity}</PrimaryTypography>
-                                </div>
-                                <PrimaryButton
-                                    customStyles='ion-margin-vertical'
-                                    size="s"
-                                    onClick={() => push({ pathname: AppRoutes.giftCard, search: `?gift_card_id=${giftCard.id}` })}
-                                >Read more</PrimaryButton>
-                            </div>
-                        )
-                    }
-                ]}
-            />
+            <div className={styles.cover} style={{ backgroundImage: `url(${giftCard.image})` }} onClick={goToDetails} />
+            <div className={styles.info}>
+                <PrimaryTypography size="xs">
+                    {giftCard.currency} {giftCard.minimumValue} - {giftCard.maximumValue}
+                </PrimaryTypography>
+            </div>
         </div>
     )
 }

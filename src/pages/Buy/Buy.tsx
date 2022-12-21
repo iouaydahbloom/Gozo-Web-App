@@ -1,4 +1,4 @@
-import { IonPage, useIonViewWillEnter } from '@ionic/react'
+import { IonCol, IonGrid, IonPage, IonRow, useIonViewWillEnter } from '@ionic/react'
 import { useCallback } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
@@ -6,11 +6,13 @@ import { InfiniteScrollPagination } from '../../components/InfiniteScrollPaginat
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer'
 import PageLoader from '../../components/loaders/PageLoader/PageLoader';
 import SectionPlaceholder from '../../components/sections/SectionPlaceholder/SectionPlaceholder';
+import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import useGiftCard from '../../hooks/useGiftCard';
 import useServerPagination from '../../hooks/useServerPagination';
 import { Filter } from '../../models/data/filter';
 import { GiftCard } from '../../models/giftCard';
 import GiftCardItem from './GiftCardItem/GiftCardItem';
+import styles from './buy.module.scss';
 
 const Buy: React.FC = () => {
 
@@ -48,7 +50,22 @@ const Buy: React.FC = () => {
                                     <PageLoader />
                                     :
                                     giftCards && giftCards.length !== 0 ?
-                                        giftCards.map((giftCard, index) => <GiftCardItem key={index} giftCard={giftCard} />)
+                                        <IonGrid className={styles.giftCards}>
+                                            <IonRow>
+                                                <IonCol>
+                                                    <PrimaryTypography size='m' isBold>GIFT CARDS</PrimaryTypography>
+                                                </IonCol>
+                                            </IonRow>
+                                            <IonRow>
+                                                {
+                                                    giftCards.map((giftCard, index) =>
+                                                        <IonCol key={index} size="6">
+                                                            <GiftCardItem key={index} giftCard={giftCard} />
+                                                        </IonCol>
+                                                    )
+                                                }
+                                            </IonRow>
+                                        </IonGrid>
                                         :
                                         <SectionPlaceholder
                                             logoUrl='assets/image/no-gift-card.svg'

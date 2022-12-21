@@ -17,9 +17,11 @@ const ExtendedText: React.FC<Props> = ({ text, ...otherProps }) => {
     return (
         <PrimaryTypography {...otherProps}>
             {isReadMore ? text!.slice(0, 150) : text}
-            <span onClick={toggleReadMore} className={styles.readOrHide}>
-                {isReadMore ? " ...read more" : " show less"}
-            </span>
+            {
+                text.length >= 150 && <span onClick={toggleReadMore} className={styles.readOrHide}>
+                    {isReadMore ? " ...read more" : " show less"}
+                </span>
+            }
         </PrimaryTypography>
     );
 };

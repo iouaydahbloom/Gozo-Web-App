@@ -110,7 +110,7 @@ const TabRoutes: React.FC = () => {
             <Route exact path={AppRoutes.buy}>
                 <Buy />
             </Route>
-            <Route exact path={AppRoutes.giftCard}>
+            <Route exact path={AppRoutes.buyGiftCard}>
                 <GiftCardDetails />
             </Route>
             <Route exact path={AppRoutes.landing}>

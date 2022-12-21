@@ -1,6 +1,6 @@
 import PrimaryGrid from '../../components/grids/PrimaryGrid/PrimaryGrid';
 import { formatDate } from '../../helpers/dateManagment';
-import { useHistory, useParams } from 'react-router';
+import { useHistory, useLocation, useParams } from 'react-router';
 import { AppRoutes } from '../../constants/appRoutes';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import { LoyaltyMemberHistory } from '../../models/loyaltyMember';
@@ -18,6 +18,7 @@ const LoyaltyPogramHistoryData: React.FC = () => {
 
     const { loyaltyCurrency } = useParams<{ loyaltyCurrency: string }>();
     const { push } = useHistory();
+    const { state } = useLocation();
     const { getTransactions } = useProgramsTransactionHistory();
     const {
         data: historyFields,
@@ -28,6 +29,8 @@ const LoyaltyPogramHistoryData: React.FC = () => {
     } = useServerPagination<LoyaltyMemberHistory, any>({
         getData: (filter) => getTransactions(filter, loyaltyCurrency)
     });
+
+    const routingState = state as { loyaltyProgramName: string };
 
     const Placeholder = () => {
         return (
@@ -56,7 +59,7 @@ const LoyaltyPogramHistoryData: React.FC = () => {
     return (
         <IonPage>
             <SecondaryHeader
-                title={loyaltyCurrency} />
+                title={routingState?.loyaltyProgramName} />
             <PrimaryContainer
                 scrollYAxis={false}
                 isRefreshable

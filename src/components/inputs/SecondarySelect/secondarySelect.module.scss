@@ -47,10 +47,11 @@
 
         .secondarySelectIcon {
             position: absolute;
-            top: 9px;
+            top: 15px;
             z-index: 2;
             right: 9px;
             cursor: pointer;
+            color: var(--ion-color-light);
         }
 
         .select::part(icon) {

@@ -1,5 +1,8 @@
 .details {
-    margin-bottom: 42px;
+    .cover {
+        border-radius: 10px;
+        width: 100%;
+    }
 }
 
 .buttonContainer {
@@ -11,6 +14,11 @@
 
     .label {
         padding-bottom: 10px;
+    }
+
+    .rate {
+        margin-top: 5px;
+        text-align: right;
     }
 }
 

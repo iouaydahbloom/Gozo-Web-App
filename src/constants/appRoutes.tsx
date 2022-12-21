@@ -13,11 +13,14 @@ export const AppRoutes = {
     spinner: '/spinner',
     reward: '/reward',
     buy: '/buy',
-    giftCard: '/giftCard',
+    buyGiftCard: '/buy/:id',
     getLoyaltyProgramTransactionHistoryDataRoute: (loyaltyCurrency: string) => {
         return `${AppRoutes.transactionHistory}/loyaltyPrograms/${loyaltyCurrency}`
     },
     getLoyaltyProgramTransactionHistoryDetailsRoute: (loyaltyCurrency: string, transactionId: string) => {
         return `${AppRoutes.transactionHistory}/loyaltyPrograms/${loyaltyCurrency}/${transactionId}`
+    },
+    getBuyGiftCardRoute: (id: string) => {
+        return `${AppRoutes.buy}/${id}`
     }
 }

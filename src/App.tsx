@@ -31,6 +31,7 @@ import SectionPlaceholder from './components/sections/SectionPlaceholder/Section
 import TabRoutes from './components/routes/TabRoutes/TabRoutes';
 import useNotifications from './hooks/useNotifications';
 import useGeoLocation from './hooks/useGeoLocation';
+import { errorHandlerContext } from './providers/ErrorHandlerProvider/errorHandlerContext';
 
 setupIonicReact();
 
@@ -40,6 +41,7 @@ const App: React.FC = () => {
   const { isReady: isOnboardingStateReady, refresh: refreshOnboardingPreview } = useOnBoardingPreview();
   const { isReady: isDappReady, refresh: refreshDapp } = useDapp();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { globalError } = useContext(errorHandlerContext);
   useNotifications();
   useGeoLocation();
 
@@ -54,9 +56,15 @@ const App: React.FC = () => {
   }
 
   useEffect(() => {
+    if ((!isSessionReady || !isOnboardingStateReady || !isDappReady) && (globalError)) {
+      SplashScreen.hide({ fadeOutDuration: 600 });
+      return;
+    }
+
     if (!isSessionReady || !isOnboardingStateReady || !isDappReady) return;
+    
     SplashScreen.hide({ fadeOutDuration: 600 });
-  }, [isSessionReady, isOnboardingStateReady, isDappReady])
+  }, [isSessionReady, isOnboardingStateReady, isDappReady, globalError])
 
   return (
     <IonApp>

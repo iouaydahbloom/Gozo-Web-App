@@ -19,14 +19,22 @@ const TransactionHistory: React.FC = () => {
     const { eRC20Transfers, isLoadingTransfers: isLoadingERC20Transfers, fetchERC20Transfers: fetchERC20TransfersData } = useERC20Transfers();
     const [userLoyaltyPrograms, setUserLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([])
 
-    const { fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms } = useLoyaltyPrograms();
+    const { defaultProgram, fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms } = useLoyaltyPrograms();
     const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
     const [, setSelectedTabIndex] = useState(0);
     const { push } = useHistory();
 
+    async function getAllLoyaltyPrograms() {
+        return fetchMyLoyaltyPrograms()
+            .then(mlp => {
+                const allPrograms = defaultProgram ? [defaultProgram, ...mlp] : mlp;
+                setUserLoyaltyPrograms(allPrograms)
+            })
+    }
+
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
-            fetchMyLoyaltyPrograms().then(mlp => setUserLoyaltyPrograms(mlp)),
+            getAllLoyaltyPrograms(),
             fetchERC20TransfersData()
         ])
     }, [])
@@ -58,7 +66,12 @@ const TransactionHistory: React.FC = () => {
                         <LoyaltyProgramsHistoryOptions
                             loading={loadingMyLoyaltyPrograms}
                             loyaltyPrograms={userLoyaltyPrograms}
-                            onLoyaltyProgramSelected={(loyaltyProgram) => push(AppRoutes.getLoyaltyProgramTransactionHistoryDataRoute(loyaltyProgram))} />
+                            onLoyaltyProgramSelected={(loyaltyProgram) =>
+                                push({
+                                    pathname: AppRoutes.getLoyaltyProgramTransactionHistoryDataRoute(loyaltyProgram.currency.loyaltyCurrency),
+                                    state: { loyaltyProgramName: loyaltyProgram.currency.loyaltyCurrencyName }
+                                })
+                            } />
                     </TabPanel>
                     <TabPanel>
                         <CryptoHistory

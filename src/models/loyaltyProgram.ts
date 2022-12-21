@@ -57,7 +57,19 @@ export class UserLoyaltyProgram implements AppModel {
 
     static getFromDefaultCurrencyDTO(dto: DefaultCurrencyDTO): UserLoyaltyProgram {
         return new UserLoyaltyProgram(
-            new UserLoyaltyProgramCurrency(dto.currencyId, dto.currencyDisplayName, '', new Date(), '', '', dto.currencyLogo, true, true, true, true),
+            new UserLoyaltyProgramCurrency(
+                dto.currencyId,
+                dto.currencyDisplayName,
+                dto.currencyDisplayName,
+                new Date(),
+                '',
+                '',
+                dto.currencyLogo,
+                true,
+                true,
+                true,
+                true
+            ),
             '',
             [],
             new Date(),

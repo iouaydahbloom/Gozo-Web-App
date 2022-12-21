@@ -1,5 +1,4 @@
 .accordionContent {
-
     .row {
         display: flex;
         flex-direction: row;
@@ -14,4 +13,23 @@
             white-space: nowrap;
         }
     }
+}
+
+.cover {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 90px;
+    border: 1px solid var(--ion-color-medium-tint);
+    border-radius: 5px;
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    background: #2A2E4E;
+    border-radius: 3px;
+    padding: 2px 5px;
+    margin-top: 9px;
 }

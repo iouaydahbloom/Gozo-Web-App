@@ -135,8 +135,6 @@ const Spinner: React.FC = () => {
     }
 
     function listenerCallBack(id: any, amount: any, playerAddress: string, gameToken: string) {
-        console.log('game token check ', gameToken);
-        console.log("listening to event prizeSelected with id:", id)
         if (playerAddress.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
             const prize: IPrize = {
                 prizeId: id,
@@ -265,7 +263,6 @@ const Spinner: React.FC = () => {
     }, [loyaltyProgramId])
 
     useEffect(() => {
-        console.log('isLoadingPRizes', isLoadingPrizes)
         if (!isLoadingPrizes) {
             setIsPlayingReady(true);
         }
@@ -311,6 +308,7 @@ const Spinner: React.FC = () => {
                                             data={wheelSegmentsOpts}
                                             spin={isPlaying}
                                             selectedPrizeId={selectedPrizeId}
+                                            onClick={showSpinCondition}
                                             onStopSpinning={() => {
                                                 setTimeout(() => showSuccessModal(), 1000);
                                             }} />

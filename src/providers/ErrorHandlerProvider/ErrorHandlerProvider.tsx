@@ -11,6 +11,7 @@ const ErrorHandlerProvider: React.FC = ({ children }) => {
     function handleError() {
         if (!globalError) return;
 
+        console.log('globalError ', globalError)
         if (globalError.code === networkResponseCode.timeOut) {
             presentFailure('Network Connection Issue, Please try again!');
         }

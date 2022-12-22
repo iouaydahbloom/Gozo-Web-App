@@ -45,29 +45,23 @@ const useTokenToOthersExchange = () => {
     const { run } = useCloud();
     const { presentFailure, presentSuccess } = useToast();
 
-    const tokenQuantityInWei = useMemo(() => {
-        return parseBlockchainValue(tokenQuantity ?? 0);
-    }, [tokenQuantity])
-
-    const { execute: transferToOwner, estimate, executing } = useBlockchainContractExecution();
-    const { transferNative, executing: executingNativeTransfer, error } = useBlockchainTransfer();
+    const { estimate } = useBlockchainContractExecution();
+    const { transferNative, transferTokensToOwner, executing: executingTransfer, error } = useBlockchainTransfer();
     /**
      * Token to others exchange logic
      */
     const executeTokenToOthersExchange = useCallback(async () => {
         if (tokenQuantity && tokenQuantity <= 0) return;
 
-        return transferToOwner(
-            tokenContractAddress,
-            tokenContractAbi,
-            'transferToOwner',
-            [tokenQuantityInWei, selectedOthers.type],
+        return transferTokensToOwner(
+            tokenQuantity as string | number,
+            selectedOthers.type,
             () => {
                 fetchCryptoAssets();
                 presentSuccess('Exchanged successfully');
             },
             (error) => presentFailure(error.message)
-        );
+        )
     }, [tokenQuantity, selectedOthers.type])
 
     const simulateTokenToOthersExchange = useCallback(debounce((
@@ -295,8 +289,8 @@ const useTokenToOthersExchange = () => {
     }, [selectedOthers?.quantity, direction, selectedOthers.id])
 
     useEffect(() => {
-        setExchanging(executing);
-    }, [executing])
+        setExchanging(executingTransfer);
+    }, [executingTransfer])
 
     useEffect(() => {
         if (direction === 't2o') {
@@ -309,10 +303,10 @@ const useTokenToOthersExchange = () => {
     }, [direction])
 
     useEffect(() => {
-        if (!executingNativeTransfer && error) {
+        if (!executingTransfer && error) {
             presentFailure(error.message);
         }
-    }, [executingNativeTransfer, error])
+    }, [executingTransfer, error])
 
     return {
         tokenOptions: tokenOptions,

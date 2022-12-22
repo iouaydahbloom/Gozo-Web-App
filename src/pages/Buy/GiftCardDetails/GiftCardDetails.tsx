@@ -21,6 +21,7 @@ import GiftCardPurchaseSuccess from '../GiftCardPurchaseSuccess/GiftCardPurchase
 import styles from './giftCardDetails.module.scss';
 
 const GiftCardDetails: React.FC = () => {
+
     const { id } = useParams<{ id: string }>();
     const { getGiftCard, buyGiftCard, simulateFiatToPointsConversion, giftCard, isLoading, isBuying } = useGiftCard();
     const { presentFailure } = useToast();
@@ -38,6 +39,10 @@ const GiftCardDetails: React.FC = () => {
             presentFailure,
             conversionRate
         );
+    }
+
+    async function getGiftCardDetails() {
+        if (id) getGiftCard(id)
     }
 
     const formManager = useFormik({
@@ -58,7 +63,7 @@ const GiftCardDetails: React.FC = () => {
     });
 
     useEffect(() => {
-        if (id) getGiftCard(id)
+        getGiftCardDetails();
     }, [id])
 
     useEffect(() => {
@@ -76,7 +81,7 @@ const GiftCardDetails: React.FC = () => {
     return (
         <IonPage>
             <SecondaryHeader title={giftCard?.name ?? 'Gift Card'} />
-            <PrimaryContainer className={styles.container} >
+            <PrimaryContainer className={styles.container} isRefreshable onRefresh={getGiftCardDetails}>
                 {
                     isBought ?
                         <GiftCardPurchaseSuccess />

@@ -21,7 +21,6 @@ import useMemberShip from '../../hooks/useMembership';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import ParticlesLoader from '../../components/sections/ParticlesLoader/ParticlesLoader';
 import PageLoader from '../../components/loaders/PageLoader/PageLoader';
-import useToast from '../../hooks/useToast';
 import { informationCircleOutline } from 'ionicons/icons';
 import PrimaryPopover from '../../components/popovers/PrimaryPopover/PrimaryPopover';
 import { useDapp } from '../../providers/DappProvider/DappProvider';
@@ -34,6 +33,7 @@ interface IPrize {
 }
 
 const Spinner: React.FC = () => {
+
     const history = useHistory()
     const search = useSearchParams();
     const {
@@ -45,19 +45,17 @@ const Spinner: React.FC = () => {
     } = useLoyaltyPrograms();
     const { play, setIsPlaying, isPlaying } = usePlayGame();
     const { fetchPrizes, unReservePrizes, isLoadingPrizes } = usePrize();
-    var id = search ? search.get('program_id') : ''
-
+    var id = search ? search.get('program_id') : '';
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
-    const [gameToken, setGameToken] = useState('')
-    const [selectedPrizeId, setSelectedPrizeId] = useState<string>('')
-    const [returnedPrize, setReturnedPrize] = useState<IPrize>()
-    const [loyaltyProgramId, setLoyaltyProgramId] = useState<string>('')
-    const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram>()
-    const { membership, fetchMembership } = useMemberShip(loyaltyProgram?.loyaltyCurrency?.id);
-    const [myLoyaltyPrograms, setMyLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([])
-    const { presentInfo } = useToast(5000);
+    const [gameToken, setGameToken] = useState('');
+    const [selectedPrizeId, setSelectedPrizeId] = useState<string>('');
+    const [returnedPrize, setReturnedPrize] = useState<IPrize>();
+    const [loyaltyProgramId, setLoyaltyProgramId] = useState<string>(id ?? '');
+    const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram>();
+    const { fetchMembership } = useMemberShip(loyaltyProgram?.loyaltyCurrency?.id);
+    const [myLoyaltyPrograms, setMyLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
     const { addListener } = useBlockchainContractExecution();
-    const [prizesExpired, setPrizesExpired] = useState(false)
+    const [prizesExpired, setPrizesExpired] = useState(false);
     const prizeInfo = "Spin now, list of prizes is reserved for 3 mins, if spinned after 3 mins the list of prizes might be different";
     const { walletAddress } = useDapp();
     var displayMessages = [
@@ -68,6 +66,7 @@ const Spinner: React.FC = () => {
     ];
     const { currentMessage, start, stop } = useMessagesInterval(displayMessages);
     const { gameContractAddress, gameContractAbi } = useDapp();
+    const [isPlayingReady, setIsPlayingReady] = useState(false);
 
     const getMySelectedProgram = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0 && !!loyaltyProgram) {
@@ -79,7 +78,6 @@ const Spinner: React.FC = () => {
     const selectedPrize = useMemo(() => {
         return wheelSegments && wheelSegments.find(item => item.id === selectedPrizeId)
     }, [wheelSegments, selectedPrizeId])
-
 
     const { showModal: showSpinCondition } = useDialog({
         id: 'spinConditionModal',
@@ -97,9 +95,10 @@ const Spinner: React.FC = () => {
         />,
         customClass: styles.spinSuccessModal,
         onDismiss: () => {
+            setIsPlayingReady(false);
             setIsPlaying(false);
             setSelectedPrizeId('');
-            getPrizes()
+            getPrizes();
             fetchMembership();
             setReturnedPrize(undefined);
         }
@@ -123,16 +122,14 @@ const Spinner: React.FC = () => {
     function getPrizes() {
         if (!loyaltyProgram) return
         setWheelSegments([])
-        fetchPrizes(loyaltyProgram.brand?.key ?? '')
+        return fetchPrizes(loyaltyProgram.brand?.key ?? '')
             .then(groupedPrizes => {
                 if (groupedPrizes) {
-                    const segments = WheelSegment.toWheelSegment(groupedPrizes.prizes)
-                    setWheelSegments(segments)
-                    setGameToken(groupedPrizes.gameToken)
-                    setPrizesExpired(false)
-                    // wait for 2 minutes
+                    const segments = WheelSegment.toWheelSegment(groupedPrizes.prizes);
+                    setWheelSegments(segments);
+                    setGameToken(groupedPrizes.gameToken);
+                    setPrizesExpired(false);
                     setTimeout(() => setPrizesExpired(true), 120000);
-                    // presentInfo(prizeInfo)
                 }
             })
     }
@@ -159,8 +156,8 @@ const Spinner: React.FC = () => {
     }
 
     async function handlePlaying() {
-        start()
-        if (prizesExpired) await getPrizes()
+        start();
+        if (prizesExpired) await getPrizes();
         await play(loyaltyProgram?.brand?.key ?? '', loyaltyProgram?.partnerId ?? '', gameToken);
     }
 
@@ -205,10 +202,19 @@ const Spinner: React.FC = () => {
     const handleSelectedValue = (name: string) => {
         const lp = myLoyaltyPrograms.find(item => item?.currency?.loyaltyCurrencyName === name)
         if (lp) {
+            setIsPlayingReady(false);
             history.replace({ search: (new URLSearchParams({ program_id: lp?.currency?.programId })).toString() });
-            setLoyaltyProgramId(lp?.currency?.programId)
+            setLoyaltyProgramId(lp.currency?.programId)
         }
     }
+
+    const onRefresh = useCallback((): Promise<any> => {
+        setIsPlayingReady(false);
+        return Promise.all([
+            getLoyaltyProgram(),
+            defaultProgram && getMyPrograms(),
+        ])
+    }, [loyaltyProgramId])
 
     useEffect(() => {
         if (returnedPrize && returnedPrize.gameToken === gameToken) {
@@ -229,6 +235,7 @@ const Spinner: React.FC = () => {
     }, [isPlaying])
 
     useIonViewWillEnter(() => {
+        setIsPlayingReady(false);
         addListener(
             gameContractAddress,
             gameContractAbi,
@@ -236,37 +243,33 @@ const Spinner: React.FC = () => {
             listenerCallBack
         );
 
-        id ? setLoyaltyProgramId(id) : setLoyaltyProgramId("");
-    }, [id])
-
-    useIonViewWillLeave(() => {
-        setIsPlaying(false)
-    })
-
-    useIonViewWillLeave(() => {
-        unReservePrizes(gameToken)
-    }, [gameToken])
-
-    useIonViewWillEnter(() => {
+        const currentLoyaltyProgramId = id ?? '';
         if (defaultProgram) getMyPrograms();
-        if (loyaltyProgram) getPrizes();
-    }, [defaultProgram, loyaltyProgram])
+        if (loyaltyProgram && currentLoyaltyProgramId === loyaltyProgramId) getPrizes();
+
+        setLoyaltyProgramId(currentLoyaltyProgramId);
+    }, [id, defaultProgram, loyaltyProgram])
+
+    useIonViewWillLeave(() => {
+        unReservePrizes(gameToken);
+        setIsPlaying(false);
+    }, [gameToken])
 
     useEffect(() => {
         if (gameToken) unReservePrizes(gameToken)
-        getPrizes()
+        getPrizes();
     }, [loyaltyProgram])
 
     useEffect(() => {
-        getLoyaltyProgram()
+        getLoyaltyProgram();
     }, [loyaltyProgramId])
 
-    const onRefresh = useCallback((): Promise<any> => {
-        return Promise.all([
-            getLoyaltyProgram(),
-            defaultProgram && getMyPrograms(),
-        ])
-    }, [])
+    useEffect(() => {
+        console.log('isLoadingPRizes', isLoadingPrizes)
+        if (!isLoadingPrizes) {
+            setIsPlayingReady(true);
+        }
+    }, [isLoadingPrizes])
 
     return (
         <IonPage>
@@ -288,48 +291,49 @@ const Spinner: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <PrimaryContainer className={styles.container} isRefreshable onRefresh={onRefresh}>
-                {(!loadingProgram && !isLoadingPrizes && !loadingMyLoyaltyPrograms) ?
-                    <>
-                        <div className={`${styles.wheelWrapper}`}>
-                            {
-                                isPlaying && !selectedPrizeId ?
-                                    <div className={styles.loaderWrapper}>
-                                        <ParticlesLoader />
-                                        <PrimaryTypography
-                                            customClassName={styles.loaderOverlay}>
-                                            {currentMessage}
-                                        </PrimaryTypography>
-                                    </div>
-                                    :
-                                    <FortuneWheel
-                                        logoAtCenter={loyaltyProgram?.brand?.logo}
-                                        spinDuration={0.3}
-                                        data={wheelSegmentsOpts}
-                                        spin={isPlaying}
-                                        selectedPrizeId={selectedPrizeId}
-                                        onStopSpinning={() => {
-                                            setTimeout(() => showSuccessModal(), 1000);
-                                        }} />
-                            }
-                        </div>
-                        <div className={styles.accordionHeaderwrapper}>
-                            <PrimaryTypography
-                                customClassName={styles.accordionHeader}
-                                isBold
-                                size='m'
-                                color='light'>
-                                Available Prizes
-                            </PrimaryTypography>
-                            <IonButtons>
-                                <IonButton id="hover-trigger">
-                                    <IonIcon color="light" icon={informationCircleOutline} />
-                                </IonButton>
-                            </IonButtons>
-                            <PrimaryPopover id="hover-trigger" content={prizeInfo} />
-                        </div>
-                        <PrimaryAccordion accordionItem={prizesOpts} />
-                    </>
-                    : <PageLoader />
+                {
+                    isPlayingReady ?
+                        <>
+                            <div className={`${styles.wheelWrapper}`}>
+                                {
+                                    isPlaying && !selectedPrizeId ?
+                                        <div className={styles.loaderWrapper}>
+                                            <ParticlesLoader />
+                                            <PrimaryTypography
+                                                customClassName={styles.loaderOverlay}>
+                                                {currentMessage}
+                                            </PrimaryTypography>
+                                        </div>
+                                        :
+                                        <FortuneWheel
+                                            logoAtCenter={loyaltyProgram?.brand?.logo}
+                                            spinDuration={0.3}
+                                            data={wheelSegmentsOpts}
+                                            spin={isPlaying}
+                                            selectedPrizeId={selectedPrizeId}
+                                            onStopSpinning={() => {
+                                                setTimeout(() => showSuccessModal(), 1000);
+                                            }} />
+                                }
+                            </div>
+                            <div className={styles.accordionHeaderwrapper}>
+                                <PrimaryTypography
+                                    customClassName={styles.accordionHeader}
+                                    isBold
+                                    size='m'
+                                    color='light'>
+                                    Available Prizes
+                                </PrimaryTypography>
+                                <IonButtons>
+                                    <IonButton id="hover-trigger">
+                                        <IonIcon color="light" icon={informationCircleOutline} />
+                                    </IonButton>
+                                </IonButtons>
+                                <PrimaryPopover id="hover-trigger" content={prizeInfo} />
+                            </div>
+                            <PrimaryAccordion accordionItem={prizesOpts} />
+                        </>
+                        : <PageLoader />
                 }
             </PrimaryContainer>
         </IonPage>

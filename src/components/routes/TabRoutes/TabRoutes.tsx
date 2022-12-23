@@ -2,6 +2,7 @@ import { IonLabel, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, useIonRout
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Redirect, Route, useLocation } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
+import useAppAnalytics from '../../../hooks/useAppAnalytics';
 import useAuthentication from '../../../hooks/useAuthentication';
 import useNetwork from '../../../hooks/useNetwork';
 import useOnBoardingPreview from '../../../hooks/useOnBoardingPreview';
@@ -9,6 +10,7 @@ import Account from '../../../pages/Account/Account';
 import AuthCallback from '../../../pages/Authentication/AuthCallback/AuthCallback';
 import Buy from '../../../pages/Buy/Buy';
 import Dashboard from '../../../pages/Dashboard/Dashboard';
+import GiftCardDetails from '../../../pages/Buy/GiftCardDetails/GiftCardDetails';
 import Landing from '../../../pages/Landing/Landing';
 import LoyaltyProgramHistoryDetails from '../../../pages/LoyaltyProgramHistoryDetails/LoyaltyProgramHistoryDetails';
 import OnBoarding from '../../../pages/OnBoarding/OnBoarding';
@@ -23,9 +25,10 @@ import BuyIcon from '../../icons/BuyIcon/BuyIcon';
 import DashboardIcon from '../../icons/DashboardIcon/DashboardIcon';
 import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
-import styles from './tabMenu.module.scss';
+import styles from './tabRoutes.module.scss';
+import LoyaltyPogramHistoryData from '../../../pages/LoyaltyProgramHistoryData/LoyaltyProgramHistoryData';
 
-const TabMenu: React.FC = () => {
+const TabRoutes: React.FC = () => {
 
     const { push } = useIonRouter();
     const spinnerBtnRef = useRef<any>(null);
@@ -33,6 +36,7 @@ const TabMenu: React.FC = () => {
     const { isHidden: isOnboardingHidden } = useOnBoardingPreview();
     const { pathname } = useLocation();
     useNetwork();
+    useAppAnalytics();
 
     const handleRoutesProtections = useCallback(() => {
         if (pathname === AppRoutes.landing && isAuthenticated && isOnboardingHidden) {
@@ -86,7 +90,10 @@ const TabMenu: React.FC = () => {
                     <TransactionHistory />
                 </TabHeaderHeightProvider>
             </Route>
-            <Route exact path={AppRoutes.loyaltyProgramHistoryDetails}>
+            <Route exact path={AppRoutes.loyaltyProgramTransactionHistoryData}>
+                <LoyaltyPogramHistoryData />
+            </Route>
+            <Route exact path={AppRoutes.loyaltyProgramTransactionHistoryDetails}>
                 <LoyaltyProgramHistoryDetails />
             </Route>
             <Route exact path={AppRoutes.tokenHistoryDetails}>
@@ -102,6 +109,9 @@ const TabMenu: React.FC = () => {
             </Route>
             <Route exact path={AppRoutes.buy}>
                 <Buy />
+            </Route>
+            <Route exact path={AppRoutes.buyGiftCard}>
+                <GiftCardDetails />
             </Route>
             <Route exact path={AppRoutes.landing}>
                 <Landing />
@@ -158,4 +168,4 @@ const TabMenu: React.FC = () => {
     )
 }
 
-export default TabMenu;
+export default TabRoutes;

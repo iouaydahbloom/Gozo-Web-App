@@ -4,6 +4,7 @@ import useBlockchainContractExecution from './useBlockchainContractExecution';
 import useToast from './useToast';
 import { ethers } from 'ethers';
 import { parseBlockchainValue } from '../helpers/blockchainHelper';
+import { SwapPartyType } from './useTokenToOthersExchange';
 
 const useBlockchainTransfer = () => {
 
@@ -13,6 +14,12 @@ const useBlockchainTransfer = () => {
     const [isEstimatingTransferFee, setIsEstimatingTransferFee] = useState(false);
     const { walletAddress, tokenContractAddress, tokenContractAbi } = useDapp();
     const [error, setError] = useState<Error>();
+
+    function getTransferDefaultMessage(fees: number, amount: string | number) {
+        return `An amount of ${(fees + parseFloat(amount as string)).toString()} GZ tokens will 
+        be reduced from your wallet, if you are not holding this amount you can't achieve this transaction,
+        Are you sure you want to continue ?`
+    }
 
     const transferNative = useCallback(async (recipient: string, amount: number) => {
         try {
@@ -39,8 +46,23 @@ const useBlockchainTransfer = () => {
         'transfer',
         [receiver, amount !== "" ? parseBlockchainValue(amount) : 0],
         () => presentSuccess('Successfully Transfered'),
-        (error) => setError(error.message)
+        setError,
+        (fees) => getTransferDefaultMessage(fees, amount)
     ), [])
+
+    const transferTokensToOwner = useCallback((
+        amount: string | number,
+        type: SwapPartyType,
+        onSuccess: () => any,
+        onError: (error: any) => any) => execute(
+            tokenContractAddress,
+            tokenContractAbi,
+            'transferToOwner',
+            [parseBlockchainValue(amount ?? 0), type],
+            onSuccess,
+            onError,
+            (fees) => getTransferDefaultMessage(fees, amount)
+        ), [])
 
     useEffect(() => {
         setIsEstimatingTransferFee(true);
@@ -68,10 +90,14 @@ const useBlockchainTransfer = () => {
         }
     }, [])
 
+    useEffect(() => {
+        setError(undefined)
+    }, [executing])
 
     return {
         transferToken,
         transferNative,
+        transferTokensToOwner,
         isEstimatingTransferFee,
         transferFee,
         executing,

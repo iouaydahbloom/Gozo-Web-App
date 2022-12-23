@@ -1,6 +1,6 @@
-import { IonIcon } from '@ionic/react'
+import { IonIcon, IonSpinner } from '@ionic/react'
 import { chevronDownOutline, chevronForwardOutline } from 'ionicons/icons';
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import PrimaryButton from '../../../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../../../components/inputs/PrimaryInput/PrimaryInput';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
@@ -132,30 +132,36 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
                             </PrimaryTypography>
 
                             {
-                                myUpdatedProgram && partnershipMetadata?.executeAction.requiredFields.map((field, index) => {
-                                    return <div key={`field-${index}`} className={styles.connectionInput}>
-                                        <PrimaryInput
-                                            key={`field-${index}`}
-                                            placeholder={`Enter your ${field.name}`}
-                                            value={myUpdatedProgram.memberFields[index]?.value}
-                                            disabled={isConnected}
-                                            onChange={(value) => {
-                                                if (myUpdatedProgram.memberFields[index]) {
-                                                    myUpdatedProgram.memberFields[index].value = value;
-                                                    setMyUpdatedProgram(myUpdatedProgram);
-                                                }
-                                            }} />
-                                    </div>
-                                })
+                                partnershipMetadata ?
+                                    <>
+                                        {
+                                            partnershipMetadata.executeAction.requiredFields.map((field, index) => {
+                                                return <div key={`field-${index}`} className={styles.connectionInput}>
+                                                    <PrimaryInput
+                                                        key={`field-${index}`}
+                                                        placeholder={`Enter your ${field.name}`}
+                                                        value={myUpdatedProgram.memberFields[index]?.value}
+                                                        disabled={isConnected}
+                                                        onChange={(value) => {
+                                                            if (myUpdatedProgram.memberFields[index]) {
+                                                                myUpdatedProgram.memberFields[index].value = value;
+                                                                setMyUpdatedProgram(myUpdatedProgram);
+                                                            }
+                                                        }} />
+                                                </div>
+                                            })
+                                        }
+                                        <PrimaryButton
+                                            size='s'
+                                            type={`${isConnected ? 'success' : 'dark'}`}
+                                            onClick={handleConnection}
+                                            loading={isUpdating}>
+                                            {isConnected ? 'Disconnect' : 'Connect'}
+                                        </PrimaryButton>
+                                    </>
+                                    :
+                                    <IonSpinner color="light" className={styles.spinner} />
                             }
-
-                            <PrimaryButton
-                                size='s'
-                                type={`${isConnected ? 'success' : 'dark'}`}
-                                onClick={handleConnection}
-                                loading={isUpdating}>
-                                {isConnected ? 'Disconnect' : 'Connect'}
-                            </PrimaryButton>
                         </div>
                         :
                         <PrimaryTypography>No Partnership Programs</PrimaryTypography>

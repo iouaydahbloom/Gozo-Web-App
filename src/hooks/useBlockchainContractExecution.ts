@@ -85,15 +85,20 @@ const useBlockchainContractExecution = () => {
         fn: string,
         params: any[],
         onSuccess?: () => any,
-        onError?: (error: any) => any
+        onError?: (error: any) => any,
+        buildCustomConfirmationMessage?: (fees: number) => string
     ) {
         try {
             setExecuting(true);
             const fees = await estimate(contractAddress, abi, fn, params);
+            const message = buildCustomConfirmationMessage ?
+                buildCustomConfirmationMessage(fees) :
+                `Transaction fees are ${fees.toString()} GZ tokens,
+            if you are not holding this amount you can't achieve your transaction`;
+
             confirm({
                 title: 'Confirmation',
-                message: `Transaction fees are ${fees.toString()} GZ tokens,
-                 if you are not holding this amount you can't achieve your transaction`,
+                message,
                 onConfirmed: async () => {
                     try {
                         presentInfo('Executing Transaction ...');

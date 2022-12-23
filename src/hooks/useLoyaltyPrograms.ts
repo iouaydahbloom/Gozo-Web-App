@@ -10,6 +10,7 @@ import { PartnershipType } from "../types/exchangeType";
 import { DefaultCurrencyDTO } from "../dto/defaultCurrencyDTO";
 
 const useLoyaltyPrograms = () => {
+
     const [loadingMyPrograms, setLoadingMyPrograms] = useState(false);
     const [loadingProgram, setLoadingProgram] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);

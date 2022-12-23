@@ -41,5 +41,11 @@ export const cloudFunctionName = {
     tokenBalances: 'token_balances',
     tokenDefaultMetadata: 'default_token_metadata',
     getTokenTransfers: 'token_transfers',
-    socialAccountTypes: 'social_account_types'
+    socialAccountTypes: 'social_account_types',
+    updateUserGeoLocation: 'update_user_geo_location',
+    updateUserFcmToken: 'update_user_fcm_token',
+    giftCards: 'gift_card',
+    giftCardDetails: 'gift_card_details',
+    simulateFiatConversion: 'simulate_fiat_conversion',
+    executeGiftCardExchange: 'execute_gift_card_exchange'
 }

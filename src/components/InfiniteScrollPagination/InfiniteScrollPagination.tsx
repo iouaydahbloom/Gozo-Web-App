@@ -7,12 +7,10 @@ export const InfiniteScrollPagination = (loadMore: (ev: any) => void, isInfinite
             onIonInfinite={loadMore}
             className='infiniteScroll'
             threshold="100px"
-            disabled={isInfiniteDisabled}
-        >
+            disabled={isInfiniteDisabled}>
             <IonInfiniteScrollContent
-                loadingSpinner="bubbles"
-                // loadingText="Loading more data..."
-            ></IonInfiniteScrollContent>
+                loadingSpinner="bubbles">
+            </IonInfiniteScrollContent>
         </IonInfiniteScroll>
     )
 }

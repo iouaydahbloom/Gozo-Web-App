@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     packagingOptions {
@@ -36,7 +38,7 @@ android {
             applicationIdSuffix '.dev'
             manifestPlaceholders = [displayName:'GOZO - DEV']
             versionCode = 1
-            versionName '1.88 beta'
+            versionName '1.918 beta'
         }
         demo {
             dimension 'environment'

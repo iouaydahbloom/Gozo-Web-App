@@ -4,14 +4,16 @@ import styles from './secondaryInput.module.scss';
 
 interface Props {
     placeholder?: string,
-    value: string,
+    value: string | number,
     onChange: any,
     name?: string,
     disabled?: boolean,
-    className?: string
+    className?: string,
+    type?: 'text' | 'number',
+    min?: any
 }
 
-const SecondaryInput: React.FC<Props> = ({ placeholder, value, onChange, name, disabled = false, className }) => {
+const SecondaryInput: React.FC<Props> = ({ placeholder, value, onChange, name, disabled = false, className, type = 'text', min }) => {
     return (
         <IonInput
             name={name}
@@ -19,7 +21,9 @@ const SecondaryInput: React.FC<Props> = ({ placeholder, value, onChange, name, d
             placeholder={placeholder}
             disabled={disabled}
             value={value}
-            onIonChange={onChange} />
+            onIonChange={onChange}
+            type={type}
+            min={min} />
     )
 }
 

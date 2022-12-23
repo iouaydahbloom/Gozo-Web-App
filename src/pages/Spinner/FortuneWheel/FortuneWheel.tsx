@@ -11,12 +11,21 @@ interface Props {
   selectedPrizeId: string,
   onStopSpinning: () => void,
   spinDuration?: number,
-  logoAtCenter?: string
+  logoAtCenter?: string,
+  onClick?: () => any
 }
 
 var myWheel: any
 
-const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpinning, spinDuration, logoAtCenter }) => {
+const FortuneWheel: React.FC<Props> = ({
+  data,
+  spin,
+  selectedPrizeId,
+  onStopSpinning,
+  spinDuration,
+  logoAtCenter,
+  onClick
+}) => {
   // const [isSpinning, setIsSpinning] = useState(false)
   // const spinner = useRef<Winwheel>();
 
@@ -98,7 +107,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
     // // x0,y0,r0,x1,y1,r1
     // let radGradient = ctx && ctx.createRadialGradient(canvasCenter, canvasCenter, 35, canvasCenter, canvasCenter, 170);
 
-    let trasformedData: WheelSegment[] = data.map(a => ({...a} as WheelSegment))
+    let trasformedData: WheelSegment[] = data.map(a => ({ ...a } as WheelSegment))
     trasformedData = trasformedData.map((item: WheelSegment) => {
       // // Add the colour stops - 0.0 should be the first, 1.0 the last, others in between.
       // radGradient && radGradient.addColorStop(0, item.fillStyle ?? '');
@@ -245,6 +254,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
           src={logoAtCenter}
           width="70"
           height="70"
+          onClick={onClick}
         />
       }
       <img
@@ -265,6 +275,7 @@ const FortuneWheel: React.FC<Props> = ({ data, spin, selectedPrizeId, onStopSpin
         id="canvas"
         width="400"
         height="400"
+        onClick={onClick}
       />
     </div>
   )

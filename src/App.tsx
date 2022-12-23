@@ -20,7 +20,6 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import './theme/main.scss';
 import './theme/toast.scss';
-import TabMenu from './components/menus/TabMenu/TabMenu';
 import { useContext, useEffect, useState } from 'react';
 import { sessionContext } from './providers/SessionProvider/sessionContext';
 import { SplashScreen } from '@capacitor/splash-screen';
@@ -29,6 +28,10 @@ import { useDapp } from './providers/DappProvider/DappProvider';
 import PrimaryContainer from './components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryButton from './components/buttons/PrimaryButton/PrimaryButton';
 import SectionPlaceholder from './components/sections/SectionPlaceholder/SectionPlaceholder';
+import TabRoutes from './components/routes/TabRoutes/TabRoutes';
+import useNotifications from './hooks/useNotifications';
+import useGeoLocation from './hooks/useGeoLocation';
+import { errorHandlerContext } from './providers/ErrorHandlerProvider/errorHandlerContext';
 
 setupIonicReact();
 
@@ -38,6 +41,9 @@ const App: React.FC = () => {
   const { isReady: isOnboardingStateReady, refresh: refreshOnboardingPreview } = useOnBoardingPreview();
   const { isReady: isDappReady, refresh: refreshDapp } = useDapp();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { globalError } = useContext(errorHandlerContext);
+  useNotifications();
+  useGeoLocation();
 
   async function onRefresh() {
     setIsRefreshing(true);
@@ -50,16 +56,22 @@ const App: React.FC = () => {
   }
 
   useEffect(() => {
+    if ((!isSessionReady || !isOnboardingStateReady || !isDappReady) && (globalError)) {
+      SplashScreen.hide({ fadeOutDuration: 600 });
+      return;
+    }
+
     if (!isSessionReady || !isOnboardingStateReady || !isDappReady) return;
+    
     SplashScreen.hide({ fadeOutDuration: 600 });
-  }, [isSessionReady, isOnboardingStateReady, isDappReady])
+  }, [isSessionReady, isOnboardingStateReady, isDappReady, globalError])
 
   return (
     <IonApp>
       {
         (isSessionReady && isOnboardingStateReady && isDappReady) ?
           <IonReactRouter>
-            <TabMenu />
+            <TabRoutes />
           </IonReactRouter>
           :
           <IonPage>

@@ -6,12 +6,15 @@ import useAuthentication from "./useAuthentication";
 import useCloud from "./useCloud";
 
 const useMemberShip = (loyaltyCurrency?: string) => {
+
     const [membership, setMembership] = useState<LoyaltyMember | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const { run } = useCloud();
     const { isAuthenticated } = useAuthentication();
 
     async function fetchMembership(): Promise<any> {
         if (!loyaltyCurrency || !isAuthenticated) return Promise.resolve(null);
+        setIsLoading(true);
         return run(cloudFunctionName.members,
             { ca_loyalty_currency: loyaltyCurrency },
             (result: LoyaltyMemberDTO) => LoyaltyMember.getFromDTO(result),
@@ -19,6 +22,7 @@ const useMemberShip = (loyaltyCurrency?: string) => {
             .then(result => {
                 if (result.isSuccess) setMembership(result.data);
             })
+            .finally(() => setIsLoading(false))
     }
 
     useEffect(() => {
@@ -32,6 +36,7 @@ const useMemberShip = (loyaltyCurrency?: string) => {
     }, [loyaltyCurrency])
 
     return {
+        isLoading,
         membership: membership,
         fetchMembership
     }

@@ -1,21 +1,19 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { LoyaltyMemberHistoryDTO } from "../dto/loyaltyMemberDTO";
 import { Filter } from "../models/data/filter";
 import { Pagination } from "../models/data/pagination";
 import { LoyaltyMemberHistory } from "../models/loyaltyMember";
 import { cloudFunctionName } from "../constants/cloudFunctionName";
-import { currencySettingsContext } from "../providers/CurrencySettingsProvider/currencySettingsContext";
 import useCloud from "./useCloud";
 
 const useProgramsTransactionHistory = () => {
     const { run } = useCloud();
-    const { gozoLoyalty } = useContext(currencySettingsContext);
     const [historyField, setHistoryField] = useState<LoyaltyMemberHistory>();
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    async function getTransactions(filter: Filter) {
+    async function getTransactions(filter: Filter, loyaltyCurrency: string) {
         return run(cloudFunctionName.transactionHistory,
-            { ...filter, ca_loyalty_currency: gozoLoyalty?.currency.loyaltyCurrency },
+            { ...filter, ca_loyalty_currency: loyaltyCurrency },
             (result: Pagination<LoyaltyMemberHistoryDTO>) => {
                 return new Pagination(result.count, result.next, result.previous, result.results.map(res => {
                     return LoyaltyMemberHistory.getFromDTO(res)

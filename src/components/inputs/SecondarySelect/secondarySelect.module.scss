@@ -29,21 +29,29 @@
         }
 
         .select {
-            height: 35px;
             width: 100%;
             border: 1px solid var(--ion-color-light);
             border-radius: 5px;
             padding: 10px 10px 10px 8px;
-            --placeholder-color: var(--ion-color-medium);
+            --placeholder-color: var(--ion-color-medium-tint);
             --placeholder-opacity: 1 !important;
+            color: var(--ion-color-light);
+            font-size: 14px;
+            border-radius: 5px;
+            background: var(--ion-color-dark);
+            border: 1px solid var(--ion-color-medium-tint);
+            box-shadow: inset 0px 2px 3px var(--ion-color-dark);
+            padding: 16px;
+            height: 50px;
         }
 
         .secondarySelectIcon {
             position: absolute;
-            top: 9px;
+            top: 15px;
             z-index: 2;
             right: 9px;
             cursor: pointer;
+            color: var(--ion-color-light);
         }
 
         .select::part(icon) {

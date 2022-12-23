@@ -45,7 +45,7 @@ android {
             applicationIdSuffix '.demo'
             manifestPlaceholders = [displayName:'GOZO']
             versionCode = 1
-            versionName '1.11 beta'
+            versionName '1.12 beta'
         }
     }
 }

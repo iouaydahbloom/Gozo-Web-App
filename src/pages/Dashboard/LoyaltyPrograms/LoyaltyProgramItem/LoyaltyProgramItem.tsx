@@ -48,7 +48,7 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSe
                             <IonLabel className={styles.status}>
                                 {
                                     isLoadingMembership ?
-                                        <IonSpinner color='light' className={styles.loader}/>
+                                        <IonSpinner color='light' className={styles.loader} />
                                         :
                                         membership ?
                                             <>
@@ -95,12 +95,19 @@ const LoyaltyProgramItem: React.FC<Props> = ({ loyaltyProgram, onSelection, isSe
                             <div className={styles.actionItem}>
                                 {loyaltyProgram.redemption?.isSufficient ?
                                     <>
-                                        <IonIcon color="light" size="large" icon='assets/icon/Spin1.svg' />
+                                        <IonIcon
+                                            color="light"
+                                            size="large"
+                                            icon='assets/icon/Spin1.svg' />
                                         <PrimaryTypography color='light'>Spin</PrimaryTypography>
                                     </>
                                     :
                                     <>
-                                        <IonIcon color="slightly-light" size="large" icon='assets/icon/no-credit-icon.svg' />
+                                        <IonIcon
+                                            color="slightly-light"
+                                            size="large"
+                                            icon='assets/icon/no-credit-icon.svg'
+                                            className={styles.noCredits} />
                                         <PrimaryTypography isBlock={false} color='slightly-light'>Not enough credits</PrimaryTypography>
                                     </>
                                 }

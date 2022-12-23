@@ -71,9 +71,9 @@ const useGiftCard = () => {
                 return;
             }
 
-            pointsPerFiat = simulationResult.data.loyaltyAmount;
+            pointsPerFiat = Math.round(simulationResult.data.loyaltyAmount);
         } else {
-            pointsPerFiat = pointsPerFiat * parseInt(amount);
+            pointsPerFiat = Math.round(pointsPerFiat * parseFloat(amount));
         }
 
         confirm({

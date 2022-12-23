@@ -137,10 +137,11 @@ const GiftCardDetails: React.FC = () => {
                                             />
                                             :
                                             <SecondaryInput
-                                                placeholder='0.00'
+                                                placeholder='0'
                                                 name="amount"
                                                 type='number'
-                                                onChange={formManager.handleChange}
+                                                onChange={(event: any) =>
+                                                    formManager.setFieldValue('amount', event.detail.value)}
                                                 value={formManager.values.amount}
                                                 min={0}
                                             />

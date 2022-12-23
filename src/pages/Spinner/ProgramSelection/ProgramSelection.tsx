@@ -32,7 +32,7 @@ const ProgramSelection: React.FC<Props> = ({ options, selectedValue, onValueChan
     });
 
     function onSelectionChange(value: string) {
-        onValueChange(value);
+        if (selectedValue !== value) onValueChange(value);
         dismissSelect();
     }
 

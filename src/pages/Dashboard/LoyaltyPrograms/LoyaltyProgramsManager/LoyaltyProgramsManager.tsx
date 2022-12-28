@@ -5,7 +5,7 @@ import { LoyaltyProgram, UserLoyaltyProgram } from '../../../../models/loyaltyPr
 import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms'
 import PrimarySearch from '../../../../components/inputs/PrimarySearch/PrimarySearch'
 import styles from './loyaltyProgramsManager.module.scss';
-import { ProgramFilter } from '../../../../models/data/filter'
+import { Filter, ProgramFilter } from '../../../../models/data/filter'
 import PageLoader from '../../../../components/loaders/PageLoader/PageLoader'
 
 const LoyaltyProgramsManager: React.FC = () => {
@@ -16,7 +16,8 @@ const LoyaltyProgramsManager: React.FC = () => {
     const { fetchAllPrograms, fetchMyLoyaltyPrograms } = useLoyaltyPrograms();
 
     const { data: programs, isLoading, fetchData } = useServerPagination<LoyaltyProgram, ProgramFilter>({
-        getData: fetchAllPrograms as any
+        getData: fetchAllPrograms as any,
+        intialFilters: new Filter(1, 100) as any
     })
 
     function getMyProgram(programId?: string): UserLoyaltyProgram | null {
@@ -33,12 +34,12 @@ const LoyaltyProgramsManager: React.FC = () => {
 
     function getMyLoyaltyProgram() {
         fetchMyLoyaltyPrograms()
-        .then(result => {
-            if (result) {
-                setMyPrograms(result);
-            }
-        })
-        .finally(() => setIsLoadingMyPrograms(false))
+            .then(result => {
+                if (result) {
+                    setMyPrograms(result);
+                }
+            })
+            .finally(() => setIsLoadingMyPrograms(false))
     }
 
     useEffect(() => {

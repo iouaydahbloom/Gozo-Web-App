@@ -8,7 +8,7 @@ import useCloud from "./useCloud";
 
 const useCryptoAssets = () => {
 
-  const { walletAddress, defaultTokenMetadata } = useDapp();
+  const { walletAddress, defaultTokenMetadata, defaultNativeMetada } = useDapp();
   const [assets, setAssets] = useState<(ERC20Asset | NativeAsset)[]>([]);
   const [isLoadingAssets, setIsLoadingAssets] = useState(false);
   const { tokenContractAddress } = useDapp();
@@ -79,7 +79,24 @@ const useCryptoAssets = () => {
   }, [defaultTokenMetadata, assets])
 
   const defaultNativeAsset = useMemo(() => {
-    return assets.find(asset => asset instanceof NativeAsset) as NativeAsset | null
+    const defaultBalancedNative = assets ?
+      assets.find(asset => asset instanceof NativeAsset) as NativeAsset | null :
+      null;
+
+    if (defaultBalancedNative) {
+      return defaultBalancedNative;
+    }
+
+    return defaultNativeMetada ?
+      new NativeAsset(
+        defaultNativeMetada.name,
+        defaultNativeMetada.symbol,
+        defaultNativeMetada.decimals,
+        defaultNativeMetada.balance,
+        defaultNativeMetada.logo,
+        defaultNativeMetada.thumbnail,
+      ) :
+      null;
   }, [assets])
 
   return {

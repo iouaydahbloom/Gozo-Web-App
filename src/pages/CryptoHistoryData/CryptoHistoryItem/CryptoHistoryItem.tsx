@@ -1,6 +1,6 @@
-import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
-import { parseNumber } from '../../../../helpers/blockchainHelper';
-import { getEllipsisTxt } from '../../../../helpers/formatters';
+import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
+import { parseNumber } from '../../../helpers/blockchainHelper';
+import { getEllipsisTxt } from '../../../helpers/formatters';
 import styles from './cryptoHistoryItem.module.scss';
 
 interface Props {

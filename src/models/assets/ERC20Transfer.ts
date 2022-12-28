@@ -1,6 +1,6 @@
-import { ERC20TransferDTO } from "../../dto/eRC20TransferDTO";
+import { CryptoTransferDTO } from "../../dto/cryptoTransferDTO";
 
-export class ERC20Transfer {
+export class CryptoTransfer {
     constructor(public transactionHash: string,
         public address: string,
         public blockTimestamp: string,
@@ -10,15 +10,15 @@ export class ERC20Transfer {
         public fromAddress: string,
         public value: string) { }
 
-    static getFromDTO(dto: ERC20TransferDTO): ERC20Transfer {
-        return new ERC20Transfer(
-            dto.transaction_hash,
+    static getFromDTO(dto: CryptoTransferDTO): CryptoTransfer {
+        return new CryptoTransfer(
+            dto.transactionHash,
             dto.address,
-            dto.block_timestamp,
-            dto.block_number,
-            dto.block_hash,
-            dto.to_address,
-            dto.from_address,
+            dto.blockTimestamp,
+            dto.blockNumber,
+            dto.blockHash,
+            dto.toAddress,
+            dto.fromAddress,
             dto.value
         )
     }

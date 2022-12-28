@@ -12,7 +12,6 @@ import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryCo
 import SecondaryHeader from '../../components/headers/SecondaryHeader/SecondaryHeader';
 import { Virtuoso } from 'react-virtuoso';
 import { InfiniteScrollPagination } from '../../components/InfiniteScrollPagination/InfiniteScrollPagination';
-import { useCallback } from 'react';
 
 const LoyaltyPogramHistoryData: React.FC = () => {
 
@@ -40,17 +39,6 @@ const LoyaltyPogramHistoryData: React.FC = () => {
             />
         )
     }
-
-    const loadMoreTransactions = (ev: any) => {
-        setTimeout(() => {
-            ev.target.complete();
-            loadMoreLoyaltyHistoryFields();
-        }, 1000);
-    }
-
-    const isScrollDisabled = useCallback(() => {
-        return (!hasMoreLoyaltyHistoryFields)
-    }, [hasMoreLoyaltyHistoryFields])
 
     useIonViewWillEnter(() => {
         fetchLoyaltyHistoryFieldsData();
@@ -93,7 +81,7 @@ const LoyaltyPogramHistoryData: React.FC = () => {
                         )
                     }}
                     components={{
-                        Footer: () => InfiniteScrollPagination(loadMoreTransactions, isScrollDisabled())
+                        Footer: () => InfiniteScrollPagination(loadMoreLoyaltyHistoryFields, !hasMoreLoyaltyHistoryFields)
                     }}>
                 </Virtuoso>
             </PrimaryContainer>

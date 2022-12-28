@@ -24,7 +24,7 @@ const Buy: React.FC = () => {
         hasMore,
         loadMore
     } = useServerPagination<GiftCard, Filter>({
-        getData: fetchGiftCards
+        getData: fetchGiftCards as any
     })
 
     const onRefresh = useCallback((): Promise<any> => {

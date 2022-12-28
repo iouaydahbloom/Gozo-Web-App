@@ -22,13 +22,14 @@ const useAuthentication = () => {
             if (magicResult) {
                 const userMetadata = (await magicUser?.getMetadata());
                 await handleServerAuth(userMetadata?.email!, userMetadata?.publicAddress!, magicResult);
+                setAuthError(undefined);
             }
         }
         catch (error: any) {
             setAuthError(error.message);
         }
         finally {
-            setIsAuthenticating(false)
+            setIsAuthenticating(false);
         }
     }, [])
 

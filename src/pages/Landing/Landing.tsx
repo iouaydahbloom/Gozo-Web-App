@@ -28,7 +28,10 @@ const Landing: React.FC = () => {
                     <PrimaryCheckbox value={accepted} onChange={setAccepted} />
                 </div>
                 <PrimaryTypography customClassName={styles.textField}>
-                    I’ve read and accepted the <a >Terms of Service</a> and <a >Privacy Policy</a>
+                    I’ve read and accepted the
+                    <a href='http://gozo.io/terms-conditions.php' target='_blank'>Terms of Service</a>
+                    and
+                    <a href=' http://gozo.io/privacy-policy.php' target='_blank'>Privacy Policy</a>
                 </PrimaryTypography>
             </div>
         )

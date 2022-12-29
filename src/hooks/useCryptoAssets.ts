@@ -5,16 +5,20 @@ import { NativeAsset } from "../models/assets/NativeAsset";
 import { cloudFunctionName } from "../constants/cloudFunctionName";
 import { useDapp } from "../providers/DappProvider/DappProvider";
 import useCloud from "./useCloud";
+import useAuthentication from "./useAuthentication";
 
 const useCryptoAssets = () => {
 
-  const { walletAddress, defaultTokenMetadata, defaultNativeMetada } = useDapp();
+  const { defaultTokenMetadata, defaultNativeMetada } = useDapp();
   const [assets, setAssets] = useState<(ERC20Asset | NativeAsset)[]>([]);
   const [isLoadingAssets, setIsLoadingAssets] = useState(false);
   const { tokenContractAddress } = useDapp();
   const { run } = useCloud();
+  const { user } = useAuthentication();
 
   const fetchCryptoAssets = useCallback(async () => {
+    if (!user?.walletAddress) return Promise.resolve([]);
+
     setIsLoadingAssets(true);
     return Promise.all([
       fetchNativeAsset(),
@@ -28,31 +32,31 @@ const useCryptoAssets = () => {
         return assets;
       })
       .finally(() => setIsLoadingAssets(false))
-  }, [walletAddress])
+  }, [user?.walletAddress])
 
-  const fetchNativeAsset = useCallback(async () => {
+  const fetchNativeAsset = async () => {
     return run(
       cloudFunctionName.nativeCurrency,
-      { address: walletAddress },
+      { address: user?.walletAddress },
       (res: NativeAssetDTO) => NativeAsset.fromDto(res),
       true
     )
       .then(result => {
         return result.isSuccess ? result.data : null;
       })
-  }, [walletAddress])
+  }
 
-  const fetchERC20Assets = useCallback(async () => {
+  const fetchERC20Assets = async () => {
     return run(
       cloudFunctionName.tokenBalances,
-      { address: walletAddress },
+      { address: user?.walletAddress },
       (res: ERC20AssetDTO[]) => res.map(dto => ERC20Asset.fromDto(dto)),
       true
     )
       .then(result => {
         return result.isSuccess ? result.data : [];
       })
-  }, [walletAddress])
+  }
 
   const defaultERC20Asset = useMemo(() => {
     const defaultBalancedAsset = assets ?

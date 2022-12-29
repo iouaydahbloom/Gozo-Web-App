@@ -9,10 +9,21 @@ import { useCallback, useContext, useEffect } from 'react';
 import useReward from '../../hooks/useReward';
 import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 import EarnReward from './EarnReward/EarnReward';
+import useAuthentication from '../../hooks/useAuthentication';
 
 const Rewards: React.FC = () => {
-    const { getRewards, getEarningRewards, getUserEarnings, isLoadingRewards, isLoadingEarnings, earningRewards, userEarningsList, rewards } = useReward()
-    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
+    const {
+        getRewards,
+        getEarningRewards,
+        getUserEarnings,
+        isLoadingRewards,
+        isLoadingEarnings,
+        earningRewards,
+        userEarningsList,
+        rewards
+    } = useReward();
+    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext);
+    const { isAuthenticated } = useAuthentication();
 
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
@@ -20,17 +31,17 @@ const Rewards: React.FC = () => {
             getEarningRewards(),
             getUserEarnings()
         ])
-    }, [])
-
-    useIonViewWillEnter(() => {
-        onRefresh();
-    })
+    }, [isAuthenticated])
 
     useEffect(() => {
         if (tabRef) {
             setTabHeaderHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
         }
     }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
+
+    useIonViewWillEnter(() => {
+        onRefresh();
+    }, [isAuthenticated])
 
     return (
         <IonPage>
@@ -52,11 +63,11 @@ const Rewards: React.FC = () => {
                         />
                     </TabPanel>
                     <TabPanel>
-                        <EarnReward 
-                            earnData={earningRewards} 
+                        <EarnReward
+                            earnData={earningRewards}
                             userEarningsList={userEarningsList}
                             isLoading={isLoadingEarnings}
-                            />
+                        />
                     </TabPanel>
                 </Tabs>
             </PrimaryContainer>

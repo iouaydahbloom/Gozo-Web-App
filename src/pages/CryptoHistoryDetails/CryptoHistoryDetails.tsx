@@ -38,7 +38,7 @@ const CryptoHistoryDetails: React.FC = () => {
 
   useIonViewWillEnter(() => {
     setHistoryField(transaction)
-  })
+  }, [])
 
   useEffect(() => {
     if (historyField) setIsLoading(false)

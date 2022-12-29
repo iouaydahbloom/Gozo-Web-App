@@ -11,6 +11,7 @@ import { AppRoutes } from "../../constants/appRoutes";
 import cryptoAsset from "../../constants/cryptoAsset";
 import { parseNumber } from "../../helpers/blockchainHelper";
 import { formatDate } from "../../helpers/dateManagment";
+import useAuthentication from "../../hooks/useAuthentication";
 import useCryptoTransfers from "../../hooks/useCryptoTransfers";
 import useServerPagination from "../../hooks/useServerPagination";
 import { CryptoTransfer } from "../../models/assets/ERC20Transfer";
@@ -18,6 +19,7 @@ import { useDapp } from "../../providers/DappProvider/DappProvider";
 
 const CryptoHistoryData: React.FC = () => {
 
+    const { isAuthenticated } = useAuthentication();
     const { name: cryptoName } = useParams<{ name: string }>();
     const { push } = useHistory();
     const { getERC20Transfers, getNativeTransfers } = useCryptoTransfers();
@@ -44,7 +46,7 @@ const CryptoHistoryData: React.FC = () => {
 
     useIonViewWillEnter(() => {
         fetchData();
-    }, [cryptoName])
+    }, [cryptoName, isAuthenticated])
 
     return (
         <IonPage>

@@ -13,9 +13,11 @@ import { Filter } from '../../models/data/filter';
 import { GiftCard } from '../../models/giftCard';
 import GiftCardItem from './GiftCardItem/GiftCardItem';
 import styles from './buy.module.scss';
+import useAuthentication from '../../hooks/useAuthentication';
 
 const Buy: React.FC = () => {
 
+    const { isAuthenticated } = useAuthentication();
     const { fetchGiftCards } = useGiftCard();
     const {
         data: giftCards,
@@ -29,11 +31,11 @@ const Buy: React.FC = () => {
 
     const onRefresh = useCallback((): Promise<any> => {
         return fetchData();
-    }, [])
+    }, [isAuthenticated])
 
     useIonViewWillEnter(() => {
         onRefresh();
-    })
+    }, [isAuthenticated])
 
     return (
         <IonPage>

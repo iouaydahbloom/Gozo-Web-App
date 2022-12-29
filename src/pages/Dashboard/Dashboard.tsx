@@ -1,4 +1,4 @@
-import { IonPage, useIonViewDidEnter } from '@ionic/react';
+import { IonPage, useIonViewWillEnter } from '@ionic/react';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import HighlightedBalance, { HighlightedBalanceAsset } from './HighlightedBalance/HighlightedBalance';
 //@ts-ignore
@@ -15,7 +15,8 @@ import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
 import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
 import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 import { parseNumber } from '../../helpers/blockchainHelper';
-import styles from './dashboard.module.scss'
+import styles from './dashboard.module.scss';
+import useAuthentication from '../../hooks/useAuthentication';
 
 const Dashboard: React.FC = () => {
 
@@ -26,21 +27,23 @@ const Dashboard: React.FC = () => {
     const { assets: cryptoAssets, fetchCryptoAssets, defaultERC20Asset, isLoadingAssets } = useCryptoAssets();
     const { gozoLoyaltyMembership, fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [highlightedAsset, setHighlightedAsset] = useState<HighlightedBalanceAsset>();
-    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
+    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext);
+    const { isAuthenticated } = useAuthentication();
+
     const onSelect = useCallback((tabIndex: number) => {
         setMode(tabIndex === 0 ? AssetMode.loyaltyPoint : AssetMode.token);
     }, [])
 
-    const getPrograms = useCallback(async () => {
+    const getPrograms = async () => {
         setLoyaltyPrograms([])
         const programs = await fetchMyLoyaltyPrograms();
         setLoyaltyPrograms(programs);
         return programs;
-    }, [])
+    }
 
-    const handleHighlightedAssetMetadata = useCallback(() => {
+    const handleHighlightedAssetMetadata = () => {
         mode === AssetMode.loyaltyPoint ? fetchGozoLoyaltyMembership() : fetchCryptoAssets();
-    }, [mode])
+    }
 
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
@@ -48,7 +51,7 @@ const Dashboard: React.FC = () => {
             fetchCryptoAssets(),
             handleHighlightedAssetMetadata()
         ])
-    }, [])
+    }, [isAuthenticated])
 
     useEffect(() => {
         handleHighlightedAssetMetadata();
@@ -74,27 +77,26 @@ const Dashboard: React.FC = () => {
         }
     }, [gozoLoyaltyMembership])
 
-    useIonViewDidEnter(() => {
-        hideOnboarding();
-        onRefresh();
-    })
-
     useEffect(() => {
         if (tabRef) {
             setTabHeaderHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
         }
     }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
 
+    useIonViewWillEnter(() => {
+        hideOnboarding();
+        onRefresh();
+    }, [isAuthenticated])
+
     return (
         <IonPage className={styles.dashboard}>
             <PrimaryContainer isRefreshable onRefresh={onRefresh}>
                 <HighlightedBalance asset={highlightedAsset} />
                 <Tabs domRef={(node: any) => setTabRef(node)} onSelect={onSelect}>
-                    <TabList >
-                        <Tab >Loyalty Programs</Tab>
-                        <Tab >Tokens</Tab>
+                    <TabList>
+                        <Tab>Loyalty Programs</Tab>
+                        <Tab>Tokens</Tab>
                     </TabList>
-
                     <TabPanel>
                         <LoyaltyPrograms
                             isLoading={loadingMyLoyaltyPrograms}

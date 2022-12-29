@@ -14,15 +14,17 @@ import { AppRoutes } from '../../constants/appRoutes';
 import CryptoHistoryOptions from './CryptoHistoryOptions/CryptoHistoryOptions';
 import useCryptoAssets from '../../hooks/useCryptoAssets';
 import { CryptoAsset } from '../../models/assets/CryptoAsset';
+import useAuthentication from '../../hooks/useAuthentication';
 
 const TransactionHistory: React.FC = () => {
 
     const [userLoyaltyPrograms, setUserLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([])
     const { defaultProgram, fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms } = useLoyaltyPrograms();
     const { defaultERC20Asset, defaultNativeAsset } = useCryptoAssets();
-    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
+    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext);
     const [, setSelectedTabIndex] = useState(0);
     const { push } = useHistory();
+    const { isAuthenticated } = useAuthentication();
 
     const cryptoAssets = useMemo(() => {
         let assets = [];
@@ -42,17 +44,17 @@ const TransactionHistory: React.FC = () => {
 
     const onRefresh = useCallback((): Promise<any> => {
         return getAllLoyaltyPrograms()
-    }, [])
-
-    useIonViewWillEnter(() => {
-        onRefresh();
-    })
+    }, [isAuthenticated])
 
     useEffect(() => {
         if (tabRef) {
             setTabHeaderHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
         }
     }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
+
+    useIonViewWillEnter(() => {
+        onRefresh();
+    }, [isAuthenticated])
 
     return (
         <IonPage>

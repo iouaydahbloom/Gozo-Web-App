@@ -24,7 +24,8 @@
     "@capacitor/storage": "^1.2.5",
     "@ionic/react": "^6.0.0",
     "@ionic/react-router": "^6.0.0",
-    "@testing-library/jest-dom": "^5.11.9",
+    "@ionic/react-test-utils": "^0.4.0",
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.6.3",
     "@types/jest": "^26.0.20",
@@ -119,5 +120,10 @@
     "react-error-overlay": "6.0.9",
     "rollup": "^2.79.1"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "jest": {
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    }
+  }
 }

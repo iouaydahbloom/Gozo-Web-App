@@ -1,7 +1,7 @@
 import React from 'react';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import { SelectOption } from '../SwapSelect/SwapSelect';
-import useProgramsExchange from '../../../hooks/useProgramsExchange';
+import useProgramsExchange from '../../../hooks/useProgramsExchange/useProgramsExchange';
 import SwapDirection from '../SwapDirectionToggle/SwapDirectionToggle';
 import SwapField from '../SwapField/SwapField';
 import styles from './swapPoints.module.scss';

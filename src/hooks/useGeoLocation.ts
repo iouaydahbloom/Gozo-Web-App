@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { cloudFunctionName } from "../constants/cloudFunctionName";
 import { getCurrentGeoPosition } from "../helpers/geoLocation";
-import useAuthentication from "./useAuthentication";
+import useAuthentication from "./useAuthentication/useAuthentication";
 import useCloud from "./useCloud";
 
 const useGeoLocation = () => {

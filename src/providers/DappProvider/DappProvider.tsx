@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { chainHex } from '../../helpers/networks';
 import dappContext, { ContractsMetadata } from './dappContext';
 import { ERC20Metadata } from '../../models/assets/ERC20Asset';
-import useAuthentication from '../../hooks/useAuthentication';
+import useAuthentication from '../../hooks/useAuthentication/useAuthentication';
 import useCloud from '../../hooks/useCloud';
 import { cloudFunctionName } from '../../constants/cloudFunctionName';
 import { NativeAsset } from '../../models/assets/NativeAsset';

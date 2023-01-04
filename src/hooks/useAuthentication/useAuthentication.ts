@@ -1,10 +1,10 @@
-import {useCallback, useContext, useState} from "react";
-import {AuthUserDTO} from "../dto/authUser";
-import {AuthUser} from "../models/authUser";
-import {cloudFunctionName} from "../constants/cloudFunctionName";
-import {sessionContext} from "../providers/SessionProvider/sessionContext";
-import useCloud from "./useCloud";
-import useMagicAuth from "./useMagicAuth";
+import { useCallback, useContext, useState } from "react";
+import { AuthUserDTO } from "../../dto/authUser";
+import { AuthUser } from "../../models/authUser";
+import { cloudFunctionName } from "../../constants/cloudFunctionName";
+import { sessionContext } from "../../providers/SessionProvider/sessionContext";
+import useCloud from "../useCloud";
+import useMagicAuth from "../useMagicAuth";
 
 const useAuthentication = () => {
 

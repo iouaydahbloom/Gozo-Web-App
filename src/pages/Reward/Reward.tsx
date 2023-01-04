@@ -9,7 +9,7 @@ import React, {useCallback, useContext, useEffect} from 'react';
 import useReward from '../../hooks/reward/useReward';
 import {TabHeaderHeightContext} from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 import EarnReward from './EarnReward/EarnReward';
-import useAuthentication from '../../hooks/useAuthentication';
+import useAuthentication from '../../hooks/useAuthentication/useAuthentication';
 
 const Rewards: React.FC = () => {
     const {

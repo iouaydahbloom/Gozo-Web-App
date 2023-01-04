@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Redirect, Route, useLocation } from 'react-router';
 import { AppRoutes } from '../../../constants/appRoutes';
 import useAppAnalytics from '../../../hooks/useAppAnalytics';
-import useAuthentication from '../../../hooks/useAuthentication';
+import useAuthentication from '../../../hooks/useAuthentication/useAuthentication';
 import useNetwork from '../../../hooks/useNetwork';
 import useOnBoardingPreview from '../../../hooks/useOnBoardingPreview';
 import Account from '../../../pages/Account/Account';

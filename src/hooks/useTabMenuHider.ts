@@ -1,7 +1,10 @@
-import { useIonViewWillEnter, useIonViewWillLeave } from "@ionic/react"
+import {useIonViewWillEnter, useIonViewWillLeave} from "@ionic/react"
 import TabMenuHelper from "../helpers/tabMenu"
 
-const useTabMenuHidder = () => {
+/**
+ * Custom hook to be called whenever a page needs to hide the menu
+ */
+const useTabMenuHider = () => {
     useIonViewWillEnter(() => {
         TabMenuHelper.hideTabBar()
     }, [])
@@ -11,4 +14,4 @@ const useTabMenuHidder = () => {
     }, [])
 }
 
-export default useTabMenuHidder;
+export default useTabMenuHider;

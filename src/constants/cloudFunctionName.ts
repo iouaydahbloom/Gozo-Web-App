@@ -49,5 +49,6 @@ export const cloudFunctionName = {
     giftCards: 'gift_card',
     giftCardDetails: 'gift_card_details',
     simulateFiatConversion: 'simulate_fiat_conversion',
-    executeGiftCardExchange: 'execute_gift_card_exchange'
+    executeGiftCardExchange: 'execute_gift_card_exchange',
+    relayWeb3Request: 'relay_web3_request'
 }

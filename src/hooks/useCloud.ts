@@ -33,7 +33,7 @@ const useCloud = () => {
     }
 
     async function handleUnauthorizedResponse(error: Error) {
-        if (error.message == 'unauthorized') {
+        if (error.message === 'unauthorized') {
             clearSession();
             await disconnectMagicAuth();
         }

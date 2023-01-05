@@ -1,7 +1,7 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
-import { appConfig } from '../constants/appConfig';
-import { networkResponseCode } from '../constants/networkResponseCode';
+import {appConfig} from '../constants/appConfig';
+import {networkResponseCode} from '../constants/networkResponseCode';
 
 class HttpError extends Error {
     constructor(
@@ -15,18 +15,18 @@ class HttpError extends Error {
 }
 
 const http = axios.create({
-    baseURL: appConfig.serverUrl,
-    timeout: 15000,
-    timeoutErrorMessage: 'Network Connection Issue'
+    baseURL: appConfig.serverUrl
+    //timeout: 15000,
+    //timeoutErrorMessage: 'Network Connection Issue'
 });
 
-axiosRetry(http, {
-    retries: 1,
-    shouldResetTimeout: true,
-    retryCondition: (error) => {
-        return error.code === networkResponseCode.timeOut;
-    }
-});
+// axiosRetry(http, {
+//     retries: 1,
+//     shouldResetTimeout: true,
+//     retryCondition: (error) => {
+//         return error.code === networkResponseCode.timeOut;
+//     }
+// });
 
 http.interceptors.response.use(
     (response) => response.data.result,
@@ -38,4 +38,4 @@ http.interceptors.response.use(
         throw (new HttpError(errorResponse.status, message, errors));
     });
 
-export { http };
+export {http};

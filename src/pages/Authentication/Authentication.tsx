@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../components/inputs/PrimaryInput/PrimaryInput';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
-import useAuthentication from '../../hooks/useAuthentication/useAuthentication';
+import useAuthentication from '../../hooks/useAuthentication';
 import useTabMenuHidder from '../../hooks/useTabMenuHidder';
 import useToast from '../../hooks/useToast';
 import styles from './authentication.module.scss';

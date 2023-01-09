@@ -5,7 +5,7 @@ import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHead
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import { AppRoutes } from '../../constants/appRoutes';
-import useAuthentication from '../../hooks/useAuthentication/useAuthentication';
+import useAuthentication from '../../hooks/useAuthentication';
 import styles from './account.module.scss';
 import AccountItem from './AccountItem/AccountItem';
 import useAppDetails from '../../hooks/useAppDetails';

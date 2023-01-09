@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { AppRoutes } from '../../../constants/appRoutes';
-import useAuthentication from '../../../hooks/useAuthentication/useAuthentication';
+import useAuthentication from '../../../hooks/useAuthentication';
 
 interface Props {
     children: ReactNode

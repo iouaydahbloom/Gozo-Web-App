@@ -12,7 +12,7 @@ import {Redemption} from "../../models/redemption";
 import {DynamicInputIdentifier} from "../../models/dynamicInputIdentifier";
 import {act} from "@testing-library/react";
 
-const useLoyaltyProgramsMock = () => {
+const useLoyaltyPrograms = () => {
 
     const [loadingMyPrograms, setLoadingMyPrograms] = useState(false);
     const [loadingProgram, setLoadingProgram] = useState(false);
@@ -208,4 +208,4 @@ const useLoyaltyProgramsMock = () => {
     }
 }
 
-export default useLoyaltyProgramsMock;
+export default useLoyaltyPrograms;

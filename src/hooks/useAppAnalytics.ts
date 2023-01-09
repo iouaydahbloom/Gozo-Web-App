@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router";
 import { enableCrashAnalytics } from "../helpers/appCrashAnalytics";
 import { enableAnalytics, setAnalyticsSessionTimeoutDuration, setAnalyticsScreenName, setUserForAnalytics, setUserPropertyForAnalytics } from "../helpers/appUsageAnalytics";
-import useAuthentication from "./useAuthentication/useAuthentication";
+import useAuthentication from "./useAuthentication";
 
 const useAppAnalytics = () => {
     const { user } = useAuthentication();

@@ -1,21 +1,21 @@
-import { useContext, useState } from "react";
-import { LoyaltyProgramDTO, UserLoyaltyProgramDTO } from "../dto/loyaltyProgramDTO";
-import { LoyaltyProgram, UserLoyaltyProgram } from "../models/loyaltyProgram";
-import { Pagination } from "../models/data/pagination";
-import { cloudFunctionName } from "../constants/cloudFunctionName";
-import { currencySettingsContext } from "../providers/CurrencySettingsProvider/currencySettingsContext";
+import {useContext, useState} from "react";
+import {LoyaltyProgramDTO, UserLoyaltyProgramDTO} from "../dto/loyaltyProgramDTO";
+import {LoyaltyProgram, UserLoyaltyProgram} from "../models/loyaltyProgram";
+import {Pagination} from "../models/data/pagination";
+import {cloudFunctionName} from "../constants/cloudFunctionName";
+import {currencySettingsContext} from "../providers/CurrencySettingsProvider/currencySettingsContext";
 import useCloud from "./useCloud";
-import { ProgramFilter } from "../models/data/filter";
-import { PartnershipType } from "../types/exchangeType";
-import { DefaultCurrencyDTO } from "../dto/defaultCurrencyDTO";
+import {Filter} from "../models/data/filter";
+import {PartnershipType} from "../types/exchangeType";
+import {DefaultCurrencyDTO} from "../dto/defaultCurrencyDTO";
 
 const useLoyaltyPrograms = () => {
 
     const [loadingMyPrograms, setLoadingMyPrograms] = useState(false);
     const [loadingProgram, setLoadingProgram] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
-    const { gozoLoyalty } = useContext(currencySettingsContext);
-    const { run } = useCloud();
+    const {gozoLoyalty} = useContext(currencySettingsContext);
+    const {run} = useCloud();
 
     async function fetchDefaultCurrency() {
         return run(cloudFunctionName.defaultCurrency,
@@ -27,7 +27,7 @@ const useLoyaltyPrograms = () => {
             })
     }
 
-    async function getAllAvailablePrograms(filter: ProgramFilter) {
+    async function getAllAvailablePrograms(filter: Filter) {
         return run(
             cloudFunctionName.programs,
             filter,
@@ -54,7 +54,7 @@ const useLoyaltyPrograms = () => {
     async function getFilteredProgram(programId: string, exchangeType: PartnershipType) {
         return run(
             cloudFunctionName.programs,
-            { page: 1, page_size: 10, partnerId: programId, exchangeType: exchangeType },
+            {page: 1, page_size: 10, partnerId: programId, exchangeType: exchangeType},
             (result: Pagination<LoyaltyProgramDTO>) => {
                 return result.results.length > 0 ? LoyaltyProgram.getFromDTO(result.results[0]) : null
             })
@@ -67,7 +67,7 @@ const useLoyaltyPrograms = () => {
         setLoadingProgram(true)
         return run(
             cloudFunctionName.program,
-            programId ? { partner_id: programId } : {},
+            programId ? {partner_id: programId} : {},
             (result: LoyaltyProgramDTO) => {
                 return LoyaltyProgram.getFromDTO(result)
             })
@@ -96,7 +96,7 @@ const useLoyaltyPrograms = () => {
     async function connectProgram(program: UserLoyaltyProgram) {
         setIsUpdating(true);
         return run(cloudFunctionName.connectProgram,
-            { program: program.toMyLoyaltyProgramDTO() },
+            {program: program.toMyLoyaltyProgramDTO()},
             (result: any) => {
                 const stringifiedResult = JSON.stringify(result);
                 const parsedResult: UserLoyaltyProgramDTO = JSON.parse(stringifiedResult);
@@ -109,7 +109,7 @@ const useLoyaltyPrograms = () => {
     async function disconnectProgram(userCurrencyId: string) {
         setIsUpdating(true);
         return run(cloudFunctionName.disconnectProgram,
-            { userCurrencyId: userCurrencyId },
+            {userCurrencyId: userCurrencyId},
             () => true,
             true)
             .then(result => {
@@ -121,7 +121,7 @@ const useLoyaltyPrograms = () => {
     async function disconnectPrograms(userCurrencyIds: string[]) {
         setIsUpdating(true);
         return run(cloudFunctionName.disconnectPrograms,
-            { userCurrencyIds: userCurrencyIds },
+            {userCurrencyIds: userCurrencyIds},
             () => true,
             true)
             .then(result => {

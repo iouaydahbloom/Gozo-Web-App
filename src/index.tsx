@@ -6,34 +6,38 @@ import reportWebVitals from './reportWebVitals';
 import CurrencySettingsProvider from './providers/CurrencySettingsProvider/CurrencySettingsProvider';
 import MagicAuthProvider from './providers/MagicAuthProvider/MagicAuthProvider';
 import SessionProvider from './providers/SessionProvider/SessionProvider';
-import { DappProvider } from './providers/DappProvider/DappProvider';
+import {DappProvider} from './providers/DappProvider/DappProvider';
 import OnBoardingPreviewProvider from './providers/OnBoardingPreviewProvider/OnBoardingPreviewProvider';
 import NetworkProvider from './providers/networkProvider/NetworkProvider';
 import WheelSettingsProvider from './providers/WheelSettingsProvider/WheelSettingsProvider';
-import { ErrorHandlerProvider } from './providers/ErrorHandlerProvider/ErrorHandlerProvider';
+import {ErrorHandlerProvider} from './providers/ErrorHandlerProvider/ErrorHandlerProvider';
+import {QueryClient, QueryClientProvider} from "react-query";
+
 require('dotenv').config();
 
 ReactDOM.render(
-  <React.StrictMode>
-    <ErrorHandlerProvider>
-      <NetworkProvider>
-        <OnBoardingPreviewProvider>
-          <MagicAuthProvider>
-            <SessionProvider>
-              <DappProvider>
-                <CurrencySettingsProvider>
-                  <WheelSettingsProvider>
-                    <App />
-                  </WheelSettingsProvider>
-                </CurrencySettingsProvider>
-              </DappProvider>
-            </SessionProvider>
-          </MagicAuthProvider>
-        </OnBoardingPreviewProvider>
-      </NetworkProvider>
-    </ErrorHandlerProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <ErrorHandlerProvider>
+            <NetworkProvider>
+                <OnBoardingPreviewProvider>
+                    <MagicAuthProvider>
+                        <SessionProvider>
+                            <QueryClientProvider client={new QueryClient()}>
+                                <DappProvider>
+                                    <CurrencySettingsProvider>
+                                        <WheelSettingsProvider>
+                                            <App/>
+                                        </WheelSettingsProvider>
+                                    </CurrencySettingsProvider>
+                                </DappProvider>
+                            </QueryClientProvider>
+                        </SessionProvider>
+                    </MagicAuthProvider>
+                </OnBoardingPreviewProvider>
+            </NetworkProvider>
+        </ErrorHandlerProvider>
+    </React.StrictMode>,
+    document.getElementById('root')
 )
 
 // If you want your app to work offline and load faster, you can change

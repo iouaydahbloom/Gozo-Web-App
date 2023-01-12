@@ -81,15 +81,9 @@ const useLoyaltyPrograms = () => {
         setLoadingMyPrograms(true);
         return run(cloudFunctionName.getMyPrograms,
             null,
-            (result: UserLoyaltyProgramDTO[]) => {
-                const stringifiedResult = JSON.stringify(result);
-                const parsedResult: UserLoyaltyProgramDTO[] = JSON.parse(stringifiedResult);
-                return parsedResult.map(data => UserLoyaltyProgram.getFromDTO(data))
-            },
+            (result: UserLoyaltyProgramDTO[]) => result.map(data => UserLoyaltyProgram.getFromDTO(data)),
             true)
-            .then(result => {
-                return result.isSuccess ? result.data : []
-            })
+            .then(result => result.isSuccess ? result.data : [])
             .finally(() => setLoadingMyPrograms(false))
     }
 

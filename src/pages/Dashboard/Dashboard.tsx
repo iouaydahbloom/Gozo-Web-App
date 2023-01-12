@@ -11,35 +11,38 @@ import { AssetMode } from '../../constants/assetsMode';
 import useOnBoardingPreview from '../../hooks/useOnBoardingPreview';
 import useCryptoAssets from '../../hooks/useCryptoAssets';
 import { currencySettingsContext } from '../../providers/CurrencySettingsProvider/currencySettingsContext';
-import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
-import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
+//import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
+//import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
 import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 import { parseNumber } from '../../helpers/blockchainHelper';
 import styles from './dashboard.module.scss';
 import useAuthentication from '../../hooks/useAuthentication';
+import useUserProgramsQuery from '../../hooks/query/useUserProgramsQuery';
 
 const Dashboard: React.FC = () => {
 
     const [mode, setMode] = useState<AssetMode>(AssetMode.loyaltyPoint);
     const { hide: hideOnboarding } = useOnBoardingPreview();
-    const { fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms } = useLoyaltyPrograms();
-    const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
+    //const { loadingMyLoyaltyPrograms } = useLoyaltyPrograms();
+    //const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
     const { assets: cryptoAssets, fetchCryptoAssets, defaultERC20Asset, isLoadingAssets } = useCryptoAssets();
     const { gozoLoyaltyMembership, fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [highlightedAsset, setHighlightedAsset] = useState<HighlightedBalanceAsset>();
     const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext);
     const { isAuthenticated } = useAuthentication();
+    const userProgramsQuery = useUserProgramsQuery();
 
     const onSelect = useCallback((tabIndex: number) => {
         setMode(tabIndex === 0 ? AssetMode.loyaltyPoint : AssetMode.token);
     }, [])
 
-    const getPrograms = async () => {
-        setLoyaltyPrograms([])
-        const programs = await fetchMyLoyaltyPrograms();
-        setLoyaltyPrograms(programs);
-        return programs;
-    }
+    // const getPrograms = async () => {
+    //     setLoyaltyPrograms([])
+    //     const programs = await fetchMyLoyaltyPrograms();
+    //     const programs = await userProgramsQuery.refetch()
+    //     setLoyaltyPrograms(programs);
+    //     return programs;
+    // }
 
     const handleHighlightedAssetMetadata = () => {
         mode === AssetMode.loyaltyPoint ? fetchGozoLoyaltyMembership() : fetchCryptoAssets();
@@ -47,7 +50,7 @@ const Dashboard: React.FC = () => {
 
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
-            getPrograms(),
+            userProgramsQuery.refetch(),
             fetchCryptoAssets(),
             handleHighlightedAssetMetadata()
         ])
@@ -85,7 +88,7 @@ const Dashboard: React.FC = () => {
 
     useIonViewWillEnter(() => {
         hideOnboarding();
-        onRefresh();
+        //onRefresh();
     }, [isAuthenticated])
 
     return (
@@ -99,9 +102,9 @@ const Dashboard: React.FC = () => {
                     </TabList>
                     <TabPanel>
                         <LoyaltyPrograms
-                            isLoading={loadingMyLoyaltyPrograms}
-                            programs={loyaltyPrograms}
-                            getPrograms={getPrograms} />
+                            isLoading={userProgramsQuery.isLoading}
+                            programs={userProgramsQuery.data ?? []}
+                            getPrograms={userProgramsQuery.refetch} />
                     </TabPanel>
                     <TabPanel>
                         <CryptoTokens

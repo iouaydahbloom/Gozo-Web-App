@@ -16,6 +16,7 @@ const usePaginatedQuery = <FilterType extends Filter, DataType>({key, fn, filter
         },
         {
             //enabled: false,
+            refetchOnWindowFocus: false,
             keepPreviousData: true
         }
     );

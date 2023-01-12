@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import PrimaryButton from '../../../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../../../components/inputs/PrimaryInput/PrimaryInput';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
+import useDataMutation from '../../../../hooks/query/useDataMutation';
+import useDataQuery from '../../../../hooks/query/useDataQuery';
 import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms';
 import useToast from '../../../../hooks/useToast';
 import { DynamicInputIdentifier } from '../../../../models/dynamicInputIdentifier';
@@ -20,10 +22,40 @@ interface Props {
 const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPrograms }) => {
     const [isSelected, setIsSelected] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
-    const [partnershipMetadata, setPartnershipMetadata] = useState<LoyaltyPartnershipDetails | null>();
+    //const [partnershipMetadata, setPartnershipMetadata] = useState<LoyaltyPartnershipDetails | null>();
     const [myUpdatedProgram, setMyUpdatedProgram] = useState<UserLoyaltyProgram | null>();
-    const { connectProgram, disconnectProgram, fetchFilteredProgram, isUpdating } = useLoyaltyPrograms();
+    const { connectProgram, disconnectProgram, fetchFilteredProgram } = useLoyaltyPrograms();
     const { presentFailure } = useToast();
+    const selectedPartnershipType: PartnershipType = item.activePartnerships?.exchangeIn ? 'in' :
+        item.activePartnerships?.exchangeOut ? 'out' :
+            item.activePartnerships?.redemption ? 'redemption' :
+                item.activePartnerships?.issuing ? 'issuing' :
+                    'out';
+
+    const filteredProgramQuery = useDataQuery({
+        key: 'filteredProgram',
+        fn: fetchFilteredProgram,
+        fnParams: [item.partnerId, selectedPartnershipType],
+        enabled: isSelected
+    });
+
+    //@ts-ignore
+    const partnershipMetadata: LoyaltyPartnershipDetails | null = filteredProgramQuery.data?.partnershipDetails as any;
+
+    const disconnectMutation = useDataMutation({
+        fn: () => disconnectProgram(myUpdatedProgram?.userCurrencyId!),
+        mutatedQueryKey: 'userPrograms'
+    });
+
+    const connectMutation = useDataMutation({
+        fn: () =>
+            connectProgram(myUpdatedProgram!)
+                .then(result => {
+                    if (result.isSuccess) return result.data;
+                    throw new Error(result.errors.detail)
+                }),
+        mutatedQueryKey: 'userPrograms'
+    });
 
     function initMyProgram() {
         const userLoyaltyProgram = new UserLoyaltyProgram(
@@ -52,54 +84,68 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
         setMyUpdatedProgram(userLoyaltyProgram);
     }
 
-    function handleConnection() {
+    async function handleConnection() {
         if (isConnected) {
-            disconnectProgram(myUpdatedProgram?.userCurrencyId!)
-                .then(disconnected => {
-                    if (disconnected) {
-                        fetchMyPrograms && fetchMyPrograms()
-                        setIsConnected(false);
-                        initMyProgram();
-                    }
-                })
+            const disconnected = await disconnectMutation.mutateAsync() as boolean;
+            if (disconnected) {
+                setIsConnected(false);
+                initMyProgram();
+            }
+            // disconnectProgram(myUpdatedProgram?.userCurrencyId!)
+            //     .then(disconnected => {
+            //         if (disconnected) {
+            //             // fetchMyPrograms && fetchMyPrograms()
+
+            //             setIsConnected(false);
+            //             initMyProgram();
+            //         }
+            //     })
         } else {
-            connectProgram(myUpdatedProgram!)
-                .then(result => {
-                    if (result.isSuccess) {
-                        fetchMyPrograms && fetchMyPrograms()
-                        setIsConnected(true);
-                        setMyUpdatedProgram(result.data);
-                    } else if (result.errors) {
-                        presentFailure(result.errors.detail);
-                    }
-                })
+            try {
+                const connectResult = await connectMutation.mutateAsync() as any;
+                setIsConnected(true);
+                setMyUpdatedProgram(connectResult);
+            } catch (error: any) {
+                presentFailure(error.message);
+            }
+            // connectProgram(myUpdatedProgram!)
+            //     .then(result => {
+            //         if (result.isSuccess) {
+            //             fetchMyPrograms && fetchMyPrograms()
+            //             setIsConnected(true);
+            //             setMyUpdatedProgram(result.data);
+            //         } else if (result.errors) {
+            //             presentFailure(result.errors.detail);
+            //         }
+            //     })
         }
     }
 
-    const getPartnershipMetadata = useCallback(async () => {
-        const partnershipType: PartnershipType =
-            item.activePartnerships?.exchangeIn ? 'in' :
-                item.activePartnerships?.exchangeOut ? 'out' :
-                    item.activePartnerships?.redemption ? 'redemption' :
-                        item.activePartnerships?.issuing ? 'issuing' :
-                            'out';
+    // const getPartnershipMetadata = useCallback(async () => {
+    //     const partnershipType: PartnershipType =
+    //         item.activePartnerships?.exchangeIn ? 'in' :
+    //             item.activePartnerships?.exchangeOut ? 'out' :
+    //                 item.activePartnerships?.redemption ? 'redemption' :
+    //                     item.activePartnerships?.issuing ? 'issuing' :
+    //                         'out';
 
-        return fetchFilteredProgram(item.partnerId, partnershipType)
-            .then(program => {
-                setPartnershipMetadata(program?.partnershipDetails);
-            })
-    }, [item.partnerId])
+    //     setSelectedPartnershipType(partnershipType);
 
-    useEffect(() => {
-        if (isSelected && !partnershipMetadata) {
-            getPartnershipMetadata()
-        }
-    }, [isSelected])
+    //     // return fetchFilteredProgram(item.partnerId, partnershipType)
+    //     //     .then(program => {
+    //     //         setPartnershipMetadata(program?.partnershipDetails);
+    //     //     })
+    // }, [item.partnerId])
+
+    // useEffect(() => {
+    // if (isSelected && !partnershipMetadata) {
+    //     getPartnershipMetadata()
+    // }
+    //}, [isSelected])
 
     useEffect(() => {
         if (!myProgram && partnershipMetadata) initMyProgram()
     }, [partnershipMetadata])
-
 
     useEffect(() => {
         if (myProgram) {
@@ -113,11 +159,10 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
 
     useEffect(() => {
         return () => {
-            setPartnershipMetadata(null)
+            //setPartnershipMetadata(null)
             setMyUpdatedProgram(null)
         }
     }, [])
-
 
     const LoyaltyProgramPartnership = () => {
         return (
@@ -155,7 +200,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
                                             size='s'
                                             type={`${isConnected ? 'success' : 'dark'}`}
                                             onClick={handleConnection}
-                                            loading={isUpdating}>
+                                            loading={connectMutation.isLoading || disconnectMutation.isLoading}>
                                             {isConnected ? 'Disconnect' : 'Connect'}
                                         </PrimaryButton>
                                     </>

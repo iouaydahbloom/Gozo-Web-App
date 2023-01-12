@@ -19,10 +19,11 @@ import usePrimarySheet from '../../../hooks/usePrimarySheet';
 import SecondaryButtonsGroup from '../../../components/buttons/SecondaryButtonsGroup/SecondaryButtonsGroup';
 import SectionLoader from '../../../components/loaders/section-loader/SectionLoader';
 import { TabHeaderHeightContext } from '../../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
+import useDataMutation from '../../../hooks/query/useDataMutation';
 
 interface Props {
     programs: UserLoyaltyProgram[],
-    getPrograms: () => Promise<UserLoyaltyProgram[]>,
+    getPrograms: () => Promise<UserLoyaltyProgram[] | any>,
     isLoading: boolean
 }
 
@@ -30,14 +31,22 @@ const LoyaltyPrograms: React.FC<Props> = ({ programs, getPrograms, isLoading }) 
     const { fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [selectedUserCurrencyIds, setSelectedUserCurrencyIds] = useState<string[]>([]);
     const [isRemoving, setIsRemoving] = useState(false);
-    const {tabHeaderHeight} = useContext(TabHeaderHeightContext)
+    const { tabHeaderHeight } = useContext(TabHeaderHeightContext);
+    const { disconnectPrograms } = useLoyaltyPrograms();
+    const { presentSuccess, presentInfo } = useToast();
+    const { confirm } = useConfirmation();
+    const disconnectProgramsMutation = useDataMutation({
+        mutatedQueryKey: ['userPrograms'],
+        fn: () => disconnectPrograms(selectedUserCurrencyIds)
+    });
 
     const { showModal: showManager } = usePrimarySheet({
         title: 'Partners',
         component: LoyaltyProgramsManager,
         id: 'lpModal',
-        onDismiss: getPrograms
+        //onDismiss: getPrograms
     });
+
     const { showModal: showSwap } = usePrimarySheet({
         title: 'Swap',
         component: Swap,
@@ -45,12 +54,9 @@ const LoyaltyPrograms: React.FC<Props> = ({ programs, getPrograms, isLoading }) 
         id: 'swapModal',
         onDismiss: () => {
             fetchGozoLoyaltyMembership();
-            getPrograms();
+            //getPrograms();
         }
     });
-    const { disconnectPrograms } = useLoyaltyPrograms();
-    const { presentSuccess, presentInfo } = useToast();
-    const { confirm } = useConfirmation();
 
     function switchButtons() {
         setIsRemoving(prev => !prev)
@@ -65,15 +71,21 @@ const LoyaltyPrograms: React.FC<Props> = ({ programs, getPrograms, isLoading }) 
         confirm({
             message: 'Are you sure you want to disconnect',
             title: 'Disconnect',
-            onConfirmed: () => {
-                disconnectPrograms(selectedUserCurrencyIds)
-                    .then(disconnected => {
-                        if (disconnected) {
-                            presentSuccess('Programs successfully disconnected');
-                            switchButtons()
-                            getPrograms();
-                        }
-                    })
+            onConfirmed: async () => {
+                const disconnected = await disconnectProgramsMutation.mutateAsync() as boolean;
+                if (disconnected) {
+                    presentSuccess('Programs successfully disconnected');
+                    switchButtons()
+                    //getPrograms();
+                }
+                // disconnectPrograms(selectedUserCurrencyIds)
+                //     .then(disconnected => {
+                //         if (disconnected) {
+                //             presentSuccess('Programs successfully disconnected');
+                //             switchButtons()
+                //             getPrograms();
+                //         }
+                //     })
             }
         })
     }
@@ -98,7 +110,7 @@ const LoyaltyPrograms: React.FC<Props> = ({ programs, getPrograms, isLoading }) 
                     <SectionLoader /> :
                     programs.length > 0 ?
                         <>
-                            <div className={styles.actions} style={{top: tabHeaderHeight}}>
+                            <div className={styles.actions} style={{ top: tabHeaderHeight }}>
                                 {isRemoving ?
                                     <SecondaryButtonsGroup
                                         buttons={[

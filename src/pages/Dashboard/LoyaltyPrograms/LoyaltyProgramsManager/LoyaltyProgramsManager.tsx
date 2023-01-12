@@ -1,21 +1,24 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import LoyaltyProgramManageItem from './LoyaltyProgramManageItem'
 import useServerPagination from '../../../../hooks/useQueriedServerPagination'
-import {LoyaltyProgram, UserLoyaltyProgram} from '../../../../models/loyaltyProgram'
+import { LoyaltyProgram, UserLoyaltyProgram } from '../../../../models/loyaltyProgram'
 import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms'
 import PrimarySearch from '../../../../components/inputs/PrimarySearch/PrimarySearch'
 import styles from './loyaltyProgramsManager.module.scss';
-import {Filter} from '../../../../models/data/filter'
+import { Filter } from '../../../../models/data/filter'
 import PageLoader from '../../../../components/loaders/PageLoader/PageLoader'
+import useUserProgramsQuery from '../../../../hooks/query/useUserProgramsQuery'
 
 const LoyaltyProgramsManager: React.FC = () => {
 
-    const [isLoadingMyPrograms, setIsLoadingMyPrograms] = useState(false);
-    const [myPrograms, setMyPrograms] = useState<UserLoyaltyProgram[]>([]);
+    //const [isLoadingMyPrograms, setIsLoadingMyPrograms] = useState(false);
+    //const [myPrograms, setMyPrograms] = useState<UserLoyaltyProgram[]>([]);
     const [searchKey, setSearchKey] = useState<string>('');
-    const {fetchAllPrograms, fetchMyLoyaltyPrograms} = useLoyaltyPrograms();
+    const { fetchAllPrograms } = useLoyaltyPrograms();
+    const userProgramQuery = useUserProgramsQuery();
+    const myPrograms = userProgramQuery.data ?? [];
 
-    const {data: programs, isLoading} = useServerPagination<LoyaltyProgram, Filter>({
+    const { data: programs, isLoading } = useServerPagination<LoyaltyProgram, Filter>({
         id: 'programs',
         initialFilter: new Filter(1, 100),
         getData: fetchAllPrograms as any
@@ -29,27 +32,27 @@ const LoyaltyProgramsManager: React.FC = () => {
         return <LoyaltyProgramManageItem
             item={lp}
             key={lp.partnerId}
-            fetchMyPrograms={() => getMyLoyaltyProgram()}
-            myProgram={getMyProgram(lp.partnerId)}/>
+            fetchMyPrograms={() => userProgramQuery.refetch()}
+            myProgram={getMyProgram(lp.partnerId)} />
     }, [programs, myPrograms, searchKey])
 
-    function getMyLoyaltyProgram() {
-        fetchMyLoyaltyPrograms()
-            .then(result => {
-                if (result) {
-                    setMyPrograms(result);
-                }
-            })
-            .finally(() => setIsLoadingMyPrograms(false))
-    }
+    // function getMyLoyaltyProgram() {
+    //     fetchMyLoyaltyPrograms()
+    //         .then(result => {
+    //             if (result) {
+    //                 setMyPrograms(result);
+    //             }
+    //         })
+    //         .finally(() => setIsLoadingMyPrograms(false))
+    // }
 
     useEffect(() => {
         //fetchData()
-        setIsLoadingMyPrograms(true)
-        getMyLoyaltyProgram()
+        //setIsLoadingMyPrograms(true)
+        //getMyLoyaltyProgram()
 
         return () => {
-            setIsLoadingMyPrograms(false)
+            //setIsLoadingMyPrograms(false)
         }
     }, [])
 
@@ -59,11 +62,12 @@ const LoyaltyProgramsManager: React.FC = () => {
                 <PrimarySearch
                     value={searchKey}
                     placeholder="Search Partners"
-                    onChange={setSearchKey}/>
+                    onChange={setSearchKey} />
             </div>
             {
-                isLoading || isLoadingMyPrograms ?
-                    <PageLoader/> :
+                //isLoading || isLoadingMyPrograms ?
+                isLoading ?
+                    <PageLoader /> :
                     programs
                         .filter(program => !searchKey ||
                             program.companyName.toLowerCase().includes(searchKey?.toLowerCase()) ||

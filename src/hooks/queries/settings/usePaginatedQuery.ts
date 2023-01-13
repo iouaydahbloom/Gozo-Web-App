@@ -1,6 +1,6 @@
 import {useQuery} from "react-query";
-import {Filter} from "../../models/data/filter";
-import {Pagination} from "../../models/data/pagination";
+import {Filter} from "../../../models/data/filter";
+import {Pagination} from "../../../models/data/pagination";
 
 interface Props<FilterType extends Filter, DataType> {
     key: string,
@@ -15,7 +15,6 @@ const usePaginatedQuery = <FilterType extends Filter, DataType>({key, fn, filter
             return fn(filter)
         },
         {
-            //enabled: false,
             refetchOnWindowFocus: false,
             keepPreviousData: true
         }

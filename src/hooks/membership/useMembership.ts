@@ -1,28 +1,29 @@
-import { useEffect, useState } from "react";
-import { LoyaltyMemberDTO } from "../dto/loyaltyMemberDTO";
-import { LoyaltyMember } from "../models/loyaltyMember";
-import { cloudFunctionName } from "../constants/cloudFunctionName";
-import useAuthentication from "./useAuthentication";
-import useCloud from "./useCloud";
-import useDataQuery from "./query/useDataQuery";
+//import { useEffect, useState } from "react";
+import {LoyaltyMemberDTO} from "../../dto/loyaltyMemberDTO";
+import {LoyaltyMember} from "../../models/loyaltyMember";
+import {cloudFunctionName} from "../../constants/cloudFunctionName";
+import useAuthentication from "../useAuthentication";
+import useCloud from "../useCloud";
+import useDataQuery from "../queries/settings/useDataQuery";
+import {membershipQueriesIdentity} from "./membershipQueriesIdentity";
 
 const useMemberShip = (loyaltyCurrency?: string) => {
 
     //const [membership, setMembership] = useState<LoyaltyMember | null>(null);
     //const [isLoading, setIsLoading] = useState(false);
-    const { run } = useCloud();
-    const { isAuthenticated } = useAuthentication();
+    const {run} = useCloud();
+    const {isAuthenticated} = useAuthentication();
+
     const membershipQuery = useDataQuery({
-        key: 'membership',
-        fn: getMembership,
-        fnParams: [loyaltyCurrency],
+        identity: membershipQueriesIdentity.info(loyaltyCurrency),
+        fn: () => getMembership(loyaltyCurrency),
         enabled: isAuthenticated
     });
 
-    async function getMembership(loyaltyCurrency: string) {
+    async function getMembership(loyaltyCurrency?: string) {
         if (!loyaltyCurrency || !isAuthenticated) return Promise.resolve(null);
         return run(cloudFunctionName.members,
-            { ca_loyalty_currency: loyaltyCurrency },
+            {ca_loyalty_currency: loyaltyCurrency},
             (result: LoyaltyMemberDTO) => LoyaltyMember.getFromDTO(result),
             true)
             .then(result => {
@@ -56,7 +57,7 @@ const useMemberShip = (loyaltyCurrency?: string) => {
 
     return {
         isLoading: membershipQuery.isLoading,
-        membership: membershipQuery.data as LoyaltyMember | null,
+        membership: membershipQuery.data,
         fetchMembership: membershipQuery.refetch
     }
 }

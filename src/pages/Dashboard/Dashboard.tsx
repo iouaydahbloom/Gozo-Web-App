@@ -9,7 +9,7 @@ import '../../theme/primaryTabs.scss';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { AssetMode } from '../../constants/assetsMode';
 import useOnBoardingPreview from '../../hooks/useOnBoardingPreview';
-import useCryptoAssets from '../../hooks/useCryptoAssets';
+import useCryptoAssets from '../../hooks/cryptoAssets/useCryptoAssets';
 import { currencySettingsContext } from '../../providers/CurrencySettingsProvider/currencySettingsContext';
 //import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
 //import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
@@ -17,7 +17,7 @@ import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/
 import { parseNumber } from '../../helpers/blockchainHelper';
 import styles from './dashboard.module.scss';
 import useAuthentication from '../../hooks/useAuthentication';
-import useUserProgramsQuery from '../../hooks/query/useUserProgramsQuery';
+import useUserProgramsQuery from '../../hooks/queries/useUserProgramsQuery';
 
 const Dashboard: React.FC = () => {
 
@@ -56,9 +56,9 @@ const Dashboard: React.FC = () => {
         ])
     }, [isAuthenticated])
 
-    useEffect(() => {
-        handleHighlightedAssetMetadata();
-    }, [mode])
+    // useEffect(() => {
+    //     handleHighlightedAssetMetadata();
+    // }, [mode])
 
     useEffect(() => {
         if (mode === AssetMode.token) {
@@ -111,7 +111,9 @@ const Dashboard: React.FC = () => {
                             isLoading={isLoadingAssets}
                             assets={cryptoAssets}
                             refreshDefaultToken={fetchCryptoAssets}
-                            getAssets={fetchCryptoAssets} />
+                            //getAssets={fetchCryptoAssets}
+                            getAssets={() => Promise.resolve([])}
+                        />
                     </TabPanel>
                 </Tabs>
             </PrimaryContainer>

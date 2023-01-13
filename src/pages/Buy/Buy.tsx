@@ -1,24 +1,24 @@
-import { IonCol, IonGrid, IonPage, IonRow, useIonViewWillEnter } from '@ionic/react'
-import { useCallback } from 'react';
-import { Virtuoso } from 'react-virtuoso';
+import {IonCol, IonGrid, IonPage, IonRow, useIonViewWillEnter} from '@ionic/react'
+import React, {useCallback} from 'react';
+import {Virtuoso} from 'react-virtuoso';
 import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
-import { InfiniteScrollPagination } from '../../components/InfiniteScrollPagination/InfiniteScrollPagination';
+import {InfiniteScrollPagination} from '../../components/InfiniteScrollPagination/InfiniteScrollPagination';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer'
 import PageLoader from '../../components/loaders/PageLoader/PageLoader';
 import SectionPlaceholder from '../../components/sections/SectionPlaceholder/SectionPlaceholder';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
-import useGiftCard from '../../hooks/useGiftCard';
+import useGiftCard from '../../hooks/giftCard/useGiftCard';
 import useServerPagination from '../../hooks/useServerPagination';
-import { Filter } from '../../models/data/filter';
-import { GiftCard } from '../../models/giftCard';
+import {Filter} from '../../models/data/filter';
+import {GiftCard} from '../../models/giftCard';
 import GiftCardItem from './GiftCardItem/GiftCardItem';
 import styles from './buy.module.scss';
 import useAuthentication from '../../hooks/useAuthentication';
 
 const Buy: React.FC = () => {
 
-    const { isAuthenticated } = useAuthentication();
-    const { fetchGiftCards } = useGiftCard();
+    const {isAuthenticated} = useAuthentication();
+    const {fetchGiftCards} = useGiftCard({});
     const {
         data: giftCards,
         isLoading,
@@ -33,23 +33,23 @@ const Buy: React.FC = () => {
         return fetchData();
     }, [isAuthenticated])
 
-    useIonViewWillEnter(() => {
-        onRefresh();
-    }, [isAuthenticated])
+    // useIonViewWillEnter(() => {
+    //     onRefresh();
+    // }, [isAuthenticated])
 
     return (
         <IonPage>
-            <TertiaryHeader title='Buy' className='ion-text-center' />
+            <TertiaryHeader title='Buy' className='ion-text-center'/>
             <PrimaryContainer className='ion-padding' scrollYAxis={false} isRefreshable onRefresh={onRefresh}>
                 <Virtuoso
                     className="ion-content-scroll-host"
-                    style={{ height: "83vh" }}
+                    style={{height: "83vh"}}
                     totalCount={1}
                     itemContent={() => {
                         return (
                             <>
                                 {isLoading ?
-                                    <PageLoader />
+                                    <PageLoader/>
                                     :
                                     giftCards && giftCards.length !== 0 ?
                                         <IonGrid className={styles.giftCards}>
@@ -62,7 +62,7 @@ const Buy: React.FC = () => {
                                                 {
                                                     giftCards.map((giftCard, index) =>
                                                         <IonCol key={index} size="6">
-                                                            <GiftCardItem key={index} giftCard={giftCard} />
+                                                            <GiftCardItem key={index} giftCard={giftCard}/>
                                                         </IonCol>
                                                     )
                                                 }

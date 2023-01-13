@@ -3,8 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { UserLoyaltyProgram } from "../models/loyaltyProgram";
 import { cloudFunctionName } from "../constants/cloudFunctionName";
 import useCloud from "./useCloud";
-import useLoyaltyPrograms from "./useLoyaltyPrograms";
-import useMemberShip from "./useMembership";
+import useLoyaltyPrograms from "./loyaltyProgram/useLoyaltyPrograms";
+import useMemberShip from "./membership/useMembership";
 import useToast from "./useToast";
 
 export interface ExchangeState {

@@ -5,7 +5,7 @@ import { useHistory } from 'react-router';
 import PrimaryCheckbox from '../../../../components/inputs/PrimaryCheckbox/PrimaryCheckbox';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
 import { AppRoutes } from '../../../../constants/appRoutes';
-import useMemberShip from '../../../../hooks/useMembership';
+import useMemberShip from '../../../../hooks/membership/useMembership';
 import { UserLoyaltyProgram } from '../../../../models/loyaltyProgram';
 import styles from './loyaltyProgramItem.module.scss';
 

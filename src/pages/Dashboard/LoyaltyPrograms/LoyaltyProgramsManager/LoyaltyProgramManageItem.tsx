@@ -1,16 +1,19 @@
-import { IonIcon, IonSpinner } from '@ionic/react'
-import { chevronDownOutline, chevronForwardOutline } from 'ionicons/icons';
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import {IonIcon, IonSpinner} from '@ionic/react'
+import {chevronDownOutline, chevronForwardOutline} from 'ionicons/icons';
+import {useCallback, useEffect, useMemo, useState} from 'react'
 import PrimaryButton from '../../../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../../../components/inputs/PrimaryInput/PrimaryInput';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
-import useDataMutation from '../../../../hooks/query/useDataMutation';
-import useDataQuery from '../../../../hooks/query/useDataQuery';
-import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms';
+import useLoyaltyPrograms from '../../../../hooks/loyaltyProgram/useLoyaltyPrograms';
 import useToast from '../../../../hooks/useToast';
-import { DynamicInputIdentifier } from '../../../../models/dynamicInputIdentifier';
-import { LoyaltyPartnershipDetails, LoyaltyProgram, UserLoyaltyProgram, UserLoyaltyProgramCurrency } from '../../../../models/loyaltyProgram';
-import { PartnershipType } from '../../../../types/exchangeType';
+import {DynamicInputIdentifier} from '../../../../models/dynamicInputIdentifier';
+import {
+    LoyaltyPartnershipDetails,
+    LoyaltyProgram,
+    UserLoyaltyProgram,
+    UserLoyaltyProgramCurrency
+} from '../../../../models/loyaltyProgram';
+import {PartnershipType} from '../../../../types/exchangeType';
 import styles from './loyaltyProgramManageItem.module.scss';
 
 interface Props {
@@ -19,43 +22,23 @@ interface Props {
     fetchMyPrograms?: () => void
 }
 
-const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPrograms }) => {
+const LoyaltyProgramManageItem: React.FC<Props> = ({item, myProgram, fetchMyPrograms}) => {
     const [isSelected, setIsSelected] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
     //const [partnershipMetadata, setPartnershipMetadata] = useState<LoyaltyPartnershipDetails | null>();
     const [myUpdatedProgram, setMyUpdatedProgram] = useState<UserLoyaltyProgram | null>();
-    const { connectProgram, disconnectProgram, fetchFilteredProgram } = useLoyaltyPrograms();
-    const { presentFailure } = useToast();
     const selectedPartnershipType: PartnershipType = item.activePartnerships?.exchangeIn ? 'in' :
         item.activePartnerships?.exchangeOut ? 'out' :
             item.activePartnerships?.redemption ? 'redemption' :
                 item.activePartnerships?.issuing ? 'issuing' :
                     'out';
-
-    const filteredProgramQuery = useDataQuery({
-        key: 'filteredProgram',
-        fn: fetchFilteredProgram,
-        fnParams: [item.partnerId, selectedPartnershipType],
-        enabled: isSelected
+    const {connectProgram, disconnectProgram, fetchFilteredProgram, isUpdating} = useLoyaltyPrograms({
+        programFilter: {programId: item.partnerId, exchangeType: selectedPartnershipType}
     });
+    const {presentFailure} = useToast();
 
     //@ts-ignore
     const partnershipMetadata: LoyaltyPartnershipDetails | null = filteredProgramQuery.data?.partnershipDetails as any;
-
-    const disconnectMutation = useDataMutation({
-        fn: () => disconnectProgram(myUpdatedProgram?.userCurrencyId!),
-        mutatedQueryKey: 'userPrograms'
-    });
-
-    const connectMutation = useDataMutation({
-        fn: () =>
-            connectProgram(myUpdatedProgram!)
-                .then(result => {
-                    if (result.isSuccess) return result.data;
-                    throw new Error(result.errors.detail)
-                }),
-        mutatedQueryKey: 'userPrograms'
-    });
 
     function initMyProgram() {
         const userLoyaltyProgram = new UserLoyaltyProgram(
@@ -86,7 +69,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
 
     async function handleConnection() {
         if (isConnected) {
-            const disconnected = await disconnectMutation.mutateAsync() as boolean;
+            const disconnected = await disconnectProgram(myUpdatedProgram?.userCurrencyId!);
             if (disconnected) {
                 setIsConnected(false);
                 initMyProgram();
@@ -102,7 +85,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
             //     })
         } else {
             try {
-                const connectResult = await connectMutation.mutateAsync() as any;
+                const connectResult = await connectProgram(myUpdatedProgram!) as any;
                 setIsConnected(true);
                 setMyUpdatedProgram(connectResult);
             } catch (error: any) {
@@ -192,7 +175,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
                                                                 myUpdatedProgram.memberFields[index].value = value;
                                                                 setMyUpdatedProgram(myUpdatedProgram);
                                                             }
-                                                        }} />
+                                                        }}/>
                                                 </div>
                                             })
                                         }
@@ -200,12 +183,12 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
                                             size='s'
                                             type={`${isConnected ? 'success' : 'dark'}`}
                                             onClick={handleConnection}
-                                            loading={connectMutation.isLoading || disconnectMutation.isLoading}>
+                                            loading={isUpdating}>
                                             {isConnected ? 'Disconnect' : 'Connect'}
                                         </PrimaryButton>
                                     </>
                                     :
-                                    <IonSpinner color="light" className={styles.spinner} />
+                                    <IonSpinner color="light" className={styles.spinner}/>
                             }
                         </div>
                         :
@@ -216,11 +199,11 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
     }
 
     return (
-        <div className={styles.container} style={{ background: item?.brand?.color1 }}>
+        <div className={styles.container} style={{background: item?.brand?.color1}}>
             <div className={styles.togglerContainer}
-                onClick={() => setIsSelected(!isSelected)}>
+                 onClick={() => setIsSelected(!isSelected)}>
                 <div className={styles.id}>
-                    <img alt='' src={item.logo} className={styles.logo} />
+                    <img alt='' src={item.logo} className={styles.logo}/>
                     <div className={styles.text}>
                         <PrimaryTypography isBold>{item.companyName}</PrimaryTypography>
                         <PrimaryTypography size='s'>1 program</PrimaryTypography>
@@ -229,10 +212,10 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
 
                 <div className={styles.toggler}>
                     <PrimaryTypography>({item.loyaltyCurrency?.shortName})</PrimaryTypography>
-                    <IonIcon icon={isSelected ? chevronDownOutline : chevronForwardOutline} size='small' color='light' />
+                    <IonIcon icon={isSelected ? chevronDownOutline : chevronForwardOutline} size='small' color='light'/>
                 </div>
             </div>
-            {isSelected && <LoyaltyProgramPartnership />}
+            {isSelected && <LoyaltyProgramPartnership/>}
         </div>
     )
 }

@@ -8,9 +8,9 @@ import { useDapp } from "../providers/DappProvider/DappProvider";
 import useBlockchainContractExecution from "./useBlockchainContractExecution";
 import useBlockchainTransfer from "./useBlockchainTransfer";
 import useCloud from "./useCloud";
-import useCryptoAssets from "./useCryptoAssets";
-import useLoyaltyPrograms from "./useLoyaltyPrograms";
-import useMemberShip from "./useMembership";
+import useCryptoAssets from "./cryptoAssets/useCryptoAssets";
+import useLoyaltyPrograms from "./loyaltyProgram/useLoyaltyPrograms";
+import useMemberShip from "./membership/useMembership";
 import useToast from "./useToast";
 import { parseNumber, parseBlockchainValue } from "../helpers/blockchainHelper";
 

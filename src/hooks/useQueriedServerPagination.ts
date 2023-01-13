@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {Filter} from "../models/data/filter";
 import {Pagination} from "../models/data/pagination";
-import usePaginatedQuery from "./query/usePaginatedQuery";
+import usePaginatedQuery from "./queries/settings/usePaginatedQuery";
 
 interface Props<DataType, FilterType extends Filter> {
     id?: string,

@@ -1,25 +1,44 @@
-import { useState } from "react";
-import { cloudFunctionName } from "../constants/cloudFunctionName";
-import useCloud from "./useCloud";
-import { GiftCard } from "../models/giftCard";
-import { GiftCardDTO } from "../dto/giftCardDTO";
-import { Filter } from "../models/data/filter";
-import { Pagination } from "../models/data/pagination";
-import useConfirmation from "./useConfirmation";
-import useLoyaltyPrograms from "./useLoyaltyPrograms";
-import { FiatToLoyaltyConversionDTO } from "../dto/fiatToLoyaltyConversionDTO";
-import { FiatToLoyaltyConversion } from "../models/fiatToLoyaltyConversion";
+import {useState} from "react";
+import {cloudFunctionName} from "../../constants/cloudFunctionName";
+import useCloud from "../useCloud";
+import {GiftCard} from "../../models/giftCard";
+import {GiftCardDTO} from "../../dto/giftCardDTO";
+import {Filter} from "../../models/data/filter";
+import {Pagination} from "../../models/data/pagination";
+import useConfirmation from "../useConfirmation";
+import useLoyaltyPrograms from "../loyaltyProgram/useLoyaltyPrograms";
+import {FiatToLoyaltyConversionDTO} from "../../dto/fiatToLoyaltyConversionDTO";
+import {FiatToLoyaltyConversion} from "../../models/fiatToLoyaltyConversion";
+import useDataQuery from "../queries/settings/useDataQuery";
+import {giftCardQueriesIdentity} from "./giftCardQueriesIdentity";
 
-const useGiftCard = () => {
-    const [giftCard, setGiftCard] = useState<GiftCard>()
-    const [isLoading, setIsLoading] = useState(false);
+interface Props {
+    giftCardsFilter?: Filter,
+    giftCardId?: string
+}
+
+const useGiftCard = ({giftCardsFilter, giftCardId}: Props) => {
+    //const [giftCard, setGiftCard] = useState<GiftCard>()
+    //const [isLoading, setIsLoading] = useState(false);
     const [isBuying, setIsBuying] = useState(false);
-    const { run } = useCloud();
-    const { confirm } = useConfirmation();
-    const { defaultProgram } = useLoyaltyPrograms();
+    const {run} = useCloud();
+    const {confirm} = useConfirmation();
+    const {defaultProgram} = useLoyaltyPrograms({});
+
+    const giftCardsQuery = useDataQuery({
+        identity: giftCardQueriesIdentity.list(giftCardsFilter!),
+        fn: () => fetchGiftCards(giftCardsFilter!),
+        enabled: !!giftCardsFilter
+    })
+
+    const giftCardQuery = useDataQuery({
+        identity: giftCardQueriesIdentity.info(giftCardId!),
+        fn: () => fetchGiftCard(giftCardId!),
+        enabled: !!giftCardId
+    })
 
     async function fetchGiftCards(filter: Filter) {
-        setIsLoading(true)
+        //setIsLoading(true)
         return run(cloudFunctionName.giftCards,
             filter,
             (result: Pagination<GiftCardDTO>) => {
@@ -31,11 +50,11 @@ const useGiftCard = () => {
             .then(result => {
                 return result.isSuccess ? result.data : null;
             })
-            .finally(() => setIsLoading(false))
+        // .finally(() => setIsLoading(false))
     }
 
     async function fetchGiftCard(giftCardId: string) {
-        setIsLoading(true)
+        // setIsLoading(true)
         return run(cloudFunctionName.giftCardDetails,
             {
                 gift_card_id: giftCardId
@@ -45,14 +64,14 @@ const useGiftCard = () => {
             .then(result => {
                 if (result.isSuccess) return result.data
             })
-            .finally(() => setIsLoading(false))
+        //.finally(() => setIsLoading(false))
     }
 
-    function getGiftCard(giftCardId: string) {
-        fetchGiftCard(giftCardId).then(giftCard => {
-            if (giftCard) setGiftCard(giftCard)
-        })
-    }
+    // function getGiftCard(giftCardId: string) {
+    //     fetchGiftCard(giftCardId).then(giftCard => {
+    //         if (giftCard) setGiftCard(giftCard)
+    //     })
+    // }
 
     async function buyGiftCard(
         giftCardId: string,
@@ -97,7 +116,7 @@ const useGiftCard = () => {
     async function simulateFiatToPointsConversion(fiatCurrency: string, amount: string) {
         return run(
             cloudFunctionName.simulateFiatConversion,
-            { amount: amount, loyalty_currency: defaultProgram?.currency.loyaltyCurrency, fiat_currency: fiatCurrency },
+            {amount: amount, loyalty_currency: defaultProgram?.currency.loyaltyCurrency, fiat_currency: fiatCurrency},
             (res: FiatToLoyaltyConversionDTO) => FiatToLoyaltyConversion.fromDTO(res),
             true
         )
@@ -106,19 +125,19 @@ const useGiftCard = () => {
     async function executeBuyGiftCard(giftCardId: string, amount: string) {
         return run(
             cloudFunctionName.executeGiftCardExchange,
-            { gift_card_id: giftCardId, amount: amount },
+            {gift_card_id: giftCardId, amount: amount},
             () => true,
             true
         )
     }
 
     return {
-        giftCard,
-        fetchGiftCards,
-        getGiftCard,
+        giftCard: giftCardQuery.data,
+        fetchGiftCards: giftCardsQuery.refetch,
+        getGiftCard: giftCardQuery.refetch,
         buyGiftCard,
         simulateFiatToPointsConversion,
-        isLoading,
+        isLoading: giftCardQuery.isLoading || giftCardsQuery.isLoading,
         isBuying
     }
 }

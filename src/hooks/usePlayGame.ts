@@ -13,7 +13,6 @@ const usePlayGame = () => {
     const { walletAddress } = useDapp();
     const { run } = useCloud();
 
-
     async function play(brand: string, partner_id: string, gameToken?: string) {
         if (!brand && !walletAddress) return;
         setIsPlaying(true);
@@ -24,8 +23,7 @@ const usePlayGame = () => {
         if (partner_id) params['partner_id'] = partner_id;
         if (gameToken) params['game_token'] = gameToken
         return run(cloudFunctionName.playWithSuperPoints,
-            params
-            ,
+            params,
             (res : PlayGameDTO) => PlayGame.getFromDTO(res),
             true).then((result) => {
                 if (!result?.isSuccess || !result.data) {

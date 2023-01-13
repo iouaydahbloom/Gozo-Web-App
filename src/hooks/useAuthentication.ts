@@ -5,6 +5,7 @@ import {cloudFunctionName} from "../constants/cloudFunctionName";
 import {sessionContext} from "../providers/SessionProvider/sessionContext";
 import useCloud from "./useCloud";
 import useMagicAuth from "./useMagicAuth";
+import {useQueryClient} from "react-query";
 
 const useAuthentication = () => {
 
@@ -13,6 +14,7 @@ const useAuthentication = () => {
     const {session, setSession, clear} = useContext(sessionContext);
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const [authError, setAuthError] = useState<string>();
+    const queryClient = useQueryClient();
 
     const login = useCallback(async (email: string) => {
         try {
@@ -61,10 +63,11 @@ const useAuthentication = () => {
     async function handleServerAuth(email: string, ethAddress: string, magicToken: string) {
         const serverAuthResult = await serverAuthenticate(email, ethAddress, magicToken);
         if (serverAuthResult.isSuccess) {
+            //invalidate all cached queries
+            await queryClient.invalidateQueries();
             const userSession = serverAuthResult.data;
             const magicUserMetadata = await magicUser?.getMetadata();
             userSession.walletAddress = magicUserMetadata?.publicAddress ?? '';
-
             setSession({
                 user: userSession
             })

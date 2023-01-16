@@ -33,9 +33,9 @@ const Buy: React.FC = () => {
         return fetchData();
     }, [isAuthenticated])
 
-    // useIonViewWillEnter(() => {
-    //     onRefresh();
-    // }, [isAuthenticated])
+    useIonViewWillEnter(() => {
+        onRefresh();
+    }, [isAuthenticated])
 
     return (
         <IonPage>

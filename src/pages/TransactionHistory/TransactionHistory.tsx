@@ -19,7 +19,7 @@ import useAuthentication from '../../hooks/useAuthentication';
 const TransactionHistory: React.FC = () => {
 
     const [userLoyaltyPrograms, setUserLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([])
-    const { defaultProgram, myPrograms, loadingMyLoyaltyPrograms } = useLoyaltyPrograms({});
+    const { defaultProgram, myPrograms, loadingMyLoyaltyPrograms,fetchMyLoyaltyPrograms } = useLoyaltyPrograms({});
     const { defaultERC20Asset, defaultNativeAsset } = useCryptoAssets();
     const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext);
     const [, setSelectedTabIndex] = useState(0);
@@ -34,16 +34,16 @@ const TransactionHistory: React.FC = () => {
         return assets;
     }, [defaultERC20Asset, defaultNativeAsset])
 
-    async function getAllLoyaltyPrograms() {
-        return fetchMyLoyaltyPrograms()
-            .then(mlp => {
-                const allPrograms = defaultProgram ? [defaultProgram, ...mlp] : mlp;
-                setUserLoyaltyPrograms(allPrograms)
-            })
-    }
+    // async function getAllLoyaltyPrograms() {
+    //     return fetchMyLoyaltyPrograms()
+    //         .then(mlp => {
+    //             const allPrograms = defaultProgram ? [defaultProgram, ...mlp] : mlp;
+    //             setUserLoyaltyPrograms(allPrograms)
+    //         })
+    // }
 
     const onRefresh = useCallback((): Promise<any> => {
-        return getAllLoyaltyPrograms()
+        return fetchMyLoyaltyPrograms()
     }, [isAuthenticated])
 
     useEffect(() => {
@@ -51,6 +51,11 @@ const TransactionHistory: React.FC = () => {
             setTabHeaderHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
         }
     }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
+
+    useEffect(() => {
+        const allPrograms = defaultProgram ? [defaultProgram, ...myPrograms] : myPrograms;
+        setUserLoyaltyPrograms(allPrograms)
+    }, [defaultProgram, myPrograms])
 
     // useIonViewWillEnter(() => {
     //     onRefresh();

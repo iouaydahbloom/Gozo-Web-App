@@ -15,7 +15,7 @@ const LoyaltyProgramsManager: React.FC = () => {
     const [searchKey, setSearchKey] = useState<string>('');
     const {fetchAllPrograms, myPrograms, fetchMyLoyaltyPrograms} = useLoyaltyPrograms({});
 
-    const {data: programs, isLoading} = useServerPagination<LoyaltyProgram, Filter>({
+    const {data: programs, fetchData, isLoading} = useServerPagination<LoyaltyProgram, Filter>({
         intialFilters: new Filter(1, 100),
         getData: fetchAllPrograms as any
     })
@@ -42,14 +42,18 @@ const LoyaltyProgramsManager: React.FC = () => {
     //         .finally(() => setIsLoadingMyPrograms(false))
     // }
 
-    useEffect(() => {
-        //fetchData()
-        //setIsLoadingMyPrograms(true)
-        //getMyLoyaltyProgram()
+    // useEffect(() => {
+    //     //fetchData()
+    //     //setIsLoadingMyPrograms(true)
+    //     //getMyLoyaltyProgram()
+    //
+    //     return () => {
+    //         //setIsLoadingMyPrograms(false)
+    //     }
+    // }, [])
 
-        return () => {
-            //setIsLoadingMyPrograms(false)
-        }
+    useEffect(() =>{
+        fetchData()
     }, [])
 
     return (

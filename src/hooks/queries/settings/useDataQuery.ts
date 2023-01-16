@@ -9,7 +9,7 @@ interface Props<TData> {
 const useDataQuery = <TData>({identity, fn, enabled = true}: Props<TData>) => {
     const query: UseQueryResult<TData, any> = useQuery(
         identity,
-        () => fn,
+        () => fn(),
         {
             refetchOnWindowFocus: false,
             refetchOnMount: false,

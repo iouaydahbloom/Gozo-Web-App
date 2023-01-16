@@ -52,7 +52,8 @@ const Spinner: React.FC = () => {
         defaultProgram,
         loadingProgram,
         loadingMyLoyaltyPrograms,
-        fetchMyLoyaltyPrograms
+        fetchMyLoyaltyPrograms,
+        myPrograms
     } = useLoyaltyPrograms({
         programId: loyaltyProgramId
     });
@@ -174,11 +175,16 @@ const Spinner: React.FC = () => {
 
     function getMyPrograms() {
         fetchMyLoyaltyPrograms()
-            .then(programs => {
-                programs.push(defaultProgram as UserLoyaltyProgram)
-                setMyLoyaltyPrograms(programs);
-            })
+            // .then(programs => {
+            //     programs.push(defaultProgram as UserLoyaltyProgram)
+            //     setMyLoyaltyPrograms(programs);
+            // })
     }
+
+    useEffect(() => {
+        const allUserPrograms =  defaultProgram ? [...myPrograms, defaultProgram] : [...myPrograms];
+        setMyLoyaltyPrograms(allUserPrograms);
+    }, [myPrograms, defaultProgram])
 
     async function handlePlaying() {
         start();

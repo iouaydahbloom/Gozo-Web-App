@@ -20,6 +20,8 @@ const useMemberShip = (loyaltyCurrency?: string) => {
         enabled: isAuthenticated
     });
 
+    console.log('lc', loyaltyCurrency)
+
     async function getMembership(loyaltyCurrency?: string) {
         if (!loyaltyCurrency || !isAuthenticated) return Promise.resolve(null);
         return run(cloudFunctionName.members,

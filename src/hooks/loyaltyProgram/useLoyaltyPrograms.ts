@@ -5,7 +5,7 @@ import {Pagination} from "../../models/data/pagination";
 import {cloudFunctionName} from "../../constants/cloudFunctionName";
 import {currencySettingsContext} from "../../providers/CurrencySettingsProvider/currencySettingsContext";
 import useCloud from "../useCloud";
-import {Filter} from "../../models/data/filter";
+import {Filter, ProgramFilter} from "../../models/data/filter";
 import {PartnershipType} from "../../types/exchangeType";
 import {DefaultCurrencyDTO} from "../../dto/defaultCurrencyDTO";
 import useDataQuery from "../queries/settings/useDataQuery";
@@ -14,7 +14,7 @@ import {loyaltyProgramQueriesIdentity} from "./loyaltyProgramQueriesIdentity";
 
 interface Props {
     programFilter?: { programId: string, exchangeType: PartnershipType },
-    programId?: string,
+    programId?: string
 }
 
 const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
@@ -25,10 +25,16 @@ const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
     const {gozoLoyalty} = useContext(currencySettingsContext);
     const {run} = useCloud();
 
-    const defaultCurrencyQuery = useDataQuery({
-        identity: loyaltyProgramQueriesIdentity.defaultCurrency,
-        fn: fetchDefaultCurrency
-    })
+    // const defaultCurrencyQuery = useDataQuery({
+    //     identity: loyaltyProgramQueriesIdentity.defaultCurrency,
+    //     fn: fetchDefaultCurrency
+    // })
+
+    // const programQuery = useDataQuery({
+    //     identity: loyaltyProgramQueriesIdentity.program(programId),
+    //     fn: () => getProgram(programId!),
+    //     enabled: !!programId
+    // })
 
     const filteredProgramQuery = useDataQuery({
         identity: loyaltyProgramQueriesIdentity.filteredProgram(programFilter?.programId!, programFilter?.exchangeType!),
@@ -56,15 +62,15 @@ const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
         fn: disconnectPrograms
     })
 
-    async function fetchDefaultCurrency() {
-        return run(cloudFunctionName.defaultCurrency,
-            null,
-            (result: DefaultCurrencyDTO) => UserLoyaltyProgram.getFromDefaultCurrencyDTO(result),
-            true)
-            .then(result => {
-                return result.isSuccess ? result.data : null
-            })
-    }
+    // async function fetchDefaultCurrency() {
+    //     return run(cloudFunctionName.defaultCurrency,
+    //         null,
+    //         (result: DefaultCurrencyDTO) => UserLoyaltyProgram.getFromDefaultCurrencyDTO(result),
+    //         true)
+    //         .then(result => {
+    //             return result.isSuccess ? result.data : null
+    //         })
+    // }
 
     async function getAllAvailablePrograms(filter: Filter) {
         return run(
@@ -130,6 +136,13 @@ const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
             {program: program.toMyLoyaltyProgramDTO()},
             (result: UserLoyaltyProgramDTO) => UserLoyaltyProgram.getFromDTO(result),
             true)
+            .then(result => {
+                if(!result.isSuccess) {
+                   throw new Error(result.errors.detail);
+                }
+
+                return result.data
+            })
         //.finally(() => setIsUpdating(false))
     }
 
@@ -158,10 +171,11 @@ const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
         fetchMyLoyaltyPrograms: userProgramsQuery.refetch,
         fetchAllPrograms: getAllAvailablePrograms,
         fetchFilteredProgram: filteredProgramQuery.refetch,
+        filteredProgram: filteredProgramQuery.data,
         fetchProgram: getProgram,
         loadingMyLoyaltyPrograms: userProgramsQuery.isLoading,
         loadingProgram: loadingProgram,
-        fetchDefaultCurrency: defaultCurrencyQuery.refetch,
+        //fetchDefaultCurrency: defaultCurrencyQuery.refetch,
         connectProgram: connectProgramMutation.mutateAsync,
         disconnectProgram: disconnectProgramMutation.mutateAsync,
         disconnectPrograms: disconnectProgramsMutation.mutateAsync,

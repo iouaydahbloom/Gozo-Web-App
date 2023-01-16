@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {cloudFunctionName} from "../../constants/cloudFunctionName";
 import useCloud from "../useCloud";
 import {GiftCard} from "../../models/giftCard";
@@ -11,6 +11,9 @@ import {FiatToLoyaltyConversionDTO} from "../../dto/fiatToLoyaltyConversionDTO";
 import {FiatToLoyaltyConversion} from "../../models/fiatToLoyaltyConversion";
 import useDataQuery from "../queries/settings/useDataQuery";
 import {giftCardQueriesIdentity} from "./giftCardQueriesIdentity";
+import useDataMutation from "../queries/settings/useDataMutation";
+import {membershipQueriesIdentity} from "../membership/membershipQueriesIdentity";
+import useCurrencyConversion from "../currencyConversion/useCurrencyConversion";
 
 interface Props {
     giftCardsFilter?: Filter,
@@ -19,17 +22,17 @@ interface Props {
 
 const useGiftCard = ({giftCardsFilter, giftCardId}: Props) => {
     //const [giftCard, setGiftCard] = useState<GiftCard>()
-    //const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [isBuying, setIsBuying] = useState(false);
     const {run} = useCloud();
     const {confirm} = useConfirmation();
     const {defaultProgram} = useLoyaltyPrograms({});
 
-    const giftCardsQuery = useDataQuery({
-        identity: giftCardQueriesIdentity.list(giftCardsFilter!),
-        fn: () => fetchGiftCards(giftCardsFilter!),
-        enabled: !!giftCardsFilter
-    })
+    // const giftCardsQuery = useDataQuery({
+    //     identity: giftCardQueriesIdentity.list(giftCardsFilter!),
+    //     fn: () => fetchGiftCards(giftCardsFilter!),
+    //     enabled: !!giftCardsFilter
+    // })
 
     const giftCardQuery = useDataQuery({
         identity: giftCardQueriesIdentity.info(giftCardId!),
@@ -37,8 +40,15 @@ const useGiftCard = ({giftCardsFilter, giftCardId}: Props) => {
         enabled: !!giftCardId
     })
 
+    const {fiatToDefaultCurrencyResult} = useCurrencyConversion({fiat: giftCardQuery.data?.currency ?? '', amount: '1'})
+
+    const buyGiftCardMutation = useDataMutation({
+        mutatedIdentity: membershipQueriesIdentity.info(defaultProgram?.currency.loyaltyCurrency),
+        fn: (args: {giftCardId: string, amount: string}) => executeBuyGiftCard(args.giftCardId, args.amount)
+    })
+
     async function fetchGiftCards(filter: Filter) {
-        //setIsLoading(true)
+        setIsLoading(true)
         return run(cloudFunctionName.giftCards,
             filter,
             (result: Pagination<GiftCardDTO>) => {
@@ -50,7 +60,7 @@ const useGiftCard = ({giftCardsFilter, giftCardId}: Props) => {
             .then(result => {
                 return result.isSuccess ? result.data : null;
             })
-        // .finally(() => setIsLoading(false))
+        .finally(() => setIsLoading(false))
     }
 
     async function fetchGiftCard(giftCardId: string) {
@@ -79,28 +89,29 @@ const useGiftCard = ({giftCardsFilter, giftCardId}: Props) => {
         amount: string,
         onSuccess: () => any,
         onError: (error: any) => any,
-        pointsPerFiat?: number) {
+        //pointsPerFiat?: number
+    ) {
         setIsBuying(true);
-        if (!pointsPerFiat) {
-            const simulationResult = await simulateFiatToPointsConversion(giftCardCurrency, amount);
-            if (!simulationResult.isSuccess) {
-                onError(simulationResult.message ?
-                    simulationResult.message : simulationResult.errors.errors[0].message);
-                setIsBuying(false);
-                return;
-            }
-
-            pointsPerFiat = Math.round(simulationResult.data.loyaltyAmount);
-        } else {
-            pointsPerFiat = Math.round(pointsPerFiat * parseFloat(amount));
-        }
-
-        confirm({
+        // if (!pointsPerFiat) {
+        //     const simulationResult = await simulateFiatToPointsConversion(giftCardCurrency, amount);
+        //     if (!simulationResult.isSuccess) {
+        //         onError(simulationResult.message ?
+        //             simulationResult.message : simulationResult.errors.errors[0].message);
+        //         setIsBuying(false);
+        //         return;
+        //     }
+        //
+        //     pointsPerFiat = Math.round(simulationResult.data.loyaltyAmount);
+        // } else {
+        //     pointsPerFiat = Math.round(pointsPerFiat * parseFloat(amount));
+        // }
+        const pointsPerFiat = Math.round(fiatToDefaultCurrencyResult!.loyaltyAmount * parseFloat(amount));
+        return confirm({
             title: 'Buy',
             message: `${pointsPerFiat} Super Points will be redeemed from you account, 
             are you sure you want to continue ?`,
             onConfirmed: () =>
-                executeBuyGiftCard(giftCardId, amount)
+                buyGiftCardMutation.mutateAsync({giftCardId, amount})
                     .then(result => {
                         if (result.isSuccess) {
                             onSuccess();
@@ -113,14 +124,14 @@ const useGiftCard = ({giftCardsFilter, giftCardId}: Props) => {
         })
     }
 
-    async function simulateFiatToPointsConversion(fiatCurrency: string, amount: string) {
-        return run(
-            cloudFunctionName.simulateFiatConversion,
-            {amount: amount, loyalty_currency: defaultProgram?.currency.loyaltyCurrency, fiat_currency: fiatCurrency},
-            (res: FiatToLoyaltyConversionDTO) => FiatToLoyaltyConversion.fromDTO(res),
-            true
-        )
-    }
+    // async function simulateFiatToPointsConversion(fiatCurrency: string, amount: string) {
+    //     return run(
+    //         cloudFunctionName.simulateFiatConversion,
+    //         {amount: amount, loyalty_currency: defaultProgram?.currency.loyaltyCurrency, fiat_currency: fiatCurrency},
+    //         (res: FiatToLoyaltyConversionDTO) => FiatToLoyaltyConversion.fromDTO(res),
+    //         true
+    //     )
+    // }
 
     async function executeBuyGiftCard(giftCardId: string, amount: string) {
         return run(
@@ -133,11 +144,12 @@ const useGiftCard = ({giftCardsFilter, giftCardId}: Props) => {
 
     return {
         giftCard: giftCardQuery.data,
-        fetchGiftCards: giftCardsQuery.refetch,
+        fetchGiftCards: fetchGiftCards,
         getGiftCard: giftCardQuery.refetch,
         buyGiftCard,
-        simulateFiatToPointsConversion,
-        isLoading: giftCardQuery.isLoading || giftCardsQuery.isLoading,
+        //simulateFiatToPointsConversion,
+        fiatToPointsRate: fiatToDefaultCurrencyResult?.loyaltyAmount,
+        isLoading: giftCardQuery.isLoading || isLoading,
         isBuying
     }
 }

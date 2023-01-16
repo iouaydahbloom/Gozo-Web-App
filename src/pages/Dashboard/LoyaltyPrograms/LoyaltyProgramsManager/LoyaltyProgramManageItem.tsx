@@ -1,6 +1,6 @@
 import {IonIcon, IonSpinner} from '@ionic/react'
 import {chevronDownOutline, chevronForwardOutline} from 'ionicons/icons';
-import {useCallback, useEffect, useMemo, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import PrimaryButton from '../../../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../../../components/inputs/PrimaryInput/PrimaryInput';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
@@ -32,13 +32,21 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({item, myProgram, fetchMyProg
             item.activePartnerships?.redemption ? 'redemption' :
                 item.activePartnerships?.issuing ? 'issuing' :
                     'out';
-    const {connectProgram, disconnectProgram, fetchFilteredProgram, isUpdating} = useLoyaltyPrograms({
-        programFilter: {programId: item.partnerId, exchangeType: selectedPartnershipType}
+    const {
+        connectProgram,
+        disconnectProgram,
+        fetchFilteredProgram,
+        filteredProgram,
+        isUpdating
+    } = useLoyaltyPrograms({
+        programFilter: isSelected ? {
+            programId: item.partnerId,
+            exchangeType: selectedPartnershipType
+        } : undefined
     });
     const {presentFailure} = useToast();
 
-    //@ts-ignore
-    const partnershipMetadata: LoyaltyPartnershipDetails | null = filteredProgramQuery.data?.partnershipDetails as any;
+    const partnershipMetadata: LoyaltyPartnershipDetails | null = filteredProgram?.partnershipDetails as any;
 
     function initMyProgram() {
         const userLoyaltyProgram = new UserLoyaltyProgram(
@@ -85,9 +93,9 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({item, myProgram, fetchMyProg
             //     })
         } else {
             try {
-                const connectResult = await connectProgram(myUpdatedProgram!) as any;
+                const result = await connectProgram(myUpdatedProgram!);
                 setIsConnected(true);
-                setMyUpdatedProgram(connectResult);
+                setMyUpdatedProgram(result);
             } catch (error: any) {
                 presentFailure(error.message);
             }

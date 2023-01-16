@@ -13,6 +13,10 @@ import useLoyaltyPrograms from "./loyaltyProgram/useLoyaltyPrograms";
 import useMemberShip from "./membership/useMembership";
 import useToast from "./useToast";
 import { parseNumber, parseBlockchainValue } from "../helpers/blockchainHelper";
+import useDataQuery from "./queries/settings/useDataQuery";
+import useDataMutation from "./queries/settings/useDataMutation";
+import {membershipQueriesIdentity} from "./membership/membershipQueriesIdentity";
+import {cryptoAssetsQueriesIdentity} from "./cryptoAssets/cryptoAssetsQueriesIdentity";
 
 export enum SwapPartyType {
     loyaltyProgram,
@@ -30,23 +34,52 @@ interface OtherSwapParty {
 const useTokenToOthersExchange = () => {
     const [tokenQuantity, setTokenQuantity] = useState<number | undefined>(0);
     const [selectedOthers, setSelectedOthers] = useState<OtherSwapParty>({ id: '', quantity: 0, type: SwapPartyType.loyaltyProgram });
-    const [exchanging, setExchanging] = useState(false);
+    //const [exchanging, setExchanging] = useState(false);
     const [simulating, setSimulating] = useState(false);
     const [tokenOptions, setTokenOptions] = useState<ERC20Asset[]>([]);
     const [othersOptions, setOthersOptions] = useState<(UserLoyaltyProgram | NativeAsset)[]>([]);
-    const { defaultProgram } = useLoyaltyPrograms();
+    const { defaultProgram } = useLoyaltyPrograms({});
     const { defaultERC20Asset, defaultNativeAsset, fetchCryptoAssets } = useCryptoAssets();
     const { walletAddress, tokenContractAddress, tokenContractAbi, botWalletAddress } = useDapp();
-    const [minimumValue, setMinimumValue] = useState<number>();
+    //const [minimumValue, setMinimumValue] = useState<number>();
     const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
     const [isEstimatingGasFee, setIsEstimatingGasFee] = useState(false);
     const [direction, setDirection] = useState<'t2o' | 'o2t'>('t2o');
     const { membership, fetchMembership } = useMemberShip(defaultProgram?.currency.loyaltyCurrency);
     const { run } = useCloud();
     const { presentFailure, presentSuccess } = useToast();
-
     const { estimate } = useBlockchainContractExecution();
     const { transferNative, transferTokensToOwner, executing: executingTransfer, error } = useBlockchainTransfer();
+
+    const minPointsToTokenExchangeQuery = useDataQuery({
+        identity: ['minPointsToTokenExchange'],
+        fn: () => getMinPointsToTokenExchange()
+    })
+
+    const minTokenToPointsExchangeQuery = useDataQuery({
+        identity: ['minTokenToPointsExchange'],
+        fn: () => getMinTokenToPointsExchange()
+    })
+
+    const executeTokenToOthersExchangeMutation = useDataMutation({
+        mutatedIdentity: [
+            membershipQueriesIdentity.info(defaultProgram?.currency.loyaltyCurrency),
+            cryptoAssetsQueriesIdentity.list
+        ],
+        fn: () => executeTokenToOthersExchange()
+    })
+
+    const executeOthersToTokenExchangeMutation = useDataMutation({
+        mutatedIdentity:  [
+            membershipQueriesIdentity.info(defaultProgram?.currency.loyaltyCurrency),
+            cryptoAssetsQueriesIdentity.list
+        ],
+        fn: () => executeOthersToTokenExchange()
+    })
+
+    const minimumValue = direction === 't2o' ?
+        minTokenToPointsExchangeQuery.data : minPointsToTokenExchangeQuery.data;
+
     /**
      * Token to others exchange logic
      */
@@ -57,7 +90,7 @@ const useTokenToOthersExchange = () => {
             tokenQuantity as string | number,
             selectedOthers.type,
             () => {
-                fetchCryptoAssets();
+                //fetchCryptoAssets();
                 presentSuccess('Exchanged successfully');
             },
             (error) => presentFailure(error.message)
@@ -90,14 +123,15 @@ const useTokenToOthersExchange = () => {
     }, 1000), [selectedOthers.type])
 
     const getMinTokenToPointsExchange = useCallback(() => {
-        run(
+        return run(
             cloudFunctionName.minimumT2Pexchange,
             null,
             (result: any) => result as number,
             true
         )
             .then(result => {
-                if (result.isSuccess) setMinimumValue(result.data);
+                //if (result.isSuccess) setMinimumValue(result.data);
+                return result.isSuccess ? result.data : null;
             })
     }, [])
 
@@ -125,16 +159,16 @@ const useTokenToOthersExchange = () => {
     */
     const executeOthersToTokenExchange = useCallback(async () => {
         if (selectedOthers && selectedOthers.quantity && selectedOthers.quantity <= 0) return;
-        setExchanging(true);
+        //setExchanging(true);
 
         if (selectedOthers.type === SwapPartyType.loyaltyProgram) {
-            await executePointsToTokenExchange()
-                .finally(() => setExchanging(false));
-            return;
+            return executePointsToTokenExchange()
+                //.finally(() => setExchanging(false));
+            //return;
         }
 
-        await executeNativeToTokenExchange()
-            .finally(() => setExchanging(false));;
+        return executeNativeToTokenExchange()
+            //.finally(() => setExchanging(false));;
 
     }, [selectedOthers.quantity, selectedOthers.type])
 
@@ -164,14 +198,15 @@ const useTokenToOthersExchange = () => {
     }, 1000), [selectedOthers.type])
 
     const getMinPointsToTokenExchange = useCallback(() => {
-        run(
+        return run(
             cloudFunctionName.minimumP2Texchange,
             null,
             (result: any) => result as number,
             true
         )
             .then(result => {
-                if (result.isSuccess) setMinimumValue(result.data);
+               // if (result.isSuccess) setMinimumValue(result.data);
+                return result.isSuccess ? result.data : null;
             })
     }, [])
 
@@ -187,7 +222,7 @@ const useTokenToOthersExchange = () => {
                 )
                     .then(result => {
                         if (result.isSuccess) {
-                            fetchCryptoAssets();
+                            //fetchCryptoAssets();
                             presentSuccess('Exchanged successfully');
                             return;
                         }
@@ -206,7 +241,7 @@ const useTokenToOthersExchange = () => {
         )
             .then(result => {
                 if (result.isSuccess) {
-                    fetchMembership();
+                    //fetchMembership();
                     presentSuccess('Exchanged successfully');
                     return;
                 }
@@ -246,9 +281,9 @@ const useTokenToOthersExchange = () => {
     /**
      * Lifecycles events
      */
-    useEffect(() => {
-        fetchCryptoAssets();
-    }, [])
+    // useEffect(() => {
+    //     fetchCryptoAssets();
+    // }, [])
 
     useEffect(() => {
         setTokenOptions(defaultERC20Asset ? [defaultERC20Asset] : []);
@@ -288,18 +323,18 @@ const useTokenToOthersExchange = () => {
         }
     }, [selectedOthers?.quantity, direction, selectedOthers.id])
 
-    useEffect(() => {
-        setExchanging(executingTransfer);
-    }, [executingTransfer])
+    // useEffect(() => {
+    //     setExchanging(executingTransfer);
+    // }, [executingTransfer])
 
     useEffect(() => {
         if (direction === 't2o') {
-            getMinTokenToPointsExchange();
+            //getMinTokenToPointsExchange();
             estimateTokenTransferFee();
             return;
         }
 
-        getMinPointsToTokenExchange();
+        //getMinPointsToTokenExchange();
     }, [direction])
 
     useEffect(() => {
@@ -315,7 +350,9 @@ const useTokenToOthersExchange = () => {
         tokenQuantity: tokenQuantity,
         program: defaultProgram,
         selectedOthers,
-        exchanging: exchanging,
+        exchanging: executeOthersToTokenExchangeMutation.isLoading ||
+            executeTokenToOthersExchangeMutation.isLoading ||
+            executingTransfer,
         simulating,
         direction: direction,
         minimumValue,
@@ -326,9 +363,12 @@ const useTokenToOthersExchange = () => {
         setSelectedOthers,
         setTokenQuantity: setTokenQuantity,
         toggleDirection: () => setDirection(prev => prev === 't2o' ? 'o2t' : 't2o'),
+        // exchange: direction === 't2o' ?
+        //     executeTokenToOthersExchange :
+        //     executeOthersToTokenExchange
         exchange: direction === 't2o' ?
-            executeTokenToOthersExchange :
-            executeOthersToTokenExchange
+            executeTokenToOthersExchangeMutation.mutateAsync :
+            executeOthersToTokenExchangeMutation.mutateAsync
     }
 }
 

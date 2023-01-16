@@ -7,20 +7,32 @@ import {UserLoyaltyProgram} from "../../models/loyaltyProgram";
 import {currencySettingsContext} from "./currencySettingsContext";
 import useDataQuery from "../../hooks/queries/settings/useDataQuery";
 import {LoyaltyMember} from "../../models/loyaltyMember";
+import React, {useContext} from "react";
+import {cloudFunctionName} from "../../constants/cloudFunctionName";
+import {DefaultCurrencyDTO} from "../../dto/defaultCurrencyDTO";
+import useCloud from "../../hooks/useCloud";
 
 const CurrencySettingsProvider: React.FC = ({children}) => {
 
     //const [gozoLoyalty, setGozoLoyalty] = useState<UserLoyaltyProgram | null>(null);
     const {membership, fetchMembership} = useMemberShip('GZL_LVXMS');
     const {defaultERC20Asset, fetchCryptoAssets} = useCryptoAssets();
-    const {isAuthenticated} = useAuthentication();
-    const {fetchDefaultCurrency} = useLoyaltyPrograms();
-
+    //const {isAuthenticated} = useAuthentication();
+    const{run}=useCloud();
     const defaultCurrencyQuery = useDataQuery({
-        key: 'defaultCurrency',
-        fn: fetchDefaultCurrency,
-        enabled: isAuthenticated
-    });
+        identity: ['defaultCurrency'],
+        fn: fetchDefaultCurrency
+    })
+
+    async function fetchDefaultCurrency() {
+        return run(cloudFunctionName.defaultCurrency,
+            null,
+            (result: DefaultCurrencyDTO) => UserLoyaltyProgram.getFromDefaultCurrencyDTO(result),
+            true)
+            .then(result => {
+                return result.isSuccess ? result.data : null
+            })
+    }
 
     // useEffect(() => {
     //     if (isAuthenticated) {

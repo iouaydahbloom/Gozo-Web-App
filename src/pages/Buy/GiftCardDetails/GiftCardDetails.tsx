@@ -26,14 +26,15 @@ const GiftCardDetails: React.FC = () => {
     const {
         getGiftCard,
         buyGiftCard,
-        simulateFiatToPointsConversion,
+        //simulateFiatToPointsConversion,
+        fiatToPointsRate,
         giftCard,
         isLoading,
         isBuying
     } = useGiftCard({giftCardId: id});
     const {presentFailure} = useToast();
     const [isBought, setIsBought] = useState(false);
-    const [conversionRate, setConversionRate] = useState<number>(0);
+    //const [conversionRate, setConversionRate] = useState<number>(0);
     useTabMenuHidder();
 
     async function buy(amount: string) {
@@ -44,14 +45,14 @@ const GiftCardDetails: React.FC = () => {
             amount,
             () => setIsBought(true),
             presentFailure,
-            conversionRate
+            //conversionRate
         );
     }
 
-    async function getGiftCardDetails() {
-        //if (id) getGiftCard(id)
-        getGiftCard();
-    }
+    // async function getGiftCardDetails() {
+    //     //if (id) getGiftCard(id)
+    //     await getGiftCard();
+    // }
 
     const formManager = useFormik({
         initialValues: {amount: giftCard?.minimumValue ?? 0},
@@ -66,23 +67,23 @@ const GiftCardDetails: React.FC = () => {
             return errors;
         },
         onSubmit: async (values) => {
-            buy(values.amount!.toString());
+            await buy(values.amount!.toString());
         }
     });
 
-    useEffect(() => {
-        getGiftCardDetails();
-    }, [id])
+    // useEffect(() => {
+    //     getGiftCardDetails();
+    // }, [id])
 
-    useEffect(() => {
-        if (!giftCard) {
-            return
-        }
-        simulateFiatToPointsConversion(giftCard.currency, '1')
-            .then(result => {
-                if (result.isSuccess) setConversionRate(result.data.loyaltyAmount)
-            })
-    }, [giftCard?.currency])
+    // useEffect(() => {
+    //     if (!giftCard) {
+    //         return
+    //     }
+    //     simulateFiatToPointsConversion(giftCard.currency, '1')
+    //         .then(result => {
+    //             if (result.isSuccess) setConversionRate(result.data.loyaltyAmount)
+    //         })
+    // }, [giftCard?.currency])
 
     useIonViewWillEnter(() => {
         setIsBought(false);
@@ -91,7 +92,7 @@ const GiftCardDetails: React.FC = () => {
     return (
         <IonPage>
             <SecondaryHeader title={giftCard?.name ?? 'Gift Card'}/>
-            <PrimaryContainer className={styles.container} isRefreshable onRefresh={getGiftCardDetails}>
+            <PrimaryContainer className={styles.container} isRefreshable onRefresh={getGiftCard}>
                 {
                     isBought ?
                         <GiftCardPurchaseSuccess/>
@@ -161,7 +162,7 @@ const GiftCardDetails: React.FC = () => {
                                         <InputError error={formManager.errors.amount}/>
                                     }
                                     <PrimaryTypography customClassName={styles.rate}>{giftCard?.currency}1.00
-                                        = {conversionRate} Super Points</PrimaryTypography>
+                                        = {fiatToPointsRate} Super Points</PrimaryTypography>
                                 </div>
 
                                 <div className={styles.buttonContainer}>

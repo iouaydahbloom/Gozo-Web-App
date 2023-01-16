@@ -6,7 +6,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import LoyaltyPrograms from './LoyaltyPrograms/LoyaltyPrograms';
 import CryptoTokens from './CryptoTokens/CryptoTokens';
 import '../../theme/primaryTabs.scss';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AssetMode } from '../../constants/assetsMode';
 import useOnBoardingPreview from '../../hooks/useOnBoardingPreview';
 import useCryptoAssets from '../../hooks/cryptoAssets/useCryptoAssets';
@@ -17,7 +17,7 @@ import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/
 import { parseNumber } from '../../helpers/blockchainHelper';
 import styles from './dashboard.module.scss';
 import useAuthentication from '../../hooks/useAuthentication';
-import useUserProgramsQuery from '../../hooks/queries/useUserProgramsQuery';
+import useLoyaltyPrograms from "../../hooks/loyaltyProgram/useLoyaltyPrograms";
 
 const Dashboard: React.FC = () => {
 
@@ -26,11 +26,11 @@ const Dashboard: React.FC = () => {
     //const { loadingMyLoyaltyPrograms } = useLoyaltyPrograms();
     //const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
     const { assets: cryptoAssets, fetchCryptoAssets, defaultERC20Asset, isLoadingAssets } = useCryptoAssets();
+    const{fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms, myPrograms}=useLoyaltyPrograms({});
     const { gozoLoyaltyMembership, fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
     const [highlightedAsset, setHighlightedAsset] = useState<HighlightedBalanceAsset>();
     const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext);
     const { isAuthenticated } = useAuthentication();
-    const userProgramsQuery = useUserProgramsQuery();
 
     const onSelect = useCallback((tabIndex: number) => {
         setMode(tabIndex === 0 ? AssetMode.loyaltyPoint : AssetMode.token);
@@ -50,7 +50,7 @@ const Dashboard: React.FC = () => {
 
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
-            userProgramsQuery.refetch(),
+            fetchMyLoyaltyPrograms(),
             fetchCryptoAssets(),
             handleHighlightedAssetMetadata()
         ])
@@ -69,7 +69,7 @@ const Dashboard: React.FC = () => {
                 description: 'Gozo Tokens'
             });
         }
-    }, [defaultERC20Asset])
+    }, [defaultERC20Asset, mode])
 
     useEffect(() => {
         if (mode === AssetMode.loyaltyPoint) {
@@ -78,7 +78,7 @@ const Dashboard: React.FC = () => {
                 description: 'Super Points'
             });
         }
-    }, [gozoLoyaltyMembership])
+    }, [gozoLoyaltyMembership, mode])
 
     useEffect(() => {
         if (tabRef) {
@@ -102,9 +102,9 @@ const Dashboard: React.FC = () => {
                     </TabList>
                     <TabPanel>
                         <LoyaltyPrograms
-                            isLoading={userProgramsQuery.isLoading}
-                            programs={userProgramsQuery.data ?? []}
-                            getPrograms={userProgramsQuery.refetch} />
+                            isLoading={loadingMyLoyaltyPrograms}
+                            programs={myPrograms}
+                            getPrograms={fetchMyLoyaltyPrograms} />
                     </TabPanel>
                     <TabPanel>
                         <CryptoTokens

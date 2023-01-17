@@ -57,7 +57,7 @@ const Spinner: React.FC = () => {
     });
 
     const [gameToken, setGameToken] = useState('');
-    const {play, isSubmitting} = usePlayGame({
+    const {play, isSubmitting, playingError} = usePlayGame({
         loyaltyProgramId: loyaltyProgramId,
         gameToken: gameToken,
         partnerId: loyaltyProgram?.partnerId ?? '',
@@ -156,7 +156,6 @@ const Spinner: React.FC = () => {
 
     const programsOpts: ProgramSelectOption[] = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0) {
-            //let programs = [...myLoyaltyPrograms]
             let programs = myLoyaltyPrograms.filter((program) => program.currency.isRedemption)
             return programs.map((loyaltyProgram) => {
                 return new ProgramSelectOption(
@@ -198,7 +197,6 @@ const Spinner: React.FC = () => {
     const handleSelectedValue = (name: string) => {
         const lp = myLoyaltyPrograms.find(item => item?.currency?.loyaltyCurrencyName === name)
         if (lp) {
-            //setIsPlayingReady(false);
             history.replace({search: (new URLSearchParams({program_id: lp?.currency?.programId})).toString()});
             setLoyaltyProgramId(lp.currency?.programId)
         }
@@ -251,6 +249,10 @@ const Spinner: React.FC = () => {
         if (isSubmitting) setIsPlaying(true);
     }, [isSubmitting])
 
+    useEffect(() => {
+        if (playingError) setIsPlaying(false);
+    }, [playingError])
+
     useIonViewWillEnter(() => {
         addListener(
             gameContractAddress,
@@ -291,7 +293,6 @@ const Spinner: React.FC = () => {
             </IonHeader>
             <PrimaryContainer className={styles.container} isRefreshable onRefresh={onRefresh}>
                 {
-                    //isPlayingReady
                     !isLoadingPrizes && !loadingProgram ?
                         <>
                             <div className={`${styles.wheelWrapper}`}>

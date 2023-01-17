@@ -1,11 +1,10 @@
-import {useState} from "react";
 import {cloudFunctionName} from "../../constants/cloudFunctionName";
 import {useDapp} from "../../providers/DappProvider/DappProvider";
 import useCloud from "../useCloud";
 import {Pagination} from "../../models/data/pagination";
 import {CryptoTransfer} from "../../models/assets/ERC20Transfer";
 import {CryptoTransferDTO} from "../../dto/cryptoTransferDTO";
-import useDataQuery from "../queries/settings/useDataQuery";
+import useDataQuery from "../queryCaching/useDataQuery";
 import {cryptoTransfersQueriesIdentity} from "./cryptoTransfersQueriesIdentity";
 
 interface Props {
@@ -16,7 +15,6 @@ interface Props {
 const useCryptoTransfers = ({erc20TransfersFilters, nativeTransfersFilters}: Props) => {
 
     const {walletAddress} = useDapp();
-    //const [isLoading, setIsLoading] = useState<boolean>()
     const {run} = useCloud();
 
     const erc20TransfersQuery = useDataQuery({
@@ -30,7 +28,6 @@ const useCryptoTransfers = ({erc20TransfersFilters, nativeTransfersFilters}: Pro
     })
 
     const getERC20Transfers = async (filters?: any) => {
-        //setIsLoading(true);
         return run(
             cloudFunctionName.getTokenTransfers,
             filters ?? {address: walletAddress ?? ''},
@@ -44,11 +41,9 @@ const useCryptoTransfers = ({erc20TransfersFilters, nativeTransfersFilters}: Pro
             .then(result => {
                 return result.isSuccess ? result.data : []
             })
-        //.finally(() => setIsLoading(false))
     }
 
     const getNativeTransfers = async (filters?: any) => {
-        //setIsLoading(true);
         return run(
             cloudFunctionName.getNativeTransfers,
             filters ?? {address: walletAddress ?? ''},
@@ -62,7 +57,6 @@ const useCryptoTransfers = ({erc20TransfersFilters, nativeTransfersFilters}: Pro
             .then(result => {
                 return result.isSuccess ? result.data : []
             })
-        //.finally(() => setIsLoading(false))
     }
 
     return {

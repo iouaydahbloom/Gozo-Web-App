@@ -1,11 +1,10 @@
-import {useState} from "react";
 import {LoyaltyMemberHistoryDTO} from "../../dto/loyaltyMemberDTO";
 import {Filter} from "../../models/data/filter";
 import {Pagination} from "../../models/data/pagination";
 import {LoyaltyMemberHistory} from "../../models/loyaltyMember";
 import {cloudFunctionName} from "../../constants/cloudFunctionName";
 import useCloud from "../useCloud";
-import useDataQuery from "../queries/settings/useDataQuery";
+import useDataQuery from "../queryCaching/useDataQuery";
 import {programsTransactionHistoryQueriesIdentity} from "./programsTransactionHistoryQueriesIdentity";
 
 interface Props {
@@ -13,9 +12,8 @@ interface Props {
 }
 
 const useProgramsTransactionHistory = ({transactionId}: Props) => {
+
     const {run} = useCloud();
-    //const [historyField, setHistoryField] = useState<LoyaltyMemberHistory>();
-    //const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const transactionQuery = useDataQuery({
         identity: programsTransactionHistoryQueriesIdentity.info(transactionId!),
@@ -35,11 +33,9 @@ const useProgramsTransactionHistory = ({transactionId}: Props) => {
             .then(result => {
                 return result.isSuccess ? result.data : null
             })
-        //.finally(() => setIsLoading(false))
     }
 
     async function getTransaction(transactionId: string) {
-        // setIsLoading(true)
         return run(cloudFunctionName.transactionDetails,
             {transaction_id: transactionId},
             (result: LoyaltyMemberHistoryDTO) => {
@@ -48,10 +44,8 @@ const useProgramsTransactionHistory = ({transactionId}: Props) => {
             ,
             true)
             .then(result => {
-                // if (result.isSuccess) setHistoryField(result.data);
                 if (result.isSuccess) return result.data;
             })
-        //.finally(() => setIsLoading(false))
     }
 
     return {

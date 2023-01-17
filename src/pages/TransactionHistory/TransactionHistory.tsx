@@ -34,14 +34,6 @@ const TransactionHistory: React.FC = () => {
         return assets;
     }, [defaultERC20Asset, defaultNativeAsset])
 
-    // async function getAllLoyaltyPrograms() {
-    //     return fetchMyLoyaltyPrograms()
-    //         .then(mlp => {
-    //             const allPrograms = defaultProgram ? [defaultProgram, ...mlp] : mlp;
-    //             setUserLoyaltyPrograms(allPrograms)
-    //         })
-    // }
-
     const onRefresh = useCallback((): Promise<any> => {
         return fetchMyLoyaltyPrograms()
     }, [isAuthenticated])
@@ -56,10 +48,6 @@ const TransactionHistory: React.FC = () => {
         const allPrograms = defaultProgram ? [defaultProgram, ...myPrograms] : myPrograms;
         setUserLoyaltyPrograms(allPrograms)
     }, [defaultProgram, myPrograms])
-
-    // useIonViewWillEnter(() => {
-    //     onRefresh();
-    // }, [isAuthenticated])
 
     return (
         <IonPage>

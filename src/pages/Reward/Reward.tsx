@@ -1,4 +1,4 @@
-import {IonPage, useIonViewWillEnter} from '@ionic/react'
+import {IonPage} from '@ionic/react'
 import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer'
 import ReferralBanner from './ReferralBanner/ReferralBanner';
@@ -38,10 +38,6 @@ const Rewards: React.FC = () => {
             setTabHeaderHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
         }
     }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
-
-    // useIonViewWillEnter(() => {
-    //     onRefresh();
-    // }, [isAuthenticated])
 
     return (
         <IonPage>

@@ -1,6 +1,6 @@
 import {IonIcon, IonSpinner} from '@ionic/react'
 import {chevronDownOutline, chevronForwardOutline} from 'ionicons/icons';
-import React, {useCallback, useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PrimaryButton from '../../../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../../../components/inputs/PrimaryInput/PrimaryInput';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
@@ -18,14 +18,12 @@ import styles from './loyaltyProgramManageItem.module.scss';
 
 interface Props {
     item: LoyaltyProgram,
-    myProgram: UserLoyaltyProgram | null,
-    fetchMyPrograms?: () => void
+    myProgram: UserLoyaltyProgram | null
 }
 
-const LoyaltyProgramManageItem: React.FC<Props> = ({item, myProgram, fetchMyPrograms}) => {
+const LoyaltyProgramManageItem: React.FC<Props> = ({item, myProgram}) => {
     const [isSelected, setIsSelected] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
-    //const [partnershipMetadata, setPartnershipMetadata] = useState<LoyaltyPartnershipDetails | null>();
     const [myUpdatedProgram, setMyUpdatedProgram] = useState<UserLoyaltyProgram | null>();
     const selectedPartnershipType: PartnershipType = item.activePartnerships?.exchangeIn ? 'in' :
         item.activePartnerships?.exchangeOut ? 'out' :
@@ -35,7 +33,6 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({item, myProgram, fetchMyProg
     const {
         connectProgram,
         disconnectProgram,
-        fetchFilteredProgram,
         filteredProgram,
         isUpdating
     } = useLoyaltyPrograms({
@@ -82,15 +79,6 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({item, myProgram, fetchMyProg
                 setIsConnected(false);
                 initMyProgram();
             }
-            // disconnectProgram(myUpdatedProgram?.userCurrencyId!)
-            //     .then(disconnected => {
-            //         if (disconnected) {
-            //             // fetchMyPrograms && fetchMyPrograms()
-
-            //             setIsConnected(false);
-            //             initMyProgram();
-            //         }
-            //     })
         } else {
             try {
                 const result = await connectProgram(myUpdatedProgram!);
@@ -99,40 +87,8 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({item, myProgram, fetchMyProg
             } catch (error: any) {
                 presentFailure(error.message);
             }
-            // connectProgram(myUpdatedProgram!)
-            //     .then(result => {
-            //         if (result.isSuccess) {
-            //             fetchMyPrograms && fetchMyPrograms()
-            //             setIsConnected(true);
-            //             setMyUpdatedProgram(result.data);
-            //         } else if (result.errors) {
-            //             presentFailure(result.errors.detail);
-            //         }
-            //     })
         }
     }
-
-    // const getPartnershipMetadata = useCallback(async () => {
-    //     const partnershipType: PartnershipType =
-    //         item.activePartnerships?.exchangeIn ? 'in' :
-    //             item.activePartnerships?.exchangeOut ? 'out' :
-    //                 item.activePartnerships?.redemption ? 'redemption' :
-    //                     item.activePartnerships?.issuing ? 'issuing' :
-    //                         'out';
-
-    //     setSelectedPartnershipType(partnershipType);
-
-    //     // return fetchFilteredProgram(item.partnerId, partnershipType)
-    //     //     .then(program => {
-    //     //         setPartnershipMetadata(program?.partnershipDetails);
-    //     //     })
-    // }, [item.partnerId])
-
-    // useEffect(() => {
-    // if (isSelected && !partnershipMetadata) {
-    //     getPartnershipMetadata()
-    // }
-    //}, [isSelected])
 
     useEffect(() => {
         if (!myProgram && partnershipMetadata) initMyProgram()
@@ -150,7 +106,6 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({item, myProgram, fetchMyProg
 
     useEffect(() => {
         return () => {
-            //setPartnershipMetadata(null)
             setMyUpdatedProgram(null)
         }
     }, [])

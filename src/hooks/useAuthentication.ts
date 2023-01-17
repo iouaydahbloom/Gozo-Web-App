@@ -63,8 +63,6 @@ const useAuthentication = () => {
     async function handleServerAuth(email: string, ethAddress: string, magicToken: string) {
         const serverAuthResult = await serverAuthenticate(email, ethAddress, magicToken);
         if (serverAuthResult.isSuccess) {
-            //invalidate all cached queries
-            await queryClient.invalidateQueries();
             const userSession = serverAuthResult.data;
             const magicUserMetadata = await magicUser?.getMetadata();
             userSession.walletAddress = magicUserMetadata?.publicAddress ?? '';

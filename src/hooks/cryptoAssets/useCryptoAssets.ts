@@ -1,4 +1,4 @@
-import {useCallback, useMemo, useState} from "react";
+import {useCallback, useMemo} from "react";
 import {ERC20AssetDTO, NativeAssetDTO} from "../../dto/cryptoDTO";
 import {ERC20Asset} from "../../models/assets/ERC20Asset";
 import {NativeAsset} from "../../models/assets/NativeAsset";
@@ -6,14 +6,12 @@ import {cloudFunctionName} from "../../constants/cloudFunctionName";
 import {useDapp} from "../../providers/DappProvider/DappProvider";
 import useCloud from "../useCloud";
 import useAuthentication from "../useAuthentication";
-import useDataQuery from "../queries/settings/useDataQuery";
+import useDataQuery from "../queryCaching/useDataQuery";
 import {cryptoAssetsQueriesIdentity} from "./cryptoAssetsQueriesIdentity";
 
 const useCryptoAssets = () => {
 
     const {defaultTokenMetadata, defaultNativeMetada} = useDapp();
-    // const [assets, setAssets] = useState<(ERC20Asset | NativeAsset)[]>([]);
-    // const [isLoadingAssets, setIsLoadingAssets] = useState(false);
     const {tokenContractAddress} = useDapp();
     const {run} = useCloud();
     const {user} = useAuthentication();
@@ -35,10 +33,8 @@ const useCryptoAssets = () => {
                 const nativeAsset = result[0];
                 const erc20Assets = result[1];
                 const assets: (ERC20Asset | NativeAsset)[] = nativeAsset ? [nativeAsset, ...erc20Assets] : [...erc20Assets];
-                //setAssets(assets);
                 return assets;
             })
-        //.finally(() => setIsLoadingAssets(false))
     }, [user?.walletAddress])
 
     const fetchNativeAsset = async () => {

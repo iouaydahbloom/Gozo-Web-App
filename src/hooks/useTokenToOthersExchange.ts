@@ -12,9 +12,9 @@ import useCryptoAssets from "./cryptoAssets/useCryptoAssets";
 import useLoyaltyPrograms from "./loyaltyProgram/useLoyaltyPrograms";
 import useMemberShip from "./membership/useMembership";
 import useToast from "./useToast";
-import { parseNumber, parseBlockchainValue } from "../helpers/blockchainHelper";
-import useDataQuery from "./queries/settings/useDataQuery";
-import useDataMutation from "./queries/settings/useDataMutation";
+import { parseNumber } from "../helpers/blockchainHelper";
+import useDataQuery from "./queryCaching/useDataQuery";
+import useDataMutation from "./queryCaching/useDataMutation";
 import {membershipQueriesIdentity} from "./membership/membershipQueriesIdentity";
 import {cryptoAssetsQueriesIdentity} from "./cryptoAssets/cryptoAssetsQueriesIdentity";
 
@@ -34,14 +34,12 @@ interface OtherSwapParty {
 const useTokenToOthersExchange = () => {
     const [tokenQuantity, setTokenQuantity] = useState<number | undefined>(0);
     const [selectedOthers, setSelectedOthers] = useState<OtherSwapParty>({ id: '', quantity: 0, type: SwapPartyType.loyaltyProgram });
-    //const [exchanging, setExchanging] = useState(false);
     const [simulating, setSimulating] = useState(false);
     const [tokenOptions, setTokenOptions] = useState<ERC20Asset[]>([]);
     const [othersOptions, setOthersOptions] = useState<(UserLoyaltyProgram | NativeAsset)[]>([]);
     const { defaultProgram } = useLoyaltyPrograms({});
     const { defaultERC20Asset, defaultNativeAsset, fetchCryptoAssets } = useCryptoAssets();
     const { walletAddress, tokenContractAddress, tokenContractAbi, botWalletAddress } = useDapp();
-    //const [minimumValue, setMinimumValue] = useState<number>();
     const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
     const [isEstimatingGasFee, setIsEstimatingGasFee] = useState(false);
     const [direction, setDirection] = useState<'t2o' | 'o2t'>('t2o');
@@ -90,7 +88,6 @@ const useTokenToOthersExchange = () => {
             tokenQuantity as string | number,
             selectedOthers.type,
             () => {
-                //fetchCryptoAssets();
                 presentSuccess('Exchanged successfully');
             },
             (error) => presentFailure(error.message)
@@ -130,7 +127,6 @@ const useTokenToOthersExchange = () => {
             true
         )
             .then(result => {
-                //if (result.isSuccess) setMinimumValue(result.data);
                 return result.isSuccess ? result.data : null;
             })
     }, [])
@@ -159,16 +155,12 @@ const useTokenToOthersExchange = () => {
     */
     const executeOthersToTokenExchange = useCallback(async () => {
         if (selectedOthers && selectedOthers.quantity && selectedOthers.quantity <= 0) return;
-        //setExchanging(true);
 
         if (selectedOthers.type === SwapPartyType.loyaltyProgram) {
-            return executePointsToTokenExchange()
-                //.finally(() => setExchanging(false));
-            //return;
+            return executePointsToTokenExchange();
         }
 
-        return executeNativeToTokenExchange()
-            //.finally(() => setExchanging(false));;
+        return executeNativeToTokenExchange();
 
     }, [selectedOthers.quantity, selectedOthers.type])
 
@@ -205,7 +197,6 @@ const useTokenToOthersExchange = () => {
             true
         )
             .then(result => {
-               // if (result.isSuccess) setMinimumValue(result.data);
                 return result.isSuccess ? result.data : null;
             })
     }, [])
@@ -222,7 +213,6 @@ const useTokenToOthersExchange = () => {
                 )
                     .then(result => {
                         if (result.isSuccess) {
-                            //fetchCryptoAssets();
                             presentSuccess('Exchanged successfully');
                             return;
                         }
@@ -241,7 +231,6 @@ const useTokenToOthersExchange = () => {
         )
             .then(result => {
                 if (result.isSuccess) {
-                    //fetchMembership();
                     presentSuccess('Exchanged successfully');
                     return;
                 }
@@ -281,9 +270,6 @@ const useTokenToOthersExchange = () => {
     /**
      * Lifecycles events
      */
-    // useEffect(() => {
-    //     fetchCryptoAssets();
-    // }, [])
 
     useEffect(() => {
         setTokenOptions(defaultERC20Asset ? [defaultERC20Asset] : []);
@@ -323,18 +309,10 @@ const useTokenToOthersExchange = () => {
         }
     }, [selectedOthers?.quantity, direction, selectedOthers.id])
 
-    // useEffect(() => {
-    //     setExchanging(executingTransfer);
-    // }, [executingTransfer])
-
     useEffect(() => {
         if (direction === 't2o') {
-            //getMinTokenToPointsExchange();
             estimateTokenTransferFee();
-            return;
         }
-
-        //getMinPointsToTokenExchange();
     }, [direction])
 
     useEffect(() => {
@@ -363,9 +341,6 @@ const useTokenToOthersExchange = () => {
         setSelectedOthers,
         setTokenQuantity: setTokenQuantity,
         toggleDirection: () => setDirection(prev => prev === 't2o' ? 'o2t' : 't2o'),
-        // exchange: direction === 't2o' ?
-        //     executeTokenToOthersExchange :
-        //     executeOthersToTokenExchange
         exchange: direction === 't2o' ?
             executeTokenToOthersExchangeMutation.mutateAsync :
             executeOthersToTokenExchangeMutation.mutateAsync

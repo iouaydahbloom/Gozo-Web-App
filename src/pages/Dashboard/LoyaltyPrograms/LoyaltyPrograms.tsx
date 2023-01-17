@@ -14,21 +14,18 @@ import useToast from '../../../hooks/useToast';
 import useConfirmation from '../../../hooks/useConfirmation';
 import Swap from '../../Swap/Swap';
 import {AssetMode} from '../../../constants/assetsMode';
-import {currencySettingsContext} from '../../../providers/CurrencySettingsProvider/currencySettingsContext';
 import usePrimarySheet from '../../../hooks/usePrimarySheet';
 import SecondaryButtonsGroup from '../../../components/buttons/SecondaryButtonsGroup/SecondaryButtonsGroup';
 import SectionLoader from '../../../components/loaders/section-loader/SectionLoader';
 import {TabHeaderHeightContext} from '../../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
-import useDataMutation from '../../../hooks/queries/settings/useDataMutation';
 
 interface Props {
     programs: UserLoyaltyProgram[],
-    getPrograms: () => Promise<UserLoyaltyProgram[] | any>,
     isLoading: boolean
 }
 
-const LoyaltyPrograms: React.FC<Props> = ({programs, getPrograms, isLoading}) => {
-    //const {fetchGozoLoyaltyMembership} = useContext(currencySettingsContext);
+const LoyaltyPrograms: React.FC<Props> = ({programs, isLoading}) => {
+
     const [selectedUserCurrencyIds, setSelectedUserCurrencyIds] = useState<string[]>([]);
     const [isRemoving, setIsRemoving] = useState(false);
     const {tabHeaderHeight} = useContext(TabHeaderHeightContext);
@@ -39,19 +36,14 @@ const LoyaltyPrograms: React.FC<Props> = ({programs, getPrograms, isLoading}) =>
     const {showModal: showManager} = usePrimarySheet({
         title: 'Partners',
         component: LoyaltyProgramsManager,
-        id: 'lpModal',
-        //onDismiss: getPrograms
+        id: 'lpModal'
     });
 
     const {showModal: showSwap} = usePrimarySheet({
         title: 'Swap',
         component: Swap,
         componentProps: {mode: AssetMode.loyaltyPoint},
-        id: 'swapModal',
-        onDismiss: () => {
-            //fetchGozoLoyaltyMembership();
-            //getPrograms();
-        }
+        id: 'swapModal'
     });
 
     function switchButtons() {
@@ -71,17 +63,8 @@ const LoyaltyPrograms: React.FC<Props> = ({programs, getPrograms, isLoading}) =>
                 const disconnected = await disconnectPrograms(selectedUserCurrencyIds) as boolean;
                 if (disconnected) {
                     presentSuccess('Programs successfully disconnected');
-                    switchButtons()
-                    //getPrograms();
+                    switchButtons();
                 }
-                // disconnectPrograms(selectedUserCurrencyIds)
-                //     .then(disconnected => {
-                //         if (disconnected) {
-                //             presentSuccess('Programs successfully disconnected');
-                //             switchButtons()
-                //             getPrograms();
-                //         }
-                //     })
             }
         })
     }

@@ -9,6 +9,8 @@ import useBarcodeScanner from '../../hooks/useBarcodeScanner';
 import useBlockchainTransfer from '../../hooks/useBlockchainTransfer';
 import useToast from '../../hooks/useToast';
 import styles from './sendCrypto.module.scss';
+import useDataMutation from "../../hooks/queryCaching/useDataMutation";
+import {cryptoAssetsQueriesIdentity} from "../../hooks/cryptoAssets/cryptoAssetsQueriesIdentity";
 
 const SendCrypto: React.FC = () => {
 
@@ -18,9 +20,14 @@ const SendCrypto: React.FC = () => {
     const { presentFailure } = useToast();
     const { scan } = useBarcodeScanner();
 
+    const transferTokensMutation = useDataMutation({
+        mutatedIdentity: cryptoAssetsQueriesIdentity.list,
+        fn: (args: {receiver: string, amount: string}) => transferToken(args.receiver, args.amount)
+    })
+
     async function handleTransfer() {
         if (receiver && amount) {
-            await transferToken(receiver, amount);
+            await transferTokensMutation.mutateAsync({receiver, amount});
         } else {
             presentFailure('You are missing some required fields')
         }

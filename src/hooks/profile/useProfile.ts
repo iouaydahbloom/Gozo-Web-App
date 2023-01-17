@@ -1,19 +1,14 @@
-import {useEffect, useState} from "react";
 import {ProfileDetailsDTO} from "../../dto/ProfileDetailsDTO";
 import {ProfileDetails, ProfileSocialAccount} from "../../models/profileDetails";
 import {cloudFunctionName} from "../../constants/cloudFunctionName";
 import {SocialAccountTypeDTO} from "../../dto/socialAccountTypeDTO";
 import {SocialAccountType} from "../../models/socialAccountType";
 import useCloud from "../useCloud";
-import useDataQuery from "../queries/settings/useDataQuery";
-import useDataMutation from "../queries/settings/useDataMutation";
+import useDataQuery from "../queryCaching/useDataQuery";
+import useDataMutation from "../queryCaching/useDataMutation";
 import {profileQueriesIdentity} from "./profileQueriesIdentity";
 
 const useProfile = () => {
-
-    //const [profileDetails, setProfileDetails] = useState<ProfileDetails>();
-    //const [socialAccountTypes, setSocialAccountTypes] = useState<SocialAccountType[]>();
-    //const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {run} = useCloud();
 
@@ -52,14 +47,12 @@ const useProfile = () => {
     }
 
     async function updateProfileDetails(user: ProfileDetails) {
-        //setIsSubmitting(true)
         return run(
             cloudFunctionName.updateProfileDetails,
             {user: user.toDTO()},
             (result: ProfileDetailsDTO) => ProfileDetails.getFromDTO(result),
             true
         )
-        //.finally(() => setIsSubmitting(false))
     }
 
     async function buildProfile() {
@@ -95,22 +88,7 @@ const useProfile = () => {
         return profileInfo;
     }
 
-    // useEffect(() => {
-    //     Promise.all([
-    //         getProfileDetails(),
-    //         getSocialAccountTypes()
-    //     ])
-    //         .then(result => {
-    //             let profile = result[0];
-    //             const socialAccountTypes = result[1];
-    //             profile = buildProfileWithSocialAccounts(profile, socialAccountTypes);
-    //             setSocialAccountTypes(socialAccountTypes);
-    //             setProfileDetails(profile);
-    //         })
-    // }, [])
-
     return {
-        //fetchProfileDetails: getProfileDetails,
         updateProfileDetails: profileDetailsMutation.mutateAsync,
         profileDetails: buildProfileQuery.data?.profileDetails,
         socialAccountTypes: buildProfileQuery.data?.socialAccountTypes,

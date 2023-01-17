@@ -8,7 +8,7 @@ import {
     useIonViewWillEnter,
     useIonViewWillLeave
 } from '@ionic/react';
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import {WheelSegment} from '../../models/wheelSegment';
@@ -17,7 +17,6 @@ import SpinCondition from './SpinConditionModal/SpinCondition';
 import styles from './spinner.module.scss';
 import {modalController} from '@ionic/core';
 import SpinSuccess from './SpinSuccessModal/SpinSuccess';
-import {LoyaltyProgram, UserLoyaltyProgram} from '../../models/loyaltyProgram';
 import useBlockchainContractExecution from '../../hooks/useBlockchainContractExecution';
 import useSearchParams from '../../hooks/useSearchParams';
 import useLoyaltyPrograms from '../../hooks/loyaltyProgram/useLoyaltyPrograms';
@@ -26,7 +25,6 @@ import usePrize from '../../hooks/prize/usePrize';
 import useDialog from '../../hooks/useDialog';
 import PrimaryAccordion, {AccordionItem} from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
 import ProgramSelection, {ProgramSelectOption} from './ProgramSelection/ProgramSelection';
-import useMemberShip from '../../hooks/membership/useMembership';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import ParticlesLoader from '../../components/sections/ParticlesLoader/ParticlesLoader';
 import PageLoader from '../../components/loaders/PageLoader/PageLoader';
@@ -45,31 +43,37 @@ const Spinner: React.FC = () => {
 
     const history = useHistory()
     const search = useSearchParams();
-    var id = search ? search.get('program_id') : '';
+    const id = search ? search.get('program_id') : '';
     const [loyaltyProgramId, setLoyaltyProgramId] = useState<string>(id ?? '');
     const {
         fetchProgram,
         defaultProgram,
         loadingProgram,
-        loadingMyLoyaltyPrograms,
         fetchMyLoyaltyPrograms,
-        myPrograms
+        myPrograms,
+        program: loyaltyProgram
     } = useLoyaltyPrograms({
         programId: loyaltyProgramId
     });
-    const {play, setIsPlaying, isPlaying} = usePlayGame();
-    const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
+
     const [gameToken, setGameToken] = useState('');
+    const {play, isSubmitting} = usePlayGame({
+        loyaltyProgramId: loyaltyProgramId,
+        gameToken: gameToken,
+        partnerId: loyaltyProgram?.partnerId ?? '',
+        brand: loyaltyProgram?.brand?.key ?? ''
+    });
+    const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
     const [selectedPrizeId, setSelectedPrizeId] = useState<string>('');
     const [returnedPrize, setReturnedPrize] = useState<IPrize>();
-    const [loyaltyProgram, setLoyaltyProgram] = useState<LoyaltyProgram>();
-    const {fetchMembership} = useMemberShip(loyaltyProgram?.loyaltyCurrency?.id);
-    const [myLoyaltyPrograms, setMyLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
+    const myLoyaltyPrograms = useMemo(() => {
+        return defaultProgram ? [...myPrograms, defaultProgram] : [...myPrograms];
+    }, [defaultProgram, myPrograms]);
     const {addListener} = useBlockchainContractExecution();
     const [prizesExpired, setPrizesExpired] = useState(false);
-    const prizeInfo = "Spin now, list of prizes is reserved for 3 mins, if spinned after 3 mins the list of prizes might be different";
+    const prizeInfo = "Spin now, list of prizes is reserved for 3 minutes, if spun after 3 minutes the list of prizes might be different";
     const {walletAddress} = useDapp();
-    var displayMessages = [
+    const displayMessages = [
         "Blockchain Node Connection. in Progress",
         "Creating Transparent Winning Algorithm",
         "Prizes Being Generated",
@@ -77,7 +81,8 @@ const Spinner: React.FC = () => {
     ];
     const {currentMessage, start, stop} = useMessagesInterval(displayMessages);
     const {gameContractAddress, gameContractAbi} = useDapp();
-    const [isPlayingReady, setIsPlayingReady] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
+
     const {
         prizes,
         fetchPrizes,
@@ -112,11 +117,9 @@ const Spinner: React.FC = () => {
         />,
         customClass: styles.spinSuccessModal,
         onDismiss: () => {
-            setIsPlayingReady(false);
             setIsPlaying(false);
             setSelectedPrizeId('');
             getPrizes();
-            fetchMembership();
             setReturnedPrize(undefined);
         }
     });
@@ -129,38 +132,10 @@ const Spinner: React.FC = () => {
         modalController.dismiss(null, undefined, "spinSuccessModal");
     }
 
-    function getLoyaltyProgram() {
-        fetchProgram(loyaltyProgramId ?? '')
-            .then(program => {
-                if (program) setLoyaltyProgram(program);
-            })
-    }
-
     function getPrizes() {
-        if (!loyaltyProgram) return
-        setWheelSegments([])
-        //return fetchPrizes(loyaltyProgram.brand?.key ?? '')
-        return fetchPrizes()
-        // .then(groupedPrizes => {
-        //     if (groupedPrizes) {
-        //         const segments = WheelSegment.toWheelSegment(groupedPrizes.prizes);
-        //         setWheelSegments(segments);
-        //         setGameToken(groupedPrizes.gameToken);
-        //         setPrizesExpired(false);
-        //         setTimeout(() => setPrizesExpired(true), 120000);
-        //     }
-        // })
+        if (!loyaltyProgram) return;
+        return fetchPrizes();
     }
-
-    useEffect(() => {
-        if (!prizes) return;
-
-        const segments = WheelSegment.toWheelSegment(prizes.prizes);
-        setWheelSegments(segments);
-        setGameToken(prizes.gameToken);
-        setPrizesExpired(false);
-        setTimeout(() => setPrizesExpired(true), 120000);
-    }, [prizes])
 
     function listenerCallBack(id: any, amount: any, playerAddress: string, gameToken: string) {
         if (playerAddress.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
@@ -173,31 +148,22 @@ const Spinner: React.FC = () => {
         }
     }
 
-    function getMyPrograms() {
-        fetchMyLoyaltyPrograms()
-            // .then(programs => {
-            //     programs.push(defaultProgram as UserLoyaltyProgram)
-            //     setMyLoyaltyPrograms(programs);
-            // })
-    }
-
-    useEffect(() => {
-        const allUserPrograms =  defaultProgram ? [...myPrograms, defaultProgram] : [...myPrograms];
-        setMyLoyaltyPrograms(allUserPrograms);
-    }, [myPrograms, defaultProgram])
-
     async function handlePlaying() {
         start();
         if (prizesExpired) await getPrizes();
-        await play(loyaltyProgram?.brand?.key ?? '', loyaltyProgram?.partnerId ?? '', gameToken);
+        await play();
     }
 
     const programsOpts: ProgramSelectOption[] = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0) {
-            var programs = [...myLoyaltyPrograms]
-            programs = programs.filter((program) => program.currency.isRedemption)
+            //let programs = [...myLoyaltyPrograms]
+            let programs = myLoyaltyPrograms.filter((program) => program.currency.isRedemption)
             return programs.map((loyaltyProgram) => {
-                return new ProgramSelectOption(loyaltyProgram?.currency?.loyaltyCurrencyName, loyaltyProgram?.currency?.loyaltyCurrency, loyaltyProgram?.currency?.programLogo)
+                return new ProgramSelectOption(
+                    loyaltyProgram?.currency?.loyaltyCurrencyName,
+                    loyaltyProgram?.currency?.loyaltyCurrency,
+                    loyaltyProgram?.currency?.programLogo
+                )
             })
 
         }
@@ -232,17 +198,17 @@ const Spinner: React.FC = () => {
     const handleSelectedValue = (name: string) => {
         const lp = myLoyaltyPrograms.find(item => item?.currency?.loyaltyCurrencyName === name)
         if (lp) {
-            setIsPlayingReady(false);
+            //setIsPlayingReady(false);
             history.replace({search: (new URLSearchParams({program_id: lp?.currency?.programId})).toString()});
             setLoyaltyProgramId(lp.currency?.programId)
         }
     }
 
     const onRefresh = useCallback((): Promise<any> => {
-        setIsPlayingReady(false);
         return Promise.all([
-            getLoyaltyProgram(),
-            defaultProgram && getMyPrograms(),
+            fetchProgram(),
+            fetchMyLoyaltyPrograms(),
+            fetchPrizes()
         ])
     }, [loyaltyProgramId])
 
@@ -264,8 +230,28 @@ const Spinner: React.FC = () => {
         }
     }, [isPlaying])
 
+    useEffect(() => {
+        if (!prizes) return;
+
+        const segments = WheelSegment.toWheelSegment(prizes.prizes);
+        setWheelSegments(segments);
+        setGameToken(prizes.gameToken);
+        setPrizesExpired(false);
+        setTimeout(() => setPrizesExpired(true), 120000);
+    }, [prizes])
+
+    useEffect(() => {
+        if (gameToken) {
+            unReservePrizes(gameToken)
+        }
+        getPrizes();
+    }, [loyaltyProgram?.loyaltyCurrency])
+
+    useEffect(() => {
+        if (isSubmitting) setIsPlaying(true);
+    }, [isSubmitting])
+
     useIonViewWillEnter(() => {
-        setIsPlayingReady(false);
         addListener(
             gameContractAddress,
             gameContractAbi,
@@ -274,7 +260,6 @@ const Spinner: React.FC = () => {
         );
 
         const currentLoyaltyProgramId = id ?? '';
-        if (defaultProgram) getMyPrograms();
         if (loyaltyProgram && currentLoyaltyProgramId === loyaltyProgramId) getPrizes();
 
         setLoyaltyProgramId(currentLoyaltyProgramId);
@@ -284,21 +269,6 @@ const Spinner: React.FC = () => {
         unReservePrizes(gameToken);
         setIsPlaying(false);
     }, [gameToken])
-
-    useEffect(() => {
-        if (gameToken) unReservePrizes(gameToken)
-        getPrizes();
-    }, [loyaltyProgram])
-
-    useEffect(() => {
-        getLoyaltyProgram();
-    }, [loyaltyProgramId])
-
-    useEffect(() => {
-        if (!isLoadingPrizes) {
-            setIsPlayingReady(true);
-        }
-    }, [isLoadingPrizes])
 
     return (
         <IonPage>
@@ -321,7 +291,8 @@ const Spinner: React.FC = () => {
             </IonHeader>
             <PrimaryContainer className={styles.container} isRefreshable onRefresh={onRefresh}>
                 {
-                    isPlayingReady ?
+                    //isPlayingReady
+                    !isLoadingPrizes && !loadingProgram ?
                         <>
                             <div className={`${styles.wheelWrapper}`}>
                                 {

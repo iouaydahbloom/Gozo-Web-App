@@ -1,55 +1,58 @@
-import { useEffect, useState } from "react";
+import {useCallback} from "react";
 import { cloudFunctionName } from "../constants/cloudFunctionName";
 import useCloud from "./useCloud";
 import { useDapp } from "../providers/DappProvider/DappProvider";
 import useToast from "./useToast";
 import { PlayGame } from "../models/playGame";
 import { PlayGameDTO } from "../dto/PlayGameDTO";
+import useDataMutation from "./queryCaching/useDataMutation";
+import {membershipQueriesIdentity} from "./membership/membershipQueriesIdentity";
 
-const usePlayGame = () => {
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [error, setError] = useState<string>();
+interface Props {
+    loyaltyProgramId: string,
+    partnerId: string,
+    brand: string,
+    gameToken?: string
+}
+
+const usePlayGame = ({loyaltyProgramId, partnerId, brand, gameToken}: Props) => {
+
     const { presentFailure } = useToast();
     const { walletAddress } = useDapp();
     const { run } = useCloud();
 
-    async function play(brand: string, partner_id: string, gameToken?: string) {
-        if (!brand && !walletAddress) return;
-        setIsPlaying(true);
-        let params: any = {
+    const playingMutation = useDataMutation({
+        mutatedIdentity: membershipQueriesIdentity.info(loyaltyProgramId),
+        fn: () => play()
+    })
+
+    const play = useCallback(() => {
+        if (!brand && !walletAddress) return Promise.resolve();
+        const params: any = {
             brand: brand,
             player_address: walletAddress
         }
-        if (partner_id) params['partner_id'] = partner_id;
-        if (gameToken) params['game_token'] = gameToken
+        if (partnerId) params.partner_id= partnerId;
+        if (gameToken) params.game_token = gameToken;
+
         return run(cloudFunctionName.playWithSuperPoints,
             params,
             (res : PlayGameDTO) => PlayGame.getFromDTO(res),
-            true).then((result) => {
-                if (!result?.isSuccess || !result.data) {
-                    if(result?.errors) setError(result.errors?.errors[0]?.message)
-                    else setError('Server is busy, try again later')
-                    setIsPlaying(false);
+            true)
+            .then((result) => {
+                if(!result.isSuccess) {
+                    let errorMessage = '';
+                    if(result?.errors) errorMessage = result.errors?.errors[0]?.message;
+                    else errorMessage = 'Server is busy, try again later';
+                    presentFailure(errorMessage);
                     return;
-                } 
-            })
-    }
-
-    useEffect(() => {
-        if (error) {
-            setIsPlaying(false)
-            presentFailure(error)
-            setError(undefined)
-        }
-    }, [error])
-
+                }
+        })
+    }, [partnerId, gameToken, brand, loyaltyProgramId])
 
     return {
-        play,
-        isPlaying,
-        setIsPlaying,
-        error,
-        setError
+        play: () => playingMutation.mutateAsync({}),
+        isSubmitting: playingMutation.isLoading
     }
 }
 

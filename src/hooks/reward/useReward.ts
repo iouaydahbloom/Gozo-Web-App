@@ -1,4 +1,3 @@
-import {useState} from "react";
 import {cloudFunctionName} from "../../constants/cloudFunctionName";
 import useCloud from "../useCloud";
 import {Reward} from "../../models/reward";
@@ -8,17 +7,12 @@ import {EarningReward} from "../../models/earningReward";
 import {EarningRewardDTO} from "../../dto/earningRewardDTO";
 import {UserEarningDTO} from "../../dto/userEarningDTO";
 import {UserEarning} from "../../models/userEarning";
-import useDataQuery from "../queries/settings/useDataQuery";
+import useDataQuery from "../queryCaching/useDataQuery";
 import {rewardsQueriesIdentity} from "./rewardQueriesIdentity";
-import useDataMutation from "../queries/settings/useDataMutation";
+import useDataMutation from "../queryCaching/useDataMutation";
 
 const useReward = () => {
-    //const [rewards, setRewards] = useState<Reward[]>([])
-    //const [earningRewards, setEarningRewards] = useState<EarningReward[]>([])
-    //const [userEarningsList, setUserEarningsList] = useState<string[]>([])
-    //const [isLoadingRewards, setIsLoadingRewards] = useState(false);
-    //const [isLoadingEarnings, setIsLoadingEarnings] = useState(false);
-    //const [isLoadingSubmission, setIsLoadingSubmission] = useState(false)
+
     const {run} = useCloud();
 
     const rewardsQuery = useDataQuery({
@@ -42,8 +36,6 @@ const useReward = () => {
     })
 
     async function fetchRewards() {
-        //setIsLoadingRewards(true)
-        //setRewards([])
         return run(cloudFunctionName.reward,
             {
                 page: 1,
@@ -54,11 +46,9 @@ const useReward = () => {
             .then(result => {
                 if (result.isSuccess) return result.data
             })
-        //.finally(() => setIsLoadingRewards(false))
     }
 
     async function claimReward({rewardId, fields}: { rewardId: string, fields: KeyValue[] }) {
-        //setIsLoadingSubmission(true)
         return run(cloudFunctionName.claimReward,
             {
                 reward_id: rewardId,
@@ -66,17 +56,9 @@ const useReward = () => {
             },
             (result: any) => result,
             true)
-        //.finally(() => setIsLoadingSubmission(false))
     }
 
-    // function getRewards() {
-    //     fetchRewards().then(rewards => {
-    //         if (rewards) setRewards(rewards)
-    //     })
-    // }
-
     async function fetchEarnings() {
-        //setIsLoadingEarnings(true)
         return run(cloudFunctionName.earningActions,
             null,
             (result: EarningRewardDTO[]) => result.map(earn => EarningReward.getFromDTO(earn)),
@@ -84,14 +66,7 @@ const useReward = () => {
             .then(result => {
                 if (result.isSuccess) return result.data
             })
-        //.finally(() => setIsLoadingEarnings(false))
     }
-
-    // function getEarningRewards() {
-    //     fetchEarnings().then(earnings => {
-    //         if (earnings) setEarningRewards(earnings)
-    //     })
-    // }
 
     async function fetchUserEarnings() {
         return run(cloudFunctionName.userEarnings,
@@ -110,18 +85,6 @@ const useReward = () => {
             })
     }
 
-    // function getUserEarnings() {
-    //     return fetchUserEarnings().then(earnings => {
-    //         if (earnings) {
-    //             let userEarningList: string[] = []
-    //             earnings.forEach((earning) => {
-    //                 userEarningList.push(earning.earningActionId)
-    //             })
-    //            setUserEarningsList(userEarningList)
-    //         }
-    //     })
-    // }
-
     return {
         rewards: rewardsQuery.data ?? [],
         earningRewards: earningsQuery.data ?? [],
@@ -130,7 +93,6 @@ const useReward = () => {
         getEarningRewards: earningsQuery.refetch,
         getUserEarnings: userEarningQuery.refetch,
         claimReward: claimRewardMutation.mutateAsync,
-        //fetchEarnings,
         isLoadingEarnings: earningsQuery.isLoading,
         isLoadingSubmission: claimRewardMutation.isLoading,
         isLoadingRewards: rewardsQuery.isLoading

@@ -1,15 +1,14 @@
-import {useContext, useState} from "react";
+import {useContext, useMemo} from "react";
 import {LoyaltyProgramDTO, UserLoyaltyProgramDTO} from "../../dto/loyaltyProgramDTO";
 import {LoyaltyProgram, UserLoyaltyProgram} from "../../models/loyaltyProgram";
 import {Pagination} from "../../models/data/pagination";
 import {cloudFunctionName} from "../../constants/cloudFunctionName";
 import {currencySettingsContext} from "../../providers/CurrencySettingsProvider/currencySettingsContext";
 import useCloud from "../useCloud";
-import {Filter, ProgramFilter} from "../../models/data/filter";
+import {Filter} from "../../models/data/filter";
 import {PartnershipType} from "../../types/exchangeType";
-import {DefaultCurrencyDTO} from "../../dto/defaultCurrencyDTO";
-import useDataQuery from "../queries/settings/useDataQuery";
-import useDataMutation from "../queries/settings/useDataMutation";
+import useDataQuery from "../queryCaching/useDataQuery";
+import useDataMutation from "../queryCaching/useDataMutation";
 import {loyaltyProgramQueriesIdentity} from "./loyaltyProgramQueriesIdentity";
 
 interface Props {
@@ -19,22 +18,13 @@ interface Props {
 
 const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
 
-    //const [loadingMyPrograms, setLoadingMyPrograms] = useState(false);
-    const [loadingProgram, setLoadingProgram] = useState(false);
-    //const [isUpdating, setIsUpdating] = useState(false);
     const {gozoLoyalty} = useContext(currencySettingsContext);
     const {run} = useCloud();
 
-    // const defaultCurrencyQuery = useDataQuery({
-    //     identity: loyaltyProgramQueriesIdentity.defaultCurrency,
-    //     fn: fetchDefaultCurrency
-    // })
-
-    // const programQuery = useDataQuery({
-    //     identity: loyaltyProgramQueriesIdentity.program(programId),
-    //     fn: () => getProgram(programId!),
-    //     enabled: !!programId
-    // })
+    const programQuery = useDataQuery({
+        identity: loyaltyProgramQueriesIdentity.program(programId),
+        fn: () => getProgram(programId!)
+    })
 
     const filteredProgramQuery = useDataQuery({
         identity: loyaltyProgramQueriesIdentity.filteredProgram(programFilter?.programId!, programFilter?.exchangeType!),
@@ -61,16 +51,6 @@ const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
         mutatedIdentity: loyaltyProgramQueriesIdentity.userPrograms,
         fn: disconnectPrograms
     })
-
-    // async function fetchDefaultCurrency() {
-    //     return run(cloudFunctionName.defaultCurrency,
-    //         null,
-    //         (result: DefaultCurrencyDTO) => UserLoyaltyProgram.getFromDefaultCurrencyDTO(result),
-    //         true)
-    //         .then(result => {
-    //             return result.isSuccess ? result.data : null
-    //         })
-    // }
 
     async function getAllAvailablePrograms(filter: Filter) {
         return run(
@@ -109,7 +89,6 @@ const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
     }
 
     async function getProgram(programId: string) {
-        setLoadingProgram(true)
         return run(
             cloudFunctionName.program,
             programId ? {partner_id: programId} : {},
@@ -117,21 +96,17 @@ const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
             .then(result => {
                 return result.isSuccess ? result.data : null
             })
-            .finally(() => setLoadingProgram(false))
     }
 
     async function getMyPrograms() {
-        //setLoadingMyPrograms(true);
         return run(cloudFunctionName.getMyPrograms,
             null,
             (result: UserLoyaltyProgramDTO[]) => result.map(data => UserLoyaltyProgram.getFromDTO(data)),
             true)
             .then(result => result.isSuccess ? result.data : [])
-        //.finally(() => setLoadingMyPrograms(false))
     }
 
     async function connectProgram(program: UserLoyaltyProgram) {
-        //setIsUpdating(true);
         return run(cloudFunctionName.connectProgram,
             {program: program.toMyLoyaltyProgramDTO()},
             (result: UserLoyaltyProgramDTO) => UserLoyaltyProgram.getFromDTO(result),
@@ -143,27 +118,22 @@ const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
 
                 return result.data
             })
-        //.finally(() => setIsUpdating(false))
     }
 
     async function disconnectProgram(userCurrencyId: string) {
-        //setIsUpdating(true);
         return run(cloudFunctionName.disconnectProgram,
             {userCurrencyId: userCurrencyId},
             () => true,
             true)
             .then(result => result.isSuccess)
-        //.finally(() => setIsUpdating(false))
     }
 
     async function disconnectPrograms(userCurrencyIds: string[]) {
-        //setIsUpdating(true);
         return run(cloudFunctionName.disconnectPrograms,
             {userCurrencyIds: userCurrencyIds},
             () => true,
             true)
             .then(result => result.isSuccess)
-        //.finally(() => setIsUpdating(false))
     }
 
     return {
@@ -172,17 +142,17 @@ const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
         fetchAllPrograms: getAllAvailablePrograms,
         fetchFilteredProgram: filteredProgramQuery.refetch,
         filteredProgram: filteredProgramQuery.data,
-        fetchProgram: getProgram,
+        fetchProgram: programQuery.refetch,
         loadingMyLoyaltyPrograms: userProgramsQuery.isLoading,
-        loadingProgram: loadingProgram,
-        //fetchDefaultCurrency: defaultCurrencyQuery.refetch,
+        loadingProgram: programQuery.isLoading,
         connectProgram: connectProgramMutation.mutateAsync,
         disconnectProgram: disconnectProgramMutation.mutateAsync,
         disconnectPrograms: disconnectProgramsMutation.mutateAsync,
         isUpdating: connectProgramMutation.isLoading ||
             disconnectProgramMutation.isLoading ||
             disconnectProgramsMutation.isLoading,
-        myPrograms: userProgramsQuery.data ?? []
+        program: useMemo(() => programQuery.data, [programQuery.data]),
+        myPrograms: useMemo(() => userProgramsQuery.data ?? [], [userProgramsQuery.data])
     }
 }
 

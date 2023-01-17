@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import InternalStorage from "../../helpers/InternalStorage";
-import { sessionContext } from "./sessionContext";
+import {sessionContext} from "./sessionContext";
+import {useQueryClient} from "react-query";
 
-const SessionProvider: React.FC = ({ children }) => {
+const SessionProvider: React.FC = ({children}) => {
 
     const [session, setSession] = useState<any>();
     const [isReady, setIsReady] = useState(false);
+    const queryClient = useQueryClient();
 
     function clear() {
         setSession(null);
@@ -25,8 +27,11 @@ const SessionProvider: React.FC = ({ children }) => {
     }, [])
 
     useEffect(() => {
-        if (session) InternalStorage.setInStorage('authSession', session)
-        else InternalStorage.removeFromStorage('authSession');
+        if (session) {
+            InternalStorage.setInStorage('authSession', session);
+            //invalidate all cached queryCaching
+            queryClient.clear();
+        } else InternalStorage.removeFromStorage('authSession');
     }, [session])
 
     return (

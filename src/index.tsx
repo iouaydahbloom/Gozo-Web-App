@@ -21,8 +21,8 @@ ReactDOM.render(
             <NetworkProvider>
                 <OnBoardingPreviewProvider>
                     <MagicAuthProvider>
-                        <SessionProvider>
-                            <QueryClientProvider client={new QueryClient()}>
+                        <QueryClientProvider client={new QueryClient()}>
+                            <SessionProvider>
                                 <DappProvider>
                                     <CurrencySettingsProvider>
                                         <WheelSettingsProvider>
@@ -30,8 +30,8 @@ ReactDOM.render(
                                         </WheelSettingsProvider>
                                     </CurrencySettingsProvider>
                                 </DappProvider>
-                            </QueryClientProvider>
-                        </SessionProvider>
+                            </SessionProvider>
+                        </QueryClientProvider>
                     </MagicAuthProvider>
                 </OnBoardingPreviewProvider>
             </NetworkProvider>

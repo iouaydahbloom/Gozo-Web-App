@@ -4,14 +4,12 @@ import {LoyaltyProgram, UserLoyaltyProgram} from '../../../../models/loyaltyProg
 import useLoyaltyPrograms from '../../../../hooks/loyaltyProgram/useLoyaltyPrograms'
 import PrimarySearch from '../../../../components/inputs/PrimarySearch/PrimarySearch'
 import styles from './loyaltyProgramsManager.module.scss';
-import {Filter, ProgramFilter} from '../../../../models/data/filter'
+import {Filter} from '../../../../models/data/filter'
 import PageLoader from '../../../../components/loaders/PageLoader/PageLoader'
 import useServerPagination from "../../../../hooks/useServerPagination";
 
 const LoyaltyProgramsManager: React.FC = () => {
 
-    //const [isLoadingMyPrograms, setIsLoadingMyPrograms] = useState(false);
-    //const [myPrograms, setMyPrograms] = useState<UserLoyaltyProgram[]>([]);
     const [searchKey, setSearchKey] = useState<string>('');
     const {fetchAllPrograms, myPrograms, fetchMyLoyaltyPrograms} = useLoyaltyPrograms({});
 
@@ -28,31 +26,10 @@ const LoyaltyProgramsManager: React.FC = () => {
         return <LoyaltyProgramManageItem
             item={lp}
             key={lp.partnerId}
-            fetchMyPrograms={() => fetchMyLoyaltyPrograms()}
             myProgram={getMyProgram(lp.partnerId)}/>
     }, [programs, myPrograms, searchKey])
 
-    // function getMyLoyaltyProgram() {
-    //     fetchMyLoyaltyPrograms()
-    //         .then(result => {
-    //             if (result) {
-    //                 setMyPrograms(result);
-    //             }
-    //         })
-    //         .finally(() => setIsLoadingMyPrograms(false))
-    // }
-
-    // useEffect(() => {
-    //     //fetchData()
-    //     //setIsLoadingMyPrograms(true)
-    //     //getMyLoyaltyProgram()
-    //
-    //     return () => {
-    //         //setIsLoadingMyPrograms(false)
-    //     }
-    // }, [])
-
-    useEffect(() =>{
+    useEffect(() => {
         fetchData()
     }, [])
 
@@ -65,7 +42,6 @@ const LoyaltyProgramsManager: React.FC = () => {
                     onChange={setSearchKey}/>
             </div>
             {
-                //isLoading || isLoadingMyPrograms ?
                 isLoading ?
                     <PageLoader/> :
                     programs

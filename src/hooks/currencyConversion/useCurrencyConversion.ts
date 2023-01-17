@@ -1,4 +1,4 @@
-import useDataQuery from "../queries/settings/useDataQuery";
+import useDataQuery from "../queryCaching/useDataQuery";
 import {cloudFunctionName} from "../../constants/cloudFunctionName";
 import {FiatToLoyaltyConversionDTO} from "../../dto/fiatToLoyaltyConversionDTO";
 import {FiatToLoyaltyConversion} from "../../models/fiatToLoyaltyConversion";
@@ -18,7 +18,8 @@ const useCurrencyConversion = ({fiat , amount}: Props) => {
 
     const fiatToPointsQuery = useDataQuery({
         identity: currencyConversionQueriesIdentity.simulateFiatToDefaultPointsConversion(fiat, amount),
-        fn: () => simulateFiatToDefaultCurrencyConversion(fiat, amount)
+        fn: () => simulateFiatToDefaultCurrencyConversion(fiat, amount),
+        enabled: !!fiat
     })
 
     async function simulateFiatToDefaultCurrencyConversion(fiatCurrency: string, amount: string) {

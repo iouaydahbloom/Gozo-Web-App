@@ -18,33 +18,23 @@ import styles from './cryptoTokens.module.scss';
 
 interface Props {
     assets?: (ERC20Asset | NativeAsset)[],
-    getAssets: () => Promise<(ERC20Asset | NativeAsset)[]>,
-    refreshDefaultToken: () => Promise<any>,
     isLoading: boolean
 }
 
-const CryptoTokens: React.FC<Props> = ({assets = [], getAssets, refreshDefaultToken, isLoading}) => {
+const CryptoTokens: React.FC<Props> = ({assets = [], isLoading}) => {
 
     const {tabHeaderHeight} = useContext(TabHeaderHeightContext)
     const {showModal: showSwap} = usePrimarySheet({
         title: 'Swap',
         component: Swap,
         componentProps: {mode: AssetMode.token},
-        id: 'swapModal',
-        onDismiss: () => {
-            //refreshDefaultToken();
-            //getAssets();
-        }
+        id: 'swapModal'
     });
 
     const {showModal: showSendToken} = usePrimarySheet({
         title: 'Send Tokens',
         component: SendCrypto,
-        id: 'sendCryptoModal',
-        onDismiss: () => {
-            //refreshDefaultToken();
-            //getAssets();
-        }
+        id: 'sendCryptoModal'
     });
 
     const {showModal: showReceiveToken} = usePrimarySheet({

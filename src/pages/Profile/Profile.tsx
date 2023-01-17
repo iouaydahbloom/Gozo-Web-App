@@ -1,4 +1,4 @@
-import { IonPage, isPlatform } from '@ionic/react'
+import { IonPage } from '@ionic/react'
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import { FormField } from '../../components/forms/FormField/FormField';
 import SecondaryHeader from '../../components/headers/SecondaryHeader/SecondaryHeader';

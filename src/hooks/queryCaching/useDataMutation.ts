@@ -1,4 +1,5 @@
 import {useMutation, useQueryClient} from "react-query";
+import useDataQueryInvalidation from "./useDataQueryInvalidation";
 
 interface Props<TArgs> {
     fn: (args: TArgs) => Promise<any>,
@@ -14,18 +15,12 @@ interface Props<TArgs> {
  * @returns the mutation object
  */
 const useDataMutation = <TArgs>({fn, mutatedIdentity}: Props<TArgs>) => {
-    const queryClient = useQueryClient();
+
+    const {invalidate} = useDataQueryInvalidation();
+
     const mutation = useMutation(fn, {
         onSuccess: async () => {
-            if (mutatedIdentity.length === 0) return;
-
-            if (Array.isArray(mutatedIdentity[0])) {
-                return Promise.all(mutatedIdentity.map(m => (
-                    queryClient.invalidateQueries(m)
-                )))
-            }
-
-            return queryClient.invalidateQueries(mutatedIdentity);
+            await invalidate(mutatedIdentity);
         }
     });
 

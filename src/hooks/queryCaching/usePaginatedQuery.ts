@@ -7,6 +7,15 @@ interface Props<TFilter extends Filter, TData> {
     initialFilter?: TFilter
 }
 
+/**
+ * Custom hook that handles paginated query results
+ *
+ * @param identity - the id of the query result
+ * @param getData - the function to fetch data from server
+ * @param initialFilter - the default filtering param
+ *
+ * @returns the paginated query object
+ */
 const usePaginatedQuery = <TFilter extends Filter, TData>({
                                                               identity,
                                                               getData,

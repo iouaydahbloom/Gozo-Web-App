@@ -33,6 +33,8 @@ import PrimaryPopover from '../../components/popovers/PrimaryPopover/PrimaryPopo
 import {useDapp} from '../../providers/DappProvider/DappProvider';
 import useMessagesInterval from '../../hooks/useMessagesInterval';
 import {useHistory} from 'react-router';
+import useDataQueryInvalidation from "../../hooks/queryCaching/useDataQueryInvalidation";
+import {rewardsQueriesIdentity} from "../../hooks/reward/rewardQueriesIdentity";
 
 interface IPrize {
     prizeId: string,
@@ -82,6 +84,7 @@ const Spinner: React.FC = () => {
     const {currentMessage, start, stop} = useMessagesInterval(displayMessages);
     const {gameContractAddress, gameContractAbi} = useDapp();
     const [isPlaying, setIsPlaying] = useState(false);
+    const{invalidate}=useDataQueryInvalidation();
 
     const {
         prizes,
@@ -143,8 +146,9 @@ const Spinner: React.FC = () => {
                 prizeId: id,
                 gameToken: gameToken
             }
-            stop()
-            setReturnedPrize(prize)
+            stop();
+            setReturnedPrize(prize);
+            invalidate(rewardsQueriesIdentity.reward);
         }
     }
 

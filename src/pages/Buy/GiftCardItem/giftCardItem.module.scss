@@ -33,3 +33,10 @@
     padding: 2px 5px;
     margin-top: 9px;
 }
+
+.title {
+    padding-bottom: 8px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

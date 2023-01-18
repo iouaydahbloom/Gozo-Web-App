@@ -26,7 +26,11 @@ const addNotificationsListeners = async (
 }
 
 const removeNotificationsListeners = async () => {
-    await PushNotifications.removeAllListeners()
+    try {
+        await PushNotifications.removeAllListeners()
+    } catch (error) {
+        console.log('Error in removeNotificationsListeners ', error);
+    }
 }
 
 const registerNotifications = async () => {

@@ -16,7 +16,7 @@ export class Reward implements AppModel {
 
     static getFromDTO(dto: RewardDTO): Reward {
         const prize = Prize.getFromDTO(dto.prize)
-        return new Reward(dto._id, prize.description, dto.createdAt, dto.status, prize.id, prize.icon)
+        return new Reward(dto._id, prize.label ?? prize.description, dto.createdAt, dto.status, prize.id, prize.icon)
     }
 
     toDTO() { }

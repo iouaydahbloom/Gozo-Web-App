@@ -1,53 +1,53 @@
 import { IonPage, useIonViewWillEnter } from '@ionic/react';
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import SecondaryHeader from '../../components/headers/SecondaryHeader/SecondaryHeader';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 //@ts-ignore
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import '../../theme/primaryTabs.scss';
-import CryptoHistory from './CryptoHistory/CryptoHistory';
-import useERC20Transfers from '../../hooks/useERC20Transfers';
 import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 import LoyaltyProgramsHistoryOptions from './LoyaltyProgramsHistoryOptions/LoyaltyProgramsHistoryOptions';
-import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
+import useLoyaltyPrograms from '../../hooks/loyaltyProgram/useLoyaltyPrograms';
 import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
 import { useHistory } from 'react-router';
 import { AppRoutes } from '../../constants/appRoutes';
+import CryptoHistoryOptions from './CryptoHistoryOptions/CryptoHistoryOptions';
+import useCryptoAssets from '../../hooks/cryptoAssets/useCryptoAssets';
+import { CryptoAsset } from '../../models/assets/CryptoAsset';
+import useAuthentication from '../../hooks/useAuthentication';
 
 const TransactionHistory: React.FC = () => {
 
-    const { eRC20Transfers, isLoadingTransfers: isLoadingERC20Transfers, fetchERC20Transfers: fetchERC20TransfersData } = useERC20Transfers();
     const [userLoyaltyPrograms, setUserLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([])
-
-    const { defaultProgram, fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms } = useLoyaltyPrograms();
-    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
+    const { defaultProgram, myPrograms, loadingMyLoyaltyPrograms,fetchMyLoyaltyPrograms } = useLoyaltyPrograms({});
+    const { defaultERC20Asset, defaultNativeAsset } = useCryptoAssets();
+    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext);
     const [, setSelectedTabIndex] = useState(0);
     const { push } = useHistory();
+    const { isAuthenticated } = useAuthentication();
 
-    async function getAllLoyaltyPrograms() {
-        return fetchMyLoyaltyPrograms()
-            .then(mlp => {
-                const allPrograms = defaultProgram ? [defaultProgram, ...mlp] : mlp;
-                setUserLoyaltyPrograms(allPrograms)
-            })
-    }
+    const cryptoAssets = useMemo(() => {
+        let assets = [];
+        if (defaultERC20Asset) assets.push(defaultERC20Asset);
+        if (defaultNativeAsset) assets.push(defaultNativeAsset);
+
+        return assets;
+    }, [defaultERC20Asset, defaultNativeAsset])
 
     const onRefresh = useCallback((): Promise<any> => {
-        return Promise.all([
-            getAllLoyaltyPrograms(),
-            fetchERC20TransfersData()
-        ])
-    }, [])
-
-    useIonViewWillEnter(() => {
-        onRefresh();
-    })
+        return fetchMyLoyaltyPrograms()
+    }, [isAuthenticated])
 
     useEffect(() => {
         if (tabRef) {
             setTabHeaderHeight(tabRef.getElementsByTagName('ul')[0].offsetHeight)
         }
     }, [tabRef?.getElementsByTagName('ul')[0].offsetHeight])
+
+    useEffect(() => {
+        const allPrograms = defaultProgram ? [defaultProgram, ...myPrograms] : myPrograms;
+        setUserLoyaltyPrograms(allPrograms)
+    }, [defaultProgram, myPrograms])
 
     return (
         <IonPage>
@@ -74,9 +74,13 @@ const TransactionHistory: React.FC = () => {
                             } />
                     </TabPanel>
                     <TabPanel>
-                        <CryptoHistory
-                            isLoading={isLoadingERC20Transfers}
-                            eRC20Transfers={eRC20Transfers} />
+                        <CryptoHistoryOptions
+                            assets={cryptoAssets.map((ca: CryptoAsset) => {
+                                const asset = { ...ca } as any;
+                                asset.action = (ca: CryptoAsset) =>
+                                    push(AppRoutes.getCryptoTransactionHistoryDataRoute(ca.name))
+                                return asset;
+                            })} />
                     </TabPanel>
                 </Tabs>
             </PrimaryContainer>

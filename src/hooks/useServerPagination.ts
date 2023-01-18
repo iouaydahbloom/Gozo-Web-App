@@ -3,13 +3,13 @@ import { Filter } from "../models/data/filter";
 import { Pagination } from "../models/data/pagination";
 
 interface Props<T, F extends Filter> {
-    getData: (filter: F) => Promise<Pagination<T> | null>,
+    getData: (filter?: F) => Promise<Pagination<T> | null>,
     intialFilters?: F
 }
 
 const useServerPagination = <T, F extends Filter>({
     getData,
-    intialFilters = new Filter(1, 10) as any
+    intialFilters
 }: Props<T, F>) => {
 
     const [metadata, setMetadata] = useState<{ count: number, next: string, previous: string } | null>(null);
@@ -18,8 +18,8 @@ const useServerPagination = <T, F extends Filter>({
 
     async function fetchData() {
         setIsLoading(true);
-        setMetadata(null)
-        setData([])
+        setMetadata(null);
+        setData([]);
         return getData(intialFilters)
             .then(result => {
                 if (!result) return;

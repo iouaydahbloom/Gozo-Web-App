@@ -1,18 +1,29 @@
-import { IonPage, useIonViewWillEnter } from '@ionic/react'
+import {IonPage} from '@ionic/react'
 import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer'
 import ReferralBanner from './ReferralBanner/ReferralBanner';
 //@ts-ignore
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import RewardHistory from './RewardHistory/RewardHistory';
-import { useCallback, useContext, useEffect } from 'react';
-import useReward from '../../hooks/useReward';
-import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
+import React, {useCallback, useContext, useEffect} from 'react';
+import useReward from '../../hooks/reward/useReward';
+import {TabHeaderHeightContext} from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
 import EarnReward from './EarnReward/EarnReward';
+import useAuthentication from '../../hooks/useAuthentication';
 
 const Rewards: React.FC = () => {
-    const { getRewards, getEarningRewards, getUserEarnings, isLoadingRewards, isLoadingEarnings, earningRewards, userEarningsList, rewards } = useReward()
-    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext)
+    const {
+        getRewards,
+        getEarningRewards,
+        getUserEarnings,
+        isLoadingRewards,
+        isLoadingEarnings,
+        earningRewards,
+        userEarningsList,
+        rewards
+    } = useReward();
+    const {tabRef, setTabRef, setTabHeaderHeight} = useContext(TabHeaderHeightContext);
+    const {isAuthenticated} = useAuthentication();
 
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
@@ -20,11 +31,7 @@ const Rewards: React.FC = () => {
             getEarningRewards(),
             getUserEarnings()
         ])
-    }, [])
-
-    useIonViewWillEnter(() => {
-        onRefresh();
-    })
+    }, [isAuthenticated])
 
     useEffect(() => {
         if (tabRef) {
@@ -34,9 +41,9 @@ const Rewards: React.FC = () => {
 
     return (
         <IonPage>
-            <TertiaryHeader title='Rewards' className='ion-text-center' />
+            <TertiaryHeader title='Rewards' className='ion-text-center'/>
             <PrimaryContainer isRefreshable onRefresh={onRefresh}>
-                <ReferralBanner />
+                <ReferralBanner/>
                 <Tabs
                     domRef={(node: any) => setTabRef(node)}>
                     <TabList>
@@ -52,11 +59,11 @@ const Rewards: React.FC = () => {
                         />
                     </TabPanel>
                     <TabPanel>
-                        <EarnReward 
-                            earnData={earningRewards} 
+                        <EarnReward
+                            earnData={earningRewards}
                             userEarningsList={userEarningsList}
                             isLoading={isLoadingEarnings}
-                            />
+                        />
                     </TabPanel>
                 </Tabs>
             </PrimaryContainer>

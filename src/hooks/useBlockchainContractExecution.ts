@@ -1,23 +1,26 @@
 import useMagicAuth from "./useMagicAuth";
-import { ethers } from 'ethers';
-import { useState } from "react";
-import { appConfig } from "../constants/appConfig";
-import { useIonViewDidLeave } from "@ionic/react";
-import { useDapp } from "../providers/DappProvider/DappProvider";
+import {ethers} from 'ethers';
+import {useState} from "react";
+import {appConfig} from "../constants/appConfig";
+import {useIonViewDidLeave} from "@ionic/react";
+import {useDapp} from "../providers/DappProvider/DappProvider";
 import useConfirmation from "./useConfirmation";
 import useToast from "./useToast";
 import useMetaTransactions from "./useMetaTransactions";
-import { parseBlockchainValue } from "../helpers/blockchainHelper";
+import {parseBlockchainValue} from "../helpers/blockchainHelper";
+import useCloud from "./useCloud";
+import {cloudFunctionName} from "../constants/cloudFunctionName";
 
 const useBlockchainContractExecution = () => {
 
-    const { walletAddress, tokenContractAddress, tokenContractAbi, relayerContractAddress } = useDapp();
-    const { rpcProvider, getProviderSigner } = useMagicAuth();
+    const {walletAddress, tokenContractAddress, tokenContractAbi, relayerContractAddress} = useDapp();
+    const {rpcProvider, getProviderSigner} = useMagicAuth();
     const [executing, setExecuting] = useState(false);
     const [contracts, setContracts] = useState<ethers.Contract[]>([]);
-    const { confirm } = useConfirmation();
-    const { presentInfo } = useToast();
-    const { signMetaTxRequest } = useMetaTransactions();
+    const {confirm} = useConfirmation();
+    const {presentInfo} = useToast();
+    const {signMetaTxRequest} = useMetaTransactions();
+    const {run} = useCloud();
 
     useIonViewDidLeave(() => {
         contracts?.forEach(contract => {
@@ -35,7 +38,7 @@ const useBlockchainContractExecution = () => {
     ): Promise<any> {
         const contractInterface = new ethers.utils.Interface(abi);
         const recipientContract = new ethers.Contract(contractAddress, abi, getProviderSigner());
-        const { request, signature } = await signMetaTxRequest(
+        const {request, signature} = await signMetaTxRequest(
             rpcProvider,
             getProviderSigner(),
             {
@@ -46,18 +49,15 @@ const useBlockchainContractExecution = () => {
                 params
             });
 
-        return fetch(appConfig.relayAutoTaskUrl, {
-            method: 'POST',
-            body: JSON.stringify({ request, signature, skipFees, isEstimating }),
-            headers: { 'Content-Type': 'application/json' },
+        return run(
+            cloudFunctionName.relayWeb3Request,
+            {request, callerSignature: signature, skipFees, isEstimating},
+            (res: any) => res,
+            true
+        ).then((result) => {
+            if (!result.isSuccess) throw new Error(result.message);
+            return result.data;
         })
-            .then(result => result.json())
-            .then(response => {
-                if (response.status === 'error') {
-                    throw new Error(response.message);
-                }
-                return JSON.parse(response.result);
-            });
     }
 
     async function estimate(contractAddress: string, abi: any[], fn: string, params: any[]): Promise<number> {
@@ -96,7 +96,7 @@ const useBlockchainContractExecution = () => {
                 `Transaction fees are ${fees.toString()} GZ tokens,
             if you are not holding this amount you can't achieve your transaction`;
 
-            confirm({
+            return confirm({
                 title: 'Confirmation',
                 message,
                 onConfirmed: async () => {
@@ -105,11 +105,9 @@ const useBlockchainContractExecution = () => {
                         await approvePayingGasFees(contractAddress, abi, fn, params);
                         await sendRelayedRequest(contractAddress, abi, fn, params);
                         onSuccess && onSuccess();
-                    }
-                    catch (error: any) {
+                    } catch (error: any) {
                         onError && onError(error);
-                    }
-                    finally {
+                    } finally {
                         setExecuting(false);
                     }
                 },
@@ -117,8 +115,7 @@ const useBlockchainContractExecution = () => {
                     setExecuting(false);
                 }
             })
-        }
-        catch (error: any) {
+        } catch (error: any) {
             onError && onError(error);
             setExecuting(false);
         }

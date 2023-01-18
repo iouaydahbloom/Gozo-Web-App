@@ -8,7 +8,8 @@ export const AppRoutes = {
     transactionHistory: '/transactionHistory',
     loyaltyProgramTransactionHistoryData: '/transactionHistory/loyaltyPrograms/:loyaltyCurrency',
     loyaltyProgramTransactionHistoryDetails: '/transactionHistory/loyaltyPrograms/:loyaltyCurrency/:transactionId',
-    tokenHistoryDetails: '/transactionHistory/tokenDetails',
+    cryptoTransactionHistoryData: '/transactionHistory/tokens/:name',
+    cryptoTransactionHistoryDetails: '/transactionHistory/tokens/:name/:transactionId',
     authCallback: '/authCallback',
     spinner: '/spinner',
     reward: '/reward',
@@ -19,6 +20,12 @@ export const AppRoutes = {
     },
     getLoyaltyProgramTransactionHistoryDetailsRoute: (loyaltyCurrency: string, transactionId: string) => {
         return `${AppRoutes.transactionHistory}/loyaltyPrograms/${loyaltyCurrency}/${transactionId}`
+    },
+    getCryptoTransactionHistoryDataRoute: (name: string) => {
+        return `${AppRoutes.transactionHistory}/tokens/${name}`
+    },
+    getCryptoTransactionHistoryDetailsRoute: (name: string, transactionId: string) => {
+        return `${AppRoutes.transactionHistory}/tokens/${name}/${transactionId}`
     },
     getBuyGiftCardRoute: (id: string) => {
         return `${AppRoutes.buy}/${id}`

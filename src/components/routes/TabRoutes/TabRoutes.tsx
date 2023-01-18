@@ -17,7 +17,7 @@ import OnBoarding from '../../../pages/OnBoarding/OnBoarding';
 import Profile from '../../../pages/Profile/Profile';
 import Rewards from '../../../pages/Reward/Reward';
 import Spinner from '../../../pages/Spinner/Spinner';
-import TokenHistoryDetails from '../../../pages/TokenHistoryDetails/TokenHistoryDetails';
+import TokenHistoryDetails from '../../../pages/CryptoHistoryDetails/CryptoHistoryDetails';
 import TransactionHistory from '../../../pages/TransactionHistory/TransactionHistory';
 import TabHeaderHeightProvider from '../../../providers/TabHeaderHeightProvider/TabHeaderHeightProvider';
 import AccountIcon from '../../icons/AccountIcon/AccountIcon';
@@ -27,6 +27,8 @@ import RewardIcon from '../../icons/RewardIcon/RewardIcon';
 import SpinIcon from '../../icons/SpinIcon/SpinIcon';
 import styles from './tabRoutes.module.scss';
 import LoyaltyPogramHistoryData from '../../../pages/LoyaltyProgramHistoryData/LoyaltyProgramHistoryData';
+import CryptoHistoryData from '../../../pages/CryptoHistoryData/CryptoHistoryData';
+import CryptoHistoryDetails from '../../../pages/CryptoHistoryDetails/CryptoHistoryDetails';
 
 const TabRoutes: React.FC = () => {
 
@@ -96,8 +98,12 @@ const TabRoutes: React.FC = () => {
             <Route exact path={AppRoutes.loyaltyProgramTransactionHistoryDetails}>
                 <LoyaltyProgramHistoryDetails />
             </Route>
-            <Route exact path={AppRoutes.tokenHistoryDetails}>
-                <TokenHistoryDetails />
+
+            <Route exact path={AppRoutes.cryptoTransactionHistoryData}>
+                <CryptoHistoryData />
+            </Route>
+            <Route exact path={AppRoutes.cryptoTransactionHistoryDetails}>
+                <CryptoHistoryDetails />
             </Route>
             <Route exact path={AppRoutes.reward}>
                 <TabHeaderHeightProvider>

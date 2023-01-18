@@ -1,6 +1,6 @@
 import { IonAvatar, IonItem, IonLabel, IonRadio } from "@ionic/react"
 import PrimaryTypography from "../../../components/typography/PrimaryTypography/PrimaryTypography"
-import useMemberShip from "../../../hooks/useMembership"
+import useMemberShip from "../../../hooks/membership/useMembership"
 import styles from './loyaltyProgramOptionItem.module.scss'
 
 interface Props {

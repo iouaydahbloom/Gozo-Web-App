@@ -38,14 +38,14 @@ android {
             applicationIdSuffix '.dev'
             manifestPlaceholders = [displayName:'GOZO - DEV']
             versionCode = 1
-            versionName '1.918 beta'
+            versionName '1.10.4 beta'
         }
         demo {
             dimension 'environment'
             applicationIdSuffix '.demo'
             manifestPlaceholders = [displayName:'GOZO']
             versionCode = 1
-            versionName '1.15 beta'
+            versionName '1.16 beta'
         }
     }
 }

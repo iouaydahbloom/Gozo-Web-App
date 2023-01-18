@@ -5,11 +5,13 @@ import { ERC20Metadata } from '../../models/assets/ERC20Asset';
 import useAuthentication from '../../hooks/useAuthentication';
 import useCloud from '../../hooks/useCloud';
 import { cloudFunctionName } from '../../constants/cloudFunctionName';
+import { NativeAsset } from '../../models/assets/NativeAsset';
 
 const DappProvider: React.FC = ({ children }) => {
   const { user } = useAuthentication();
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [defaultTokenMetadata, setDefaultTokenMetadata] = useState<ERC20Metadata | null>(null);
+  const [defaultNativeMetadata, setDefaultNativeMetadata] = useState<NativeAsset | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [contractsMetadata, setContractsMetadata] = useState<ContractsMetadata>({
     tokenContractAddress: '',
@@ -33,6 +35,16 @@ const DappProvider: React.FC = ({ children }) => {
       });
   }, [])
 
+  const getDefaultNativeMetadata = useCallback(async () => {
+    return run(cloudFunctionName.nativeDefaultMetadata, null)
+      .then(result => {
+        if (!result.isSuccess) return null;
+        //@ts-ignore
+        setDefaultNativeMetadata(result.data);
+        return result.data;
+      });
+  }, [])
+
   const getAppContractsMetadata = useCallback(async () => {
     const web3DependenciesResult = await run(cloudFunctionName.web3Dependencies, null, res => res as ContractsMetadata)
     if (!web3DependenciesResult.isSuccess) return null;
@@ -43,10 +55,11 @@ const DappProvider: React.FC = ({ children }) => {
   const initDapp = useCallback(async () => {
     return Promise.all([
       getDefaultTokenMetadata(),
+      getDefaultNativeMetadata(),
       getAppContractsMetadata()
     ])
       .then(result => {
-        if (result[0] && result[1]) {
+        if (result[0] && result[1] && result[2]) {
           setIsReady(true);
         }
       })
@@ -66,6 +79,7 @@ const DappProvider: React.FC = ({ children }) => {
         walletAddress,
         chainId: chainHex.Fuji,
         defaultTokenMetadata: defaultTokenMetadata,
+        defaultNativeMetada: defaultNativeMetadata,
         tokenContractAddress: contractsMetadata.tokenContractAddress,
         gameContractAddress: contractsMetadata.gameContractAddress,
         relayerContractAddress: contractsMetadata.relayerContractAddress,

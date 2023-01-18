@@ -3,7 +3,7 @@ import SecondaryHeader from "../../components/headers/SecondaryHeader/SecondaryH
 import PrimaryContainer from "../../components/layout/PrimaryContainer/PrimaryContainer"
 import PageLoader from "../../components/loaders/PageLoader/PageLoader"
 import useSearchParams from "../../hooks/useSearchParams"
-import useProgramsTransactionHistory from "../../hooks/useProgramsTransactionHistory"
+import useProgramsTransactionHistory from "../../hooks/programsTransactionHistory/useProgramsTransactionHistory"
 import { LoyaltyMemberHistory } from "../../models/loyaltyMember"
 import TransactionDetailItem from "../Common/TransactionDetailItem/TransactionDetailItem"
 import { useEffect } from "react"
@@ -14,7 +14,7 @@ import { useParams } from "react-router"
 const LoyaltyProgramHistoryDetails: React.FC = () => {
 
   const { transactionId } = useParams<{ transactionId: string }>();
-  const { historyField, isLoadingHistory, getTransaction } = useProgramsTransactionHistory()
+  const { historyField, isLoadingHistory, getTransaction } = useProgramsTransactionHistory({transactionId})
 
   const keys = [
     { key: 'amount', label: 'Amount' },
@@ -41,9 +41,9 @@ const LoyaltyProgramHistoryDetails: React.FC = () => {
         historyField[key as keyof LoyaltyMemberHistory]
   }
 
-  useEffect(() => {
-    if (transactionId) getTransaction(transactionId)
-  }, [transactionId])
+  // useEffect(() => {
+  //   if (transactionId) getTransaction(transactionId)
+  // }, [transactionId])
 
   return (
     <IonPage>

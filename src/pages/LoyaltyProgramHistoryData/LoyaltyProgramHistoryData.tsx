@@ -1,25 +1,25 @@
 import PrimaryGrid from '../../components/grids/PrimaryGrid/PrimaryGrid';
-import { formatDate } from '../../helpers/dateManagment';
-import { useHistory, useLocation, useParams } from 'react-router';
-import { AppRoutes } from '../../constants/appRoutes';
+import {formatDate} from '../../helpers/dateManagment';
+import {useHistory, useLocation, useParams} from 'react-router';
+import {AppRoutes} from '../../constants/appRoutes';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
-import { LoyaltyMemberHistory } from '../../models/loyaltyMember';
+import {LoyaltyMemberHistory} from '../../models/loyaltyMember';
 import SectionPlaceholder from '../../components/sections/SectionPlaceholder/SectionPlaceholder';
 import useServerPagination from '../../hooks/useServerPagination';
-import useProgramsTransactionHistory from '../../hooks/useProgramsTransactionHistory';
-import { IonPage, useIonViewWillEnter } from '@ionic/react';
+import useProgramsTransactionHistory from '../../hooks/programsTransactionHistory/useProgramsTransactionHistory';
+import {IonPage, useIonViewWillEnter} from '@ionic/react';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import SecondaryHeader from '../../components/headers/SecondaryHeader/SecondaryHeader';
-import { Virtuoso } from 'react-virtuoso';
-import { InfiniteScrollPagination } from '../../components/InfiniteScrollPagination/InfiniteScrollPagination';
-import { useCallback } from 'react';
+import {Virtuoso} from 'react-virtuoso';
+import {InfiniteScrollPagination} from '../../components/InfiniteScrollPagination/InfiniteScrollPagination';
+import React from "react";
 
 const LoyaltyPogramHistoryData: React.FC = () => {
 
-    const { loyaltyCurrency } = useParams<{ loyaltyCurrency: string }>();
-    const { push } = useHistory();
-    const { state } = useLocation();
-    const { getTransactions } = useProgramsTransactionHistory();
+    const {loyaltyCurrency} = useParams<{ loyaltyCurrency: string }>();
+    const {push} = useHistory();
+    const {state} = useLocation();
+    const {getTransactions} = useProgramsTransactionHistory({});
     const {
         data: historyFields,
         isLoading,
@@ -41,17 +41,6 @@ const LoyaltyPogramHistoryData: React.FC = () => {
         )
     }
 
-    const loadMoreTransactions = (ev: any) => {
-        setTimeout(() => {
-            ev.target.complete();
-            loadMoreLoyaltyHistoryFields();
-        }, 1000);
-    }
-
-    const isScrollDisabled = useCallback(() => {
-        return (!hasMoreLoyaltyHistoryFields)
-    }, [hasMoreLoyaltyHistoryFields])
-
     useIonViewWillEnter(() => {
         fetchLoyaltyHistoryFieldsData();
     }, [loyaltyCurrency])
@@ -59,14 +48,14 @@ const LoyaltyPogramHistoryData: React.FC = () => {
     return (
         <IonPage>
             <SecondaryHeader
-                title={routingState?.loyaltyProgramName} />
+                title={routingState?.loyaltyProgramName}/>
             <PrimaryContainer
                 scrollYAxis={false}
                 isRefreshable
                 onRefresh={fetchLoyaltyHistoryFieldsData}>
                 <Virtuoso
                     className="ion-content-scroll-host"
-                    style={{ height: "83vh", }}
+                    style={{height: "83vh",}}
                     totalCount={1}
                     itemContent={() => {
                         return (
@@ -88,12 +77,12 @@ const LoyaltyPogramHistoryData: React.FC = () => {
                                     }
                                 ))}
                                 isLoading={isLoading}
-                                placeholder={<Placeholder />}
+                                placeholder={<Placeholder/>}
                             />
                         )
                     }}
                     components={{
-                        Footer: () => InfiniteScrollPagination(loadMoreTransactions, isScrollDisabled())
+                        Footer: () => InfiniteScrollPagination(loadMoreLoyaltyHistoryFields, !hasMoreLoyaltyHistoryFields)
                     }}>
                 </Virtuoso>
             </PrimaryContainer>

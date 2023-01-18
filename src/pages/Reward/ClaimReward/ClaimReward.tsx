@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react"
+import React, {useEffect, useState} from "react"
 import PrimaryButton from "../../../components/buttons/PrimaryButton/PrimaryButton"
 import PrimaryInput from "../../../components/inputs/PrimaryInput/PrimaryInput"
 import SectionLoader from "../../../components/loaders/section-loader/SectionLoader"
 import PrimaryTypography from "../../../components/typography/PrimaryTypography/PrimaryTypography"
-import usePrize from "../../../hooks/usePrize"
-import useReward from "../../../hooks/useReward"
+import usePrize from "../../../hooks/prize/usePrize"
+import useReward from "../../../hooks/reward/useReward"
 import useToast from "../../../hooks/useToast"
-import { KeyValue } from "../../../models/keyValue"
+import {KeyValue} from "../../../models/keyValue"
 import styles from './claimReward.module.scss'
 
 interface Props {
@@ -15,21 +15,22 @@ interface Props {
     dismiss: () => void
 }
 
-const ClaimReward: React.FC<Props> = ({ prizeId, rewardId, dismiss }) => {
-    const { fetchPrize, prize, isLoadingPrize } = usePrize()
+const ClaimReward: React.FC<Props> = ({prizeId, rewardId, dismiss}) => {
+    const {prize, isLoadingPrize} = usePrize({prizeId})
     const [fields, setFields] = useState<KeyValue[]>([])
-    const { claimReward, isLoadingSubmission } = useReward()
-    const { presentFailure, presentSuccess } = useToast();
+    const {claimReward, isLoadingSubmission} = useReward()
+    const {presentFailure, presentSuccess} = useToast();
 
     const handleSubmission = () => {
-        claimReward(rewardId , fields).then(res => {
-            if (res.isSuccess) {
-                presentSuccess("Successfully updated")
-            } else {
-                presentFailure(res.message)
-            }
-            dismiss()
-        })
+        claimReward({rewardId, fields})
+            .then(res => {
+                if (res.isSuccess) {
+                    presentSuccess("Successfully updated")
+                } else {
+                    presentFailure(res.message)
+                }
+                dismiss();
+            })
     }
 
     const handleOnChange = (value: string, index: number) => {
@@ -46,12 +47,6 @@ const ClaimReward: React.FC<Props> = ({ prizeId, rewardId, dismiss }) => {
         )
     }, [prize])
 
-
-
-    useEffect(() => {
-        fetchPrize(prizeId)
-    }, [])
-
     return (
         <div>
             {!isLoadingPrize ?
@@ -62,7 +57,7 @@ const ClaimReward: React.FC<Props> = ({ prizeId, rewardId, dismiss }) => {
 
                                 {
                                     prize?.requiredData.map((field, index) => {
-                                        return <div key={`field-${index}`} >
+                                        return <div key={`field-${index}`}>
                                             <PrimaryTypography
                                                 customClassName={styles.fieldLabel}>
                                                 {field.name}
@@ -73,7 +68,7 @@ const ClaimReward: React.FC<Props> = ({ prizeId, rewardId, dismiss }) => {
                                                 value={fields[index]?.value}
                                                 type={field.type}
                                                 className={styles.requiredField}
-                                                onChange={(value) => handleOnChange(value, index)} />
+                                                onChange={(value) => handleOnChange(value, index)}/>
                                         </div>
                                     })
                                 }
@@ -92,7 +87,7 @@ const ClaimReward: React.FC<Props> = ({ prizeId, rewardId, dismiss }) => {
                     }
                 </>
                 :
-                <SectionLoader />
+                <SectionLoader/>
             }
 
         </div>

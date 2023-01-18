@@ -51,6 +51,7 @@
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-query": "^3.39.2",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
@@ -81,8 +82,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build-android": "env-cmd -f .env.development react-scripts build && NODE_ENV=dev npx cap run android",
-    "build-android:demo": "env-cmd -f .env.demo react-scripts build && NODE_ENV=demo npx cap run android",
+    "build-android": "env-cmd -f .env.development react-scripts build && capacitor sync android && capacitor open android",
+    "build-android:demo": "env-cmd -f .env.demo react-scripts build && capacitor sync android && capacitor open android",
+    "start-android": "env-cmd -f .env.development react-scripts build && NODE_ENV=dev npx cap run android",
+    "start-android:demo": "env-cmd -f .env.demo react-scripts build && NODE_ENV=demo npx cap run android",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
     "eject": "react-scripts eject"
   },

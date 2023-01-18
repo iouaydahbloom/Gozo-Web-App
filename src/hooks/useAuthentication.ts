@@ -1,16 +1,16 @@
-import { useCallback, useContext, useState } from "react";
-import { AuthUserDTO } from "../dto/authUser";
-import { AuthUser } from "../models/authUser";
-import { cloudFunctionName } from "../constants/cloudFunctionName";
-import { sessionContext } from "../providers/SessionProvider/sessionContext";
+import {useCallback, useContext, useState} from "react";
+import {AuthUserDTO} from "../dto/authUser";
+import {AuthUser} from "../models/authUser";
+import {cloudFunctionName} from "../constants/cloudFunctionName";
+import {sessionContext} from "../providers/SessionProvider/sessionContext";
 import useCloud from "./useCloud";
 import useMagicAuth from "./useMagicAuth";
 
 const useAuthentication = () => {
 
-    const { run } = useCloud();
-    const { user: magicUser, connect, disconnect } = useMagicAuth();
-    const { session, setSession, clear } = useContext(sessionContext);
+    const {run} = useCloud();
+    const {user: magicUser, connect, disconnect} = useMagicAuth();
+    const {session, setSession, clear} = useContext(sessionContext);
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const [authError, setAuthError] = useState<string>();
 
@@ -22,25 +22,25 @@ const useAuthentication = () => {
             if (magicResult) {
                 const userMetadata = (await magicUser?.getMetadata());
                 await handleServerAuth(userMetadata?.email!, userMetadata?.publicAddress!, magicResult);
+                setAuthError(undefined);
             }
-        }
-        catch (error: any) {
+        } catch (error: any) {
             setAuthError(error.message);
-        }
-        finally {
-            setIsAuthenticating(false)
+        } finally {
+            setIsAuthenticating(false);
         }
     }, [])
 
-    const logout = useCallback(() => {
+    const logout = useCallback(async () => {
         clear();
+        await run(cloudFunctionName.logout, null, undefined, true)
         return disconnect();
-    }, [])
+    }, [session])
 
     async function serverAuthenticate(email: string, ethAddress: string, externalSession: string) {
         return run(
             cloudFunctionName.login,
-            { email: email, ethAddress: ethAddress, externalSession: externalSession },
+            {email: email, ethAddress: ethAddress, externalSession: externalSession},
             (result: { user: AuthUserDTO }) => AuthUser.getFromDTO(result?.user)
         )
     }
@@ -64,7 +64,6 @@ const useAuthentication = () => {
             const userSession = serverAuthResult.data;
             const magicUserMetadata = await magicUser?.getMetadata();
             userSession.walletAddress = magicUserMetadata?.publicAddress ?? '';
-
             setSession({
                 user: userSession
             })

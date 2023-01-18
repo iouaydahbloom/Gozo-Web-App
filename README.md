@@ -12,25 +12,52 @@ npm install
 
 ## Deployment
 ### Android
-
-* Update build version ex: (1.1) in
-**android/app/build.gradle** on each build
+The app come with two flavors (enviroments), **dev** and **demo** could be managed from **android/app/build.gradle**
 
 ```gradle
-versionCode 1
-versionName "1.2"
+ flavorDimensions 'environment'
+    productFlavors {
+        dev {
+            dimension 'environment'
+            applicationIdSuffix '.dev'
+            manifestPlaceholders = [displayName:'GOZO - DEV']
+            versionCode = 1
+            versionName '1.920 beta'
+        }
+        demo {
+            dimension 'environment'
+            applicationIdSuffix '.demo'
+            manifestPlaceholders = [displayName:'GOZO']
+            versionCode = 1
+            versionName '1.15 beta'
+        }
+    }
 ```
 
-* Create an android build
-```bash
-ionic capacitor build android
+On each android build update the versionName for a better versioning flow
+
+```gradle
+versionCode = 1
+versionName '1.15 beta'
 ```
-Open Android Studio:
+
+To create an android realse build after updating the version, run:
+#### Dev enviroment build
+```bash
+npm run build-android
+```
+
+#### Demo enviroment build
+```bash
+npm run build-android:demo
+```
+Android Studio will open automatically:
 
 * First time building android package, For Package **@awesome-cordova-plugins/barcode-scanner**, Change the way to use this plugin in: **Android Studio > Project Structure > Dependencies**
-* Build APK
+* Build Signed APK
+* Sign the APK using **gozo-keystore.jks** located in the application root folder (Credentials provided privately)
 * Locate APK
-* Rename APK to **GOZO-{versionName}.apk**
+* Rename APK to **Gozo-{enviroment}-{versionName}.apk**
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

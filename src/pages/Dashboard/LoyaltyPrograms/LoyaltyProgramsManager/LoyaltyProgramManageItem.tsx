@@ -162,7 +162,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({item, myProgram}) => {
     }
 
     return (
-        <div className={styles.container} style={{background: item?.brand?.color1}}>
+        <div className={styles.container} style={{ background: item?.brand?.colors[0] }}>
             <div className={styles.togglerContainer}
                  onClick={() => setIsSelected(!isSelected)}>
                 <div className={styles.id}>

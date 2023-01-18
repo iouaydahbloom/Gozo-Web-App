@@ -9,7 +9,8 @@ export class WheelSegment implements AppModel {
         public label?: string,
         public image?: string,
         public fillStyle?: string,
-        public textFillStyle?: string
+        public textFillStyle?: string,
+        public colors?: string[]
         ) { }
 
     static toWheelSegment(prizes: Prize[]): WheelSegment[] {

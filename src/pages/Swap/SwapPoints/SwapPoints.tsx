@@ -77,7 +77,7 @@ const SwapPoints: React.FC = () => {
             </div>
             <PrimaryButton
                 expand='block'
-                onClick={exchange}
+                onClick={() => exchange({})}
                 loading={exchanging}
                 disabled={isDisabled}>
                 swap

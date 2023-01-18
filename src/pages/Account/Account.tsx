@@ -33,7 +33,7 @@ const Account: React.FC = () => {
             message: 'Are you sure you want to logout ?',
             title: 'Logout',
             onConfirmed: () => {
-                logout();
+                return logout();
             }
         })
     }

@@ -1,61 +1,47 @@
-import { IonPage, useIonViewWillEnter } from '@ionic/react';
+import {IonPage, useIonViewWillEnter} from '@ionic/react';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
-import HighlightedBalance, { HighlightedBalanceAsset } from './HighlightedBalance/HighlightedBalance';
+import HighlightedBalance, {HighlightedBalanceAsset} from './HighlightedBalance/HighlightedBalance';
 //@ts-ignore
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import LoyaltyPrograms from './LoyaltyPrograms/LoyaltyPrograms';
 import CryptoTokens from './CryptoTokens/CryptoTokens';
 import '../../theme/primaryTabs.scss';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { AssetMode } from '../../constants/assetsMode';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {AssetMode} from '../../constants/assetsMode';
 import useOnBoardingPreview from '../../hooks/useOnBoardingPreview';
-import useCryptoAssets from '../../hooks/useCryptoAssets';
-import { currencySettingsContext } from '../../providers/CurrencySettingsProvider/currencySettingsContext';
-import { UserLoyaltyProgram } from '../../models/loyaltyProgram';
-import useLoyaltyPrograms from '../../hooks/useLoyaltyPrograms';
-import { TabHeaderHeightContext } from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
-import { parseNumber } from '../../helpers/blockchainHelper';
+import useCryptoAssets from '../../hooks/cryptoAssets/useCryptoAssets';
+import {currencySettingsContext} from '../../providers/CurrencySettingsProvider/currencySettingsContext';
+import {TabHeaderHeightContext} from '../../providers/TabHeaderHeightProvider/tabHeaderHeightContext';
+import {parseNumber} from '../../helpers/blockchainHelper';
 import styles from './dashboard.module.scss';
 import useAuthentication from '../../hooks/useAuthentication';
+import useLoyaltyPrograms from "../../hooks/loyaltyProgram/useLoyaltyPrograms";
+import useDataQueryInvalidation from "../../hooks/queryCaching/useDataQueryInvalidation";
+import {membershipQueriesIdentity} from "../../hooks/membership/membershipQueriesIdentity";
 
 const Dashboard: React.FC = () => {
 
     const [mode, setMode] = useState<AssetMode>(AssetMode.loyaltyPoint);
-    const { hide: hideOnboarding } = useOnBoardingPreview();
-    const { fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms } = useLoyaltyPrograms();
-    const [loyaltyPrograms, setLoyaltyPrograms] = useState<UserLoyaltyProgram[]>([]);
-    const { assets: cryptoAssets, fetchCryptoAssets, defaultERC20Asset, isLoadingAssets } = useCryptoAssets();
-    const { gozoLoyaltyMembership, fetchGozoLoyaltyMembership } = useContext(currencySettingsContext);
+    const {hide: hideOnboarding} = useOnBoardingPreview();
+    const {assets: cryptoAssets, fetchCryptoAssets, defaultERC20Asset, isLoadingAssets} = useCryptoAssets();
+    const {fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms, myPrograms} = useLoyaltyPrograms({});
+    const {gozoLoyaltyMembership, fetchGozoLoyaltyMembership} = useContext(currencySettingsContext);
     const [highlightedAsset, setHighlightedAsset] = useState<HighlightedBalanceAsset>();
-    const { tabRef, setTabRef, setTabHeaderHeight } = useContext(TabHeaderHeightContext);
-    const { isAuthenticated } = useAuthentication();
+    const {tabRef, setTabRef, setTabHeaderHeight} = useContext(TabHeaderHeightContext);
+    const {isAuthenticated} = useAuthentication();
+    const {invalidate} = useDataQueryInvalidation();
 
     const onSelect = useCallback((tabIndex: number) => {
         setMode(tabIndex === 0 ? AssetMode.loyaltyPoint : AssetMode.token);
     }, [])
 
-    const getPrograms = async () => {
-        setLoyaltyPrograms([])
-        const programs = await fetchMyLoyaltyPrograms();
-        setLoyaltyPrograms(programs);
-        return programs;
-    }
-
-    const handleHighlightedAssetMetadata = () => {
-        mode === AssetMode.loyaltyPoint ? fetchGozoLoyaltyMembership() : fetchCryptoAssets();
-    }
-
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
-            getPrograms(),
+            fetchMyLoyaltyPrograms(),
             fetchCryptoAssets(),
-            handleHighlightedAssetMetadata()
+            invalidate(membershipQueriesIdentity.all)
         ])
     }, [isAuthenticated])
-
-    useEffect(() => {
-        handleHighlightedAssetMetadata();
-    }, [mode])
 
     useEffect(() => {
         if (mode === AssetMode.token) {
@@ -66,7 +52,7 @@ const Dashboard: React.FC = () => {
                 description: 'Gozo Tokens'
             });
         }
-    }, [defaultERC20Asset])
+    }, [defaultERC20Asset, mode])
 
     useEffect(() => {
         if (mode === AssetMode.loyaltyPoint) {
@@ -75,7 +61,7 @@ const Dashboard: React.FC = () => {
                 description: 'Super Points'
             });
         }
-    }, [gozoLoyaltyMembership])
+    }, [gozoLoyaltyMembership, mode])
 
     useEffect(() => {
         if (tabRef) {
@@ -85,13 +71,12 @@ const Dashboard: React.FC = () => {
 
     useIonViewWillEnter(() => {
         hideOnboarding();
-        onRefresh();
     }, [isAuthenticated])
 
     return (
         <IonPage className={styles.dashboard}>
             <PrimaryContainer isRefreshable onRefresh={onRefresh}>
-                <HighlightedBalance asset={highlightedAsset} />
+                <HighlightedBalance asset={highlightedAsset}/>
                 <Tabs domRef={(node: any) => setTabRef(node)} onSelect={onSelect}>
                     <TabList>
                         <Tab>Loyalty Programs</Tab>
@@ -100,15 +85,13 @@ const Dashboard: React.FC = () => {
                     <TabPanel>
                         <LoyaltyPrograms
                             isLoading={loadingMyLoyaltyPrograms}
-                            programs={loyaltyPrograms}
-                            getPrograms={getPrograms} />
+                            programs={myPrograms}/>
                     </TabPanel>
                     <TabPanel>
                         <CryptoTokens
                             isLoading={isLoadingAssets}
                             assets={cryptoAssets}
-                            refreshDefaultToken={fetchCryptoAssets}
-                            getAssets={fetchCryptoAssets} />
+                        />
                     </TabPanel>
                 </Tabs>
             </PrimaryContainer>

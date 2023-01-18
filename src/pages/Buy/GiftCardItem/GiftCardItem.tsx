@@ -3,12 +3,14 @@ import PrimaryTypography from "../../../components/typography/PrimaryTypography/
 import { AppRoutes } from "../../../constants/appRoutes"
 import { GiftCard } from "../../../models/giftCard"
 import styles from './giftCardItem.module.scss'
+import React from "react";
 
 interface Props {
     giftCard: GiftCard
 }
 
 const GiftCardItem: React.FC<Props> = ({ giftCard }) => {
+
     const { push } = useHistory();
 
     function goToDetails() {
@@ -17,7 +19,7 @@ const GiftCardItem: React.FC<Props> = ({ giftCard }) => {
 
     return (
         <div className={styles.container}>
-            <PrimaryTypography customClassName="ion-padding-vertical">{giftCard.name}</PrimaryTypography>
+            <PrimaryTypography customClassName={`ion-padding-vertical ${styles.title}`}>{giftCard.name}</PrimaryTypography>
             <div className={styles.cover} style={{ backgroundImage: `url(${giftCard.image})` }} onClick={goToDetails} />
             <div className={styles.info}>
                 <PrimaryTypography size="xs">

@@ -1,11 +1,13 @@
-import { debounce } from "lodash";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { UserLoyaltyProgram } from "../models/loyaltyProgram";
-import { cloudFunctionName } from "../constants/cloudFunctionName";
+import {debounce} from "lodash";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {UserLoyaltyProgram} from "../models/loyaltyProgram";
+import {cloudFunctionName} from "../constants/cloudFunctionName";
 import useCloud from "./useCloud";
-import useLoyaltyPrograms from "./useLoyaltyPrograms";
-import useMemberShip from "./useMembership";
+import useLoyaltyPrograms from "./loyaltyProgram/useLoyaltyPrograms";
+import useMemberShip from "./membership/useMembership";
 import useToast from "./useToast";
+import useDataMutation from "./queryCaching/useDataMutation";
+import {membershipQueriesIdentity} from "./membership/membershipQueriesIdentity";
 
 export interface ExchangeState {
     loyaltyCurrency: string,
@@ -13,38 +15,48 @@ export interface ExchangeState {
 }
 
 const useProgramsExchange = () => {
-    const [originProgram, setOriginProgram] = useState<ExchangeState>({ loyaltyCurrency: '', quantity: 0 });
-    const [destinationProgram, setDestinationProgram] = useState<ExchangeState>({ loyaltyCurrency: '', quantity: 0 });
-    const [exchanging, setExchanging] = useState(false);
+    const [originProgram, setOriginProgram] = useState<ExchangeState>({loyaltyCurrency: '', quantity: 0});
+    const [destinationProgram, setDestinationProgram] = useState<ExchangeState>({loyaltyCurrency: '', quantity: 0});
     const [simulating, setSimulating] = useState(false);
     const [exchangeInOptions, setExchangeInOptions] = useState<UserLoyaltyProgram[]>([]);
     const [exchangeOutOptions, setExchangeOutOptions] = useState<UserLoyaltyProgram[]>([]);
     const [defaultExchangeOptions, setDefaultExchangeOptions] = useState<UserLoyaltyProgram[]>([]);
-    const { run } = useCloud();
-    const { fetchMyLoyaltyPrograms, defaultProgram } = useLoyaltyPrograms();
-    const { presentFailure, presentSuccess } = useToast();
+    const {run} = useCloud();
+    const {defaultProgram, myPrograms} = useLoyaltyPrograms({});
+    const {presentFailure, presentSuccess} = useToast();
     const [direction, setDirection] = useState<'p2s' | 's2p'>('p2s');
-    const { membership, fetchMembership } = useMemberShip(originProgram.loyaltyCurrency);
+    const {membership} = useMemberShip(originProgram.loyaltyCurrency);
+
+    const executeExchangeMutation = useDataMutation({
+        mutatedIdentity: [
+            membershipQueriesIdentity.info(originProgram.loyaltyCurrency),
+            membershipQueriesIdentity.info(destinationProgram.loyaltyCurrency),
+        ],
+        fn: () =>
+            executeP2PExchange(
+                originProgram.loyaltyCurrency,
+                destinationProgram.loyaltyCurrency,
+                originProgram.quantity ?? 0
+            )
+    })
 
     const executeP2PExchange = useCallback(async (from: string, to: string, amount: number) => {
         if (amount <= 0) return;
-        setExchanging(true);
+
         return run(
             cloudFunctionName.executeP2PExchange,
-            { origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount },
+            {origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount},
             () => true,
             true
         )
             .then(async result => {
                 if (result.isSuccess) {
-                    fetchMembership();
                     presentSuccess('Swapped successfully');
                     return;
                 }
 
                 presentFailure(result.errors?.errors[0].message ?? result.message);
             })
-            .finally(() => setExchanging(false))
     }, [originProgram.loyaltyCurrency])
 
     const simulateP2PExchange = useCallback(debounce(
@@ -55,7 +67,7 @@ const useProgramsExchange = () => {
             }
             setSimulating(true);
             run(cloudFunctionName.simulateP2PExchange,
-                { origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount },
+                {origin_loyalty_currency: from, destination_loyalty_currency: to, amount: amount},
                 (result: any) => result[to] as number,
                 true)
                 .then(result => {
@@ -69,12 +81,11 @@ const useProgramsExchange = () => {
         if (!checkShufflingEnable()) return;
 
         if (direction === 'p2s') {
-            setOriginProgram({ loyaltyCurrency: exchangeInOptions[0].currency.loyaltyCurrency!, quantity: 0 })
-            setDestinationProgram({ loyaltyCurrency: defaultProgram!.currency.loyaltyCurrency!, quantity: 0 })
-        }
-        else {
-            setOriginProgram({ loyaltyCurrency: defaultProgram!.currency.loyaltyCurrency!, quantity: 0 })
-            setDestinationProgram({ loyaltyCurrency: exchangeOutOptions[0].currency.loyaltyCurrency, quantity: 0 })
+            setOriginProgram({loyaltyCurrency: exchangeInOptions[0].currency.loyaltyCurrency!, quantity: 0})
+            setDestinationProgram({loyaltyCurrency: defaultProgram!.currency.loyaltyCurrency!, quantity: 0})
+        } else {
+            setOriginProgram({loyaltyCurrency: defaultProgram!.currency.loyaltyCurrency!, quantity: 0})
+            setDestinationProgram({loyaltyCurrency: exchangeOutOptions[0].currency.loyaltyCurrency, quantity: 0})
         }
     }
 
@@ -93,19 +104,18 @@ const useProgramsExchange = () => {
     }, [originProgram.quantity, originBalance])
 
     useEffect(() => {
-        setDefaultExchangeOptions(defaultProgram ? [defaultProgram] : []);
-
-        fetchMyLoyaltyPrograms()
-            .then(programs => {
-                setExchangeInOptions(programs.filter(prog => prog.currency.isRedemption));
-                setExchangeOutOptions(programs.filter(prog => prog.currency.isExchangeIn));
-            })
+        setExchangeInOptions(myPrograms.filter(program => program.currency.isRedemption));
+        setExchangeOutOptions(myPrograms.filter(program => program.currency.isExchangeIn));
 
         return () => {
             setExchangeInOptions([])
             setExchangeOutOptions([])
         }
-    }, [])
+    }, [myPrograms])
+
+    useEffect(() => {
+        setDefaultExchangeOptions(defaultProgram ? [defaultProgram] : []);
+    }, [defaultProgram])
 
     useEffect(() => {
         if (originProgram.loyaltyCurrency && destinationProgram.loyaltyCurrency) {
@@ -113,7 +123,7 @@ const useProgramsExchange = () => {
                 destinationProgram.loyaltyCurrency,
                 originProgram.quantity ?? 0,
                 (result) => {
-                    setDestinationProgram({ ...destinationProgram, quantity: result })
+                    setDestinationProgram({...destinationProgram, quantity: result})
                 });
         }
     }, [originProgram.loyaltyCurrency, originProgram.quantity, destinationProgram.loyaltyCurrency])
@@ -123,7 +133,7 @@ const useProgramsExchange = () => {
     }, [direction, exchangeInOptions, exchangeOutOptions, defaultProgram])
 
     return {
-        exchange: () => executeP2PExchange(originProgram.loyaltyCurrency, destinationProgram.loyaltyCurrency, originProgram.quantity ?? 0),
+        exchange: executeExchangeMutation.mutateAsync,
         exchangeInOptions,
         exchangeOutOptions,
         defaultExchangeOptions,
@@ -131,7 +141,7 @@ const useProgramsExchange = () => {
         setOriginProgram: setOriginProgram,
         destinationProgram: destinationProgram,
         setDestinationProgram: setDestinationProgram,
-        exchanging: exchanging,
+        exchanging: executeExchangeMutation.isLoading,
         simulating,
         direction: direction,
         isDisabled,

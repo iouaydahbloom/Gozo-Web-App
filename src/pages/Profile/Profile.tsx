@@ -1,11 +1,11 @@
-import { IonPage, isPlatform } from '@ionic/react'
+import { IonPage } from '@ionic/react'
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import { FormField } from '../../components/forms/FormField/FormField';
 import SecondaryHeader from '../../components/headers/SecondaryHeader/SecondaryHeader';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import { FormHelper, FormValidator } from '../../helpers/forms/form.helper';
-import useProfile from '../../hooks/useProfile';
+import useProfile from '../../hooks/profile/useProfile';
 import { ProfileDetails } from '../../models/profileDetails';
 import { useFormik } from "formik";
 import InputError from '../../components/inputs/InputError/InputError';
@@ -15,6 +15,7 @@ import useTabMenuHidder from '../../hooks/useTabMenuHidder';
 import SecondaryInput from '../../components/inputs/SecondaryInput/SecondaryInput';
 import { Keyboard } from '@capacitor/keyboard';
 import PrimaryAccordion from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
+import React from "react";
 
 const Profile: React.FC = () => {
 

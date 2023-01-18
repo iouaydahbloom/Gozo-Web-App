@@ -102,7 +102,7 @@ const SwapTokens: React.FC = () => {
 
             <TransactionDetails
                 hasMinimumValue={selectedOthers.type === SwapPartyType.loyaltyProgram}
-                minimumValue={minimumValue}
+                minimumValue={minimumValue ?? 0}
                 showFeeEstimation={direction === "t2o"}
                 isEstimatingFee={isEstimatingGasFee}
                 estimatedFee={estimatedGasFee}
@@ -113,7 +113,7 @@ const SwapTokens: React.FC = () => {
             <br />
             <PrimaryButton
                 expand='block'
-                onClick={exchange}
+                onClick={() => exchange({})}
                 disabled={isDisabled}
                 loading={exchanging}>
                 swap

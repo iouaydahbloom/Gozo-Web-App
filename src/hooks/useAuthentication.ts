@@ -64,7 +64,6 @@ const useAuthentication = () => {
             const userSession = serverAuthResult.data;
             const magicUserMetadata = await magicUser?.getMetadata();
             userSession.walletAddress = magicUserMetadata?.publicAddress ?? '';
-
             setSession({
                 user: userSession
             })

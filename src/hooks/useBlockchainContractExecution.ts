@@ -96,7 +96,7 @@ const useBlockchainContractExecution = () => {
                 `Transaction fees are ${fees.toString()} GZ tokens,
             if you are not holding this amount you can't achieve your transaction`;
 
-            confirm({
+            return confirm({
                 title: 'Confirmation',
                 message,
                 onConfirmed: async () => {

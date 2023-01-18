@@ -1,29 +1,49 @@
-import { IonIcon, IonSpinner } from '@ionic/react'
-import { chevronDownOutline, chevronForwardOutline } from 'ionicons/icons';
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import {IonIcon, IonSpinner} from '@ionic/react'
+import {chevronDownOutline, chevronForwardOutline} from 'ionicons/icons';
+import React, {useEffect, useState} from 'react'
 import PrimaryButton from '../../../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../../../components/inputs/PrimaryInput/PrimaryInput';
 import PrimaryTypography from '../../../../components/typography/PrimaryTypography/PrimaryTypography';
-import useLoyaltyPrograms from '../../../../hooks/useLoyaltyPrograms';
+import useLoyaltyPrograms from '../../../../hooks/loyaltyProgram/useLoyaltyPrograms';
 import useToast from '../../../../hooks/useToast';
-import { DynamicInputIdentifier } from '../../../../models/dynamicInputIdentifier';
-import { LoyaltyPartnershipDetails, LoyaltyProgram, UserLoyaltyProgram, UserLoyaltyProgramCurrency } from '../../../../models/loyaltyProgram';
-import { PartnershipType } from '../../../../types/exchangeType';
+import {DynamicInputIdentifier} from '../../../../models/dynamicInputIdentifier';
+import {
+    LoyaltyPartnershipDetails,
+    LoyaltyProgram,
+    UserLoyaltyProgram,
+    UserLoyaltyProgramCurrency
+} from '../../../../models/loyaltyProgram';
+import {PartnershipType} from '../../../../types/exchangeType';
 import styles from './loyaltyProgramManageItem.module.scss';
 
 interface Props {
     item: LoyaltyProgram,
-    myProgram: UserLoyaltyProgram | null,
-    fetchMyPrograms?: () => void
+    myProgram: UserLoyaltyProgram | null
 }
 
-const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPrograms }) => {
+const LoyaltyProgramManageItem: React.FC<Props> = ({item, myProgram}) => {
     const [isSelected, setIsSelected] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
-    const [partnershipMetadata, setPartnershipMetadata] = useState<LoyaltyPartnershipDetails | null>();
     const [myUpdatedProgram, setMyUpdatedProgram] = useState<UserLoyaltyProgram | null>();
-    const { connectProgram, disconnectProgram, fetchFilteredProgram, isUpdating } = useLoyaltyPrograms();
-    const { presentFailure } = useToast();
+    const selectedPartnershipType: PartnershipType = item.activePartnerships?.exchangeIn ? 'in' :
+        item.activePartnerships?.exchangeOut ? 'out' :
+            item.activePartnerships?.redemption ? 'redemption' :
+                item.activePartnerships?.issuing ? 'issuing' :
+                    'out';
+    const {
+        connectProgram,
+        disconnectProgram,
+        filteredProgram,
+        isUpdating
+    } = useLoyaltyPrograms({
+        programFilter: isSelected ? {
+            programId: item.partnerId,
+            exchangeType: selectedPartnershipType
+        } : undefined
+    });
+    const {presentFailure} = useToast();
+
+    const partnershipMetadata: LoyaltyPartnershipDetails | null = filteredProgram?.partnershipDetails as any;
 
     function initMyProgram() {
         const userLoyaltyProgram = new UserLoyaltyProgram(
@@ -52,54 +72,27 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
         setMyUpdatedProgram(userLoyaltyProgram);
     }
 
-    function handleConnection() {
+    async function handleConnection() {
         if (isConnected) {
-            disconnectProgram(myUpdatedProgram?.userCurrencyId!)
-                .then(disconnected => {
-                    if (disconnected) {
-                        fetchMyPrograms && fetchMyPrograms()
-                        setIsConnected(false);
-                        initMyProgram();
-                    }
-                })
+            const disconnected = await disconnectProgram(myUpdatedProgram?.userCurrencyId!);
+            if (disconnected) {
+                setIsConnected(false);
+                initMyProgram();
+            }
         } else {
-            connectProgram(myUpdatedProgram!)
-                .then(result => {
-                    if (result.isSuccess) {
-                        fetchMyPrograms && fetchMyPrograms()
-                        setIsConnected(true);
-                        setMyUpdatedProgram(result.data);
-                    } else if (result.errors) {
-                        presentFailure(result.errors.detail);
-                    }
-                })
+            try {
+                const result = await connectProgram(myUpdatedProgram!);
+                setIsConnected(true);
+                setMyUpdatedProgram(result);
+            } catch (error: any) {
+                presentFailure(error.message);
+            }
         }
     }
-
-    const getPartnershipMetadata = useCallback(async () => {
-        const partnershipType: PartnershipType =
-            item.activePartnerships?.exchangeIn ? 'in' :
-                item.activePartnerships?.exchangeOut ? 'out' :
-                    item.activePartnerships?.redemption ? 'redemption' :
-                        item.activePartnerships?.issuing ? 'issuing' :
-                            'out';
-
-        return fetchFilteredProgram(item.partnerId, partnershipType)
-            .then(program => {
-                setPartnershipMetadata(program?.partnershipDetails);
-            })
-    }, [item.partnerId])
-
-    useEffect(() => {
-        if (isSelected && !partnershipMetadata) {
-            getPartnershipMetadata()
-        }
-    }, [isSelected])
 
     useEffect(() => {
         if (!myProgram && partnershipMetadata) initMyProgram()
     }, [partnershipMetadata])
-
 
     useEffect(() => {
         if (myProgram) {
@@ -113,11 +106,9 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
 
     useEffect(() => {
         return () => {
-            setPartnershipMetadata(null)
             setMyUpdatedProgram(null)
         }
     }, [])
-
 
     const LoyaltyProgramPartnership = () => {
         return (
@@ -147,7 +138,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
                                                                 myUpdatedProgram.memberFields[index].value = value;
                                                                 setMyUpdatedProgram(myUpdatedProgram);
                                                             }
-                                                        }} />
+                                                        }}/>
                                                 </div>
                                             })
                                         }
@@ -160,7 +151,7 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
                                         </PrimaryButton>
                                     </>
                                     :
-                                    <IonSpinner color="light" className={styles.spinner} />
+                                    <IonSpinner color="light" className={styles.spinner}/>
                             }
                         </div>
                         :
@@ -171,11 +162,11 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
     }
 
     return (
-        <div className={styles.container} style={{ background: item?.brand?.color1 }}>
+        <div className={styles.container} style={{background: item?.brand?.color1}}>
             <div className={styles.togglerContainer}
-                onClick={() => setIsSelected(!isSelected)}>
+                 onClick={() => setIsSelected(!isSelected)}>
                 <div className={styles.id}>
-                    <img alt='' src={item.logo} className={styles.logo} />
+                    <img alt='' src={item.logo} className={styles.logo}/>
                     <div className={styles.text}>
                         <PrimaryTypography isBold>{item.companyName}</PrimaryTypography>
                         <PrimaryTypography size='s'>1 program</PrimaryTypography>
@@ -184,10 +175,10 @@ const LoyaltyProgramManageItem: React.FC<Props> = ({ item, myProgram, fetchMyPro
 
                 <div className={styles.toggler}>
                     <PrimaryTypography>({item.loyaltyCurrency?.shortName})</PrimaryTypography>
-                    <IonIcon icon={isSelected ? chevronDownOutline : chevronForwardOutline} size='small' color='light' />
+                    <IonIcon icon={isSelected ? chevronDownOutline : chevronForwardOutline} size='small' color='light'/>
                 </div>
             </div>
-            {isSelected && <LoyaltyProgramPartnership />}
+            {isSelected && <LoyaltyProgramPartnership/>}
         </div>
     )
 }

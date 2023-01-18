@@ -60,7 +60,7 @@ const Spinner: React.FC = () => {
 
     const [gameToken, setGameToken] = useState('');
     const {play, isSubmitting, playingError} = usePlayGame({
-        loyaltyProgramId: loyaltyProgramId,
+        loyaltyCurrency: loyaltyProgram?.loyaltyCurrency.id,
         gameToken: gameToken,
         partnerId: loyaltyProgram?.partnerId ?? '',
         brand: loyaltyProgram?.brand?.key ?? ''
@@ -84,7 +84,7 @@ const Spinner: React.FC = () => {
     const {currentMessage, start, stop} = useMessagesInterval(displayMessages);
     const {gameContractAddress, gameContractAbi} = useDapp();
     const [isPlaying, setIsPlaying] = useState(false);
-    const{invalidate}=useDataQueryInvalidation();
+    const {invalidate} = useDataQueryInvalidation();
 
     const {
         prizes,

@@ -9,13 +9,13 @@ import useDataMutation from "./queryCaching/useDataMutation";
 import {membershipQueriesIdentity} from "./membership/membershipQueriesIdentity";
 
 interface Props {
-    loyaltyProgramId: string,
+    loyaltyCurrency?: string,
     partnerId: string,
     brand: string,
     gameToken?: string
 }
 
-const usePlayGame = ({loyaltyProgramId, partnerId, brand, gameToken}: Props) => {
+const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken}: Props) => {
 
     const {presentFailure} = useToast();
     const {walletAddress} = useDapp();
@@ -23,7 +23,7 @@ const usePlayGame = ({loyaltyProgramId, partnerId, brand, gameToken}: Props) => 
     const {run} = useCloud();
 
     const playingMutation = useDataMutation({
-        mutatedIdentity: membershipQueriesIdentity.info(loyaltyProgramId),
+        mutatedIdentity: membershipQueriesIdentity.info(loyaltyCurrency),
         fn: () => play()
     })
 
@@ -50,7 +50,7 @@ const usePlayGame = ({loyaltyProgramId, partnerId, brand, gameToken}: Props) => 
                     return;
                 }
             })
-    }, [partnerId, gameToken, brand, loyaltyProgramId])
+    }, [partnerId, gameToken, brand])
 
     useEffect(() => {
         if (playingError) {

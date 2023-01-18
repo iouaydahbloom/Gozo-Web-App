@@ -16,6 +16,8 @@ import {parseNumber} from '../../helpers/blockchainHelper';
 import styles from './dashboard.module.scss';
 import useAuthentication from '../../hooks/useAuthentication';
 import useLoyaltyPrograms from "../../hooks/loyaltyProgram/useLoyaltyPrograms";
+import useDataQueryInvalidation from "../../hooks/queryCaching/useDataQueryInvalidation";
+import {membershipQueriesIdentity} from "../../hooks/membership/membershipQueriesIdentity";
 
 const Dashboard: React.FC = () => {
 
@@ -27,20 +29,17 @@ const Dashboard: React.FC = () => {
     const [highlightedAsset, setHighlightedAsset] = useState<HighlightedBalanceAsset>();
     const {tabRef, setTabRef, setTabHeaderHeight} = useContext(TabHeaderHeightContext);
     const {isAuthenticated} = useAuthentication();
+    const {invalidate} = useDataQueryInvalidation();
 
     const onSelect = useCallback((tabIndex: number) => {
         setMode(tabIndex === 0 ? AssetMode.loyaltyPoint : AssetMode.token);
     }, [])
 
-    const handleHighlightedAssetMetadata = () => {
-        mode === AssetMode.loyaltyPoint ? fetchGozoLoyaltyMembership() : fetchCryptoAssets();
-    }
-
     const onRefresh = useCallback((): Promise<any> => {
         return Promise.all([
             fetchMyLoyaltyPrograms(),
             fetchCryptoAssets(),
-            handleHighlightedAssetMetadata()
+            invalidate(membershipQueriesIdentity.all)
         ])
     }, [isAuthenticated])
 

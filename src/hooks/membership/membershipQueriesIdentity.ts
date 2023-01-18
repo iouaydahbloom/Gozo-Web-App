@@ -1,5 +1,6 @@
 const membershipQueriesIdentity = {
-    info: (loyaltyCurrency?: string) => ['membership', loyaltyCurrency] as const
+    all: ['membership'] as const,
+    info: (loyaltyCurrency?: string) => [...membershipQueriesIdentity.all, loyaltyCurrency] as const
 }
 
 export {

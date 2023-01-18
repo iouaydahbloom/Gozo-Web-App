@@ -1,4 +1,4 @@
-import { PushNotifications } from "@capacitor/push-notifications";
+import {PushNotifications} from "@capacitor/push-notifications";
 
 const addNotificationsListeners = async (
     onRegistrationSuccess: (registrationToken: string) => Promise<any>
@@ -23,6 +23,10 @@ const addNotificationsListeners = async (
     } catch (error) {
         console.log('Error in addNotificationListener ', error);
     }
+}
+
+const removeNotificationsListeners = async () => {
+    await PushNotifications.removeAllListeners()
 }
 
 const registerNotifications = async () => {
@@ -56,5 +60,6 @@ const getDeliveredNotifications = async () => {
 export {
     registerNotifications,
     addNotificationsListeners,
-    getDeliveredNotifications
+    getDeliveredNotifications,
+    removeNotificationsListeners
 }

@@ -5,7 +5,6 @@ import {cloudFunctionName} from "../constants/cloudFunctionName";
 import {sessionContext} from "../providers/SessionProvider/sessionContext";
 import useCloud from "./useCloud";
 import useMagicAuth from "./useMagicAuth";
-import {useQueryClient} from "react-query";
 
 const useAuthentication = () => {
 
@@ -14,7 +13,6 @@ const useAuthentication = () => {
     const {session, setSession, clear} = useContext(sessionContext);
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const [authError, setAuthError] = useState<string>();
-    const queryClient = useQueryClient();
 
     const login = useCallback(async (email: string) => {
         try {

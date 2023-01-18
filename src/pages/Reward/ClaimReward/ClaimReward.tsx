@@ -16,7 +16,7 @@ interface Props {
 }
 
 const ClaimReward: React.FC<Props> = ({prizeId, rewardId, dismiss}) => {
-    const {fetchPrize, prize, isLoadingPrize} = usePrize({prizeId})
+    const {prize, isLoadingPrize} = usePrize({prizeId})
     const [fields, setFields] = useState<KeyValue[]>([])
     const {claimReward, isLoadingSubmission} = useReward()
     const {presentFailure, presentSuccess} = useToast();
@@ -46,11 +46,6 @@ const ClaimReward: React.FC<Props> = ({prizeId, rewardId, dismiss}) => {
             []
         )
     }, [prize])
-
-
-    // useEffect(() => {
-    //     fetchPrize(prizeId)
-    // }, [])
 
     return (
         <div>

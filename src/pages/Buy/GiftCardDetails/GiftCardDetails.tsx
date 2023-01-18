@@ -1,6 +1,6 @@
 import {IonCol, IonGrid, IonPage, IonRow, useIonViewWillEnter} from '@ionic/react'
 import {useFormik} from 'formik';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useParams} from 'react-router';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
 import SecondaryCard from '../../../components/cards/SecondaryCard/SecondaryCard';
@@ -26,7 +26,6 @@ const GiftCardDetails: React.FC = () => {
     const {
         getGiftCard,
         buyGiftCard,
-        //simulateFiatToPointsConversion,
         fiatToPointsRate,
         giftCard,
         isLoading,
@@ -34,7 +33,6 @@ const GiftCardDetails: React.FC = () => {
     } = useGiftCard({giftCardId: id});
     const {presentFailure} = useToast();
     const [isBought, setIsBought] = useState(false);
-    //const [conversionRate, setConversionRate] = useState<number>(0);
     useTabMenuHidder();
 
     async function buy(amount: string) {
@@ -44,15 +42,9 @@ const GiftCardDetails: React.FC = () => {
             giftCard.currency,
             amount,
             () => setIsBought(true),
-            presentFailure,
-            //conversionRate
+            presentFailure
         );
     }
-
-    // async function getGiftCardDetails() {
-    //     //if (id) getGiftCard(id)
-    //     await getGiftCard();
-    // }
 
     const formManager = useFormik({
         initialValues: {amount: giftCard?.minimumValue ?? 0},
@@ -70,20 +62,6 @@ const GiftCardDetails: React.FC = () => {
             await buy(values.amount!.toString());
         }
     });
-
-    // useEffect(() => {
-    //     getGiftCardDetails();
-    // }, [id])
-
-    // useEffect(() => {
-    //     if (!giftCard) {
-    //         return
-    //     }
-    //     simulateFiatToPointsConversion(giftCard.currency, '1')
-    //         .then(result => {
-    //             if (result.isSuccess) setConversionRate(result.data.loyaltyAmount)
-    //         })
-    // }, [giftCard?.currency])
 
     useIonViewWillEnter(() => {
         setIsBought(false);

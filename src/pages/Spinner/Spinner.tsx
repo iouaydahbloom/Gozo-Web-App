@@ -187,7 +187,7 @@ const Spinner: React.FC = () => {
     const wheelSegmentsOpts = useMemo(() => {
         if (wheelSegments.length !== 0) {
             return wheelSegments.map((item) => {
-                item.colors = loyaltyProgram?.brand?.colors ;
+                item.colors = loyaltyProgram?.brand?.colors;
                 item.textFillStyle = '#fff';
                 return item
             })
@@ -315,8 +315,11 @@ const Spinner: React.FC = () => {
                                             selectedPrizeId={selectedPrizeId}
                                             onClick={showSpinCondition}
                                             onStopSpinning={() => {
-                                                setTimeout(() => {showSuccessModal(); audio.play();}, 1000);
-                                            }} />
+                                                setTimeout(() => {
+                                                    showSuccessModal();
+                                                    audio.play();
+                                                }, 1000);
+                                            }}/>
                                 }
                             </div>
                             <div className={styles.accordionHeaderwrapper}>

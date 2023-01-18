@@ -178,7 +178,7 @@ const Spinner: React.FC = () => {
     const prizesOpts = useMemo(() => {
         if (wheelSegments.length !== 0) {
             return wheelSegments.map((item) => {
-                return new AccordionItem(item.id, item.description, item.description, item.image as string)
+                return new AccordionItem(item.id, item.label ?? item.description, item.description, item.image as string)
             })
         }
         return []
@@ -269,9 +269,9 @@ const Spinner: React.FC = () => {
     }, [id, defaultProgram, loyaltyProgram])
 
     useIonViewWillLeave(() => {
-        unReservePrizes(gameToken);
+        if(!isPlaying) unReservePrizes(gameToken);
         setIsPlaying(false);
-    }, [gameToken])
+    }, [gameToken, isPlaying])
 
     return (
         <IonPage>

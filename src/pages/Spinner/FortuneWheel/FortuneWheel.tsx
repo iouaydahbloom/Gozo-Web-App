@@ -41,17 +41,14 @@ const FortuneWheel: React.FC<Props> = ({
             'segments': getOptimizeData(),
             'textFontSize': 16,
             'textMargin': 6,
-
             'outerRadius': 170,    // Use these three properties to
             'centerX': 200,    // correctly position the wheel
             'centerY': 195,    // over the background.
-
             'lineWidth': 2,
             'strokeStyle': "#fff",
             'fillStyle': "#000",
             'rotationAngle': 4,
-            'innerRadius': 35,             // The larger the inner radius, the bigger the
-            // hollow space inside the wheel.
+            'innerRadius': 35,             // The larger the inner radius, the bigger the hollow space inside the wheel.
             'animation':
                 {
                     'type': 'spinToStop',

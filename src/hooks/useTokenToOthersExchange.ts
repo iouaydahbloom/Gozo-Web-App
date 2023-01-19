@@ -1,10 +1,10 @@
-import { debounce } from "lodash";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { ERC20Asset } from "../models/assets/ERC20Asset";
-import { NativeAsset } from "../models/assets/NativeAsset";
-import { UserLoyaltyProgram } from "../models/loyaltyProgram";
-import { cloudFunctionName } from "../constants/cloudFunctionName";
-import { useDapp } from "../providers/DappProvider/DappProvider";
+import {debounce} from "lodash";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {ERC20Asset} from "../models/assets/ERC20Asset";
+import {NativeAsset} from "../models/assets/NativeAsset";
+import {UserLoyaltyProgram} from "../models/loyaltyProgram";
+import {cloudFunctionName} from "../constants/cloudFunctionName";
+import {useDapp} from "../providers/DappProvider/DappProvider";
 import useBlockchainContractExecution from "./useBlockchainContractExecution";
 import useBlockchainTransfer from "./useBlockchainTransfer";
 import useCloud from "./useCloud";
@@ -12,7 +12,7 @@ import useCryptoAssets from "./cryptoAssets/useCryptoAssets";
 import useLoyaltyPrograms from "./loyaltyProgram/useLoyaltyPrograms";
 import useMemberShip from "./membership/useMembership";
 import useToast from "./useToast";
-import { parseNumber } from "../helpers/blockchainHelper";
+import {parseNumber} from "../helpers/blockchainHelper";
 import useDataQuery from "./queryCaching/useDataQuery";
 import useDataMutation from "./queryCaching/useDataMutation";
 import {membershipQueriesIdentity} from "./membership/membershipQueriesIdentity";
@@ -33,21 +33,25 @@ interface OtherSwapParty {
 
 const useTokenToOthersExchange = () => {
     const [tokenQuantity, setTokenQuantity] = useState<number | undefined>(0);
-    const [selectedOthers, setSelectedOthers] = useState<OtherSwapParty>({ id: '', quantity: 0, type: SwapPartyType.loyaltyProgram });
+    const [selectedOthers, setSelectedOthers] = useState<OtherSwapParty>({
+        id: '',
+        quantity: 0,
+        type: SwapPartyType.loyaltyProgram
+    });
     const [simulating, setSimulating] = useState(false);
     const [tokenOptions, setTokenOptions] = useState<ERC20Asset[]>([]);
     const [othersOptions, setOthersOptions] = useState<(UserLoyaltyProgram | NativeAsset)[]>([]);
-    const { defaultProgram } = useLoyaltyPrograms({});
-    const { defaultERC20Asset, defaultNativeAsset, fetchCryptoAssets } = useCryptoAssets();
-    const { walletAddress, tokenContractAddress, tokenContractAbi, botWalletAddress } = useDapp();
+    const {defaultProgram} = useLoyaltyPrograms({});
+    const {defaultERC20Asset, defaultNativeAsset} = useCryptoAssets();
+    const {walletAddress, tokenContractAddress, tokenContractAbi, botWalletAddress} = useDapp();
     const [estimatedGasFee, setEstimatedGasFee] = useState<number>();
     const [isEstimatingGasFee, setIsEstimatingGasFee] = useState(false);
     const [direction, setDirection] = useState<'t2o' | 'o2t'>('t2o');
-    const { membership, fetchMembership } = useMemberShip(defaultProgram?.currency.loyaltyCurrency);
-    const { run } = useCloud();
-    const { presentFailure, presentSuccess } = useToast();
-    const { estimate } = useBlockchainContractExecution();
-    const { transferNative, transferTokensToOwner, executing: executingTransfer, error } = useBlockchainTransfer();
+    const {membership} = useMemberShip(defaultProgram?.currency.loyaltyCurrency);
+    const {run} = useCloud();
+    const {presentFailure, presentSuccess} = useToast();
+    const {estimate} = useBlockchainContractExecution();
+    const {transferNative, transferTokensToOwner, executing: executingTransfer, error} = useBlockchainTransfer();
 
     const minPointsToTokenExchangeQuery = useDataQuery({
         identity: ['minPointsToTokenExchange'],
@@ -68,7 +72,7 @@ const useTokenToOthersExchange = () => {
     })
 
     const executeOthersToTokenExchangeMutation = useDataMutation({
-        mutatedIdentity:  [
+        mutatedIdentity: [
             membershipQueriesIdentity.info(defaultProgram?.currency.loyaltyCurrency),
             cryptoAssetsQueriesIdentity.list
         ],
@@ -98,7 +102,10 @@ const useTokenToOthersExchange = () => {
         amount: number,
         onSuccess: (result: number) => void
     ) => {
-        if (!amount || !selectedOthers) { onSuccess(0); return; }
+        if (!amount || !selectedOthers) {
+            onSuccess(0);
+            return;
+        }
         setSimulating(true);
         const fn = selectedOthers.type === SwapPartyType.loyaltyProgram ?
             cloudFunctionName.simulateT2PExchange :
@@ -106,7 +113,7 @@ const useTokenToOthersExchange = () => {
 
         run(
             fn,
-            { amount: amount },
+            {amount: amount},
             (result: any) => result as number,
             true
         )
@@ -141,18 +148,16 @@ const useTokenToOthersExchange = () => {
                 [0, SwapPartyType.loyaltyProgram]
             );
             setEstimatedGasFee(estimatedGasFee);
-        }
-        catch (error: any) {
+        } catch (error: any) {
             presentFailure(error.message);
-        }
-        finally {
+        } finally {
             setIsEstimatingGasFee(false)
         }
     }, [])
 
     /**
-    * Others to Tokens exchange logic
-    */
+     * Others to Tokens exchange logic
+     */
     const executeOthersToTokenExchange = useCallback(async () => {
         if (selectedOthers && selectedOthers.quantity && selectedOthers.quantity <= 0) return;
 
@@ -168,7 +173,10 @@ const useTokenToOthersExchange = () => {
         amount: number,
         onSuccess: (result: number) => void
     ) => {
-        if (!amount) { onSuccess(0); return; }
+        if (!amount) {
+            onSuccess(0);
+            return;
+        }
 
         const fn = selectedOthers.type === SwapPartyType.loyaltyProgram ?
             cloudFunctionName.simulateP2TExchange :
@@ -177,7 +185,7 @@ const useTokenToOthersExchange = () => {
 
         run(
             fn,
-            { amount: amount },
+            {amount: amount},
             (result: any) => result as number
         )
             .then(result => {
@@ -207,7 +215,7 @@ const useTokenToOthersExchange = () => {
                 if (!success) return;
                 return run(
                     cloudFunctionName.handleNativeExchange,
-                    { recipient: walletAddress, amount: selectedOthers.quantity },
+                    {recipient: walletAddress, amount: selectedOthers.quantity},
                     (result: any) => result as number,
                     true
                 )
@@ -225,7 +233,7 @@ const useTokenToOthersExchange = () => {
     async function executePointsToTokenExchange() {
         return run(
             cloudFunctionName.executeP2Texchange,
-            { recipient: walletAddress, amount: selectedOthers?.quantity },
+            {recipient: walletAddress, amount: selectedOthers?.quantity},
             (result: any) => result as number,
             true
         )
@@ -257,7 +265,7 @@ const useTokenToOthersExchange = () => {
 
     const isDisabled = useMemo(() => {
         if (direction === 't2o') {
-            if (!tokenQuantity || tokenQuantity > originBalance) return true;
+            if (!estimatedGasFee || !tokenQuantity || tokenQuantity > (originBalance - estimatedGasFee)) return true;
             if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return false;
             return (minimumValue && (tokenQuantity! < minimumValue)) || !tokenQuantity;
         }
@@ -265,7 +273,7 @@ const useTokenToOthersExchange = () => {
         if (selectedOthers.quantity && selectedOthers.quantity > originBalance) return true;
         if (selectedOthers.type === SwapPartyType.nativeCryptoCurrency) return !selectedOthers.quantity;
         return (minimumValue && (selectedOthers?.quantity! < minimumValue)) || !selectedOthers?.quantity;
-    }, [tokenQuantity, selectedOthers, minimumValue, originBalance])
+    }, [tokenQuantity, selectedOthers, minimumValue, originBalance, estimatedGasFee])
 
     /**
      * Lifecycles events
@@ -294,7 +302,7 @@ const useTokenToOthersExchange = () => {
             simulateTokenToOthersExchange(
                 tokenQuantity ?? 0,
                 (result) => {
-                    if (selectedOthers.id) setSelectedOthers({ ...selectedOthers, quantity: result });
+                    if (selectedOthers.id) setSelectedOthers({...selectedOthers, quantity: result});
                 })
         }
     }, [tokenQuantity, direction, selectedOthers.id])

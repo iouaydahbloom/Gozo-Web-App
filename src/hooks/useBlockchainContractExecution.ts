@@ -65,8 +65,7 @@ const useBlockchainContractExecution = () => {
         return relayedResult.fees as number;
     }
 
-    async function approvePayingGasFees(contractAddress: string, abi: any[], fn: string, params: any[]) {
-        const fees = await estimate(contractAddress, abi, fn, params);
+    async function approvePayingGasFees(contractAddress: string, abi: any[], fn: string, params: any[], fees: number) {
         if (!fees) return;
         //get approval from user to transfer tokens by the relayer as gas fees
         return sendRelayedRequest(
@@ -102,10 +101,11 @@ const useBlockchainContractExecution = () => {
                 onConfirmed: async () => {
                     try {
                         presentInfo('Executing Transaction ...');
-                        await approvePayingGasFees(contractAddress, abi, fn, params);
+                        await approvePayingGasFees(contractAddress, abi, fn, params, fees);
                         await sendRelayedRequest(contractAddress, abi, fn, params);
                         onSuccess && onSuccess();
                     } catch (error: any) {
+                        debugger;
                         onError && onError(error);
                     } finally {
                         setExecuting(false);

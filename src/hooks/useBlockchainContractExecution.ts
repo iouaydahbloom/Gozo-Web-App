@@ -1,7 +1,6 @@
 import useMagicAuth from "./useMagicAuth";
 import {ethers} from 'ethers';
 import {useState} from "react";
-import {appConfig} from "../constants/appConfig";
 import {useIonViewDidLeave} from "@ionic/react";
 import {useDapp} from "../providers/DappProvider/DappProvider";
 import useConfirmation from "./useConfirmation";

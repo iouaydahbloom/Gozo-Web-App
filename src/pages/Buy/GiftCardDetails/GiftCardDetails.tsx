@@ -15,10 +15,10 @@ import PrimaryTypography from '../../../components/typography/PrimaryTypography/
 import SanitizeHtml from '../../../components/typography/SanitizeHtml/SanitizeHtml';
 import {FormValidator} from '../../../helpers/forms/form.helper';
 import useGiftCard from '../../../hooks/giftCard/useGiftCard';
-import useTabMenuHidder from '../../../hooks/useTabMenuHidder';
 import useToast from '../../../hooks/useToast';
 import GiftCardPurchaseSuccess from '../GiftCardPurchaseSuccess/GiftCardPurchaseSuccess';
 import styles from './giftCardDetails.module.scss';
+import useTabMenuHidder from "../../../hooks/useTabMenuHider";
 
 const GiftCardDetails: React.FC = () => {
 

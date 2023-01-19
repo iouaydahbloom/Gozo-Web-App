@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {LoyaltyMember} from "../../models/loyaltyMember";
 import useAuthentication from "../useAuthentication";
-import {dummySleeperPromise} from "../../helpers/promiseHelper";
 import {act} from "@testing-library/react";
 
 const useMembership = (loyaltyCurrency?: string) => {

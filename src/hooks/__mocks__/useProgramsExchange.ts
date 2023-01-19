@@ -1,7 +1,7 @@
 import {debounce} from "lodash";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {UserLoyaltyProgram} from "../../models/loyaltyProgram";
-import useLoyaltyPrograms from "../useLoyaltyPrograms";
+import useLoyaltyPrograms from "./useLoyaltyPrograms";
 import useMemberShip from "./useMembership";
 import useToast from "../useToast";
 import {dummySleeperPromise} from "../../helpers/promiseHelper";

@@ -146,7 +146,8 @@ const useProgramsExchange = () => {
         direction: direction,
         isDisabled,
         toggleDirection: () => setDirection(prev => prev === 's2p' ? 'p2s' : 's2p'),
-        originBalance
+        originBalance,
+        isDirectionSwitchingEnabled: true
     }
 }
 

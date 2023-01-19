@@ -105,7 +105,6 @@ const useBlockchainContractExecution = () => {
                         await sendRelayedRequest(contractAddress, abi, fn, params);
                         onSuccess && onSuccess();
                     } catch (error: any) {
-                        debugger;
                         onError && onError(error);
                     } finally {
                         setExecuting(false);

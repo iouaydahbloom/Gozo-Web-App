@@ -12,10 +12,11 @@ interface Props {
     loyaltyCurrency?: string,
     partnerId: string,
     brand: string,
+    numberOfSpins: number,
     gameToken?: string
 }
 
-const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken}: Props) => {
+const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken,numberOfSpins}: Props) => {
 
     const {presentFailure} = useToast();
     const {walletAddress} = useDapp();
@@ -36,6 +37,7 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken}: Props) => {
         }
         if (partnerId) params.partner_id = partnerId;
         if (gameToken) params.game_token = gameToken;
+        if(numberOfSpins) params.number_of_prizes = numberOfSpins
 
         return run(cloudFunctionName.playWithSuperPoints,
             params,
@@ -50,7 +52,7 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken}: Props) => {
                     return;
                 }
             })
-    }, [partnerId, gameToken, brand])
+    }, [partnerId, gameToken, brand, numberOfSpins])
 
     useEffect(() => {
         if (playingError) {

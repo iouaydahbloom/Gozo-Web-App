@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
-import {LoyaltyMember} from "../../models/loyaltyMember";
-import useAuthentication from "../useAuthentication";
+import {LoyaltyMember} from "../../../models/loyaltyMember";
+import useAuthentication from "../../useAuthentication";
 import {act} from "@testing-library/react";
 
 const useMembership = (loyaltyCurrency?: string) => {

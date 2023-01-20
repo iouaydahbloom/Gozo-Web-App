@@ -4,12 +4,12 @@ import {
     LoyaltyProgram,
     UserLoyaltyProgram,
     UserLoyaltyProgramCurrency
-} from "../../models/loyaltyProgram";
-import {Pagination} from "../../models/data/pagination";
-import {ProgramFilter} from "../../models/data/filter";
-import {PartnershipType} from "../../types/exchangeType";
-import {Redemption} from "../../models/redemption";
-import {DynamicInputIdentifier} from "../../models/dynamicInputIdentifier";
+} from "../../../models/loyaltyProgram";
+import {Pagination} from "../../../models/data/pagination";
+import {ProgramFilter} from "../../../models/data/filter";
+import {PartnershipType} from "../../../types/exchangeType";
+import {Redemption} from "../../../models/redemption";
+import {DynamicInputIdentifier} from "../../../models/dynamicInputIdentifier";
 import {act} from "@testing-library/react";
 
 const useLoyaltyPrograms = () => {
@@ -208,4 +208,6 @@ const useLoyaltyPrograms = () => {
     }
 }
 
-export default useLoyaltyPrograms;
+export {
+    useLoyaltyPrograms
+};

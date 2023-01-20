@@ -95,6 +95,16 @@ const useProgramsExchange = () => {
             exchangeOutOptions.length > 0 && (exchangeInOptions.length > 0 || !!defaultProgram)
     }
 
+    const isDirectionSwitchingEnabled = useMemo(() => {
+        if (exchangeInOptions.length === 0 && exchangeOutOptions.length === 0) {
+            return false;
+        }
+
+        return direction === 'p2s' ?
+            exchangeOutOptions.length > 0 && (exchangeInOptions.length > 0 || !!defaultProgram) :
+            exchangeInOptions.length > 0 && (exchangeOutOptions.length > 0 || !!defaultProgram)
+    }, [direction, exchangeInOptions, exchangeOutOptions, defaultProgram])
+
     const originBalance = useMemo(() => {
         return membership?.balance ?? 0
     }, [membership?.balance])
@@ -147,7 +157,7 @@ const useProgramsExchange = () => {
         isDisabled,
         toggleDirection: () => setDirection(prev => prev === 's2p' ? 'p2s' : 's2p'),
         originBalance,
-        isDirectionSwitchingEnabled: true
+        isDirectionSwitchingEnabled: isDirectionSwitchingEnabled
     }
 }
 

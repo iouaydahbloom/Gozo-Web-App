@@ -1,8 +1,8 @@
 import {debounce} from "lodash";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {UserLoyaltyProgram} from "../../models/loyaltyProgram";
-import useLoyaltyPrograms from "./useLoyaltyPrograms";
-import useMemberShip from "./useMembership";
+import {useLoyaltyPrograms} from "../loyaltyProgram/__mocks__/useLoyaltyPrograms";
+import useMemberShip from "../membership/__mocks__/useMembership";
 import useToast from "../useToast";
 import {dummySleeperPromise} from "../../helpers/promiseHelper";
 import {act} from "@testing-library/react";
@@ -43,7 +43,8 @@ const useProgramsExchange = () => {
                 return;
             }
             setSimulating(true);
-            dummySleeperPromise(2000, 'resolve')
+            //dummySleeperPromise(2000, 'resolve')
+            return Promise.resolve(2000)
                 .then(result => {
                     onSuccess(result);
                 })
@@ -67,6 +68,8 @@ const useProgramsExchange = () => {
     }
 
     const isDirectionSwitchingEnabled = useMemo(() => {
+        //console.log('exchangeInOptions', exchangeInOptions)
+        //console.log('exchangeOutOptions', exchangeOutOptions)
         if (exchangeInOptions.length === 0 && exchangeOutOptions.length === 0) {
             return false;
         }
@@ -84,9 +87,6 @@ const useProgramsExchange = () => {
         const isDisabled = !originProgram.loyaltyCurrency || !originProgram.quantity ||
             originProgram.quantity === 0 || originProgram.quantity > originBalance ||
             !destinationProgram.loyaltyCurrency;
-
-        console.log('isDisabled ', isDisabled);
-
         return isDisabled;
     }, [originProgram.quantity, originProgram.loyaltyCurrency, destinationProgram.loyaltyCurrency, originBalance])
 

@@ -14,7 +14,8 @@ const SwapDirection: React.FC<Props> = ({doubleDirection = false, onClick, disab
         <div
             className={`${styles.swipeDirection} ${disabled ? styles.disabled : null}`}
             onClick={disabled ? () => null : onClick}
-            data-testid="swap-direction-testID">
+            data-testid="swap-direction-testID"
+            aria-disabled={disabled}>
             <IonIcon
                 className={styles.icon}
                 icon={doubleDirection ? swapVerticalOutline : arrowDownOutline}

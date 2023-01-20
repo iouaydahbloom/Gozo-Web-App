@@ -19,16 +19,17 @@ interface Props {
     value?: string,
     required?: boolean,
     disabled?: boolean,
-    onChange?: (event: CustomEvent<SelectChangeEventDetail>) => void
+    onChange?: (event: CustomEvent<SelectChangeEventDetail>) => void,
+    className?: string
 }
 
 const SecondarySelect: React.FC<Props> =
-    ({ id, name, label, placeholder, type="alert", options = [], value, required = false, onChange, disabled }) => {
+    ({ id, name, label, placeholder, type="alert", className, options = [], value, required = false, onChange, disabled }) => {
 
         const selectRef = useRef<HTMLIonSelectElement>(null);
 
         return (
-            <div className={styles.secondarySelectContainer}>
+            <div className={`${styles.secondarySelectContainer} ${className}`}>
                 {label && <p className={styles.label}>{label}</p>}
                 <div className={styles.secondarySelect}>
                     {options.length == 0 &&
@@ -60,7 +61,7 @@ const SecondarySelect: React.FC<Props> =
                                 })
                             }
                         </IonSelect>
-                        <div className={styles.secondarySelectIcon} onClick={() => selectRef.current?.open()}>
+                        <div className={styles.secondarySelectIcon} onClick={(event) => selectRef.current?.open(event.nativeEvent)}>
                             <IonIcon icon={chevronDownOutline}></IonIcon>
                         </div>
                     </>}

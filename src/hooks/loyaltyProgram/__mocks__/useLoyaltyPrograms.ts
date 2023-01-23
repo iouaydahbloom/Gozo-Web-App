@@ -208,6 +208,4 @@ const useLoyaltyPrograms = () => {
     }
 }
 
-export {
-    useLoyaltyPrograms
-};
+export default useLoyaltyPrograms;

@@ -2,16 +2,18 @@ import {render, fireEvent, screen, waitFor} from "@testing-library/react";
 import SwapPoints from "./SwapPoints";
 import {SelectOption} from "../SwapSelect/SwapSelect";
 import userEvent from '@testing-library/user-event';
-import {useMemo} from "react";
 import {UserLoyaltyProgram, UserLoyaltyProgramCurrency} from "../../../models/loyaltyProgram";
-import {DynamicInputIdentifier} from "../../../models/dynamicInputIdentifier";
 import {Redemption} from "../../../models/redemption";
 import * as useLoyaltyPrograms from "../../../hooks/loyaltyProgram/useLoyaltyPrograms";
+import {DynamicInputIdentifier} from "../../../models/dynamicInputIdentifier";
+import {act} from "react-dom/test-utils";
 
-jest.mock('../../../hooks/loyaltyProgram/useLoyaltyPrograms')
-jest.mock('../../../hooks/useAuthentication')
-jest.mock('../../../hooks/membership/useMembership')
-jest.mock('../../../hooks/useProgramsExchange')
+jest.mock('../../../hooks/useCloud');
+jest.mock('../../../hooks/loyaltyProgram/useLoyaltyPrograms');
+jest.mock('../../../hooks/useAuthentication');
+jest.mock('../../../hooks/membership/useMembership');
+jest.mock('../../../hooks/queryCaching/useDataMutation');
+//jest.mock('../../../hooks/useProgramsExchange')
 jest.mock("react-select", () => ({
                                      options,
                                      value,
@@ -111,10 +113,30 @@ describe('Swap Points', () => {
         });
 
         it('Should disable the switching button if it will lead to an empty option side', async () => {
-
             jest.spyOn(useLoyaltyPrograms, 'default')
                 .mockImplementation(() => ({
                         ...jest.requireActual('../../../hooks/loyaltyProgram/useLoyaltyPrograms'),
+                        myPrograms: [new UserLoyaltyProgram(
+                            new UserLoyaltyProgramCurrency(
+                                'GZL2',
+                                'Super Points 2',
+                                'GOZO 2',
+                                new Date(),
+                                '2',
+                                '2',
+                                'logo',
+                                true,
+                                false,
+                                false,
+                                false
+                            ),
+                            '',
+                            [new DynamicInputIdentifier(new Date(), 1, 'key1', '123')],
+                            new Date(),
+                            '2',
+                            '2',
+                            null
+                        )],
                         defaultProgram: new UserLoyaltyProgram(
                             new UserLoyaltyProgramCurrency(
                                 'GZL',
@@ -138,9 +160,14 @@ describe('Swap Points', () => {
                         )
                     })
                 )
+            await act(async () => {
+                render(<SwapPoints/>)
+            });
 
-            const swapDirectionButton = screen.getByTestId('swap-direction-testID');
-            expect(swapDirectionButton).toHaveAttribute('aria-disabled', 'true');
+            await waitFor(() => {
+                const swapDirectionButton = screen.getByTestId('swap-direction-testID');
+                expect(swapDirectionButton).toHaveAttribute('aria-disabled', 'true');
+            })
         });
     })
 

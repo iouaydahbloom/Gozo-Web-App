@@ -1,26 +1,26 @@
-import { IonPage } from '@ionic/react'
+import {IonPage} from '@ionic/react'
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
-import { FormField } from '../../components/forms/FormField/FormField';
+import {FormField} from '../../components/forms/FormField/FormField';
 import SecondaryHeader from '../../components/headers/SecondaryHeader/SecondaryHeader';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
-import { FormHelper, FormValidator } from '../../helpers/forms/form.helper';
+import {FormHelper, FormValidator} from '../../helpers/forms/form.helper';
 import useProfile from '../../hooks/profile/useProfile';
-import { ProfileDetails } from '../../models/profileDetails';
-import { useFormik } from "formik";
+import {ProfileDetails} from '../../models/profileDetails';
+import {useFormik} from "formik";
 import InputError from '../../components/inputs/InputError/InputError';
 import styles from './profile.module.scss'
 import useToast from '../../hooks/useToast';
-import useTabMenuHidder from '../../hooks/useTabMenuHidder';
 import SecondaryInput from '../../components/inputs/SecondaryInput/SecondaryInput';
-import { Keyboard } from '@capacitor/keyboard';
+import {Keyboard} from '@capacitor/keyboard';
 import PrimaryAccordion from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
 import React from "react";
+import useTabMenuHidder from "../../hooks/useTabMenuHider";
 
 const Profile: React.FC = () => {
 
-    const { profileDetails, socialAccountTypes, updateProfileDetails, isSubmitting } = useProfile();
-    const { presentSuccess, presentFailure } = useToast();
+    const {profileDetails, socialAccountTypes, updateProfileDetails, isSubmitting} = useProfile();
+    const {presentSuccess, presentFailure} = useToast();
     useTabMenuHidder();
 
     const formManager = useFormik({
@@ -64,7 +64,7 @@ const Profile: React.FC = () => {
     return (
         <IonPage>
             <SecondaryHeader
-                title='Profile Details' />
+                title='Profile Details'/>
             <PrimaryContainer className={styles.container}>
                 <form
                     className={`${styles.form} ion-padding`}
@@ -81,7 +81,7 @@ const Profile: React.FC = () => {
                             value={formManager.values.name}
                         />
                         {formManager.touched.name && formManager.errors.name ? (
-                            <InputError error={formManager.errors.name} />
+                            <InputError error={formManager.errors.name}/>
                         ) : null}
                     </FormField>
 
@@ -94,7 +94,7 @@ const Profile: React.FC = () => {
                             value={formManager.values.address}
                         />
                         {formManager.touched.address && formManager.errors.address ? (
-                            <InputError error={formManager.errors.address} />
+                            <InputError error={formManager.errors.address}/>
                         ) : null}
                     </FormField>
 
@@ -108,7 +108,7 @@ const Profile: React.FC = () => {
                             disabled
                         />
                         {formManager.touched.email && formManager.errors.email ? (
-                            <InputError error={formManager.errors.email} />
+                            <InputError error={formManager.errors.email}/>
                         ) : null}
                     </FormField>
 
@@ -122,7 +122,7 @@ const Profile: React.FC = () => {
                             disabled
                         />
                         {formManager.touched.walletAddress && formManager.errors.walletAddress ? (
-                            <InputError error={formManager.errors.walletAddress} />
+                            <InputError error={formManager.errors.walletAddress}/>
                         ) : null}
                     </FormField>
 
@@ -137,7 +137,8 @@ const Profile: React.FC = () => {
                                     content: (
                                         <>
                                             <FormField className={styles.fieldWrapper}>
-                                                <PrimaryTypography size='m' customClassName={styles.label}>Username</PrimaryTypography>
+                                                <PrimaryTypography size='m'
+                                                                   customClassName={styles.label}>Username</PrimaryTypography>
                                                 <SecondaryInput
                                                     placeholder='Username'
                                                     name={`socialAccounts[${index}].username`}
@@ -147,7 +148,8 @@ const Profile: React.FC = () => {
                                             </FormField>
 
                                             <FormField className={styles.fieldWrapper}>
-                                                <PrimaryTypography size='m' customClassName={styles.label}>Profile Url</PrimaryTypography>
+                                                <PrimaryTypography size='m' customClassName={styles.label}>Profile
+                                                    Url</PrimaryTypography>
                                                 <SecondaryInput
                                                     placeholder='Profile Url'
                                                     name={`socialAccounts[${index}].profileUrl`}

@@ -14,7 +14,7 @@ const LoyaltyProgramsManager: React.FC = () => {
     const {fetchAllPrograms, myPrograms, fetchMyLoyaltyPrograms} = useLoyaltyPrograms({});
 
     const {data: programs, fetchData, isLoading} = useServerPagination<LoyaltyProgram, Filter>({
-        intialFilters: new Filter(1, 100),
+        initialFilters: new Filter(1, 100),
         getData: fetchAllPrograms as any
     })
 

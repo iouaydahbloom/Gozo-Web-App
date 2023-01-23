@@ -112,8 +112,8 @@ const useLoyaltyPrograms = ({programFilter, programId}: Props) => {
             (result: UserLoyaltyProgramDTO) => UserLoyaltyProgram.getFromDTO(result),
             true)
             .then(result => {
-                if(!result.isSuccess) {
-                   throw new Error(result.errors.detail);
+                if (!result.isSuccess) {
+                    throw new Error(result.errors.detail);
                 }
 
                 return result.data

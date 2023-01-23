@@ -20,6 +20,7 @@ const useProgramsExchange = () => {
     const [simulating, setSimulating] = useState(false);
     const [exchangeInOptions, setExchangeInOptions] = useState<UserLoyaltyProgram[]>([]);
     const [exchangeOutOptions, setExchangeOutOptions] = useState<UserLoyaltyProgram[]>([]);
+    const [optionsReady, setOptionsReady] = useState(false);
     const [defaultExchangeOptions, setDefaultExchangeOptions] = useState<UserLoyaltyProgram[]>([]);
     const {run} = useCloud();
     const {defaultProgram, myPrograms} = useLoyaltyPrograms({});
@@ -95,6 +96,22 @@ const useProgramsExchange = () => {
             exchangeOutOptions.length > 0 && (exchangeInOptions.length > 0 || !!defaultProgram)
     }
 
+    function canUpdateSelection() {
+        return direction === 'p2s' ?
+            exchangeInOptions.length > 0 && (exchangeOutOptions.length > 0 || !!defaultProgram) :
+            exchangeOutOptions.length > 0 && (exchangeInOptions.length > 0 || !!defaultProgram);
+    }
+
+    const isDirectionSwitchingEnabled = useMemo(() => {
+        if (exchangeInOptions.length === 0 && exchangeOutOptions.length === 0) {
+            return false;
+        }
+
+        return direction === 'p2s' ?
+            exchangeOutOptions.length > 0 && (exchangeInOptions.length > 0 || !!defaultProgram) :
+            exchangeInOptions.length > 0 && (exchangeOutOptions.length > 0 || !!defaultProgram)
+    }, [direction, exchangeInOptions, exchangeOutOptions, defaultProgram])
+
     const originBalance = useMemo(() => {
         return membership?.balance ?? 0
     }, [membership?.balance])
@@ -106,6 +123,7 @@ const useProgramsExchange = () => {
     useEffect(() => {
         setExchangeInOptions(myPrograms.filter(program => program.currency.isRedemption));
         setExchangeOutOptions(myPrograms.filter(program => program.currency.isExchangeIn));
+        setOptionsReady(true);
 
         return () => {
             setExchangeInOptions([])
@@ -129,8 +147,17 @@ const useProgramsExchange = () => {
     }, [originProgram.loyaltyCurrency, originProgram.quantity, destinationProgram.loyaltyCurrency])
 
     useEffect(() => {
+        if (!optionsReady) {
+            return;
+        }
+
+        if (!canUpdateSelection()) {
+            setDirection(prev => prev === 's2p' ? 'p2s' : 's2p');
+            return;
+        }
+
         updateSelections();
-    }, [direction, exchangeInOptions, exchangeOutOptions, defaultProgram])
+    }, [direction, optionsReady])
 
     return {
         exchange: executeExchangeMutation.mutateAsync,
@@ -146,7 +173,8 @@ const useProgramsExchange = () => {
         direction: direction,
         isDisabled,
         toggleDirection: () => setDirection(prev => prev === 's2p' ? 'p2s' : 's2p'),
-        originBalance
+        originBalance,
+        isDirectionSwitchingEnabled: isDirectionSwitchingEnabled
     }
 }
 

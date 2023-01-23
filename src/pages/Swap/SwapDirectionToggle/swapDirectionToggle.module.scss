@@ -1,27 +1,26 @@
 .swipeDirection {
-    width: 37px;
-    height: 38px;
-    background-color: var(--ion-color-primary);
-    border-radius: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: auto;
-    margin-top: -10px;
-    margin-bottom: -10px;
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
+  width: 37px;
+  height: 38px;
+  background-color: var(--ion-color-primary);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  margin-top: -10px;
+  margin-bottom: -10px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
 
-    .icon {
-        width: 25px;
-        height: 25px;
-    }
+  .icon {
+    width: 25px;
+    height: 25px;
+  }
 
-    &.disabled {
-        .icon {
-            --color: var(--ion-color-primary);
-        }
-    }
+  &.disabled {
+    opacity: 0.4;
+    opacity: 0.4;
+  }
 }

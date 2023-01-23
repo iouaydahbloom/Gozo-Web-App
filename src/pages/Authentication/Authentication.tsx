@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../components/inputs/PrimaryInput/PrimaryInput';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import useAuthentication from '../../hooks/useAuthentication';
-import useTabMenuHidder from '../../hooks/useTabMenuHidder';
+import useTabMenuHider from '../../hooks/useTabMenuHider';
 import useToast from '../../hooks/useToast';
 import styles from './authentication.module.scss';
 
 const Authentication: React.FC = () => {
 
-    const { login, isAuthenticating, authError } = useAuthentication();
+    const {login, isAuthenticating, authError} = useAuthentication();
     const [email, setEmail] = useState('');
-    const { presentFailure } = useToast();
+    const {presentFailure} = useToast();
 
-    useTabMenuHidder();
+    useTabMenuHider();
 
     function authenticate() {
         if (!email) {
@@ -37,7 +37,7 @@ const Authentication: React.FC = () => {
                 className={styles.input}
                 placeholder='Please enter your email address'
                 value={email}
-                onChange={setEmail} />
+                onChange={setEmail}/>
             <PrimaryButton
                 size='m'
                 onClick={authenticate}

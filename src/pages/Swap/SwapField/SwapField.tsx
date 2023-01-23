@@ -43,6 +43,7 @@ const SwapField: React.FC<Props> = ({
                 </div>
                 <div className={styles.inputContainer}>
                     <IonInput
+                        data-testid='swap-input-testID'
                         id={label.toLowerCase()}
                         color={acceptedValue ? 'light' : 'danger'}
                         className={styles.input}

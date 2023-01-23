@@ -1,6 +1,6 @@
 import React from 'react';
 import PrimaryButton from '../../../components/buttons/PrimaryButton/PrimaryButton';
-import { SelectOption } from '../SwapSelect/SwapSelect';
+import {SelectOption} from '../SwapSelect/SwapSelect';
 import useProgramsExchange from '../../../hooks/useProgramsExchange';
 import SwapDirection from '../SwapDirectionToggle/SwapDirectionToggle';
 import SwapField from '../SwapField/SwapField';
@@ -8,9 +8,11 @@ import styles from './swapPoints.module.scss';
 
 const SwapPoints: React.FC = () => {
 
-    const { exchangeInOptions, exchangeOutOptions, defaultExchangeOptions, originProgram, setOriginProgram,
+    const {
+        exchangeInOptions, exchangeOutOptions, defaultExchangeOptions, originProgram, setOriginProgram,
         destinationProgram, setDestinationProgram, exchange, exchanging, direction, toggleDirection,
-        isDisabled, simulating, originBalance } = useProgramsExchange();
+        isDisabled, simulating, originBalance, isDirectionSwitchingEnabled
+    } = useProgramsExchange();
 
     return (
         <>
@@ -24,8 +26,8 @@ const SwapPoints: React.FC = () => {
                             ))}
                             quantity={originProgram.quantity}
                             selectedOption={originProgram?.loyaltyCurrency}
-                            onQuantityChange={(quantity) => setOriginProgram({ ...originProgram, quantity: quantity })}
-                            onSelectionChange={(value) => setOriginProgram({ ...originProgram, loyaltyCurrency: value })}
+                            onQuantityChange={(quantity) => setOriginProgram({...originProgram, quantity: quantity})}
+                            onSelectionChange={(value) => setOriginProgram({...originProgram, loyaltyCurrency: value})}
                             withAvailability
                             availability={originBalance}
                             acceptedValue={!isDisabled}
@@ -38,14 +40,17 @@ const SwapPoints: React.FC = () => {
                             ))}
                             quantity={originProgram.quantity}
                             selectedOption={originProgram?.loyaltyCurrency}
-                            onQuantityChange={(quantity) => setOriginProgram({ ...originProgram, quantity: quantity })}
-                            onSelectionChange={(value) => setOriginProgram({ ...originProgram, loyaltyCurrency: value })}
+                            onQuantityChange={(quantity) => setOriginProgram({...originProgram, quantity: quantity})}
+                            onSelectionChange={(value) => setOriginProgram({...originProgram, loyaltyCurrency: value})}
                             withAvailability
                             availability={originBalance}
                             acceptedValue={!isDisabled}
                         />
                 }
-                <SwapDirection doubleDirection onClick={toggleDirection} />
+                <SwapDirection
+                    doubleDirection
+                    disabled={!isDirectionSwitchingEnabled}
+                    onClick={toggleDirection}/>
                 {
                     direction === 's2p' ?
                         <SwapField
@@ -55,8 +60,14 @@ const SwapPoints: React.FC = () => {
                             ))}
                             quantity={destinationProgram.quantity}
                             selectedOption={destinationProgram?.loyaltyCurrency}
-                            onQuantityChange={(quantity) => setDestinationProgram({ ...destinationProgram, quantity: quantity })}
-                            onSelectionChange={(value) => setDestinationProgram({ ...destinationProgram, loyaltyCurrency: value })}
+                            onQuantityChange={(quantity) => setDestinationProgram({
+                                ...destinationProgram,
+                                quantity: quantity
+                            })}
+                            onSelectionChange={(value) => setDestinationProgram({
+                                ...destinationProgram,
+                                loyaltyCurrency: value
+                            })}
                             isPassive={true}
                             isLoadingQuantity={simulating}
                         />
@@ -68,8 +79,14 @@ const SwapPoints: React.FC = () => {
                             ))}
                             quantity={destinationProgram.quantity}
                             selectedOption={destinationProgram?.loyaltyCurrency}
-                            onQuantityChange={(quantity) => setDestinationProgram({ ...destinationProgram, quantity: quantity })}
-                            onSelectionChange={(value) => setDestinationProgram({ ...destinationProgram, loyaltyCurrency: value })}
+                            onQuantityChange={(quantity) => setDestinationProgram({
+                                ...destinationProgram,
+                                quantity: quantity
+                            })}
+                            onSelectionChange={(value) => setDestinationProgram({
+                                ...destinationProgram,
+                                loyaltyCurrency: value
+                            })}
                             isPassive={true}
                             isLoadingQuantity={simulating}
                         />

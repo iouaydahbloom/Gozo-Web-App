@@ -1,5 +1,5 @@
-import { IonPage, useIonViewWillLeave } from '@ionic/react';
-import { useEffect, useState } from 'react';
+import {IonPage, useIonViewWillLeave} from '@ionic/react';
+import {useEffect, useState} from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import GozoIcon from '../../components/icons/GozoIcon/GozoIcon';
 import PrimaryCheckbox from '../../components/inputs/PrimaryCheckbox/PrimaryCheckbox';
@@ -7,25 +7,25 @@ import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryCo
 import PrimaryFooter from '../../components/layout/PrimaryFooter/PrimaryFooter';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import usePrimarySheet from '../../hooks/usePrimarySheet';
-import useTabMenuHidder from '../../hooks/useTabMenuHidder';
+import useTabMenuHider from '../../hooks/useTabMenuHider';
 import Authentication from '../Authentication/Authentication';
 import styles from './landing.module.scss';
 
 const Landing: React.FC = () => {
     const [accepted, setAccepted] = useState(true);
-    const { showModal: showAuthentication, dismissModal } = usePrimarySheet({
+    const {showModal: showAuthentication, dismissModal} = usePrimarySheet({
         component: Authentication,
         title: 'Email',
         id: 'authenticationModal',
         initialBreakpoint: .6
     });
-    useTabMenuHidder();
+    useTabMenuHider();
 
     const TermsAcceptance = () => {
         return (
             <div className={styles.termsContainer}>
                 <div className={styles.checkboxField}>
-                    <PrimaryCheckbox value={accepted} onChange={setAccepted} />
+                    <PrimaryCheckbox value={accepted} onChange={setAccepted}/>
                 </div>
                 <PrimaryTypography customClassName={styles.textField}>
                     I’ve read and accepted the
@@ -52,7 +52,7 @@ const Landing: React.FC = () => {
             <PrimaryContainer>
                 <div className={`${styles.containerContent}`}>
                     <div className={`${styles.content}`}>
-                        <GozoIcon />
+                        <GozoIcon/>
 
                         <PrimaryTypography
                             isBold
@@ -70,7 +70,7 @@ const Landing: React.FC = () => {
                 </div>
             </PrimaryContainer>
             <PrimaryFooter className={styles.footer}>
-                <TermsAcceptance />
+                <TermsAcceptance/>
                 <PrimaryButton
                     customStyles={styles.submitButton}
                     onClick={showAuthentication}

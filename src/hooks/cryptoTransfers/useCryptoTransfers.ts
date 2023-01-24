@@ -4,28 +4,12 @@ import useCloud from "../useCloud";
 import {Pagination} from "../../models/data/pagination";
 import {CryptoTransfer} from "../../models/assets/ERC20Transfer";
 import {CryptoTransferDTO} from "../../dto/cryptoTransferDTO";
-import useDataQuery from "../queryCaching/useDataQuery";
-import {cryptoTransfersQueriesIdentity} from "./cryptoTransfersQueriesIdentity";
 
-interface Props {
-    erc20TransfersFilters?: any,
-    nativeTransfersFilters?: any
-}
 
-const useCryptoTransfers = ({erc20TransfersFilters, nativeTransfersFilters}: Props) => {
+const useCryptoTransfers = () => {
 
     const {walletAddress} = useDapp();
     const {run} = useCloud();
-
-    const erc20TransfersQuery = useDataQuery({
-        identity: cryptoTransfersQueriesIdentity.erc20List,
-        fn: () => getERC20Transfers(erc20TransfersFilters)
-    })
-
-    const nativeTransfersQuery = useDataQuery({
-        identity: cryptoTransfersQueriesIdentity.nativeList,
-        fn: () => getERC20Transfers(nativeTransfersFilters)
-    })
 
     const getERC20Transfers = async (filters?: any) => {
         return run(
@@ -61,8 +45,7 @@ const useCryptoTransfers = ({erc20TransfersFilters, nativeTransfersFilters}: Pro
 
     return {
         getERC20Transfers,
-        getNativeTransfers,
-        isLoadingTransfers: erc20TransfersQuery.isLoading || nativeTransfersQuery.isLoading
+        getNativeTransfers
     }
 }
 

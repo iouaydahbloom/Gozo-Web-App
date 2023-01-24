@@ -1,8 +1,8 @@
-import {IonCol, IonGrid, IonPage, IonRow} from '@ionic/react'
-import React, {useCallback} from 'react';
-import {Virtuoso} from 'react-virtuoso';
+import { IonCol, IonGrid, IonPage, IonRow } from '@ionic/react'
+import React, { useCallback } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
-import {InfiniteScrollPagination} from '../../components/InfiniteScrollPagination/InfiniteScrollPagination';
+import { InfiniteScrollPagination } from '../../components/InfiniteScrollPagination/InfiniteScrollPagination';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer'
 import PageLoader from '../../components/loaders/PageLoader/PageLoader';
 import SectionPlaceholder from '../../components/sections/SectionPlaceholder/SectionPlaceholder';
@@ -15,8 +15,8 @@ import usePaginatedQuery from "../../hooks/queryCaching/usePaginatedQuery";
 
 const Buy: React.FC = () => {
 
-    const {isAuthenticated} = useAuthentication();
-    const {fetchGiftCards} = useGiftCard({});
+    const { isAuthenticated } = useAuthentication();
+    const { fetchGiftCards } = useGiftCard({});
 
     const paginatedQuery = usePaginatedQuery({
         identity: ['giftCardsList'],
@@ -29,20 +29,20 @@ const Buy: React.FC = () => {
 
     return (
         <IonPage>
-            <TertiaryHeader title='Buy' className='ion-text-center'/>
+            <TertiaryHeader title='Buy' className='ion-text-center' />
             <PrimaryContainer className='ion-padding' scrollYAxis={false} isRefreshable onRefresh={onRefresh}>
                 <Virtuoso
                     className="ion-content-scroll-host"
-                    style={{height: "83vh"}}
+                    style={{ height: "83vh" }}
                     totalCount={1}
                     itemContent={() => {
                         return (
                             <>
                                 {
                                     paginatedQuery.isLoading ?
-                                        <PageLoader/>
+                                        <PageLoader />
                                         :
-                                        paginatedQuery.data?.pages && paginatedQuery.data?.pages.length !== 0 ?
+                                        paginatedQuery.data && paginatedQuery.data.length !== 0 ?
                                             <IonGrid className={styles.giftCards}>
                                                 <IonRow>
                                                     <IonCol>
@@ -53,12 +53,10 @@ const Buy: React.FC = () => {
                                                 <IonRow>
                                                     {
 
-                                                        paginatedQuery.data?.pages.map((page) =>
-                                                            page?.results.map((giftCard, index) => (
-                                                                <IonCol key={index} size="6">
-                                                                    <GiftCardItem key={index} giftCard={giftCard}/>
-                                                                </IonCol>
-                                                            ))
+                                                        paginatedQuery.data?.map((giftCard: any, index: any) =>
+                                                            <IonCol key={index} size="6">
+                                                                <GiftCardItem key={index} giftCard={giftCard} />
+                                                            </IonCol>
                                                         )
                                                     }
                                                 </IonRow>

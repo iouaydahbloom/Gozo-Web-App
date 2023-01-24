@@ -1,10 +1,11 @@
-import {useInfiniteQuery} from "react-query";
-import {Filter} from "../../models/data/filter";
+import { useInfiniteQuery } from "react-query";
+import { Filter } from "../../models/data/filter";
+import { Pagination } from "../../models/data/pagination";
 
 interface Props<TFilter extends Filter, TData> {
     identity: any[],
-    getData: (filter: TFilter) => Promise<TData>,
-    initialFilter?: TFilter
+    getData: (filter: TFilter, otherParams?: any) => Promise<Pagination<TData> | null>,
+    otherParams?: any
 }
 
 /**
@@ -12,20 +13,19 @@ interface Props<TFilter extends Filter, TData> {
  *
  * @param identity - the id of the query result
  * @param getData - the function to fetch data from server
- * @param initialFilter - the default filtering param
  *
  * @returns the paginated query object
  */
 const usePaginatedQuery = <TFilter extends Filter, TData>({
-                                                              identity,
-                                                              getData,
-                                                              initialFilter = new Filter(1, 10) as any
-                                                          }: Props<TFilter, TData>) => {
+    identity,
+    getData,
+    otherParams
+}: Props<TFilter, TData>) => {
 
     const paginatedQuery = useInfiniteQuery({
         queryKey: identity,
-        queryFn: ({pageParam}) => {
-            return getData(pageParam ?? initialFilter)
+        queryFn: ({ pageParam }) => {
+            return getData(pageParam, otherParams)
         },
         getNextPageParam: (lastPage: any) => {
             return lastPage.next ? getFilterFromParamProp(lastPage.next) : undefined
@@ -40,8 +40,8 @@ const usePaginatedQuery = <TFilter extends Filter, TData>({
 
     return {
         ...paginatedQuery,
-        refetch: () =>
-            paginatedQuery.refetch({refetchPage: (page, index) => index === 0})
+        data: paginatedQuery.data?.pages.map(page => page?.results).flat(1),
+        refetch: () => paginatedQuery.refetch({ refetchPage: (page, index) => index === 0 })
     }
 }
 

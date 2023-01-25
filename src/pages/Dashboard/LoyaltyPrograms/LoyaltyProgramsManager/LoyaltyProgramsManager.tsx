@@ -13,7 +13,7 @@ const LoyaltyProgramsManager: React.FC = () => {
     const {fetchAllPrograms, myPrograms} = useLoyaltyPrograms({});
 
     const paginatedQuery = usePaginatedQuery({
-        identity: ['loyltyPrograms'],
+        identity: ['loyaltyPrograms'],
         getData: fetchAllPrograms
     });
 

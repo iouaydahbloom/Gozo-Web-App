@@ -31,49 +31,48 @@ const Buy: React.FC = () => {
         <IonPage>
             <TertiaryHeader title='Buy' className='ion-text-center' />
             <PrimaryContainer className='ion-padding' scrollYAxis={false} isRefreshable onRefresh={onRefresh}>
-                <Virtuoso
-                    className="ion-content-scroll-host"
-                    style={{ height: "83vh" }}
-                    totalCount={1}
-                    itemContent={() => {
-                        return (
-                            <>
-                                {
-                                    paginatedQuery.isLoading ?
-                                        <PageLoader />
-                                        :
-                                        paginatedQuery.data && paginatedQuery.data.length !== 0 ?
-                                            <IonGrid className={styles.giftCards}>
-                                                <IonRow>
-                                                    <IonCol>
-                                                        <PrimaryTypography size='m' isBold>GIFT
-                                                            CARDS</PrimaryTypography>
-                                                    </IonCol>
-                                                </IonRow>
-                                                <IonRow>
-                                                    {
+                {
+                    paginatedQuery.isLoading ?
+                        <PageLoader />
+                        :
+                        paginatedQuery.data && paginatedQuery.data.length !== 0 ?
+                            <Virtuoso
+                                className="ion-content-scroll-host"
+                                style={{ height: "83vh" }}
+                                totalCount={1}
+                                itemContent={() => {
+                                    return (
+                                        <IonGrid className={styles.giftCards}>
+                                            <IonRow>
+                                                <IonCol>
+                                                    <PrimaryTypography size='m' isBold>GIFT
+                                                        CARDS</PrimaryTypography>
+                                                </IonCol>
+                                            </IonRow>
+                                            <IonRow>
+                                                {
 
-                                                        paginatedQuery.data?.map((giftCard: any, index: any) =>
-                                                            <IonCol key={index} size="6">
-                                                                <GiftCardItem key={index} giftCard={giftCard} />
-                                                            </IonCol>
-                                                        )
-                                                    }
-                                                </IonRow>
-                                            </IonGrid>
-                                            :
-                                            <SectionPlaceholder
-                                                logoUrl='assets/image/no-gift-card.svg'
-                                                description='There are no featured gift cards available yet'
-                                            />
+                                                    paginatedQuery.data?.map((giftCard: any, index: any) =>
+                                                        <IonCol key={index} size="6">
+                                                            <GiftCardItem key={index} giftCard={giftCard} />
+                                                        </IonCol>
+                                                    )
+                                                }
+                                            </IonRow>
+                                        </IonGrid>
+                                    )
                                 }
-                            </>
-                        )
-                    }}
-                    components={{
-                        Footer: () => InfiniteScrollPagination(paginatedQuery.fetchNextPage, !paginatedQuery.hasNextPage)
-                    }}>
-                </Virtuoso>
+                                }
+                                components={{
+                                    Footer: () => InfiniteScrollPagination(paginatedQuery.fetchNextPage, !paginatedQuery.hasNextPage)
+                                }}>
+                            </Virtuoso>
+                            :
+                            <SectionPlaceholder
+                                logoUrl='assets/image/no-gift-card.svg'
+                                description='There are no featured gift cards available yet'
+                            />
+                }
             </PrimaryContainer>
         </IonPage>
     )

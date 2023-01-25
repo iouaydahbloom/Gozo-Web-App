@@ -23,7 +23,7 @@ const LoyaltyPogramHistoryData: React.FC = () => {
     const { getTransactions } = useProgramsTransactionHistory({});
 
     const paginatedQuery = usePaginatedQuery({
-        identity: ['loyltyProgramsHistory', loyaltyCurrency],
+        identity: ['loyaltyProgramsHistory', loyaltyCurrency],
         getData: getTransactions,
         otherParams: loyaltyCurrency
     });

@@ -297,21 +297,28 @@ const Spinner: React.FC = () => {
                             selectedValue={loyaltyProgram?.loyaltyCurrency?.shortName ?? ''}
                             onValueChange={handleSelectedValue}/>
                         <PrimaryButton
-                            customStyles='flex-row-1'
+                            customStyles={`${styles.spinButton} flex-row-1`}
                             onClick={showSpinCondition}
                             size='m'
                             disabled={isPlaying}>
                             spin!
+                            
                         </PrimaryButton>
                         <SecondarySelect
+                            required    
                             type="popover"
-                            className='flex-row-1'
-                            placeholder='x1'
+                            className={`${styles.spinSelect} flex-row-1`}
+                            placeholder='multiple select'
                             name="spinCount"
                             onChange={(value) => setSpinCount(value.detail.value)}
                             value={spinCount}
                             options={spinCountOptions}
                         />
+                        {/* <PrimaryTypography
+                            size='m'
+                            customClassName={styles.spinCredits}>
+                            19/20
+                        </PrimaryTypography> */}
                     </div>
                 </IonToolbar>
             </IonHeader>

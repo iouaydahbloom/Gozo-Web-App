@@ -6,14 +6,13 @@
         grid-gap: 0;
         gap: 0;
         .spinButton {
-            margin: 0 0 0 10px;
+            margin-right: 0;
             --border-radius: 5px 0 0 5px !important;
             height: 50px;
         }
 
         .spinSelect {
             ion-select {
-                // padding: 0 !important;
                 border-radius: 0 5px 5px 0 !important;
                 background: var(--ion-color-primary) !important;
                 border: 0 !important;
@@ -27,6 +26,7 @@
             border-radius: 0 5px 5px 0 !important;
             padding: 11px;
             border-left: 1px solid var(--ion-color-light) !important;
+            z-index: 1;
         }
     }
 }

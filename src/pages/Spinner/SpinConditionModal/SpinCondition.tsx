@@ -6,18 +6,19 @@ import styles from './spinConditionModal.module.scss'
 
 interface Props {
     dismiss: () => void,
-    onSuccess?: () => void
-    cost?: number
+    onSuccess?: () => void,
+    cost?: number,
+    spins?: string
 }
 
-const SpinCondition: React.FC<Props> = ({ dismiss, cost, onSuccess }) => {
+const SpinCondition: React.FC<Props> = ({ dismiss, cost, spins, onSuccess }) => {
     return (
         <IonContent className={`${styles.container} ion-text-center ion-padding`}>
             <div className={styles.containerContent}>
                 <PrimaryTypography
                     size='m'
                 >
-                    {cost} points will be redeemed from your account
+                    {cost} points will be redeemed from your account for {spins} spin
                 </PrimaryTypography>
 
                 <PrimaryButton onClick={() => { dismiss(); onSuccess && onSuccess() }} size='m' expand='block'>

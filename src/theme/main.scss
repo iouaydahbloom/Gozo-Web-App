@@ -126,3 +126,8 @@ body.scanner-active {
     display: none !important;
   }
 }
+
+.select-disabled {
+  opacity: 0.5 !important;
+  pointer-events: none;
+}

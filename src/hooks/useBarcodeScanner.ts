@@ -1,31 +1,46 @@
-// import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner';
-
 import {BarcodeScanner} from "@capacitor-community/barcode-scanner";
+import {useEffect} from "react";
 
 const useBarcodeScanner = () => {
 
+    function showBarcodeScanner() {
+        document.querySelector('body')?.classList.add('scanner-active');
+    }
+
+    function hideBarcodeScanner() {
+        document.querySelector('body')?.classList.remove('scanner-active');
+    }
+
+    async function stopScanning() {
+        hideBarcodeScanner();
+        await BarcodeScanner.showBackground();
+        await BarcodeScanner.stopScan();
+    }
+
     async function scan() {
-        //@ts-ignore
-        document.querySelector('body').classList.add('scanner-active');
-        // return BarcodeScanner.scan()
+        showBarcodeScanner();
         await BarcodeScanner.checkPermission({force: true});
-
-        // make background of WebView transparent
-        // note: if you are using ionic this might not be enough, check below
         await BarcodeScanner.hideBackground();
+        const result = await BarcodeScanner.startScan();
 
-        const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
-
-        //@ts-ignore
-        document.querySelector('body').classList.remove('scanner-active');
-        // if the result has content
+        hideBarcodeScanner();
         if (result.hasContent) {
-            console.log(result.content); // log the raw scanned content
             return {text: result.content!};
         }
-
         return {text: ''};
     }
+
+    useEffect(() => {
+        const registerHighPriorityScannerAction = (ev: any) => {
+            ev.detail.register(1000000, async () => {
+                await stopScanning();
+            })
+        }
+        document.addEventListener('ionBackButton', registerHighPriorityScannerAction);
+        return () => {
+            document.removeEventListener('ionBackButton', registerHighPriorityScannerAction);
+        }
+    }, [])
 
     return {
         scan

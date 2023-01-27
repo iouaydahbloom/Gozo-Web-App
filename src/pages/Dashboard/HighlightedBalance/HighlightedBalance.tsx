@@ -1,5 +1,5 @@
 import PrimaryTypography from '../../../components/typography/PrimaryTypography/PrimaryTypography';
-import { IonBadge } from '@ionic/react';
+import {IonBadge} from '@ionic/react';
 import styles from './highlightedBalance.module.scss';
 
 export interface HighlightedBalanceAsset {
@@ -12,15 +12,20 @@ interface Props {
     className?: string
 }
 
-const HighlightedBalance: React.FC<Props> = ({ asset, className }) => {
+const HighlightedBalance: React.FC<Props> = ({asset, className}) => {
     return (
-        <div className={`${styles.container} ${className}`} >
-            <img src='/assets/image/gozo-element.png' alt='' className={styles.img} />
+        <div className={`${styles.container} ${className}`}>
+            <img src='/assets/image/gozo-element.png' alt='' className={styles.img}/>
             <div className={styles.innerContainer}>
                 <IonBadge className={styles.badge}>
-                    <PrimaryTypography size='xxxl'> {asset ? asset.balance : 0}</PrimaryTypography>
+                    <PrimaryTypography
+                        size='xxxl'
+                        customClassName={styles.balance}>
+                        {asset ? asset.balance : 0}
+                    </PrimaryTypography>
                 </IonBadge>
-                <PrimaryTypography size='l' customClassName={styles.description}>{asset?.description}</PrimaryTypography>
+                <PrimaryTypography size='l'
+                                   customClassName={styles.description}>{asset?.description}</PrimaryTypography>
             </div>
         </div>
     )

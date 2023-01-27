@@ -1,6 +1,6 @@
-import { IonIcon } from '@ionic/react';
-import { scanOutline } from 'ionicons/icons';
-import React, { useEffect, useState } from 'react'
+import {IonIcon} from '@ionic/react';
+import {scanOutline} from 'ionicons/icons';
+import React, {useEffect, useState} from 'react'
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryInput from '../../components/inputs/PrimaryInput/PrimaryInput';
 import TransactionDetails from '../../components/TransactionDetails/TransactionDetails';
@@ -16,13 +16,13 @@ const SendCrypto: React.FC = () => {
 
     const [receiver, setReceiver] = useState('');
     const [amount, setAmount] = useState('');
-    const { transferToken, transferFee, isEstimatingTransferFee, executing, error } = useBlockchainTransfer();
-    const { presentFailure } = useToast();
-    const { scan } = useBarcodeScanner();
+    const {transferToken, transferFee, isEstimatingTransferFee, executing, error} = useBlockchainTransfer();
+    const {presentFailure} = useToast();
+    const {scan} = useBarcodeScanner();
 
     const transferTokensMutation = useDataMutation({
         mutatedIdentity: cryptoAssetsQueriesIdentity.list,
-        fn: (args: {receiver: string, amount: string}) => transferToken(args.receiver, args.amount)
+        fn: (args: { receiver: string, amount: string }) => transferToken(args.receiver, args.amount)
     })
 
     async function handleTransfer() {
@@ -52,21 +52,21 @@ const SendCrypto: React.FC = () => {
                     placeholder='Enter Receiver Address'
                     value={receiver}
                     onChange={setReceiver}
-                    className={styles.inputWithscanner} />
+                    className={styles.inputWithscanner}/>
                 <IonIcon
                     icon={scanOutline}
                     onClick={handleScan}
                     size='large'
                     color='light'
-                    className={styles.scan} />
+                    className={styles.scan}/>
             </div>
-            <br />
+            <br/>
             <PrimaryTypography>Amount:</PrimaryTypography>
             <PrimaryInput
                 placeholder='Enter Amount'
                 value={amount}
-                onChange={setAmount} />
-            <br />
+                onChange={setAmount}/>
+            <br/>
 
             <TransactionDetails
                 hasMinimumValue={false}
@@ -77,7 +77,7 @@ const SendCrypto: React.FC = () => {
                 notification='Transaction might take around 1 minute'
             />
 
-            <br />
+            <br/>
             <PrimaryButton
                 expand='block'
                 onClick={handleTransfer}

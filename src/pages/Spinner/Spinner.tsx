@@ -145,7 +145,7 @@ const Spinner: React.FC = () => {
     function listenerCallBack(id: any, amount: any, playerAddress: string, gameToken: string) {
         if (playerAddress.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
             const prize: IPrize = {
-                prizeId: id.toString(),
+                prizeId: id,
                 gameToken: gameToken
             }
             stop();
@@ -258,7 +258,7 @@ const Spinner: React.FC = () => {
         addListener(
             gameContractAddress,
             gameContractAbi,
-            'prizesSelected',
+            'prizeSelected',
             listenerCallBack
         );
 
@@ -269,7 +269,7 @@ const Spinner: React.FC = () => {
     }, [id, defaultProgram, loyaltyProgram])
 
     useIonViewWillLeave(() => {
-        if(!isPlaying) unReservePrizes(gameToken);
+        if (!isPlaying) unReservePrizes(gameToken);
         setIsPlaying(false);
     }, [gameToken, isPlaying])
 

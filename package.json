@@ -46,6 +46,7 @@
     "ethers": "^5.7.1",
     "formik": "^2.2.9",
     "gsap": "^3.11.1",
+    "howler": "^2.2.3",
     "ionicons": "^5.4.0",
     "magic-sdk": "^9.0.0",
     "moment": "^2.29.4",
@@ -113,6 +114,7 @@
   "devDependencies": {
     "@capacitor/cli": "4.1.0",
     "@types/eth-sig-util": "^2.1.1",
+    "@types/howler": "^2.2.7",
     "@types/lodash": "^4.14.184",
     "@types/react-tabs": "^5.0.5",
     "@types/sanitize-html": "^2.8.0",

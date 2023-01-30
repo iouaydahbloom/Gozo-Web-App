@@ -145,7 +145,7 @@ const Spinner: React.FC = () => {
     function listenerCallBack(id: any, amount: any, playerAddress: string, gameToken: string) {
         if (playerAddress.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
             const prize: IPrize = {
-                prizeId: id,
+                prizeId: id.toString(),
                 gameToken: gameToken
             }
             stop();
@@ -258,7 +258,7 @@ const Spinner: React.FC = () => {
         addListener(
             gameContractAddress,
             gameContractAbi,
-            'prizeSelected',
+            'prizesSelected',
             listenerCallBack
         );
 

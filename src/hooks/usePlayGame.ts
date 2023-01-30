@@ -32,9 +32,10 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken}: Props) => {
         if (!brand && !walletAddress) return Promise.resolve();
         const params: any = {
             brand: brand,
-            player_address: walletAddress
+            player_address: walletAddress,
+            number_of_prizes: 1
         }
-        if (partnerId) params.partner_id = partnerId;
+    //    if (partnerId) params.partner_id = partnerId;
         if (gameToken) params.game_token = gameToken;
 
         return run(cloudFunctionName.playWithSuperPoints,

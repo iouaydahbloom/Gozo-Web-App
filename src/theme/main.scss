@@ -108,8 +108,21 @@
   overflow: hidden;
 }
 
+//Camera scanning styles
+#close-camera-icon {
+  padding-top: var(--ion-safe-area-top, 0);
+  display: none;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
 body.scanner-active {
-  --background: transparent;
-  --ion-background-color: transparent;
-  display: none !important;
+  #close-camera-icon {
+    display: initial;
+  }
+
+  .ion-page {
+    display: none !important;
+  }
 }

@@ -12,30 +12,35 @@ import NetworkProvider from './providers/networkProvider/NetworkProvider';
 import WheelSettingsProvider from './providers/WheelSettingsProvider/WheelSettingsProvider';
 import {ErrorHandlerProvider} from './providers/ErrorHandlerProvider/ErrorHandlerProvider';
 import {QueryClient, QueryClientProvider} from "react-query";
+import CameraCloseButton from "./components/camera/CameraCloseButton";
 
 require('dotenv').config();
 
 ReactDOM.render(
     <React.StrictMode>
-        <ErrorHandlerProvider>
-            <NetworkProvider>
-                <OnBoardingPreviewProvider>
-                    <MagicAuthProvider>
-                        <QueryClientProvider client={new QueryClient()}>
-                            <SessionProvider>
-                                <DappProvider>
-                                    <CurrencySettingsProvider>
-                                        <WheelSettingsProvider>
-                                            <App/>
-                                        </WheelSettingsProvider>
-                                    </CurrencySettingsProvider>
-                                </DappProvider>
-                            </SessionProvider>
-                        </QueryClientProvider>
-                    </MagicAuthProvider>
-                </OnBoardingPreviewProvider>
-            </NetworkProvider>
-        </ErrorHandlerProvider>
+        <>
+            <CameraCloseButton/>
+            <ErrorHandlerProvider>
+                <NetworkProvider>
+                    <OnBoardingPreviewProvider>
+                        <MagicAuthProvider>
+                            <QueryClientProvider client={new QueryClient()}>
+                                <SessionProvider>
+                                    <DappProvider>
+                                        <CurrencySettingsProvider>
+                                            <WheelSettingsProvider>
+                                                <App/>
+                                            </WheelSettingsProvider>
+                                        </CurrencySettingsProvider>
+                                    </DappProvider>
+                                </SessionProvider>
+                            </QueryClientProvider>
+                        </MagicAuthProvider>
+                    </OnBoardingPreviewProvider>
+                </NetworkProvider>
+            </ErrorHandlerProvider>
+        </>
+
     </React.StrictMode>,
     document.getElementById('root')
 )

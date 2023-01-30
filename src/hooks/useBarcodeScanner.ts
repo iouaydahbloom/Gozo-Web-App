@@ -43,7 +43,8 @@ const useBarcodeScanner = () => {
     }, [])
 
     return {
-        scan
+        scan,
+        stopScanning
     }
 }
 

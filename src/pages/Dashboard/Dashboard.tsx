@@ -25,7 +25,7 @@ const Dashboard: React.FC = () => {
     const {hide: hideOnboarding} = useOnBoardingPreview();
     const {assets: cryptoAssets, fetchCryptoAssets, defaultERC20Asset, isLoadingAssets} = useCryptoAssets();
     const {fetchMyLoyaltyPrograms, loadingMyLoyaltyPrograms, myPrograms} = useLoyaltyPrograms({});
-    const {gozoLoyaltyMembership, fetchGozoLoyaltyMembership} = useContext(currencySettingsContext);
+    const {gozoLoyaltyMembership} = useContext(currencySettingsContext);
     const [highlightedAsset, setHighlightedAsset] = useState<HighlightedBalanceAsset>();
     const {tabRef, setTabRef, setTabHeaderHeight} = useContext(TabHeaderHeightContext);
     const {isAuthenticated} = useAuthentication();

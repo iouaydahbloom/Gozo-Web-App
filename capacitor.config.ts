@@ -31,7 +31,10 @@ const config: CapacitorConfig = {
     bundledWebRuntime: false,
     plugins: {
         SplashScreen: {
-            launchAutoHide: false
+            launchAutoHide: false,
+            androidScaleType: "CENTER_CROP",
+            splashFullScreen: true,
+            splashImmersive: true
         },
         PushNotifications: {
             presentationOptions: ["badge", "sound", "alert"],

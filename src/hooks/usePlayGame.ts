@@ -69,7 +69,6 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken, numberOfSpin
             (res: PlayGameDTO) => PlayGame.getFromDTO(res),
             true)
             .then((result) => {
-                console.log("result", result)
                 if (result.isSuccess) {
                     return result.data
                 } else if(result?.message) {

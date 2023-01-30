@@ -91,6 +91,7 @@ const useGamePrizes = ({ loyaltyCurrency, prizeId }: Props) => {
         gameToken,
         numberOfPrizes : prizesQuery.data?.numberOfPrizes,
         uncollectedPrizes: getUncollectedPrizes,
+        collectedPrizes: prizesQuery.data?.numberOfCollectedPrizes,
         prizes: prizesQuery.data?.prizes,
         isLoadingPrize: prizeQuery.isLoading
     }

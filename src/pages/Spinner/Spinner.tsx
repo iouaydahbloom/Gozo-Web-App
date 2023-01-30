@@ -36,6 +36,7 @@ import { useHistory } from 'react-router';
 import useDataQueryInvalidation from "../../hooks/queryCaching/useDataQueryInvalidation";
 import { rewardsQueriesIdentity } from "../../hooks/reward/rewardQueriesIdentity";
 import SecondarySelect, { SelectOption } from "../../components/inputs/SecondarySelect/SecondarySelect";
+import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
 
 interface IPrize {
     prizeId: string,
@@ -63,7 +64,8 @@ const Spinner: React.FC = () => {
     const spinCountOptions = [
         new SelectOption("x1", '1'),
         new SelectOption("x2", '2'),
-        new SelectOption("x3", '3')
+        new SelectOption("x5", '5'),
+        new SelectOption("x10", '10')
     ]
 
     const {
@@ -71,6 +73,7 @@ const Spinner: React.FC = () => {
         fetchPrizes,
         numberOfPrizes: spinCredits,
         uncollectedPrizes: uncollectedCredits,
+        collectedPrizes: collectedCredits,
         gameToken,
         unReservePrizes,
         isLoadingPrizes
@@ -126,7 +129,7 @@ const Spinner: React.FC = () => {
             onSuccess={handlePlaying}
             dismiss={dismissSpinCondition} />
     });
-    console.log('selectedPrizeId', selectedPrizeId)
+
     const { showModal: showSuccessModal } = useDialog({
         id: 'spinSuccessModal',
         component: <SpinSuccess
@@ -284,9 +287,10 @@ const Spinner: React.FC = () => {
         if (!isPlaying) unReservePrizes();
         setIsPlaying(false);
     }, [gameToken, isPlaying])
-    console.log("isplauyimgng", isPlaying)
+
     return (
         <IonPage>
+            <TertiaryHeader title='Spin x10 - get 2 free spins' className='ion-text-center' />
             <IonHeader className='ion-no-border'>
                 <IonToolbar className={styles.headerToolbar}>
                     <div className='flex-row-container ion-padding-horizontal'>
@@ -300,7 +304,7 @@ const Spinner: React.FC = () => {
                             size='m'
                             disabled={isPlaying}>
                             {uncollectedCredits && spinCredits ?
-                                `spin! ${uncollectedCredits} of ${spinCredits}`
+                                `spin! ${collectedCredits && collectedCredits + 1} of ${spinCredits}`
                                 :
                                 'spin!'}
                         </PrimaryButton>

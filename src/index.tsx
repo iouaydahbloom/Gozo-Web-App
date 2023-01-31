@@ -12,11 +12,13 @@ import NetworkProvider from './providers/networkProvider/NetworkProvider';
 import WheelSettingsProvider from './providers/WheelSettingsProvider/WheelSettingsProvider';
 import {ErrorHandlerProvider} from './providers/ErrorHandlerProvider/ErrorHandlerProvider';
 import {QueryClient, QueryClientProvider} from "react-query";
+import CameraCloseButton from "./components/camera/CameraCloseButton";
 
 require('dotenv').config();
 
 ReactDOM.render(
     <React.StrictMode>
+        <CameraCloseButton/>
         <ErrorHandlerProvider>
             <NetworkProvider>
                 <OnBoardingPreviewProvider>

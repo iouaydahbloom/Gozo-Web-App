@@ -269,7 +269,7 @@ const Spinner: React.FC = () => {
     }, [id, defaultProgram, loyaltyProgram])
 
     useIonViewWillLeave(() => {
-        if(!isPlaying) unReservePrizes(gameToken);
+        if (!isPlaying) unReservePrizes(gameToken);
         setIsPlaying(false);
     }, [gameToken, isPlaying])
 

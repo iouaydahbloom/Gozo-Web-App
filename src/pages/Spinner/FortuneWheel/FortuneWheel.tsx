@@ -1,9 +1,10 @@
 import styles from './fortuneWheel.module.scss';
 import {WheelSegment} from '../../../models/wheelSegment';
-import {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {Winwheel} from '../WinWheelLibrary/Winwheel';
 import {ellipsisTruncate} from '../../../helpers/managment/string';
 import {WheelSettingsContext} from '../../../providers/WheelSettingsProvider/wheelSettingsContext';
+import {Howl, Howler} from 'howler';
 
 interface Props {
     data: WheelSegment[],
@@ -15,7 +16,10 @@ interface Props {
     onClick?: () => any
 }
 
-var myWheel: any
+var myWheel: any;
+const audio = new Howl({
+    src: ['/assets/audio/tick.mp3']
+});
 
 const FortuneWheel: React.FC<Props> = ({
                                            data,
@@ -29,47 +33,6 @@ const FortuneWheel: React.FC<Props> = ({
     const [isSpinning, setIsSpinning] = useState(false)
 
     const {isMuted} = useContext(WheelSettingsContext);
-
-    useEffect(() => {
-        myWheel = new Winwheel({
-            'drawText': true,              // Code drawn text can be used with segment images.
-            'textAlignment': 'center',
-            'textFontFamily': 'Monda',
-            'textFillStyle': 'white',
-            'canvasId': 'canvas',
-            'numSegments': data.length,
-            'segments': getOptimizeData(),
-            'textFontSize': 16,
-            'textMargin': 6,
-            'outerRadius': 170,    // Use these three properties to
-            'centerX': 200,    // correctly position the wheel
-            'centerY': 195,    // over the background.
-            'lineWidth': 2,
-            'strokeStyle': "#fff",
-            'fillStyle': "#000",
-            'rotationAngle': 4,
-            'innerRadius': 35,             // The larger the inner radius, the bigger the hollow space inside the wheel.
-            'animation':
-                {
-                    'type': 'spinToStop',
-                    'duration': 10,
-                    'spins': 5,
-                    'callbackFinished': callbackFinished,  // Function to call when the spinning has stopped.
-                    'callbackSound': playSound,   // Called when the tick sound is to be played.
-                    'soundTrigger': 'pin'        // Specify pins are to trigger the sound.
-                },
-            'pins':                // Turn pins on.
-                {
-                    'number': 16,
-                    'fillStyle': 'yellow',
-                    'outerRadius': 5,
-                    'lineWidth': 4,
-                    'margin': 0,
-                    'strokeStyle': 'orange'
-                }
-        });
-
-    }, [data, isMuted])
 
     function getOptimizeData() {
         let canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -113,20 +76,13 @@ const FortuneWheel: React.FC<Props> = ({
         myWheel.startAnimation();
     }
 
-    // Loads the tick audio sound in to an audio object.
-    let audio = new Audio('/assets/audio/tick.mp3');
-
     // This function is called when the sound is to be played.
-    function playSound() {
-        setIsSpinning(true)
-        audio.muted = isMuted;
-        // Stop and rewind the sound if it already happens to be playing.
-        audio.pause();
-        audio.currentTime = 0;
-
-        // Play the sound.
+    const playSound = useCallback(async () => {
+        setIsSpinning(true);
+        audio.stop();
+        audio.mute(isMuted);
         audio.play();
-    }
+    }, [audio])
 
     // Called when the animation has finished.
     function callbackFinished() {
@@ -150,11 +106,50 @@ const FortuneWheel: React.FC<Props> = ({
     }
 
     useEffect(() => {
+        myWheel = new Winwheel({
+            'drawText': true,              // Code drawn text can be used with segment images.
+            'textAlignment': 'center',
+            'textFontFamily': 'Monda',
+            'textFillStyle': 'white',
+            'canvasId': 'canvas',
+            'numSegments': data.length,
+            'segments': getOptimizeData(),
+            'textFontSize': 16,
+            'textMargin': 6,
+            'outerRadius': 170,    // Use these three properties to
+            'centerX': 200,    // correctly position the wheel
+            'centerY': 195,    // over the background.
+            'lineWidth': 2,
+            'strokeStyle': "#fff",
+            'fillStyle': "#000",
+            'rotationAngle': 4,
+            'innerRadius': 35,             // The larger the inner radius, the bigger the hollow space inside the wheel.
+            'animation':
+                {
+                    'type': 'spinToStop',
+                    'duration': 10,
+                    'spins': 5,
+                    'callbackFinished': callbackFinished,  // Function to call when the spinning has stopped.
+                    'callbackSound': playSound,   // Called when the tick sound is to be played.
+                    'soundTrigger': 'pin'        // Specify pins are to trigger the sound.
+                },
+            'pins':                // Turn pins on.
+                {
+                    'number': 16,
+                    'fillStyle': 'yellow',
+                    'outerRadius': 5,
+                    'lineWidth': 4,
+                    'margin': 0,
+                    'strokeStyle': 'orange'
+                }
+        });
+    }, [data, isMuted])
+
+    useEffect(() => {
         if (spin && Object.keys(myWheel).length !== 0 && selectedPrizeId) {
             calculatePrize()
         }
     }, [spin, selectedPrizeId])
-
 
     useEffect(() => {
         if (isSpinning) setIsSpinning(false)
@@ -162,8 +157,7 @@ const FortuneWheel: React.FC<Props> = ({
 
     return (
         <div className={styles.canvasContainer}
-             style={{backgroundImage: `url('assets/image/wheel-background.png')`}}
-        >
+             style={{backgroundImage: `url('assets/image/wheel-background.png')`}}>
             {logoAtCenter &&
                 <img
                     alt=''

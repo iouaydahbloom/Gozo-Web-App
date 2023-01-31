@@ -18,29 +18,26 @@ require('dotenv').config();
 
 ReactDOM.render(
     <React.StrictMode>
-        <>
-            <CameraCloseButton/>
-            <ErrorHandlerProvider>
-                <NetworkProvider>
-                    <OnBoardingPreviewProvider>
-                        <MagicAuthProvider>
-                            <QueryClientProvider client={new QueryClient()}>
-                                <SessionProvider>
-                                    <DappProvider>
-                                        <CurrencySettingsProvider>
-                                            <WheelSettingsProvider>
-                                                <App/>
-                                            </WheelSettingsProvider>
-                                        </CurrencySettingsProvider>
-                                    </DappProvider>
-                                </SessionProvider>
-                            </QueryClientProvider>
-                        </MagicAuthProvider>
-                    </OnBoardingPreviewProvider>
-                </NetworkProvider>
-            </ErrorHandlerProvider>
-        </>
-
+        <CameraCloseButton/>
+        <ErrorHandlerProvider>
+            <NetworkProvider>
+                <OnBoardingPreviewProvider>
+                    <MagicAuthProvider>
+                        <QueryClientProvider client={new QueryClient()}>
+                            <SessionProvider>
+                                <DappProvider>
+                                    <CurrencySettingsProvider>
+                                        <WheelSettingsProvider>
+                                            <App/>
+                                        </WheelSettingsProvider>
+                                    </CurrencySettingsProvider>
+                                </DappProvider>
+                            </SessionProvider>
+                        </QueryClientProvider>
+                    </MagicAuthProvider>
+                </OnBoardingPreviewProvider>
+            </NetworkProvider>
+        </ErrorHandlerProvider>
     </React.StrictMode>,
     document.getElementById('root')
 )

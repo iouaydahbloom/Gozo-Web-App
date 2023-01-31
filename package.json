@@ -87,6 +87,10 @@
     "build-android:demo": "env-cmd -f .env.demo react-scripts build && capacitor sync android && capacitor open android",
     "start-android": "env-cmd -f .env.development react-scripts build && NODE_ENV=dev npx cap run android",
     "start-android:demo": "env-cmd -f .env.demo react-scripts build && NODE_ENV=demo npx cap run android",
+    "build-ios": "env-cmd -f .env.development react-scripts build && capacitor sync ios && capacitor open ios",
+    "build-ios:demo": "env-cmd -f .env.demo react-scripts build && capacitor sync ios && capacitor open ios",
+    "start-ios": "env-cmd -f .env.development react-scripts build && NODE_ENV=dev npx cap run ios",
+    "start-ios:demo": "env-cmd -f .env.demo react-scripts build && NODE_ENV=demo npx cap run ios",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
     "eject": "react-scripts eject"
   },

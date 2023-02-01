@@ -28,7 +28,7 @@ import ProgramSelection, { ProgramSelectOption } from './ProgramSelection/Progra
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import ParticlesLoader from '../../components/sections/ParticlesLoader/ParticlesLoader';
 import PageLoader from '../../components/loaders/PageLoader/PageLoader';
-import { informationCircleOutline, star } from 'ionicons/icons';
+import { informationCircleOutline } from 'ionicons/icons';
 import PrimaryPopover from '../../components/popovers/PrimaryPopover/PrimaryPopover';
 import { useDapp } from '../../providers/DappProvider/DappProvider';
 import useMessagesInterval from '../../hooks/useMessagesInterval';
@@ -63,7 +63,7 @@ const Spinner: React.FC = () => {
     const [spinCount, setSpinCount] = useState('1');
     const spinCountOptions = [
         new SelectOption("x1", '1'),
-        new SelectOption("x2", '2'),
+        new SelectOption("x3", '3'),
         new SelectOption("x5", '5'),
         new SelectOption("x10", '10')
     ]
@@ -76,7 +76,8 @@ const Spinner: React.FC = () => {
         collectedPrizes: collectedCredits,
         gameToken,
         unReservePrizes,
-        isLoadingPrizes
+        isLoadingPrizes,
+        prizesExpired
     } = useGamePrizes({ loyaltyCurrency: loyaltyProgram?.brand?.key });
 
     const { play, prizeId, isSubmitting, playingError } = usePlayGame({
@@ -173,6 +174,7 @@ const Spinner: React.FC = () => {
 
     async function handlePlaying() {
         start();
+        if(prizesExpired) await getPrizes();
         await play();
     }
 
@@ -235,7 +237,10 @@ const Spinner: React.FC = () => {
     }, [returnedPrize])
 
     useEffect(() => {
-        if (prizeId) setSelectedPrizeId(prizeId)
+        if (prizeId) {
+            setSelectedPrizeId(prizeId)
+            invalidate(rewardsQueriesIdentity.reward);
+        }
     }, [prizeId])
 
     useEffect(() => {

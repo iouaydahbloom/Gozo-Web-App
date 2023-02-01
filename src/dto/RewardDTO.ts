@@ -5,7 +5,8 @@ export interface RewardDTO {
     _id: string,
     createdAt: string,
     status: RewardStatusType,
-    prize: PrizeDTO
+    prize: PrizeDTO,
+    updatedAt: string
 } 
 
 

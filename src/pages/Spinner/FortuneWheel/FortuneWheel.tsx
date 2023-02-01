@@ -34,47 +34,6 @@ const FortuneWheel: React.FC<Props> = ({
 
     const {isMuted} = useContext(WheelSettingsContext);
 
-    useEffect(() => {
-        myWheel = new Winwheel({
-            'drawText': true,              // Code drawn text can be used with segment images.
-            'textAlignment': 'center',
-            'textFontFamily': 'Monda',
-            'textFillStyle': 'white',
-            'canvasId': 'canvas',
-            'numSegments': data.length,
-            'segments': getOptimizeData(),
-            'textFontSize': 16,
-            'textMargin': 6,
-            'outerRadius': 170,    // Use these three properties to
-            'centerX': 200,    // correctly position the wheel
-            'centerY': 195,    // over the background.
-            'lineWidth': 2,
-            'strokeStyle': "#fff",
-            'fillStyle': "#000",
-            'rotationAngle': 4,
-            'innerRadius': 35,             // The larger the inner radius, the bigger the hollow space inside the wheel.
-            'animation':
-                {
-                    'type': 'spinToStop',
-                    'duration': 10,
-                    'spins': 5,
-                    'callbackFinished': callbackFinished,  // Function to call when the spinning has stopped.
-                    'callbackSound': playSound,   // Called when the tick sound is to be played.
-                    'soundTrigger': 'pin'        // Specify pins are to trigger the sound.
-                },
-            'pins':                // Turn pins on.
-                {
-                    'number': data.length,
-                    'fillStyle': 'yellow',
-                    'outerRadius': 5,
-                    'lineWidth': 4,
-                    'margin': 0,
-                    'strokeStyle': 'orange'
-                }
-        });
-
-    }, [data, isMuted])
-
     function getOptimizeData() {
         let canvas = document.getElementById('canvas') as HTMLCanvasElement;
         let ctx = canvas.getContext('2d');
@@ -176,7 +135,7 @@ const FortuneWheel: React.FC<Props> = ({
                 },
             'pins':                // Turn pins on.
                 {
-                    'number': 16,
+                    'number': data.length,
                     'fillStyle': 'yellow',
                     'outerRadius': 5,
                     'lineWidth': 4,
@@ -184,6 +143,7 @@ const FortuneWheel: React.FC<Props> = ({
                     'strokeStyle': 'orange'
                 }
         });
+
     }, [data, isMuted])
 
     useEffect(() => {

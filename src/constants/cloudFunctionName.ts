@@ -34,6 +34,7 @@ export const cloudFunctionName = {
     profileDetails: 'user_info',
     updateProfileDetails: 'update_user_info',
     playWithSuperPoints: 'play_with_super_points',
+    collectReward: 'collect_reward',
     minimumT2Pexchange: 'minimum_t2p_exchange',
     minimumP2Texchange: 'minimum_p2t_exchange',
     web3Dependencies: 'web3_dependencies',

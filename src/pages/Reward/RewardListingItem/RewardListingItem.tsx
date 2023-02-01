@@ -42,15 +42,21 @@ const RewardListingItem: React.FC<Props> = ({ reward, reload }) => {
         </div>
         <div className={styles.popoverRow}>
           <PrimaryTypography color="medium-light">
-            Date:
+            Created At:
           </PrimaryTypography>
-          <PrimaryTypography color="dark">{formatDate(reward.date, 'ddd Do MMM, YYYY')}</PrimaryTypography>
+          <PrimaryTypography color="dark">{formatDate(reward.createdAt, 'ddd Do MMM, YYYY')}</PrimaryTypography>
+        </div>
+        <div className={styles.popoverRow}>
+          <PrimaryTypography color="medium-light">
+            Updated At:
+          </PrimaryTypography>
+          <PrimaryTypography color="dark">{formatDate(reward.updatedAt, 'ddd Do MMM, YYYY')}</PrimaryTypography>
         </div>
         <div className={styles.popoverRow}>
           <PrimaryTypography color="medium-light">
             Time:
           </PrimaryTypography>
-          <PrimaryTypography color="dark">{formatDate(reward.date, 'h:mm a')}</PrimaryTypography>
+          <PrimaryTypography color="dark">{formatDate(reward.updatedAt, 'h:mm a')}</PrimaryTypography>
         </div>
       </div>
   })

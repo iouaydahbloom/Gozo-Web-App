@@ -1,36 +1,17 @@
-.container {
-    padding-top: 32px;
-    padding-bottom: 32px;
-    display: flex;
-    align-items: center;
-    background: linear-gradient(106.18deg, var(--ion-color-primary) 27.95%, var(--ion-color-quaternary) 81.41%);
-    box-shadow: 0px 4px 2px #000000;
-    border-radius: 11px;
-    overflow: hidden;
-    position: relative;
-    margin: 0 0 5px 0;
-
-    .startImg {
-        position: absolute;
-        width: 200px;
-        height: 200px;
-        left: -50px;
-        top: -75px;
-    }
-
-    .innerContainer {
-        .description {
-            text-align: center;
-            padding-left: 20px
+.slider {
+    ion-slide{
+        padding: 0px 0px 35px 0px!important;
+        .slide {
+            background-repeat: no-repeat;
+            background-position: center;
+            // background-size: cover;
+            background-size: contain;
+            -webkit-border-radius: 11px;
+            -moz-border-radius: 11px;
+            height: 100px;
+            width: 100%;
+            border-radius: 11px;
         }
     }
 
-
-    .endImg {
-        position: absolute;
-        width: 100px;
-        height: 70px;
-        right: -10px;
-        bottom: 0px;
-    }
 }

@@ -8,38 +8,49 @@ import {
     useIonViewWillEnter,
     useIonViewWillLeave
 } from '@ionic/react';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PrimaryButton from '../../components/buttons/PrimaryButton/PrimaryButton';
 import PrimaryContainer from '../../components/layout/PrimaryContainer/PrimaryContainer';
-import {WheelSegment} from '../../models/wheelSegment';
+import { WheelSegment } from '../../models/wheelSegment';
 import FortuneWheel from './FortuneWheel/FortuneWheel';
 import SpinCondition from './SpinConditionModal/SpinCondition';
 import styles from './spinner.module.scss';
-import {modalController} from '@ionic/core';
+import { modalController } from '@ionic/core';
 import SpinSuccess from './SpinSuccessModal/SpinSuccess';
 import useBlockchainContractExecution from '../../hooks/useBlockchainContractExecution';
 import useSearchParams from '../../hooks/useSearchParams';
 import useLoyaltyPrograms from '../../hooks/loyaltyProgram/useLoyaltyPrograms';
 import usePlayGame from '../../hooks/usePlayGame';
-import usePrize from '../../hooks/prize/usePrize';
+import useGamePrizes from '../../hooks/gamePrizes/useGamePrizes';
 import useDialog from '../../hooks/useDialog';
-import PrimaryAccordion, {AccordionItem} from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
-import ProgramSelection, {ProgramSelectOption} from './ProgramSelection/ProgramSelection';
+import PrimaryAccordion, { AccordionItem } from '../../components/accordions/PrimaryAccordion/PrimaryAccordion';
+import ProgramSelection, { ProgramSelectOption } from './ProgramSelection/ProgramSelection';
 import PrimaryTypography from '../../components/typography/PrimaryTypography/PrimaryTypography';
 import ParticlesLoader from '../../components/sections/ParticlesLoader/ParticlesLoader';
 import PageLoader from '../../components/loaders/PageLoader/PageLoader';
-import {informationCircleOutline} from 'ionicons/icons';
+import { informationCircleOutline } from 'ionicons/icons';
 import PrimaryPopover from '../../components/popovers/PrimaryPopover/PrimaryPopover';
-import {useDapp} from '../../providers/DappProvider/DappProvider';
+import { useDapp } from '../../providers/DappProvider/DappProvider';
 import useMessagesInterval from '../../hooks/useMessagesInterval';
-import {useHistory} from 'react-router';
+import { useHistory } from 'react-router';
 import useDataQueryInvalidation from "../../hooks/queryCaching/useDataQueryInvalidation";
-import {rewardsQueriesIdentity} from "../../hooks/reward/rewardQueriesIdentity";
+import { rewardsQueriesIdentity } from "../../hooks/reward/rewardQueriesIdentity";
+import SecondarySelect, { SelectOption } from "../../components/inputs/SecondarySelect/SecondarySelect";
+import TertiaryHeader from '../../components/headers/TertiaryHeader/TertiaryHeader';
 
 interface IPrize {
     prizeId: string,
     gameToken: string
 }
+
+const spinCountOptions = [
+    new SelectOption("x1", '1'),
+    new SelectOption("x3", '3'),
+    new SelectOption("x5", '5'),
+    new SelectOption("x10", '10')
+]
+
+const audio = new Audio('/assets/audio/clapping.wav');
 
 const Spinner: React.FC = () => {
 
@@ -58,12 +69,26 @@ const Spinner: React.FC = () => {
         programId: loyaltyProgramId
     });
 
-    const [gameToken, setGameToken] = useState('');
-    const {play, isSubmitting, playingError} = usePlayGame({
+    const [spinCount, setSpinCount] = useState('1');
+
+    const {
+        prizes,
+        fetchPrizes,
+        numberOfPrizes: spinCredits,
+        uncollectedPrizesCount: uncollectedCreditsCount,
+        collectedPrizes: collectedCredits,
+        gameToken,
+        unReservePrizes,
+        isLoadingPrizes,
+        prizesExpired
+    } = useGamePrizes({ loyaltyCurrency: loyaltyProgram?.brand?.key });
+
+    const { play, preWonPrizeId, isSubmitting, playingError } = usePlayGame({
         loyaltyCurrency: loyaltyProgram?.loyaltyCurrency.id,
         gameToken: gameToken,
-        partnerId: loyaltyProgram?.partnerId ?? '',
-        brand: loyaltyProgram?.brand?.key ?? ''
+        brand: loyaltyProgram?.brand?.key ?? '',
+        numberOfSpins: parseInt(spinCount),
+        uncollectedCreditsCount
     });
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
     const [selectedPrizeId, setSelectedPrizeId] = useState<string>('');
@@ -71,28 +96,20 @@ const Spinner: React.FC = () => {
     const myLoyaltyPrograms = useMemo(() => {
         return defaultProgram ? [...myPrograms, defaultProgram] : [...myPrograms];
     }, [defaultProgram, myPrograms]);
-    const {addListener} = useBlockchainContractExecution();
-    const [prizesExpired, setPrizesExpired] = useState(false);
+    const { addListener } = useBlockchainContractExecution();
+
     const prizeInfo = "Spin now, list of prizes is reserved for 3 minutes, if spun after 3 minutes the list of prizes might be different";
-    const {walletAddress} = useDapp();
+    const { walletAddress } = useDapp();
     const displayMessages = [
         "Blockchain Node Connection. in Progress",
         "Creating Transparent Winning Algorithm",
         "Prizes Being Generated",
         "Spin Wheel Powering Up..."
     ];
-    const {currentMessage, start, stop} = useMessagesInterval(displayMessages);
-    const {gameContractAddress, gameContractAbi} = useDapp();
+    const { currentMessage, start, stop } = useMessagesInterval(displayMessages);
+    const { gameContractAddress, gameContractAbi } = useDapp();
     const [isPlaying, setIsPlaying] = useState(false);
-    const {invalidate} = useDataQueryInvalidation();
-
-    const {
-        prizes,
-        fetchPrizes,
-        unReservePrizes,
-        isLoadingPrizes
-    } = usePrize({loyaltyCurrency: loyaltyProgram?.brand?.key});
-    let audio = new Audio('/assets/audio/clapping.wav');
+    const { invalidate } = useDataQueryInvalidation();
 
     const getMySelectedProgram = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0 && !!loyaltyProgram) {
@@ -105,15 +122,16 @@ const Spinner: React.FC = () => {
         return wheelSegments && wheelSegments.find(item => item.id === selectedPrizeId)
     }, [wheelSegments, selectedPrizeId])
 
-    const {showModal: showSpinCondition} = useDialog({
+    const { showModal: showSpinCondition } = useDialog({
         id: 'spinConditionModal',
         component: <SpinCondition
-            cost={getMySelectedProgram?.redemption?.spinCost}
+            cost={getMySelectedProgram?.redemption?.spinCost ? getMySelectedProgram?.redemption?.spinCost * parseInt(spinCount) : 0}
+            spins={spinCount}
             onSuccess={handlePlaying}
-            dismiss={dismissSpinCondition}/>
+            dismiss={dismissSpinCondition} />
     });
 
-    const {showModal: showSuccessModal} = useDialog({
+    const { showModal: showSuccessModal } = useDialog({
         id: 'spinSuccessModal',
         component: <SpinSuccess
             dismiss={dismissSpinSuccess}
@@ -142,10 +160,10 @@ const Spinner: React.FC = () => {
         return fetchPrizes();
     }
 
-    function listenerCallBack(id: any, amount: any, playerAddress: string, gameToken: string) {
+    function listenerCallBack(ids: string[], amounts: any[], playerAddress: string, gameToken: string) {
         if (playerAddress.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
             const prize: IPrize = {
-                prizeId: id,
+                prizeId: ids?.length !== 0 ? ids[0] : '',
                 gameToken: gameToken
             }
             stop();
@@ -156,7 +174,7 @@ const Spinner: React.FC = () => {
 
     async function handlePlaying() {
         start();
-        if (prizesExpired) await getPrizes();
+        if(prizesExpired) await getPrizes();
         await play();
     }
 
@@ -198,7 +216,7 @@ const Spinner: React.FC = () => {
     const handleSelectedValue = (name: string) => {
         const lp = myLoyaltyPrograms.find(item => item?.currency?.loyaltyCurrencyName === name)
         if (lp) {
-            history.replace({search: (new URLSearchParams({program_id: lp?.currency?.programId})).toString()});
+            history.replace({ search: (new URLSearchParams({ program_id: lp?.currency?.programId })).toString() });
             setLoyaltyProgramId(lp.currency?.programId)
         }
     }
@@ -211,11 +229,19 @@ const Spinner: React.FC = () => {
         ])
     }, [loyaltyProgramId])
 
+
     useEffect(() => {
         if (returnedPrize && returnedPrize.gameToken === gameToken) {
             setSelectedPrizeId(returnedPrize.prizeId)
         }
     }, [returnedPrize])
+
+    useEffect(() => {
+        if (preWonPrizeId) {
+            setSelectedPrizeId(preWonPrizeId)
+            invalidate(rewardsQueriesIdentity.reward);
+        }
+    }, [preWonPrizeId])
 
     useEffect(() => {
         if (selectedPrizeId) {
@@ -231,18 +257,12 @@ const Spinner: React.FC = () => {
 
     useEffect(() => {
         if (!prizes) return;
-
-        const segments = WheelSegment.toWheelSegment(prizes.prizes);
+        const segments = WheelSegment.toWheelSegment(prizes);
         setWheelSegments(segments);
-        setGameToken(prizes.gameToken);
-        setPrizesExpired(false);
-        setTimeout(() => setPrizesExpired(true), 120000);
     }, [prizes])
 
     useEffect(() => {
-        if (gameToken) {
-            unReservePrizes(gameToken)
-        }
+        unReservePrizes()
         getPrizes();
     }, [loyaltyProgram?.loyaltyCurrency])
 
@@ -258,7 +278,7 @@ const Spinner: React.FC = () => {
         addListener(
             gameContractAddress,
             gameContractAbi,
-            'prizeSelected',
+            'prizesSelected',
             listenerCallBack
         );
 
@@ -269,26 +289,43 @@ const Spinner: React.FC = () => {
     }, [id, defaultProgram, loyaltyProgram])
 
     useIonViewWillLeave(() => {
-        if (!isPlaying) unReservePrizes(gameToken);
+        if (!isPlaying) unReservePrizes();
         setIsPlaying(false);
     }, [gameToken, isPlaying])
 
     return (
         <IonPage>
+            <TertiaryHeader title='Spin x10 - get 2 free spins' className='ion-text-center' />
             <IonHeader className='ion-no-border'>
                 <IonToolbar className={styles.headerToolbar}>
                     <div className='flex-row-container ion-padding-horizontal'>
                         <ProgramSelection
                             options={programsOpts}
                             selectedValue={loyaltyProgram?.loyaltyCurrency?.shortName ?? ''}
-                            onValueChange={handleSelectedValue}/>
+                            onValueChange={handleSelectedValue} />
                         <PrimaryButton
-                            customStyles='flex-row-1'
-                            onClick={showSpinCondition}
+                            customStyles={`${!uncollectedCreditsCount && !spinCredits && styles.spinButton} flex-row-1`}
+                            onClick={uncollectedCreditsCount ? handlePlaying : showSpinCondition}
                             size='m'
                             disabled={isPlaying}>
-                            spin!
+                            {uncollectedCreditsCount && spinCredits ?
+                                `spin! ${collectedCredits && collectedCredits + 1} of ${spinCredits}`
+                                :
+                                'spin!'}
                         </PrimaryButton>
+                        {!uncollectedCreditsCount && !spinCredits &&
+                            <SecondarySelect
+                                required
+                                disabled={isPlaying}
+                                type="popover"
+                                className={`${styles.spinSelect} flex-row-1`}
+                                placeholder='multiple select'
+                                name="spinCount"
+                                onChange={(value) => setSpinCount(value.detail.value)}
+                                value={spinCount}
+                                options={spinCountOptions}
+                            />
+                        }
                     </div>
                 </IonToolbar>
             </IonHeader>
@@ -300,7 +337,7 @@ const Spinner: React.FC = () => {
                                 {
                                     isPlaying && !selectedPrizeId ?
                                         <div className={styles.loaderWrapper}>
-                                            <ParticlesLoader/>
+                                            <ParticlesLoader />
                                             <PrimaryTypography
                                                 customClassName={styles.loaderOverlay}>
                                                 {currentMessage}
@@ -313,13 +350,13 @@ const Spinner: React.FC = () => {
                                             data={wheelSegmentsOpts}
                                             spin={isPlaying}
                                             selectedPrizeId={selectedPrizeId}
-                                            onClick={showSpinCondition}
+                                            onClick={uncollectedCreditsCount ? handlePlaying : showSpinCondition}
                                             onStopSpinning={() => {
                                                 setTimeout(() => {
                                                     showSuccessModal();
                                                     audio.play();
                                                 }, 1000);
-                                            }}/>
+                                            }} />
                                 }
                             </div>
                             <div className={styles.accordionHeaderwrapper}>
@@ -332,14 +369,14 @@ const Spinner: React.FC = () => {
                                 </PrimaryTypography>
                                 <IonButtons>
                                     <IonButton id="hover-trigger">
-                                        <IonIcon color="light" icon={informationCircleOutline}/>
+                                        <IonIcon color="light" icon={informationCircleOutline} />
                                     </IonButton>
                                 </IonButtons>
-                                <PrimaryPopover id="hover-trigger" content={prizeInfo}/>
+                                <PrimaryPopover id="hover-trigger" content={prizeInfo} />
                             </div>
-                            <PrimaryAccordion accordionItem={prizesOpts}/>
+                            <PrimaryAccordion accordionItem={prizesOpts} />
                         </>
-                        : <PageLoader/>
+                        : <PageLoader />
                 }
             </PrimaryContainer>
         </IonPage>

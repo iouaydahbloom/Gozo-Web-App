@@ -7,15 +7,17 @@ import {PlayGame} from "../models/playGame";
 import {PlayGameDTO} from "../dto/PlayGameDTO";
 import useDataMutation from "./queryCaching/useDataMutation";
 import {membershipQueriesIdentity} from "./membership/membershipQueriesIdentity";
+import { prizeQueriesIdentity } from "./gamePrizes/prizeQueriesIdentity";
 
 interface Props {
     loyaltyCurrency?: string,
-    partnerId: string,
     brand: string,
-    gameToken?: string
+    numberOfSpins: number,
+    gameToken?: string,
+    uncollectedCreditsCount?: number
 }
 
-const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken}: Props) => {
+const usePlayGame = ({loyaltyCurrency, brand, gameToken, numberOfSpins, uncollectedCreditsCount}: Props) => {
 
     const {presentFailure} = useToast();
     const {walletAddress} = useDapp();
@@ -23,8 +25,8 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken}: Props) => {
     const {run} = useCloud();
 
     const playingMutation = useDataMutation({
-        mutatedIdentity: membershipQueriesIdentity.info(loyaltyCurrency),
-        fn: () => play()
+        mutatedIdentity: uncollectedCreditsCount ? prizeQueriesIdentity.loyaltyCurrency(loyaltyCurrency) : membershipQueriesIdentity.info(loyaltyCurrency),
+        fn: () => uncollectedCreditsCount ? playWithCredits() : play()
     })
 
     const play = useCallback(() => {
@@ -34,8 +36,8 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken}: Props) => {
             brand: brand,
             player_address: walletAddress
         }
-        if (partnerId) params.partner_id = partnerId;
         if (gameToken) params.game_token = gameToken;
+        if(numberOfSpins) params.number_of_prizes = numberOfSpins
 
         return run(cloudFunctionName.playWithSuperPoints,
             params,
@@ -50,7 +52,30 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken}: Props) => {
                     return;
                 }
             })
-    }, [partnerId, gameToken, brand])
+    }, [gameToken, brand, numberOfSpins])
+
+    const playWithCredits = useCallback(() => {
+        setPlayingError(undefined);
+        if (!walletAddress) return Promise.resolve();
+        const params: any = {
+            player_address: walletAddress
+        }
+        if (gameToken) params.game_token = gameToken;
+
+        return run(cloudFunctionName.collectReward,
+            params,
+            (res: PlayGameDTO) => PlayGame.getFromDTO(res),
+            true)
+            .then((result) => {
+                if (result.isSuccess) {
+                    return result.data
+                } else if(result?.message) {
+                    let errorMessage = result.message;
+                    setPlayingError(errorMessage);
+                    return;
+                }
+            })
+    }, [gameToken])
 
     useEffect(() => {
         if (playingError) {
@@ -60,6 +85,7 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken}: Props) => {
 
     return {
         play: () => playingMutation.mutateAsync({}),
+        preWonPrizeId: playingMutation.data?.prizeId,
         isSubmitting: playingMutation.isLoading,
         playingError
     }

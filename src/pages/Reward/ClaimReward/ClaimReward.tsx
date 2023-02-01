@@ -3,7 +3,7 @@ import PrimaryButton from "../../../components/buttons/PrimaryButton/PrimaryButt
 import PrimaryInput from "../../../components/inputs/PrimaryInput/PrimaryInput"
 import SectionLoader from "../../../components/loaders/section-loader/SectionLoader"
 import PrimaryTypography from "../../../components/typography/PrimaryTypography/PrimaryTypography"
-import usePrize from "../../../hooks/prize/usePrize"
+import useGamePrizes from "../../../hooks/gamePrizes/useGamePrizes"
 import useReward from "../../../hooks/reward/useReward"
 import useToast from "../../../hooks/useToast"
 import {KeyValue} from "../../../models/keyValue"
@@ -16,7 +16,7 @@ interface Props {
 }
 
 const ClaimReward: React.FC<Props> = ({prizeId, rewardId, dismiss}) => {
-    const {prize, isLoadingPrize} = usePrize({prizeId})
+    const {prize, isLoadingPrize} = useGamePrizes({prizeId})
     const [fields, setFields] = useState<KeyValue[]>([])
     const {claimReward, isLoadingSubmission} = useReward()
     const {presentFailure, presentSuccess} = useToast();

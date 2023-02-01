@@ -135,7 +135,7 @@ const FortuneWheel: React.FC<Props> = ({
                 },
             'pins':                // Turn pins on.
                 {
-                    'number': 16,
+                    'number': data.length,
                     'fillStyle': 'yellow',
                     'outerRadius': 5,
                     'lineWidth': 4,
@@ -143,6 +143,7 @@ const FortuneWheel: React.FC<Props> = ({
                     'strokeStyle': 'orange'
                 }
         });
+
     }, [data, isMuted])
 
     useEffect(() => {

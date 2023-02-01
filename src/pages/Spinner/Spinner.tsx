@@ -43,6 +43,15 @@ interface IPrize {
     gameToken: string
 }
 
+const spinCountOptions = [
+    new SelectOption("x1", '1'),
+    new SelectOption("x3", '3'),
+    new SelectOption("x5", '5'),
+    new SelectOption("x10", '10')
+]
+
+const audio = new Audio('/assets/audio/clapping.wav');
+
 const Spinner: React.FC = () => {
 
     const history = useHistory()
@@ -61,18 +70,12 @@ const Spinner: React.FC = () => {
     });
 
     const [spinCount, setSpinCount] = useState('1');
-    const spinCountOptions = [
-        new SelectOption("x1", '1'),
-        new SelectOption("x3", '3'),
-        new SelectOption("x5", '5'),
-        new SelectOption("x10", '10')
-    ]
 
     const {
         prizes,
         fetchPrizes,
         numberOfPrizes: spinCredits,
-        uncollectedPrizes: uncollectedCredits,
+        uncollectedPrizesCount: uncollectedCreditsCount,
         collectedPrizes: collectedCredits,
         gameToken,
         unReservePrizes,
@@ -80,13 +83,12 @@ const Spinner: React.FC = () => {
         prizesExpired
     } = useGamePrizes({ loyaltyCurrency: loyaltyProgram?.brand?.key });
 
-    const { play, prizeId, isSubmitting, playingError } = usePlayGame({
+    const { play, preWonPrizeId, isSubmitting, playingError } = usePlayGame({
         loyaltyCurrency: loyaltyProgram?.loyaltyCurrency.id,
         gameToken: gameToken,
-        partnerId: loyaltyProgram?.partnerId ?? '',
         brand: loyaltyProgram?.brand?.key ?? '',
         numberOfSpins: parseInt(spinCount),
-        uncollectedCredits: uncollectedCredits
+        uncollectedCreditsCount
     });
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([]);
     const [selectedPrizeId, setSelectedPrizeId] = useState<string>('');
@@ -108,8 +110,6 @@ const Spinner: React.FC = () => {
     const { gameContractAddress, gameContractAbi } = useDapp();
     const [isPlaying, setIsPlaying] = useState(false);
     const { invalidate } = useDataQueryInvalidation();
-
-    let audio = new Audio('/assets/audio/clapping.wav');
 
     const getMySelectedProgram = useMemo(() => {
         if (myLoyaltyPrograms.length !== 0 && !!loyaltyProgram) {
@@ -160,10 +160,10 @@ const Spinner: React.FC = () => {
         return fetchPrizes();
     }
 
-    function listenerCallBack(id: string[], amounts: any[], playerAddress: string, gameToken: string) {
+    function listenerCallBack(ids: string[], amounts: any[], playerAddress: string, gameToken: string) {
         if (playerAddress.toLocaleLowerCase() === walletAddress?.toLocaleLowerCase()) {
             const prize: IPrize = {
-                prizeId: id?.length !== 0 ? id[0] : '',
+                prizeId: ids?.length !== 0 ? ids[0] : '',
                 gameToken: gameToken
             }
             stop();
@@ -237,11 +237,11 @@ const Spinner: React.FC = () => {
     }, [returnedPrize])
 
     useEffect(() => {
-        if (prizeId) {
-            setSelectedPrizeId(prizeId)
+        if (preWonPrizeId) {
+            setSelectedPrizeId(preWonPrizeId)
             invalidate(rewardsQueriesIdentity.reward);
         }
-    }, [prizeId])
+    }, [preWonPrizeId])
 
     useEffect(() => {
         if (selectedPrizeId) {
@@ -304,16 +304,16 @@ const Spinner: React.FC = () => {
                             selectedValue={loyaltyProgram?.loyaltyCurrency?.shortName ?? ''}
                             onValueChange={handleSelectedValue} />
                         <PrimaryButton
-                            customStyles={`${!uncollectedCredits && !spinCredits && styles.spinButton} flex-row-1`}
-                            onClick={uncollectedCredits ? handlePlaying : showSpinCondition}
+                            customStyles={`${!uncollectedCreditsCount && !spinCredits && styles.spinButton} flex-row-1`}
+                            onClick={uncollectedCreditsCount ? handlePlaying : showSpinCondition}
                             size='m'
                             disabled={isPlaying}>
-                            {uncollectedCredits && spinCredits ?
+                            {uncollectedCreditsCount && spinCredits ?
                                 `spin! ${collectedCredits && collectedCredits + 1} of ${spinCredits}`
                                 :
                                 'spin!'}
                         </PrimaryButton>
-                        {!uncollectedCredits && !spinCredits &&
+                        {!uncollectedCreditsCount && !spinCredits &&
                             <SecondarySelect
                                 required
                                 disabled={isPlaying}
@@ -350,7 +350,7 @@ const Spinner: React.FC = () => {
                                             data={wheelSegmentsOpts}
                                             spin={isPlaying}
                                             selectedPrizeId={selectedPrizeId}
-                                            onClick={uncollectedCredits ? handlePlaying : showSpinCondition}
+                                            onClick={uncollectedCreditsCount ? handlePlaying : showSpinCondition}
                                             onStopSpinning={() => {
                                                 setTimeout(() => {
                                                     showSuccessModal();

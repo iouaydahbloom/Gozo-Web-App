@@ -74,7 +74,7 @@ const useGamePrizes = ({ loyaltyCurrency, prizeId }: Props) => {
             })
     }
 
-    const getUncollectedPrizes = useMemo(() => {
+    const uncollectedPrizesCount = useMemo(() => {
         if (prizesQuery.data?.numberOfPrizes && prizesQuery.data?.numberOfCollectedPrizes) {
             return prizesQuery.data.numberOfPrizes - prizesQuery.data.numberOfCollectedPrizes
         }
@@ -90,7 +90,7 @@ const useGamePrizes = ({ loyaltyCurrency, prizeId }: Props) => {
         prizesExpired,
         gameToken,
         numberOfPrizes : prizesQuery.data?.numberOfPrizes,
-        uncollectedPrizes: getUncollectedPrizes,
+        uncollectedPrizesCount,
         collectedPrizes: prizesQuery.data?.numberOfCollectedPrizes,
         prizes: prizesQuery.data?.prizes,
         isLoadingPrize: prizeQuery.isLoading

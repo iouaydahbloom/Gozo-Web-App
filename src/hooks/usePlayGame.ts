@@ -11,14 +11,13 @@ import { prizeQueriesIdentity } from "./gamePrizes/prizeQueriesIdentity";
 
 interface Props {
     loyaltyCurrency?: string,
-    partnerId: string,
     brand: string,
     numberOfSpins: number,
     gameToken?: string,
-    uncollectedCredits?: number
+    uncollectedCreditsCount?: number
 }
 
-const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken, numberOfSpins, uncollectedCredits}: Props) => {
+const usePlayGame = ({loyaltyCurrency, brand, gameToken, numberOfSpins, uncollectedCreditsCount}: Props) => {
 
     const {presentFailure} = useToast();
     const {walletAddress} = useDapp();
@@ -26,8 +25,8 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken, numberOfSpin
     const {run} = useCloud();
 
     const playingMutation = useDataMutation({
-        mutatedIdentity: uncollectedCredits ? prizeQueriesIdentity.loyaltyCurrency(loyaltyCurrency) : membershipQueriesIdentity.info(loyaltyCurrency),
-        fn: () => uncollectedCredits ? playWithCredits() : play()
+        mutatedIdentity: uncollectedCreditsCount ? prizeQueriesIdentity.loyaltyCurrency(loyaltyCurrency) : membershipQueriesIdentity.info(loyaltyCurrency),
+        fn: () => uncollectedCreditsCount ? playWithCredits() : play()
     })
 
     const play = useCallback(() => {
@@ -37,7 +36,6 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken, numberOfSpin
             brand: brand,
             player_address: walletAddress
         }
-        if (partnerId) params.partner_id = partnerId;
         if (gameToken) params.game_token = gameToken;
         if(numberOfSpins) params.number_of_prizes = numberOfSpins
 
@@ -54,7 +52,7 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken, numberOfSpin
                     return;
                 }
             })
-    }, [partnerId, gameToken, brand, numberOfSpins])
+    }, [gameToken, brand, numberOfSpins])
 
     const playWithCredits = useCallback(() => {
         setPlayingError(undefined);
@@ -87,7 +85,7 @@ const usePlayGame = ({loyaltyCurrency, partnerId, brand, gameToken, numberOfSpin
 
     return {
         play: () => playingMutation.mutateAsync({}),
-        prizeId: playingMutation.data?.prizeId,
+        preWonPrizeId: playingMutation.data?.prizeId,
         isSubmitting: playingMutation.isLoading,
         playingError
     }

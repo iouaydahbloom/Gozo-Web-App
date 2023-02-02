@@ -1,0 +1,42 @@
+.accordionContent {
+    .row {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        border-bottom: 1px solid var(--ion-color-medium-light);
+        padding: 16px 0;
+
+        .column {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+}
+
+.cover {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 90px;
+    border: 1px solid var(--ion-color-medium-tint);
+    border-radius: 5px;
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    background: #2A2E4E;
+    border-radius: 3px;
+    padding: 2px 5px;
+    margin-top: 9px;
+}
+
+.title {
+    padding-bottom: 8px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

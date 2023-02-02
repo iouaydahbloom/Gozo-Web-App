@@ -1,0 +1,48 @@
+.container {
+    display: flex;
+    height: 88px;
+    border: 1px solid var(--ion-color-light);
+    border-radius: 11px;
+    align-items: center;
+    margin-bottom: 20px;
+
+    &.disabled {
+        opacity: 0.5;
+    }
+
+    .innerContainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .iconContainer {
+        background: linear-gradient(153.78deg, var(--ion-color-primary) 29.36%, var(--ion-color-quaternary) 119.24%);
+        box-shadow: inset 0px 2px 3px var(--ion-color-medium);
+        border-radius: 10px 0px 0px 10px;
+        flex: 0.2;
+
+        ion-icon {
+            color: var(--ion-color-light);
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    .text {
+        flex: 0.6;
+        padding-left: 16px
+    }
+
+    .navigation {
+        justify-content: flex-end;
+        flex: 0.2;
+        margin-right: 20px;
+
+        .navigateIcon {
+            width: 24px;
+            height: 24px;
+        }
+    }
+}

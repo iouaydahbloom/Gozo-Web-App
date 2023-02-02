@@ -1,0 +1,84 @@
+.canvasContainer {
+  position: relative;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-size: 340px;
+
+  canvas {
+    display: block;
+  }
+
+  .logo {
+    position: absolute;
+    left: 50%;
+    top: calc(50% - 5px);
+    transform: translate(-50%, -50%);
+    background: var(--ion-color-light);
+    border-radius: 50%;
+  }
+
+  .iconPin {
+    position: absolute;
+    left: 50%;
+    top: -7px;
+    z-index: 100;
+    margin-left: calc(-50px / 2);
+    transform-origin: 50% 31%;
+  }
+
+  .pinShaking {
+    transform: rotate(-50deg);
+  }
+
+  .pinShaking1 {
+    /* Start the shake animation and make the animation last for 0.1 seconds */
+    animation: pinShaking 0.1s;
+  }
+
+  @keyframes pinShaking {
+    0% {
+      transform: rotate(-50deg);
+    }
+
+    10% {
+      transform: rotate(-45deg);
+    }
+
+    20% {
+      transform: rotate(-40deg);
+    }
+
+    30% {
+      transform: rotate(-35deg);
+    }
+
+    40% {
+      transform: rotate(-30deg);
+    }
+
+    50% {
+      transform: rotate(-25deg);
+    }
+
+    60% {
+      transform: rotate(-20deg);
+    }
+
+    70% {
+      transform: rotate(-15deg);
+    }
+
+    80% {
+      transform: rotate(-10deg);
+    }
+
+    90% {
+      transform: rotate(-5deg);
+    }
+
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+}

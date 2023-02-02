@@ -1,0 +1,33 @@
+.container {
+    --background: var(--ion-color-dark-tint);
+    --border-radius: 7px;
+    margin: 0 20px 20px 20px;
+
+    .info {
+        padding-left: 20px;
+
+        .balanceWrapper {
+            display: flex;
+            justify-content: space-between;
+
+            .balance {
+                color: var(--ion-color-medium-tint) !important;
+            }
+        }
+    }
+}
+
+.active {
+    --background: none;
+    border: 3px solid var(--ion-color-primary);
+    border-radius: 7px;
+}
+
+.selector {
+    --border-radius: 50%;
+    --inner-border-radius: 50%;
+
+    --color: var(--ion-color-light);
+    --color-checked: var(--ion-color-primary);
+    margin: 20px 20px 20px 0;
+}

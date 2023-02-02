@@ -1,0 +1,1 @@
+export type defaultColorType = 'primary' | 'secondary' | 'tertiary' | 'medium' | 'light' | 'light-green' | 'dark' | 'danger' | 'success' | 'medium-light' | 'slightly-light' | 'quaternary'

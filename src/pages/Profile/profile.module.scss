@@ -1,0 +1,28 @@
+.container {
+    position: relative;
+
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .fieldWrapper {
+        position: relative;
+    }
+
+    .label {
+        padding-bottom: 10px;
+    }
+    .stackedIcon {
+        position: absolute;
+        right: 0; 
+    }
+
+    .buttonWrapper {
+        margin-top: auto;
+        padding-bottom: 24px;
+    }
+}
+

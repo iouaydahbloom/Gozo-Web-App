@@ -1,0 +1,19 @@
+.swapContainer {
+    position: relative;
+
+    .swapControl {
+        margin-bottom: 40px;
+
+        .swapField {
+            padding: 8px 12px;
+            background-color: var(--ion-color-tertiary);
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+
+            .input {
+                text-align: right;
+            }
+        }
+    }
+}

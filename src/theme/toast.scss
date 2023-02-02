@@ -1,0 +1,53 @@
+.app-toaster {
+    --max-width: 440px;
+
+    &::part(icon) {
+        width: 28px;
+        height: 28px;
+    }
+
+    &::part(container) {
+        min-height: 64px;
+        background: var(--ion-color-tertiary);
+        color: var(--ion-color-light);
+        font-size: 14px;
+        border-radius: 5px;
+        border-bottom: 4px solid var(--ion-color-primary);
+    }
+
+    &.info {
+
+        &::part(icon),
+        &::part(button) {
+            color: var(--ion-color-primary);
+        }
+
+        &::part(container) {
+            border-bottom: 4px solid var(--ion-color-primary);
+        }
+    }
+
+    &.failure {
+
+        &::part(icon),
+        &::part(button) {
+            color: var(--ion-color-danger);
+        }
+
+        &::part(container) {
+            border-bottom: 4px solid var(--ion-color-danger);
+        }
+    }
+
+    &.success {
+
+        &::part(icon),
+        &::part(button) {
+            color: var(--ion-color-success);
+        }
+
+        &::part(container) {
+            border-bottom: 4px solid var(--ion-color-success);
+        }
+    }
+}

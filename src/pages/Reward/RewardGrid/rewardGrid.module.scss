@@ -1,0 +1,32 @@
+.container {
+    .grid {
+        .headerWrapper {
+            background: var(--ion-color-dark);
+            border: solid 1px var(--ion-color-dark);
+            padding-bottom: 16px;
+            position: sticky;
+            z-index: 1000;
+
+            .header {
+                background: var(--ion-color-tertiary);
+                border-radius: 11px;
+                padding: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .cell {
+                    flex: 1;
+                    text-align: center;
+                }
+            }
+        }
+    }
+}
+
+.rewardPlaceholder {
+    position: initial;
+    margin: auto;
+    transform: none;
+    margin-top: 20px;
+}

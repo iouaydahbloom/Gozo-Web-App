@@ -1,0 +1,17 @@
+.slider {
+    ion-slide{
+        padding: 0px 0px 35px 0px!important;
+        .slide {
+            background-repeat: no-repeat;
+            background-position: center;
+            // background-size: cover;
+            background-size: contain;
+            -webkit-border-radius: 11px;
+            -moz-border-radius: 11px;
+            height: 100px;
+            width: 100%;
+            border-radius: 11px;
+        }
+    }
+
+}

@@ -1,0 +1,52 @@
+.details {
+    .cover {
+        border-radius: 10px;
+        width: 100%;
+    }
+}
+
+.buttonContainer {
+    text-align: end;
+    margin-bottom: 20px;
+}
+
+.inputContainer {
+    padding-bottom: 10px;
+
+    .label {
+        padding-bottom: 10px;
+    }
+
+    .rate {
+        margin-top: 5px;
+        text-align: right;
+    }
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    border-bottom: 1px solid var(--ion-color-medium-light);
+    padding: 16px 0;
+
+    .column {
+        flex: 1;
+        overflow: hidden;
+
+        p {
+            &:first-of-type {
+                margin: 0;
+            }
+        }
+    }
+}
+
+.minmax {
+    margin: 20px 0;
+    padding: 10px 0;
+
+    .minmaxValue {
+        text-align: right;
+    }
+}

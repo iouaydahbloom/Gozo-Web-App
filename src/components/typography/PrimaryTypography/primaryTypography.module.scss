@@ -1,0 +1,40 @@
+.text {
+    font-size: large;
+    font-weight: 400;
+
+    &.block {
+        display: block;
+    }
+
+    &.xs {
+        font-size: 12px;
+    }
+
+    &.small {
+        font-size: 14px;
+    }
+
+    &.medium {
+        font-size: 16px;
+    }
+
+    &.large {
+        font-size: 20px;
+    }
+
+    &.xl {
+        font-size: 25px;
+    }
+
+    &.xxl {
+        font-size: 30px;
+    }
+
+    &.xxxl {
+        font-size: 36px;
+    }
+
+    &.bold {
+        font-weight: 700;
+    }
+}

@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Monda:wght@400;700&display=swap');
+
+* {
+  font-family: 'Monda', sans-serif;
+}
+
+.primary-sheet {
+  --border-radius: 50px 50px 0px 0px;
+  --border-color: var(--ion-color-medium);
+  --border-style: solid;
+  --border-width: 1px;
+  --height: 99vh;
+  box-shadow: 0px 4px 4px 8px var(--ion-color-dark);
+  --background: var(--ion-color-medium);
+
+  .ion-page {
+    background: var(--ion-color-medium);
+  }
+
+  &::part(backdrop) {
+    background: rgba(209, 213, 219);
+    opacity: 1;
+  }
+}
+
+.secondary-sheet {
+  --border-radius: 50px 50px 0px 0px;
+  --border-color: var(--ion-color-medium);
+  --border-style: solid;
+  --border-width: 1px;
+  box-shadow: 0px 4px 4px 8px var(--ion-color-dark);
+  --height: 50vh;
+  --background: var(--ion-color-medium);
+
+  .ion-page {
+    background: var(--ion-color-medium);
+  }
+
+  &::part(backdrop) {
+    background: rgba(209, 213, 219);
+    opacity: 1;
+  }
+}
+
+.primary-dialog {
+  --height: 30%;
+  --border-radius: 11px;
+  --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  padding: 0px 16px;
+  --background: var(--ion-color-medium);
+
+  &::part(backdrop) {
+    background: rgba(209, 213, 219);
+    opacity: 0.8;
+  }
+}
+
+.popover-hook {
+  --width: 300px;
+}
+
+.middle-screen-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.flex-row-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 12px;
+
+  .flex-row {
+    flex: auto;
+  }
+
+  .flex-row-1 {
+    flex: 1;
+  }
+
+  .flex-row-2 {
+    flex: 2;
+  }
+
+  .flex-row-3 {
+    flex: 3;
+  }
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+//Pull to refresh styles
+.lds-ellipsis div {
+  background: var(--ion-color-light) !important;
+}
+
+.scrollable {
+  overflow: hidden;
+}
+
+//Camera scanning styles
+#close-camera-icon {
+  padding-top: var(--ion-safe-area-top, 0);
+  display: none;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+body.scanner-active {
+  #close-camera-icon {
+    display: initial;
+  }
+
+  .ion-page {
+    display: none !important;
+  }
+}
+
+.select-disabled {
+  opacity: 0.5 !important;
+  pointer-events: none;
+}

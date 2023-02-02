@@ -1,0 +1,39 @@
+{
+    "project_info": {
+      "project_number": "231779257475",
+      "project_id": "gozo-demo",
+      "storage_bucket": "gozo-demo.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:231779257475:android:af047aa782e31f3b605fb6",
+          "android_client_info": {
+            "package_name": "gozo.app.mvp.demo"
+          }
+        },
+        "oauth_client": [
+          {
+            "client_id": "231779257475-csk8f7snqtpm5ndldqjqcviia1fnd7b2.apps.googleusercontent.com",
+            "client_type": 3
+          }
+        ],
+        "api_key": [
+          {
+            "current_key": "AIzaSyDynISQmBzGiMtKlwcT8T_A7xjDW0GOA_Y"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": [
+              {
+                "client_id": "231779257475-csk8f7snqtpm5ndldqjqcviia1fnd7b2.apps.googleusercontent.com",
+                "client_type": 3
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }

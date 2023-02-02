@@ -1,0 +1,69 @@
+.secondarySelectContainer {
+    width: 100%;
+
+    .label {
+        width: 100%;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--ion-color-dark);
+        margin-bottom: 8px !important;
+    }
+
+    .secondarySelect {
+        position: relative;
+
+        .secondarySelectLoading {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 10px;
+
+            span {
+                flex: 1;
+            }
+
+            ion-spinner {
+                width: 25px;
+            }
+        }
+
+        .select {
+            width: 100%;
+            border: 1px solid var(--ion-color-light);
+            border-radius: 5px;
+            padding: 10px 10px 10px 8px;
+            --placeholder-color: var(--ion-color-medium-tint);
+            --placeholder-opacity: 1 !important;
+            color: var(--ion-color-light);
+            font-size: 14px;
+            border-radius: 5px;
+            background: var(--ion-color-dark);
+            border: 1px solid var(--ion-color-medium-tint);
+            box-shadow: inset 0px 2px 3px var(--ion-color-dark);
+            padding: 16px;
+            height: 50px;
+        }
+
+        .secondarySelectIcon {
+            position: absolute;
+            top: 15px;
+            z-index: 2;
+            right: 9px;
+            cursor: pointer;
+            color: var(--ion-color-light);
+        }
+
+        .select::part(icon) {
+            display: none;
+        }
+    }
+}
+
+.secondarySelectReset {
+    cursor: pointer;
+
+    ion-radio {
+        opacity: 0;
+    }
+}

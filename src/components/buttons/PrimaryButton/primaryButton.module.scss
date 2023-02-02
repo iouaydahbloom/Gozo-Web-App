@@ -1,0 +1,50 @@
+.button {
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-light);
+    font-size: 20px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    --padding-start: 25px;
+    --padding-end: 25px;
+    letter-spacing: 0ch;
+    --border-radius: 5px;
+    text-transform: uppercase;
+
+    &.small {
+        font-size: 12px;
+    }
+
+    &.medium {
+        font-size: 14px;
+        height: 48px;
+    }
+
+    &.large {
+        font-size: 20px;
+        height: 58px;
+    }
+
+    &.dark {
+        --background: var(--ion-color-dark);
+        --color: var(--ion-color-light);
+    }
+
+    &.success {
+        --background: var(--ion-color-success);
+        --color: var(--ion-color-light);
+    }
+
+    &.link {
+        --background: none;
+        --color: var(--ion-color-primary);
+        text-decoration: underline;
+    }
+
+    &.outline {
+        --background: none !important;
+    }
+
+    .spinner {
+        width: 20px;
+    }
+}

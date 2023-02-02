@@ -1,0 +1,21 @@
+.header {
+    height: 40px;
+    box-shadow: 2px 0px 0px 1px var(--ion-color-dark);
+}
+
+.container {
+    --background: none;
+    // --padding-top: 40px;
+    --padding-end: 20px;
+    --padding-start: 20px;
+
+    .containerList {
+        background: none;
+    }
+
+}
+
+.footer {
+    padding: 20px 40px 40px 40px;
+    box-shadow: 2px 0px 0px 1px var(--ion-color-dark);
+}

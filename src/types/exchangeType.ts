@@ -1,0 +1,1 @@
+export type PartnershipType = 'in' | 'out' | 'redemption' | 'issuing';

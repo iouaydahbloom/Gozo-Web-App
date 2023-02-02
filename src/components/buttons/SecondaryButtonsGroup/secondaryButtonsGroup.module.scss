@@ -1,0 +1,12 @@
+.buttonsContainer {
+    display: flex;
+
+    .buttonContainer {
+        flex: 1;
+        text-align: center;
+
+        ion-button {
+            height: 43px !important;
+        }
+    }
+}

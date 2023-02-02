@@ -1,0 +1,20 @@
+.container {
+    &.empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .actions {
+        background: var(--ion-color-dark);
+        border: solid 1px var(--ion-color-dark);
+        padding-bottom: 16px;
+        position: sticky;
+        z-index: 1000;
+    }
+
+    .noDataContainer {
+        padding: 20px 0;
+        text-align: center;
+    }
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">GOZO</string>
+    <string name="title_activity_main">GOZO</string>
+    <string name="package_name">gozo.app.mvp</string>
+    <string name="custom_url_scheme">gozo.app.mvp</string>
+</resources>

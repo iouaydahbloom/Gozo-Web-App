@@ -1,0 +1,29 @@
+.container {
+    --background: var(--ion-color-medium);
+    position: relative;
+
+    .containerContent {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+
+        .reward {
+            margin-bottom: 10px;
+        }
+
+        .dismiss {
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .text {
+            background: linear-gradient(180deg, var(--ion-color-primary) 0%, var(--ion-color-quaternary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    }
+}

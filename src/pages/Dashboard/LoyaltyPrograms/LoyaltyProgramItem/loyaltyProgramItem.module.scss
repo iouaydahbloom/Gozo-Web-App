@@ -1,0 +1,96 @@
+.container {
+    background: var(--ion-color-medium);
+    border-radius: 7px;
+    margin-bottom: 20px;
+    position: relative;
+
+    .dataContainer {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+
+        .selectionContainer {
+            padding: 10px 0 0 10px;
+
+            ion-checkbox {
+                --border-radius: 4px;
+                --background: var(--ion-color-dark);
+                --border-color: var(--ion-color-dark);
+            }
+        }
+
+        .startSlot {
+            flex: auto;
+            padding: 8px;
+
+            .id {
+                display: flex;
+            }
+
+            .logo {
+                background-color: var(--ion-color-light) !important;
+                width: 48px;
+                height: 48px;
+                margin-right: 15px;
+            }
+
+            .detailWrapper {
+                .balanceRow {
+                    border-bottom: 1px solid var(--ion-color-medium-light);
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                .spinInfoRow {
+                    display: flex;
+                    justify-content: space-between;
+                }
+            }
+
+            ion-item {
+                --background: none;
+
+                ion-avatar {
+                    align-self: start;
+                }
+            }
+
+            .status {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+
+                ion-icon {
+                    font-size: 12px;
+                }
+
+                .loader {
+                    width: 20px;
+                }
+            }
+        }
+    }
+
+    .spinAction {
+        background: var(--ion-color-medium-light);
+        height: 100%;
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 7px;
+        width: 75px;
+        position: relative;
+
+        .actionItem {
+            width: fit-content;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+
+            .noCredits {
+                display: block;
+                margin: auto;
+            }
+        }
+    }
+}
